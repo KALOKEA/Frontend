@@ -1,3 +1,1 @@
-export default function Home() {
-  return <main><h1>Kalokea — Coming Soon</h1></main>
-}
+ï»¿export default function Home() { return <main><h1>Kalokea</h1></main> }
