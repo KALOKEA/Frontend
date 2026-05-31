@@ -16,13 +16,13 @@ export default function VariantPicker({
   onColourChange,
   onSizeChange,
 }: VariantPickerProps) {
-  const colours = [...new Set(variants.filter((v) => v.colour).map((v) => v.colour!))]
-  const sizes = [...new Set(
+  const colours = Array.from(new Set(variants.filter((v) => v.colour).map((v) => v.colour!)))
+  const sizes = Array.from(new Set(
     variants
       .filter((v) => !selectedColour || v.colour === selectedColour)
       .filter((v) => v.size)
       .map((v) => v.size!)
-  )]
+  ))
 
   const isOOS = (size: string) => {
     const v = variants.find((v) => v.size === size && (!selectedColour || v.colour === selectedColour))
