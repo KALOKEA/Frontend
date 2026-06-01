@@ -3,6 +3,7 @@ import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { authApi } from '@/lib/api/auth'
 import { useAuthStore } from '@/lib/store/useAuthStore'
+import { useCartStore } from '@/lib/store/useCartStore'
 import { useToast } from '@/components/ui/Toast'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -42,6 +43,8 @@ function LoginContent() {
         isEmail ? { email: identifier, otp } : { phone: identifier, otp }
       )
       setAuth(res.access_token, res.user)
+      // Merge the guest cart into the user's server cart (runs in the background).
+      useCartStore.getState().mergeOnLogin().catch(() => {})
       toast('Welcome back!')
       const redirect = params.get('redirect') || '/'
       router.push(redirect)
