@@ -24,7 +24,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {['New Arrivals','Dresses','Tops','Bottoms','Shoes','Bags','Accessories','Sale'].map((cat) => (
                 <li key={cat}>
-                  <Link href={`/shop?category=${cat.toLowerCase().replace(' ','-')}`} className="text-xs font-sans text-[#e8e4e0] hover:text-[#c8a4a5] transition-colors">
+                  <Link href={`/shop?category=${cat.toLowerCase().replace(/ /g,'-')}`} className="text-xs font-sans text-[#e8e4e0] hover:text-[#c8a4a5] transition-colors">
                     {cat}
                   </Link>
                 </li>
@@ -46,7 +46,7 @@ export default function Footer() {
           <div>
             <h5 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Help</h5>
             <ul className="space-y-2">
-              {[['Size Guide','/size-guide'],['Shipping','/shipping'],['Returns','/returns'],['Contact Us','/contact'],['Privacy Policy','/privacy'],['Terms','/terms']].map(([label, href]) => (
+              {[['Size Guide','/size-guide'],['Shipping','/shipping'],['Returns','/returns'],['Contact Us','/contact'],['About Us','/about'],['Privacy Policy','/privacy'],['Terms','/terms']].map(([label, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-xs font-sans text-[#e8e4e0] hover:text-[#c8a4a5] transition-colors">{label}</Link>
                 </li>

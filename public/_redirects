@@ -1,4 +1,3 @@
-# Cloudflare Pages 404 fallback for dynamic routes
-# Product pages are pre-rendered at build time via generateStaticParams.
-# When no products exist yet, this ensures a graceful 404 rather than a raw error.
-/product/*  /404.html  404
+# Redirect /product/slug → /product?slug=slug (Cloudflare Pages syntax)
+# This allows all product URLs to work even though no static files are pre-rendered.
+/product/:slug  /product?slug=:slug  302

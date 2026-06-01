@@ -9,14 +9,14 @@ export default function CartItem({ item }: { item: CartItemType }) {
 
   return (
     <div className="flex gap-4 py-4 border-b border-[#e8e4e0]">
-      <Link href={`/product/${item.slug}`} className="relative w-20 h-28 shrink-0 overflow-hidden bg-[#f4f2ef]">
+      <Link href={`/product?slug=${item.slug}`} className="relative w-20 h-28 shrink-0 overflow-hidden bg-[#f4f2ef]">
         {item.image_url && (
           <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="80px" />
         )}
       </Link>
 
       <div className="flex-1 min-w-0">
-        <Link href={`/product/${item.slug}`} className="font-serif text-sm text-[#0a0a0a] hover:text-[#c8a4a5] leading-snug block mb-1">
+        <Link href={`/product?slug=${item.slug}`} className="font-serif text-sm text-[#0a0a0a] hover:text-[#c8a4a5] leading-snug block mb-1">
           {item.name}
         </Link>
         {(item.size || item.colour) && (

@@ -32,7 +32,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <Link href={`/product/${product.slug}`}>
+        <Link href={`/product?slug=${product.slug}`}>
           <Image
             src={hovered ? hoverImg : imgUrl}
             alt={product.name}
@@ -75,7 +75,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Quick add */}
         {!isOutOfStock && (
           <Link
-            href={`/product/${product.slug}`}
+            href={`/product?slug=${product.slug}`}
             className="absolute bottom-0 left-0 right-0 bg-[#0a0a0a] text-white text-[10px] font-sans tracking-widest uppercase py-3 text-center translate-y-full group-hover:translate-y-0 transition-transform duration-200"
           >
             View Product
@@ -90,7 +90,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.categories.name}
           </p>
         )}
-        <Link href={`/product/${product.slug}`} className="block font-serif text-[#0a0a0a] hover:text-[#c8a4a5] transition-colors text-[15px] leading-snug mb-1">
+        <Link href={`/product?slug=${product.slug}`} className="block font-serif text-[#0a0a0a] hover:text-[#c8a4a5] transition-colors text-[15px] leading-snug mb-1">
           {product.name}
         </Link>
         <div className="flex items-center gap-2">
