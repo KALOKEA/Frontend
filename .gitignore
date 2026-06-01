@@ -5,6 +5,3 @@ out/
 .env.*.local
 *.log
 .DS_Store
-
-# Product slug dynamic route — handled by /product?slug= instead
-app/product/[slug]/

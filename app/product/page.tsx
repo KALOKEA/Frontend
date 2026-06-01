@@ -1,7 +1,7 @@
 'use client'
 import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import ProductDetailClient from './[slug]/ProductDetailClient'
+import ProductDetailClient from './ProductDetailClient'
 import Spinner from '@/components/ui/Spinner'
 
 function ProductPageContent() {
