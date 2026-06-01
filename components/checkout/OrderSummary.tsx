@@ -5,11 +5,12 @@ import { formatPrice } from '@/lib/utils/formatPrice'
 
 const SHIPPING_THRESHOLD = 99900
 
-export default function OrderSummary({ couponDiscount = 0 }: { couponDiscount?: number }) {
+export default function OrderSummary({ couponDiscount = 0, paymentMethod }: { couponDiscount?: number; paymentMethod?: string }) {
   const { items } = useCartStore()
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
   const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : 4900
-  const total = subtotal + shipping - couponDiscount
+  const codFee = paymentMethod === 'cod' ? 4900 : 0
+  const total = Math.max(0, subtotal - couponDiscount) + shipping + codFee
 
   return (
     <div className="bg-[#faf8f5] p-6 sticky top-24">
@@ -47,6 +48,11 @@ export default function OrderSummary({ couponDiscount = 0 }: { couponDiscount?: 
         <div className="flex justify-between text-xs font-sans text-[#6b6b6b]">
           <span>Shipping</span><span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
         </div>
+        {codFee > 0 && (
+          <div className="flex justify-between text-xs font-sans text-[#6b6b6b]">
+            <span>COD fee</span><span>{formatPrice(codFee)}</span>
+          </div>
+        )}
         <div className="flex justify-between text-sm font-sans font-medium text-[#0a0a0a] pt-2 border-t border-[#e8e4e0]">
           <span>Total</span><span>{formatPrice(total)}</span>
         </div>

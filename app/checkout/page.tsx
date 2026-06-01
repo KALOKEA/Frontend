@@ -112,7 +112,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Right */}
-        <OrderSummary couponDiscount={couponDiscount} />
+        <OrderSummary couponDiscount={couponDiscount} paymentMethod={paymentMethod} />
       </div>
     </div>
   )
