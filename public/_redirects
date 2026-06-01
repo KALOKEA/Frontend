@@ -1,0 +1,4 @@
+# Cloudflare Pages 404 fallback for dynamic routes
+# Product pages are pre-rendered at build time via generateStaticParams.
+# When no products exist yet, this ensures a graceful 404 rather than a raw error.
+/product/*  /404.html  404

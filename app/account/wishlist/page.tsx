@@ -13,17 +13,14 @@ export default function WishlistPage() {
 
   useEffect(() => {
     if (!items.length) { setLoading(false); return }
-    // Fetch each product by loading all and filtering — simple approach
-    Promise.all(items.slice(0, 20).map((id) => {
-      // We don't have a get-by-id API, so show what we have from wishlist store
-      return null
-    }))
-    setLoading(false)
-    // Better: fetch from products API with featured flag and filter locally
-    productsApi.getAll({ limit: '100' }).then((res) => {
-      const filtered = (res.data || []).filter((p) => items.includes(p.id))
-      setProducts(filtered)
-    }).finally(() => setLoading(false))
+    setLoading(true)
+    productsApi.getAll({ limit: '200' })
+      .then((res) => {
+        const filtered = (res.data || []).filter((p) => items.includes(p.id))
+        setProducts(filtered)
+      })
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false))
   }, [items])
 
   if (loading) return <div className="flex justify-center py-16"><Spinner /></div>
