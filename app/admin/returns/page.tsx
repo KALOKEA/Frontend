@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { adminApi, type ReturnRequest } from '@/lib/api/admin'
 import Spinner from '@/components/ui/Spinner'
 
-const STATUSES = ['requested', 'approved', 'rejected', 'received', 'refunded']
+const STATUSES = ['requested', 'approved', 'rejected', 'received', 'refunded', 'completed']
 
 const statusColor: Record<string, string> = {
   requested: 'bg-amber-100 text-amber-800',
@@ -11,6 +11,7 @@ const statusColor: Record<string, string> = {
   rejected: 'bg-red-100 text-red-700',
   received: 'bg-indigo-100 text-indigo-800',
   refunded: 'bg-green-100 text-green-800',
+  completed: 'bg-green-100 text-green-800',
 }
 
 export default function AdminReturnsPage() {

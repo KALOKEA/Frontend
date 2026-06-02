@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ordersApi, type Order } from '@/lib/api/orders'
 import { returnsApi, RETURN_REASONS, type ReturnRequest } from '@/lib/api/returns'
+import { exchangesApi, EXCHANGE_REASONS, type ExchangeOptions, type ExchangeRequest } from '@/lib/api/exchanges'
 import { formatPrice } from '@/lib/utils/formatPrice'
 import { useToast } from '@/components/ui/Toast'
 import Spinner from '@/components/ui/Spinner'
@@ -21,6 +22,7 @@ export default function OrdersPage() {
   const { toast } = useToast()
   const [orders, setOrders] = useState<Order[]>([])
   const [returns, setReturns] = useState<ReturnRequest[]>([])
+  const [exchanges, setExchanges] = useState<ExchangeRequest[]>([])
   const [loading, setLoading] = useState(true)
 
   // Return modal state
@@ -28,18 +30,69 @@ export default function OrdersPage() {
   const [reason, setReason] = useState<string>(RETURN_REASONS[0])
   const [submitting, setSubmitting] = useState(false)
 
+  // Exchange modal state
+  const [exchangeFor, setExchangeFor] = useState<Order | null>(null)
+  const [exItemId, setExItemId] = useState<string>('')
+  const [exOptions, setExOptions] = useState<ExchangeOptions | null>(null)
+  const [exVariantId, setExVariantId] = useState<string>('')
+  const [exReason, setExReason] = useState<string>(EXCHANGE_REASONS[0])
+  const [exLoadingOpts, setExLoadingOpts] = useState(false)
+
   function load() {
     Promise.all([
       ordersApi.getMyOrders().catch(() => []),
       returnsApi.getMy().catch(() => []),
-    ]).then(([o, r]) => {
+      exchangesApi.getMy().catch(() => []),
+    ]).then(([o, r, e]) => {
       setOrders(o as Order[])
       setReturns(r as ReturnRequest[])
+      setExchanges(e as ExchangeRequest[])
     }).finally(() => setLoading(false))
   }
   useEffect(load, [])
 
   const returnByOrder = (orderId: string) => returns.find((r) => r.order_id === orderId)
+  const exchangeByOrder = (orderId: string) => exchanges.find((e) => e.order_id === orderId)
+
+  function openExchange(order: Order) {
+    setExchangeFor(order)
+    setExOptions(null); setExVariantId(''); setExReason(EXCHANGE_REASONS[0])
+    const first = order.order_items?.[0]?.id || ''
+    setExItemId(first)
+    if (first) loadOptions(first)
+  }
+
+  async function loadOptions(orderItemId: string) {
+    setExItemId(orderItemId); setExVariantId(''); setExLoadingOpts(true)
+    try {
+      const opts = await exchangesApi.getOptions(orderItemId)
+      setExOptions(opts)
+    } catch {
+      setExOptions({ product_name: '', variants: [] })
+    } finally {
+      setExLoadingOpts(false)
+    }
+  }
+
+  async function submitExchange() {
+    if (!exchangeFor || !exItemId || !exVariantId) return
+    setSubmitting(true)
+    try {
+      await exchangesApi.create({
+        order_id: exchangeFor.id,
+        order_item_id: exItemId,
+        new_variant_id: exVariantId,
+        reason: exReason,
+      })
+      toast('Exchange request submitted')
+      setExchangeFor(null)
+      load()
+    } catch (e: any) {
+      toast(e?.message || 'Could not submit exchange', 'error')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   async function openInvoice(orderId: string) {
     try {
@@ -85,7 +138,9 @@ export default function OrdersPage() {
       <div className="space-y-4">
         {orders.map((order) => {
           const ret = returnByOrder(order.id)
-          const canReturn = order.status === 'delivered' && !ret
+          const ex = exchangeByOrder(order.id)
+          const canReturn = order.status === 'delivered' && !ret && !ex
+          const canExchange = order.status === 'delivered' && !ret && !ex
           return (
             <div key={order.id} className="border border-[#e8e4e0] p-5">
               <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
@@ -131,9 +186,22 @@ export default function OrdersPage() {
                     Request return
                   </button>
                 )}
+                {canExchange && (
+                  <button
+                    onClick={() => openExchange(order)}
+                    className="text-[10px] font-sans tracking-widest uppercase text-[#c8a4a5] hover:underline"
+                  >
+                    Request exchange
+                  </button>
+                )}
                 {ret && (
                   <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">
                     Return: {ret.status}
+                  </span>
+                )}
+                {ex && (
+                  <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">
+                    Exchange: {ex.status}
                   </span>
                 )}
               </div>
@@ -155,6 +223,53 @@ export default function OrdersPage() {
             <div className="flex gap-2 justify-end">
               <button onClick={() => setReturnFor(null)} className="px-4 py-2 text-sm border border-[#e8e4e0]">Cancel</button>
               <button onClick={submitReturn} disabled={submitting} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white disabled:opacity-50">
+                {submitting ? 'Submitting…' : 'Submit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {exchangeFor && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setExchangeFor(null)}>
+          <div className="bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-serif text-xl text-[#0a0a0a] mb-1">Request an exchange</h3>
+            <p className="text-xs font-sans text-[#6b6b6b] mb-4">Order #{exchangeFor.order_number}</p>
+
+            <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Item to exchange</label>
+            <select value={exItemId} onChange={(e) => loadOptions(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm mb-4">
+              {(exchangeFor.order_items || []).map((it) => (
+                <option key={it.id} value={it.id}>
+                  {it.snapshot_name}{[it.snapshot_colour, it.snapshot_size].filter(Boolean).length ? ` (${[it.snapshot_colour, it.snapshot_size].filter(Boolean).join(', ')})` : ''} × {it.quantity}
+                </option>
+              ))}
+            </select>
+
+            <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Exchange for</label>
+            {exLoadingOpts ? (
+              <div className="py-4"><Spinner /></div>
+            ) : exOptions && exOptions.variants.length ? (
+              <select value={exVariantId} onChange={(e) => setExVariantId(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm mb-4">
+                <option value="">Select a variant</option>
+                {exOptions.variants.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {[v.colour, v.size].filter(Boolean).join(' · ') || 'Variant'} — {formatPrice(v.price)} ({v.stock} in stock)
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-xs font-sans text-[#6b6b6b] mb-4">No other variants are available in stock for this item.</p>
+            )}
+
+            <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Reason</label>
+            <select value={exReason} onChange={(e) => setExReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm mb-4">
+              {EXCHANGE_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
+            </select>
+
+            <p className="text-[11px] font-sans text-[#6b6b6b] mb-4">Any price or GST difference is settled when the exchange is approved. Exchanges follow the same 7-day window as returns.</p>
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => setExchangeFor(null)} className="px-4 py-2 text-sm border border-[#e8e4e0]">Cancel</button>
+              <button onClick={submitExchange} disabled={submitting || !exVariantId} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white disabled:opacity-50">
                 {submitting ? 'Submitting…' : 'Submit'}
               </button>
             </div>

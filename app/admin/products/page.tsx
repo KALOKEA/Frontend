@@ -13,11 +13,13 @@ interface FormState {
   description: string
   base_price: string // rupees in the input; converted to paise on save
   compare_price: string
+  hsn_code: string
+  gst_rate: string // percent; blank = use store default
   is_featured: boolean
   is_active: boolean
 }
 
-const empty: FormState = { name: '', slug: '', description: '', base_price: '', compare_price: '', is_featured: false, is_active: true }
+const empty: FormState = { name: '', slug: '', description: '', base_price: '', compare_price: '', hsn_code: '', gst_rate: '', is_featured: false, is_active: true }
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -41,6 +43,8 @@ export default function AdminProductsPage() {
       id: p.id, name: p.name, slug: p.slug, description: p.description || '',
       base_price: String(Math.round(p.base_price / 100)),
       compare_price: p.compare_price ? String(Math.round(p.compare_price / 100)) : '',
+      hsn_code: p.hsn_code || '',
+      gst_rate: p.gst_rate != null ? String(p.gst_rate) : '',
       is_featured: p.is_featured, is_active: p.is_active,
     })
     setMsg(null)
@@ -56,6 +60,8 @@ export default function AdminProductsPage() {
       description: form.description || undefined,
       base_price: Math.round(parseFloat(form.base_price || '0') * 100),
       compare_price: form.compare_price ? Math.round(parseFloat(form.compare_price) * 100) : undefined,
+      hsn_code: form.hsn_code || undefined,
+      gst_rate: form.gst_rate !== '' ? Number(form.gst_rate) : undefined,
       is_featured: form.is_featured,
       is_active: form.is_active,
     }
@@ -129,9 +135,14 @@ export default function AdminProductsPage() {
             <Field label="Slug (auto from name if blank)"><input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder={slugify(form.name)} className="inp" /></Field>
             <Field label="Description"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="inp" /></Field>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Price (₹)"><input type="number" value={form.base_price} onChange={(e) => setForm({ ...form, base_price: e.target.value })} className="inp" /></Field>
+              <Field label="Price (₹, excl. GST)"><input type="number" value={form.base_price} onChange={(e) => setForm({ ...form, base_price: e.target.value })} className="inp" /></Field>
               <Field label="Compare price (₹)"><input type="number" value={form.compare_price} onChange={(e) => setForm({ ...form, compare_price: e.target.value })} className="inp" /></Field>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="HSN code"><input value={form.hsn_code} onChange={(e) => setForm({ ...form, hsn_code: e.target.value })} placeholder="e.g. 6109" className="inp" /></Field>
+              <Field label="GST rate (%, blank = store default)"><input type="number" step="0.5" value={form.gst_rate} onChange={(e) => setForm({ ...form, gst_rate: e.target.value })} placeholder="5 / 12 / 18" className="inp" /></Field>
+            </div>
+            <p className="text-[11px] text-[#6b6b6b] -mt-1 mb-2">GST is added on top of the price at checkout. Apparel is usually 5% up to ₹1000 and 12% above — confirm HSN/rates with your CA.</p>
             <div className="flex gap-6 my-3 text-sm">
               <label className="flex items-center gap-2"><input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} /> Featured</label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} /> Active</label>

@@ -1,16 +1,49 @@
 'use client'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useCartStore } from '@/lib/store/useCartStore'
+import { ordersApi, type OrderQuote } from '@/lib/api/orders'
 import { formatPrice } from '@/lib/utils/formatPrice'
 
 const SHIPPING_THRESHOLD = 99900
 
-export default function OrderSummary({ couponDiscount = 0, paymentMethod }: { couponDiscount?: number; paymentMethod?: string }) {
+export default function OrderSummary({
+  couponDiscount = 0,
+  couponCode,
+  paymentMethod,
+  addressId,
+}: {
+  couponDiscount?: number
+  couponCode?: string | null
+  paymentMethod?: string
+  addressId?: string | null
+}) {
   const { items } = useCartStore()
-  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
-  const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : 4900
-  const codFee = paymentMethod === 'cod' ? 4900 : 0
-  const total = Math.max(0, subtotal - couponDiscount) + shipping + codFee
+  const [quote, setQuote] = useState<OrderQuote | null>(null)
+
+  // Authoritative GST + totals from the backend (matches what the customer is
+  // charged). Re-quotes whenever the cart, coupon, address or payment changes.
+  useEffect(() => {
+    let active = true
+    if (!items.length) { setQuote(null); return }
+    ordersApi
+      .quote({
+        address_id: addressId || undefined,
+        coupon_code: couponCode || undefined,
+        payment_method: paymentMethod || 'upi',
+      })
+      .then((q) => { if (active) setQuote(q) })
+      .catch(() => { if (active) setQuote(null) })
+    return () => { active = false }
+  }, [items, couponCode, paymentMethod, addressId])
+
+  // Fallback (pre-tax) figures if the quote hasn't loaded yet.
+  const subtotal = quote?.subtotal ?? items.reduce((s, i) => s + i.price * i.quantity, 0)
+  const discount = quote?.discount ?? couponDiscount
+  const shipping = quote?.shipping ?? (subtotal >= SHIPPING_THRESHOLD ? 0 : 4900)
+  const codFee = quote?.cod_fee ?? (paymentMethod === 'cod' ? 4900 : 0)
+  const totalGst = quote?.total_gst ?? 0
+  const total = quote?.total ?? Math.max(0, subtotal - discount) + shipping + codFee
 
   return (
     <div className="bg-[#faf8f5] p-6 sticky top-24">
@@ -37,26 +70,38 @@ export default function OrderSummary({ couponDiscount = 0, paymentMethod }: { co
       </div>
 
       <div className="border-t border-[#e8e4e0] pt-4 space-y-2">
-        <div className="flex justify-between text-xs font-sans text-[#6b6b6b]">
-          <span>Subtotal</span><span>{formatPrice(subtotal)}</span>
-        </div>
-        {couponDiscount > 0 && (
-          <div className="flex justify-between text-xs font-sans text-[#c8a4a5]">
-            <span>Discount</span><span>-{formatPrice(couponDiscount)}</span>
-          </div>
+        <Line label="Subtotal" value={formatPrice(subtotal)} />
+        {discount > 0 && <Line label="Discount" value={`-${formatPrice(discount)}`} accent />}
+
+        {quote && quote.total_gst > 0 ? (
+          quote.intra_state ? (
+            <>
+              <Line label="CGST" value={formatPrice(quote.cgst)} />
+              <Line label="SGST" value={formatPrice(quote.sgst)} />
+            </>
+          ) : (
+            <Line label="IGST" value={formatPrice(quote.igst)} />
+          )
+        ) : (
+          totalGst > 0 && <Line label="GST" value={formatPrice(totalGst)} />
         )}
-        <div className="flex justify-between text-xs font-sans text-[#6b6b6b]">
-          <span>Shipping</span><span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
-        </div>
-        {codFee > 0 && (
-          <div className="flex justify-between text-xs font-sans text-[#6b6b6b]">
-            <span>COD fee</span><span>{formatPrice(codFee)}</span>
-          </div>
-        )}
+
+        <Line label="Shipping" value={shipping === 0 ? 'Free' : formatPrice(shipping)} />
+        {codFee > 0 && <Line label="COD fee" value={formatPrice(codFee)} />}
+
         <div className="flex justify-between text-sm font-sans font-medium text-[#0a0a0a] pt-2 border-t border-[#e8e4e0]">
           <span>Total</span><span>{formatPrice(total)}</span>
         </div>
+        <p className="text-[10px] font-sans text-[#6b6b6b] pt-1">Inclusive of GST. Tax shown above.</p>
       </div>
+    </div>
+  )
+}
+
+function Line({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className={`flex justify-between text-xs font-sans ${accent ? 'text-[#c8a4a5]' : 'text-[#6b6b6b]'}`}>
+      <span>{label}</span><span>{value}</span>
     </div>
   )
 }

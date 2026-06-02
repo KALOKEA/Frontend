@@ -7,6 +7,15 @@ export interface Order {
   subtotal: number
   discount: number
   shipping: number
+  taxable_value?: number
+  cgst?: number
+  sgst?: number
+  igst?: number
+  total_gst?: number
+  is_intra_state?: boolean
+  place_of_supply?: string
+  gstin?: string
+  company_name?: string
   total: number
   payment_method?: string
   payment_status: string
@@ -22,6 +31,22 @@ export interface Order {
   }[]
 }
 
+export interface OrderQuote {
+  subtotal: number
+  discount: number
+  taxable_value: number
+  total_gst: number
+  cgst: number
+  sgst: number
+  igst: number
+  intra_state: boolean
+  place_of_supply?: string
+  shipping: number
+  cod_fee: number
+  total: number
+  coupon_error?: string | null
+}
+
 export const ordersApi = {
   create: (data: {
     address_id: string
@@ -31,6 +56,13 @@ export const ordersApi = {
     company_name?: string
     gstin?: string
   }) => api.post<Order>('/orders', data),
+
+  // Authoritative price + GST preview for the checkout summary.
+  quote: (data: {
+    address_id?: string
+    coupon_code?: string
+    payment_method: string
+  }) => api.post<OrderQuote>('/orders/quote', data),
 
   getMyOrders: () => api.get<Order[]>('/orders/my'),
   getById: (id: string) => api.get<Order>(`/orders/${id}`),

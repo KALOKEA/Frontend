@@ -134,7 +134,12 @@ export default function CheckoutPage() {
         </div>
 
         {/* Right */}
-        <OrderSummary couponDiscount={couponDiscount} paymentMethod={paymentMethod} />
+        <OrderSummary
+          couponDiscount={couponDiscount}
+          couponCode={couponCode}
+          paymentMethod={paymentMethod}
+          addressId={selectedAddress}
+        />
       </div>
     </div>
   )

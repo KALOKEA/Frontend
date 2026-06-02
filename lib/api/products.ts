@@ -28,6 +28,8 @@ export interface Product {
   is_active: boolean
   is_featured: boolean
   tags?: string[]
+  hsn_code?: string
+  gst_rate?: number
   created_at: string
   categories?: { id: string; name: string; slug: string }
   product_images?: ProductImage[]
