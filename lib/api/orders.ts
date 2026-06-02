@@ -34,4 +34,5 @@ export const ordersApi = {
 
   getMyOrders: () => api.get<Order[]>('/orders/my'),
   getById: (id: string) => api.get<Order>(`/orders/${id}`),
+  getInvoice: (id: string) => api.get<string>(`/orders/${id}/invoice`),
 }

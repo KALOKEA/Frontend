@@ -2,7 +2,10 @@
 const nextConfig = {
   output: 'export',
   images: {
-    unoptimized: true,
+    // Custom loader (Cloudinary transforms) — gives real responsive/optimized
+    // images even though output:'export' disables Next's built-in optimizer.
+    loader: 'custom',
+    loaderFile: './lib/imageLoader.js',
   },
   trailingSlash: true,
 }

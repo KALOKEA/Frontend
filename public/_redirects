@@ -4,3 +4,17 @@
 
 # Bare /product index → shop listing.
 /product  /shop/  301
+
+# --- Legacy WooCommerce URL 301s ---------------------------------------------
+# WooCommerce product URLs were already /product/<slug>/ — those map 1:1 to the
+# new static pages, so no redirect is needed for them.
+/product-category/:cat   /shop/?category=:cat   301
+/product-category/*      /shop/                 301
+/product-tag/*           /shop/                 301
+/shop/page/*             /shop/                 301
+/my-account              /account/              301
+/my-account/*            /account/              301
+
+# NOTE: For any other old URL that still 404s, find it in Google Search Console
+# (Pages → Not indexed) and add an explicit line here, e.g.:
+#   /old-path   /new-path   301
