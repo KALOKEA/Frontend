@@ -13,6 +13,8 @@ const NAV = [
   { label: 'Reviews', href: '/admin/reviews' },
   { label: 'Returns', href: '/admin/returns' },
   { label: 'Analytics', href: '/admin/analytics' },
+  { label: 'GST', href: '/admin/gst' },
+  { label: 'Settings', href: '/admin/settings' },
 ]
 
 export default function AdminSidebar() {
