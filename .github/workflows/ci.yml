@@ -1,0 +1,30 @@
+name: CI
+
+# Runs a production build on every push / PR so build-breaking changes
+# (e.g. a missing generateStaticParams under output:'export') are caught
+# before they reach Cloudflare Pages.
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # Product pages are fetched at build time; point CI at the live API.
+          NEXT_PUBLIC_API_URL: https://backend-production-73aa.up.railway.app
