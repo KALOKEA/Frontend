@@ -64,9 +64,27 @@ export default async function ProductPage({ params }: { params: { slug: string }
     },
   }
 
+  // Breadcrumb trail: Home › [Category] › Product.
+  const crumbs: { name: string; item: string }[] = [{ name: 'Home', item: `${SITE_URL}/` }]
+  if (product.categories) {
+    crumbs.push({ name: product.categories.name, item: `${SITE_URL}/shop/?category=${product.categories.slug}` })
+  }
+  crumbs.push({ name: product.name, item: `${SITE_URL}/product/${product.slug}/` })
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: c.item,
+    })),
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       {/* initialProduct => content is in the static HTML for SEO; the client
           component stays interactive (variants, cart, wishlist, reviews). */}
       <ProductDetailClient slug={product.slug} initialProduct={product} />

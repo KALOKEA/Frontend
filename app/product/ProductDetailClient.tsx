@@ -10,6 +10,7 @@ import RelatedProducts from '@/components/product/RelatedProducts'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
+import { trackViewItem } from '@/lib/analytics'
 
 export default function ProductDetailClient({ slug, initialProduct }: { slug: string; initialProduct?: Product }) {
   // When rendered from the static product page we already have the product
@@ -31,6 +32,17 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
       .catch(() => setProduct(null))
       .finally(() => setLoading(false))
   }, [slug, initialProduct])
+
+  // GA4 view_item once the product is known.
+  useEffect(() => {
+    if (!product) return
+    trackViewItem({
+      product_id: product.id,
+      name: product.name,
+      price: product.base_price,
+      category: product.categories?.name,
+    })
+  }, [product])
 
   if (loading) return (
     <div className="flex justify-center items-center min-h-[60vh]">

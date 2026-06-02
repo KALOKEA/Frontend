@@ -11,6 +11,18 @@ import OrderSummary from '@/components/checkout/OrderSummary'
 import PaymentSection from '@/components/checkout/PaymentSection'
 import CouponInput from '@/components/checkout/CouponInput'
 import Button from '@/components/ui/Button'
+import { trackBeginCheckout, trackPurchase } from '@/lib/analytics'
+
+const toGaItems = (items: { product_id: string; variant_id: string; name: string; price: number; quantity: number; size?: string; colour?: string }[]) =>
+  items.map((i) => ({
+    product_id: i.product_id,
+    variant_id: i.variant_id,
+    name: i.name,
+    price: i.price,
+    quantity: i.quantity,
+    size: i.size,
+    colour: i.colour,
+  }))
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -35,6 +47,14 @@ export default function CheckoutPage() {
     }).catch(() => {})
   }, [isLoggedIn, items.length, router])
 
+  // GA4 begin_checkout once, when the page loads with items.
+  useEffect(() => {
+    if (!items.length) return
+    const value = items.reduce((s, i) => s + i.price * i.quantity, 0)
+    trackBeginCheckout(toGaItems(items), value)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const placeOrder = async () => {
     if (!selectedAddress) { toast('Please select a delivery address', 'error'); return }
     setLoading(true)
@@ -46,6 +66,7 @@ export default function CheckoutPage() {
       })
 
       if (paymentMethod === 'cod') {
+        trackPurchase(order.order_number, order.total, toGaItems(items))
         clearCart()
         router.push(`/checkout/success?order=${order.order_number}`)
       } else {
@@ -59,6 +80,7 @@ export default function CheckoutPage() {
           order_id: rzp.razorpay_order_id,
           name: 'Kalokea',
           handler: () => {
+            trackPurchase(order.order_number, order.total, toGaItems(items))
             clearCart()
             router.push(`/checkout/success?order=${order.order_number}`)
           },

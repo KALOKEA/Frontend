@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useCartStore } from '@/lib/store/useCartStore'
 import { useToast } from '@/components/ui/Toast'
+import { trackAddToCart } from '@/lib/analytics'
 import type { Product, ProductVariant } from '@/lib/api/products'
 
 interface AddToCartButtonProps {
@@ -28,6 +29,8 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
     setAdding(true)
     const primaryImg = product.product_images?.find((i) => i.is_primary)?.url || product.product_images?.[0]?.url || ''
 
+    const unitPrice = selectedVariant.price || product.base_price
+
     addItem({
       variant_id: selectedVariant.id,
       product_id: product.id,
@@ -36,9 +39,20 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
       image_url: primaryImg,
       size: selectedVariant.size,
       colour: selectedVariant.colour,
-      price: selectedVariant.price || product.base_price,
+      price: unitPrice,
       quantity,
       max_stock: selectedVariant.stock,
+    })
+
+    trackAddToCart({
+      product_id: product.id,
+      variant_id: selectedVariant.id,
+      name: product.name,
+      price: unitPrice,
+      quantity,
+      size: selectedVariant.size,
+      colour: selectedVariant.colour,
+      category: product.categories?.name,
     })
 
     setTimeout(() => {

@@ -4,6 +4,17 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { ToastProvider } from '@/components/ui/Toast'
 import AuthBootstrap from '@/components/AuthBootstrap'
+import Analytics from '@/components/Analytics'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'KALOKEA',
+  url: SITE_URL,
+  description: "Women's fashion e-commerce — dresses, tops, co-ords and more.",
+}
 
 export const metadata: Metadata = {
   title: "KALOKEA | Women's Fashion",
@@ -16,6 +27,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <Analytics />
         <ToastProvider>
           <AuthBootstrap />
           <Header />
