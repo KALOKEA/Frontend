@@ -37,3 +37,13 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     return null
   }
 }
+
+export async function getAllCategorySlugs(): Promise<string[]> {
+  try {
+    const res = await fetch(`${BASE_URL}/categories`)
+    const cats = await unwrap<{ slug: string }[]>(res)
+    return (cats || []).map((c) => c.slug).filter(Boolean)
+  } catch {
+    return []
+  }
+}

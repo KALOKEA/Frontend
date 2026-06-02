@@ -1,33 +1,22 @@
-'use client'
-import { Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
-import ProductDetailClient from './ProductDetailClient'
-import Spinner from '@/components/ui/Spinner'
+import Link from 'next/link'
+import type { Metadata } from 'next'
 
-function ProductPageContent() {
-  const params = useSearchParams()
-  const slug = params.get('slug') || ''
-
-  if (!slug) {
-    return (
-      <div className="text-center py-20">
-        <h1 className="font-serif text-3xl text-[#0a0a0a] mb-2">Product not found</h1>
-        <p className="text-sm font-sans text-[#6b6b6b]">No product specified.</p>
-      </div>
-    )
-  }
-
-  return <ProductDetailClient slug={slug} />
+// Product detail now lives at /product/[slug] (statically prerendered).
+// This bare /product index just points shoppers to the shop listing.
+// (public/_redirects also 301s /product -> /shop at the edge.)
+export const metadata: Metadata = {
+  title: "Shop | Women's Fashion | KALOKEA",
+  robots: { index: false, follow: true },
 }
 
-export default function ProductPage() {
+export default function ProductIndexPage() {
   return (
-    <Suspense fallback={
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <Spinner size="lg" />
-      </div>
-    }>
-      <ProductPageContent />
-    </Suspense>
+    <div className="text-center py-24">
+      <h1 className="font-serif text-3xl text-[#0a0a0a] mb-3">Browse our collection</h1>
+      <p className="text-sm font-sans text-[#6b6b6b] mb-6">Discover the latest in women&apos;s fashion.</p>
+      <Link href="/shop" className="inline-block bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-6 py-3">
+        Go to Shop
+      </Link>
+    </div>
   )
 }
