@@ -11,9 +11,13 @@ import Spinner from '@/components/ui/Spinner'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 
-export default function ProductDetailClient({ slug }: { slug: string }) {
-  const [product, setProduct] = useState<Product | null>(null)
-  const [loading, setLoading] = useState(true)
+export default function ProductDetailClient({ slug, initialProduct }: { slug: string; initialProduct?: Product }) {
+  // When rendered from the static product page we already have the product
+  // (build-time fetch) — seed state with it so the content is in the SSG HTML
+  // and there's no loading flash. The standalone /product?slug= path (if hit)
+  // still fetches client-side.
+  const [product, setProduct] = useState<Product | null>(initialProduct ?? null)
+  const [loading, setLoading] = useState(!initialProduct)
   const [selectedColour, setSelectedColour] = useState<string | null>(null)
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [quantity, setQuantity] = useState(1)
@@ -21,11 +25,12 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
   const { toggle, isWishlisted } = useWishlistStore()
 
   useEffect(() => {
+    if (initialProduct) return // already have fresh-at-build data
     productsApi.getBySlug(slug)
       .then(setProduct)
       .catch(() => setProduct(null))
       .finally(() => setLoading(false))
-  }, [slug])
+  }, [slug, initialProduct])
 
   if (loading) return (
     <div className="flex justify-center items-center min-h-[60vh]">

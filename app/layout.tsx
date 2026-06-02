@@ -3,6 +3,7 @@ import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { ToastProvider } from '@/components/ui/Toast'
+import AuthBootstrap from '@/components/AuthBootstrap'
 
 export const metadata: Metadata = {
   title: "KALOKEA | Women's Fashion",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <ToastProvider>
+          <AuthBootstrap />
           <Header />
           <main>{children}</main>
           <Footer />

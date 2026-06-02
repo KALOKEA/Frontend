@@ -1,3 +1,6 @@
-# Redirect /product/slug → /product?slug=slug (Cloudflare Pages syntax)
-# This allows all product URLs to work even though no static files are pre-rendered.
-/product/:slug  /product?slug=:slug  302
+# Product detail pages are now statically prerendered at /product/<slug>/
+# (app/product/[slug]). The old /product?slug= reverse-redirect has been removed
+# because it would hijack the real static pages.
+
+# Bare /product index → shop listing.
+/product  /shop/  301

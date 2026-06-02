@@ -17,12 +17,14 @@ const NAV = [
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
-  const { isLoggedIn, user, clearAuth } = useAuthStore()
+  const { isLoggedIn, user, clearAuth, hydrated } = useAuthStore()
   const { toast } = useToast()
 
+  // Wait for the on-load session restore to settle before redirecting, or a
+  // logged-in customer gets bounced to /login on every hard refresh.
   useEffect(() => {
-    if (!isLoggedIn) router.push('/login?redirect=/account')
-  }, [isLoggedIn, router])
+    if (hydrated && !isLoggedIn) router.push('/login?redirect=/account')
+  }, [hydrated, isLoggedIn, router])
 
   const logout = async () => {
     await authApi.logout().catch(() => {})
@@ -31,7 +33,9 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
     router.push('/')
   }
 
-  if (!isLoggedIn) return null
+  // While the session is being restored, render nothing (avoids a flash of the
+  // account UI or a premature redirect).
+  if (!hydrated || !isLoggedIn) return null
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
