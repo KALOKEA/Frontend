@@ -1,23 +1,23 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 import ProductDetailClient from '../ProductDetailClient'
 import { getAllProductSlugs, getProductBySlug } from '@/lib/server/productsServer'
 import { productMeta } from '@/lib/utils/seo'
-
-// Only slugs returned by generateStaticParams are built; anything else 404s
-// (required for output:'export' — there is no server to render unknown slugs).
-export const dynamicParams = false
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'
 
 export async function generateStaticParams() {
   const slugs = await getAllProductSlugs()
+  // output:'export' requires at least one param to prerender this dynamic route.
+  // If the catalog is empty (or the backend is unreachable at build time), emit
+  // a single placeholder so the build still succeeds — it renders a graceful
+  // "not found" page. Real products replace it on the next rebuild.
+  if (slugs.length === 0) return [{ slug: 'coming-soon' }]
   return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const product = await getProductBySlug(params.slug)
-  if (!product) return { title: 'Product not found | KALOKEA' }
+  if (!product) return { title: 'Product not found | KALOKEA', robots: { index: false } }
   const meta = productMeta(product)
   const canonical = `${SITE_URL}/product/${product.slug}/`
   return {
@@ -29,7 +29,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   const product = await getProductBySlug(params.slug)
-  if (!product) notFound()
+
+  // Graceful fallback (no notFound() — safer under static export).
+  if (!product) {
+    return (
+      <div className="text-center py-24">
+        <h1 className="font-serif text-3xl text-[#0a0a0a] mb-2">Product not found</h1>
+        <p className="text-sm font-sans text-[#6b6b6b]">This product may no longer be available.</p>
+      </div>
+    )
+  }
 
   const img =
     product.product_images?.find((i) => i.is_primary)?.url ||
