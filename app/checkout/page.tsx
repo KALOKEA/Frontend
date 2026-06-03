@@ -95,24 +95,48 @@ export default function CheckoutPage() {
         clearCart()
         router.push(`/checkout/success?order=${order.order_number}`)
       } else {
-        // Razorpay integration
-        const { paymentsApi } = await import('@/lib/api/payments')
+        // Razorpay integration — ensure the checkout SDK is loaded first
+        // (static export has no global script tag, so load it on demand).
+        const [{ paymentsApi }, { loadRazorpay }] = await Promise.all([
+          import('@/lib/api/payments'),
+          import('@/lib/utils/razorpay'),
+        ])
+        const RazorpayCtor = await loadRazorpay()
+        if (!RazorpayCtor) {
+          toast('Could not load the payment gateway. Check your connection and try again.', 'error')
+          setLoading(false)
+          return
+        }
         const rzp = await paymentsApi.createOrder(order.id)
-        const options = {
+        const razorpay = new RazorpayCtor({
           key: rzp.key_id,
           amount: rzp.amount,
           currency: rzp.currency,
           order_id: rzp.razorpay_order_id,
           name: 'Kalokea',
+          description: `Order ${order.order_number}`,
           handler: () => {
+            // Webhook is the source of truth for payment status; this just
+            // moves the customer to the confirmation screen.
             trackPurchase(order.order_number, order.total, toGaItems(items))
             clearCart()
             router.push(`/checkout/success?order=${order.order_number}`)
           },
-          prefill: {},
+          prefill: {
+            name: `${billing.first_name} ${billing.last_name}`.trim(),
+            email: billing.email || undefined,
+            contact: billing.phone || undefined,
+          },
           theme: { color: '#0a0a0a' },
-        }
-        const razorpay = new (window as unknown as { Razorpay: new (o: typeof options) => { open: () => void } }).Razorpay(options)
+          modal: {
+            ondismiss: () => {
+              toast('Payment cancelled. Your order is saved as pending — you can retry from My Orders.', 'error')
+            },
+          },
+        })
+        razorpay.on('payment.failed', () => {
+          toast('Payment failed. Please try again or choose another method.', 'error')
+        })
         razorpay.open()
       }
     } catch (err) {
