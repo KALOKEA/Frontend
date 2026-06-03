@@ -6,7 +6,7 @@ import { useAuthStore } from '@/lib/store/useAuthStore'
 import { addressesApi, type Address } from '@/lib/api/addresses'
 import { ordersApi } from '@/lib/api/orders'
 import { useToast } from '@/components/ui/Toast'
-import AddressSelector from '@/components/checkout/AddressSelector'
+import BillingDetails, { emptyBilling, billingFromAddress, type BillingForm } from '@/components/checkout/BillingDetails'
 import OrderSummary from '@/components/checkout/OrderSummary'
 import PaymentSection from '@/components/checkout/PaymentSection'
 import CouponInput from '@/components/checkout/CouponInput'
@@ -26,12 +26,12 @@ const toGaItems = (items: { product_id: string; variant_id: string; name: string
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { isLoggedIn } = useAuthStore()
+  const { isLoggedIn, user } = useAuthStore()
   const { items, clearCart } = useCartStore()
   const { toast } = useToast()
 
   const [addresses, setAddresses] = useState<Address[]>([])
-  const [selectedAddress, setSelectedAddress] = useState<string | null>(null)
+  const [billing, setBilling] = useState<BillingForm>(emptyBilling)
   const [paymentMethod, setPaymentMethod] = useState('upi')
   const [couponCode, setCouponCode] = useState<string | null>(null)
   const [couponDiscount, setCouponDiscount] = useState(0)
@@ -42,10 +42,10 @@ export default function CheckoutPage() {
     if (!items.length) { router.push('/cart'); return }
     addressesApi.getAll().then((data) => {
       setAddresses(data)
-      const def = data.find((a) => a.is_default)
-      if (def) setSelectedAddress(def.id)
-    }).catch(() => {})
-  }, [isLoggedIn, items.length, router])
+      const def = data.find((a) => a.is_default) || data[0]
+      setBilling((b) => def ? billingFromAddress(def, user?.email || '') : { ...b, email: user?.email || '' })
+    }).catch(() => setBilling((b) => ({ ...b, email: user?.email || '' })))
+  }, [isLoggedIn, items.length, router, user?.email])
 
   // GA4 begin_checkout once, when the page loads with items.
   useEffect(() => {
@@ -56,13 +56,38 @@ export default function CheckoutPage() {
   }, [])
 
   const placeOrder = async () => {
-    if (!selectedAddress) { toast('Please select a delivery address', 'error'); return }
+    // Validate billing details (matches the backend's required fields).
+    const required: [keyof BillingForm, string][] = [
+      ['first_name', 'First name'], ['line1', 'Street address'], ['city', 'Town / City'],
+      ['state', 'State'], ['pincode', 'Postcode / PIN'], ['phone', 'Phone'],
+    ]
+    for (const [k, label] of required) {
+      if (!String(billing[k] || '').trim()) { toast(`${label} is required`, 'error'); return }
+    }
+    if (billing.pincode.length !== 6) { toast('Enter a valid 6-digit PIN code', 'error'); return }
+    if (billing.phone.length !== 10) { toast('Enter a valid 10-digit phone number', 'error'); return }
+    if (billing.gst_invoice && (!billing.gstin.trim() || !billing.company.trim())) {
+      toast('Company name and GSTIN are required for a GST invoice', 'error'); return
+    }
+
     setLoading(true)
     try {
       const order = await ordersApi.create({
-        address_id: selectedAddress,
+        address_snapshot: {
+          name: `${billing.first_name} ${billing.last_name}`.trim(),
+          phone: billing.phone,
+          line1: billing.line1,
+          line2: billing.line2 || undefined,
+          city: billing.city,
+          state: billing.state,
+          pincode: billing.pincode,
+        },
+        guest_email: billing.email || undefined,
         payment_method: paymentMethod,
         coupon_code: couponCode || undefined,
+        gst_invoice: billing.gst_invoice,
+        company_name: billing.company || undefined,
+        gstin: billing.gst_invoice ? billing.gstin : undefined,
       })
 
       if (paymentMethod === 'cod') {
@@ -105,13 +130,8 @@ export default function CheckoutPage() {
         {/* Left */}
         <div className="space-y-8">
           <section>
-            <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Delivery Address</h2>
-            <AddressSelector
-              addresses={addresses}
-              selected={selectedAddress}
-              onSelect={setSelectedAddress}
-              onNewAddress={(addr) => { setAddresses((prev) => [...prev, addr]); setSelectedAddress(addr.id) }}
-            />
+            <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Billing details</h2>
+            <BillingDetails value={billing} onChange={setBilling} savedAddresses={addresses} />
           </section>
 
           <section>
@@ -138,7 +158,7 @@ export default function CheckoutPage() {
           couponDiscount={couponDiscount}
           couponCode={couponCode}
           paymentMethod={paymentMethod}
-          addressId={selectedAddress}
+          addressState={billing.state}
         />
       </div>
     </div>

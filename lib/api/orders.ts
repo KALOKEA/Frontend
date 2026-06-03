@@ -47,19 +47,34 @@ export interface OrderQuote {
   coupon_error?: string | null
 }
 
+export interface AddressSnapshot {
+  name: string
+  phone: string
+  line1: string
+  line2?: string
+  city: string
+  state: string
+  pincode: string
+}
+
 export const ordersApi = {
   create: (data: {
-    address_id: string
+    address_id?: string
+    address_snapshot?: AddressSnapshot
     coupon_code?: string
     payment_method: string
+    guest_email?: string
+    guest_phone?: string
     gst_invoice?: boolean
     company_name?: string
     gstin?: string
   }) => api.post<Order>('/orders', data),
 
-  // Authoritative price + GST preview for the checkout summary.
+  // Authoritative price + GST preview for the checkout summary. Pass the buyer
+  // state (via address_snapshot) so the CGST/SGST vs IGST split is correct.
   quote: (data: {
     address_id?: string
+    address_snapshot?: { state?: string }
     coupon_code?: string
     payment_method: string
   }) => api.post<OrderQuote>('/orders/quote', data),

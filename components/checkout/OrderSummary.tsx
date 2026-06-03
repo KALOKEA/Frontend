@@ -11,31 +11,31 @@ export default function OrderSummary({
   couponDiscount = 0,
   couponCode,
   paymentMethod,
-  addressId,
+  addressState,
 }: {
   couponDiscount?: number
   couponCode?: string | null
   paymentMethod?: string
-  addressId?: string | null
+  addressState?: string | null
 }) {
   const { items } = useCartStore()
   const [quote, setQuote] = useState<OrderQuote | null>(null)
 
   // Authoritative GST + totals from the backend (matches what the customer is
-  // charged). Re-quotes whenever the cart, coupon, address or payment changes.
+  // charged). Re-quotes whenever the cart, coupon, state or payment changes.
   useEffect(() => {
     let active = true
     if (!items.length) { setQuote(null); return }
     ordersApi
       .quote({
-        address_id: addressId || undefined,
+        address_snapshot: addressState ? { state: addressState } : undefined,
         coupon_code: couponCode || undefined,
         payment_method: paymentMethod || 'upi',
       })
       .then((q) => { if (active) setQuote(q) })
       .catch(() => { if (active) setQuote(null) })
     return () => { active = false }
-  }, [items, couponCode, paymentMethod, addressId])
+  }, [items, couponCode, paymentMethod, addressState])
 
   // Fallback (pre-tax) figures if the quote hasn't loaded yet.
   const subtotal = quote?.subtotal ?? items.reduce((s, i) => s + i.price * i.quantity, 0)
