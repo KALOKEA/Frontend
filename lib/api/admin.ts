@@ -146,13 +146,17 @@ export const adminApi = {
   updateBanner: (id: string, body: Partial<Banner>) => api.patch(`/banners/${id}`, body),
   removeBanner: (id: string) => api.delete(`/banners/${id}`),
 
-  // customers
+  // customers / user management
   listCustomers: (page = 1, limit = 20) =>
     api.get<{ data: AdminCustomer[]; meta: { total: number; page: number; limit: number } }>(
       `/users?page=${page}&limit=${limit}`,
     ),
-  getCustomerDetail: (id: string) =>
-    api.get<CustomerDetail>(`/users/${id}/detail`),
+  searchCustomers: (q: string) => api.get<AdminCustomer[]>(`/users/search?q=${encodeURIComponent(q)}`),
+  getCustomerDetail: (id: string) => api.get<CustomerDetail>(`/users/${id}/detail`),
+  createUser: (body: { name?: string; email?: string; phone?: string; role?: string }) =>
+    api.post<AdminCustomer>('/users', body),
+  updateUser: (id: string, body: { name?: string; email?: string; phone?: string; role?: string }) =>
+    api.patch<AdminCustomer>(`/users/${id}`, body),
   // 1-click download of ALL customer data as CSV
   exportCustomers: async () => {
     const res = await fetch(`${BASE_URL}/users/export`, {
