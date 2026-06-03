@@ -65,5 +65,7 @@ export const productsApi = {
   addImage: (productId: string, data: { url: string; public_id?: string; alt_text?: string; is_primary?: boolean; sort_order?: number }) =>
     api.post<ProductImageRow>(`/products/${productId}/images`, data),
   setPrimaryImage: (imageId: string) => api.patch<ProductImageRow>(`/products/images/${imageId}/primary`),
+  updateImage: (imageId: string, data: { alt_text?: string; sort_order?: number }) =>
+    api.patch<ProductImageRow>(`/products/images/${imageId}`, data),
   deleteImage: (imageId: string) => api.delete(`/products/images/${imageId}`),
 }
