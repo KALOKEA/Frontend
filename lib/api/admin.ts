@@ -1,4 +1,6 @@
-import api from './client'
+import api, { getAccessToken } from './client'
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 // ---- Dashboard / analytics ------------------------------------------------
 export interface DashboardStats {
@@ -49,6 +51,12 @@ export interface AdminCustomer {
   phone?: string
   role: string
   created_at: string
+}
+
+export interface CustomerDetail {
+  user: AdminCustomer
+  orders: { id: string; order_number: string; status: string; payment_status: string; total: number; created_at: string }[]
+  stats: { total_orders: number; total_spent: number; last_order_at: string | null }
 }
 
 export interface PendingReview {
@@ -116,6 +124,25 @@ export const adminApi = {
     api.get<{ data: AdminCustomer[]; meta: { total: number; page: number; limit: number } }>(
       `/users?page=${page}&limit=${limit}`,
     ),
+  getCustomerDetail: (id: string) =>
+    api.get<CustomerDetail>(`/users/${id}/detail`),
+  // 1-click download of ALL customer data as CSV
+  exportCustomers: async () => {
+    const res = await fetch(`${BASE_URL}/users/export`, {
+      headers: getAccessToken() ? { Authorization: `Bearer ${getAccessToken()}` } : {},
+      credentials: 'include',
+    })
+    if (!res.ok) throw new Error(`Export failed (${res.status})`)
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `kalokea-customers-${new Date().toISOString().slice(0, 10)}.csv`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  },
 
   // reviews
   listPendingReviews: () => api.get<PendingReview[]>('/reviews/pending'),

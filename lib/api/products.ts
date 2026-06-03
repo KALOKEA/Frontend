@@ -41,6 +41,15 @@ export interface ProductsResponse {
   meta: { total: number; page: number; limit: number; total_pages: number }
 }
 
+export interface ProductImageRow {
+  id: string
+  url: string
+  alt_text?: string
+  is_primary: boolean
+  sort_order: number
+  public_id?: string
+}
+
 export const productsApi = {
   getAll: (params: Record<string, string | number> = {}) => {
     const q = new URLSearchParams(params as Record<string, string>).toString()
@@ -50,4 +59,11 @@ export const productsApi = {
   create: (data: Partial<Product>) => api.post<Product>('/products', data),
   update: (id: string, data: Partial<Product>) => api.patch<Product>(`/products/${id}`, data),
   remove: (id: string) => api.delete(`/products/${id}`),
+
+  // Images
+  listImages: (productId: string) => api.get<ProductImageRow[]>(`/products/${productId}/images`),
+  addImage: (productId: string, data: { url: string; public_id?: string; alt_text?: string; is_primary?: boolean; sort_order?: number }) =>
+    api.post<ProductImageRow>(`/products/${productId}/images`, data),
+  setPrimaryImage: (imageId: string) => api.patch<ProductImageRow>(`/products/images/${imageId}/primary`),
+  deleteImage: (imageId: string) => api.delete(`/products/images/${imageId}`),
 }
