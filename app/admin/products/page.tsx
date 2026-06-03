@@ -650,7 +650,7 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
                             <button
                               onClick={() =>
                                 productsApi.setPrimaryImage(img.id)
-                                  .then(() => form.id && refreshMedia(form.id))
+                                  .then(() => { if (form.id) refreshMedia(form.id) })
                                   .catch(() => {})
                               }
                               className="text-[9px] uppercase tracking-widest text-[#c8a4a5] hover:underline whitespace-nowrap"
@@ -661,7 +661,7 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
                           <button
                             onClick={() =>
                               productsApi.deleteImage(img.id)
-                                .then(() => form.id && refreshMedia(form.id))
+                                .then(() => { if (form.id) refreshMedia(form.id) })
                                 .catch(() => {})
                             }
                             className="text-[9px] uppercase tracking-widest text-red-500 hover:underline"
