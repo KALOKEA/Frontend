@@ -27,7 +27,7 @@ export default function AdminInventoryPage() {
 
   function load() {
     setLoading(true)
-    productsApi.getAll({ limit: 200 })
+    productsApi.getAll({ limit: 200, include_inactive: 'true' } as any)
       .then((res) => {
         const flat: Row[] = []
         for (const p of res.data || []) {

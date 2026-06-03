@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { adminApi, type Banner } from '@/lib/api/admin'
+import { uploadImage } from '@/lib/api/upload'
 import Spinner from '@/components/ui/Spinner'
 
 interface FormState {
@@ -17,6 +18,7 @@ export default function AdminBannersPage() {
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState<FormState | null>(null)
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
 
   function load() {
@@ -25,8 +27,23 @@ export default function AdminBannersPage() {
   }
   useEffect(load, [])
 
+  async function uploadBannerImage(files: FileList | null) {
+    if (!files?.length || !form) return
+    setUploading(true); setMsg(null)
+    try {
+      const { url } = await uploadImage(files[0], 'banners')
+      setForm(f => f ? { ...f, image_url: url } : f)
+    } catch (e: any) {
+      setMsg(e?.message || 'Upload failed')
+    } finally {
+      setUploading(false)
+    }
+  }
+
   async function save() {
     if (!form) return
+    if (!form.title) { setMsg('Title is required'); return }
+    if (!form.image_url) { setMsg('Upload an image first'); return }
     setSaving(true); setMsg(null)
     try {
       await adminApi.createBanner({
@@ -60,68 +77,142 @@ export default function AdminBannersPage() {
     <>
       <div className="flex justify-between items-center mb-8">
         <h1 className="font-serif text-3xl text-[#0a0a0a]">Banners</h1>
-        <button onClick={() => { setForm({ ...empty }); setMsg(null) }} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white">+ New banner</button>
+        <button
+          onClick={() => { setForm({ ...empty }); setMsg(null) }}
+          className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors"
+        >
+          + New banner
+        </button>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {banners.map((b) => (
-            <div key={b.id} className="bg-white border border-[#e8e4e0]">
+          {banners.map(b => (
+            <div key={b.id} className="bg-white border border-[#e8e4e0] overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={b.image_url} alt={b.title} className="w-full h-32 object-cover bg-[#f0ece8]" />
+              <img src={b.image_url} alt={b.title} className="w-full h-36 object-cover bg-[#f0ece8]" />
               <div className="p-4">
-                <div className="flex justify-between items-start mb-1">
-                  <p className="font-medium text-[#0a0a0a]">{b.title}</p>
-                  <span className="text-[10px] uppercase tracking-widest text-[#6b6b6b]">{b.position}</span>
+                <div className="flex justify-between items-start mb-1 gap-2">
+                  <p className="font-medium text-[#0a0a0a] truncate">{b.title}</p>
+                  <span className="text-[10px] uppercase tracking-widest text-[#6b6b6b] shrink-0 bg-[#f0ece8] px-1.5 py-0.5">{b.position}</span>
                 </div>
-                {b.link_url && <p className="text-[11px] text-[#6b6b6b] truncate mb-2">{b.link_url}</p>}
-                <div className="flex justify-between items-center text-[11px] uppercase tracking-widest">
-                  <button onClick={() => toggle(b)} className={b.is_active ? 'text-green-700' : 'text-gray-400'}>{b.is_active ? 'Active' : 'Hidden'}</button>
-                  <button onClick={() => remove(b)} className="text-red-600 hover:underline">Delete</button>
+                {b.link_url && (
+                  <p className="text-[11px] text-[#6b6b6b] truncate mb-1">{b.link_url}</p>
+                )}
+                <div className="flex justify-between items-center text-[11px] uppercase tracking-widest mt-3 pt-3 border-t border-[#f0ece8]">
+                  <button onClick={() => toggle(b)} className={`${b.is_active ? 'text-green-700' : 'text-[#9b9b9b]'} hover:underline`}>
+                    {b.is_active ? 'Active' : 'Hidden'}
+                  </button>
+                  <button onClick={() => remove(b)} className="text-red-500 hover:underline">Delete</button>
                 </div>
               </div>
             </div>
           ))}
-          {!banners.length && <p className="text-sm text-[#6b6b6b] col-span-full py-8 text-center">No banners</p>}
+          {!banners.length && (
+            <p className="text-sm text-[#6b6b6b] col-span-full py-8 text-center">No banners yet.</p>
+          )}
         </div>
       )}
 
       {form && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setForm(null)}>
-          <div className="bg-white w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
-            <h2 className="font-serif text-xl mb-4">New banner</h2>
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Title</label>
-              <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm" />
+          <div className="bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <h2 className="font-serif text-xl mb-5 text-[#0a0a0a]">New banner</h2>
+
+            {/* Image upload */}
+            <div className="mb-4">
+              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-2">Banner image *</label>
+              {form.image_url ? (
+                <div className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={form.image_url} alt="preview" className="w-full h-32 object-cover border border-[#e8e4e0]" />
+                  <button
+                    onClick={() => setForm(f => f ? { ...f, image_url: '' } : f)}
+                    className="absolute top-2 right-2 bg-white border border-[#e8e4e0] text-[11px] px-2 py-1 hover:bg-[#faf8f5]"
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <label className="block w-full border-2 border-dashed border-[#e8e4e0] p-8 text-center cursor-pointer hover:border-[#0a0a0a] transition-colors">
+                  {uploading ? (
+                    <span className="flex items-center justify-center gap-2 text-sm text-[#6b6b6b]">
+                      <Spinner size="sm" /> Uploading…
+                    </span>
+                  ) : (
+                    <>
+                      <p className="text-sm text-[#6b6b6b]">Click to upload</p>
+                      <p className="text-[11px] text-[#9b9b9b] mt-1">JPEG / PNG / WebP · Recommended 1400×500 px</p>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    hidden
+                    disabled={uploading}
+                    onChange={e => uploadBannerImage(e.target.files)}
+                  />
+                </label>
+              )}
             </div>
+
             <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Image URL (Cloudinary)</label>
-              <input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm" />
+              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Title *</label>
+              <input
+                value={form.title}
+                onChange={e => setForm(f => f ? { ...f, title: e.target.value } : f)}
+                className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                placeholder="Summer Sale"
+              />
             </div>
+
             <div className="mb-3">
               <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Link URL (optional)</label>
-              <input value={form.link_url} onChange={(e) => setForm({ ...form, link_url: e.target.value })} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm" />
+              <input
+                value={form.link_url}
+                onChange={e => setForm(f => f ? { ...f, link_url: e.target.value } : f)}
+                className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                placeholder="/category/sale"
+              />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="mb-3">
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div>
                 <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Position</label>
-                <select value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value as FormState['position'] })} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm">
-                  <option value="hero">Hero</option>
-                  <option value="mid">Mid</option>
+                <select
+                  value={form.position}
+                  onChange={e => setForm(f => f ? { ...f, position: e.target.value as FormState['position'] } : f)}
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none bg-white"
+                >
+                  <option value="hero">Hero (top)</option>
+                  <option value="mid">Mid-page</option>
                   <option value="footer">Footer</option>
                 </select>
               </div>
-              <div className="mb-3">
+              <div>
                 <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Sort order</label>
-                <input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: e.target.value })} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm" />
+                <input
+                  type="number"
+                  value={form.sort_order}
+                  onChange={e => setForm(f => f ? { ...f, sort_order: e.target.value } : f)}
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                />
               </div>
             </div>
+
             {msg && <p className="text-sm text-red-600 mb-3">{msg}</p>}
+
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setForm(null)} className="px-4 py-2 text-sm border border-[#e8e4e0]">Cancel</button>
-              <button onClick={save} disabled={saving || !form.title || !form.image_url} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white disabled:opacity-50">{saving ? 'Saving…' : 'Create'}</button>
+              <button onClick={() => setForm(null)} className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5]">Cancel</button>
+              <button
+                onClick={save}
+                disabled={saving || uploading || !form.title || !form.image_url}
+                className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50"
+              >
+                {saving ? 'Creating…' : 'Create'}
+              </button>
             </div>
           </div>
         </div>

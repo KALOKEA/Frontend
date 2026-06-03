@@ -90,6 +90,16 @@ export interface Banner {
   sort_order?: number
 }
 
+export interface ActivityLogEntry {
+  id: string
+  action: string
+  entity_type: string
+  entity_id?: string
+  details?: { method: string; path: string; body_keys: string[] }
+  created_at: string
+  users?: { name?: string; email?: string }
+}
+
 export const adminApi = {
   // dashboard
   getDashboard: () => api.get<DashboardStats>('/admin/dashboard'),
@@ -153,4 +163,14 @@ export const adminApi = {
   listReturns: () => api.get<ReturnRequest[]>('/returns'),
   updateReturnStatus: (id: string, body: { status: string; admin_notes?: string }) =>
     api.patch(`/returns/${id}/status`, body),
+
+  // activity log
+  listActivityLog: (page = 1, limit = 50, action?: string, entityType?: string) => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+    if (action) params.set('action', action)
+    if (entityType) params.set('entity_type', entityType)
+    return api.get<{ data: ActivityLogEntry[]; meta: { total: number; page: number; limit: number; total_pages: number } }>(
+      `/admin/activity-log?${params}`,
+    )
+  },
 }

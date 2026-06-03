@@ -15,6 +15,7 @@ const NAV = [
   { label: 'Exchanges', href: '/admin/exchanges' },
   { label: 'Analytics', href: '/admin/analytics' },
   { label: 'GST', href: '/admin/gst' },
+  { label: 'Activity', href: '/admin/activity' },
   { label: 'Settings', href: '/admin/settings' },
 ]
 
