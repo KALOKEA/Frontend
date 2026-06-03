@@ -1,4 +1,5 @@
 import HeroBanner from '@/components/home/HeroBanner'
+import TrustStrip from '@/components/home/TrustStrip'
 import CategoryGrid from '@/components/home/CategoryGrid'
 import FeaturedProducts from '@/components/home/FeaturedProducts'
 import NewsletterSignup from '@/components/home/NewsletterSignup'
@@ -13,6 +14,7 @@ export default function HomePage() {
   return (
     <>
       <HeroBanner />
+      <TrustStrip />
       <CategoryGrid />
       <FeaturedProducts />
       <NewsletterSignup />

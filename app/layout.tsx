@@ -5,6 +5,7 @@ import Footer from '@/components/layout/Footer'
 import { ToastProvider } from '@/components/ui/Toast'
 import AuthBootstrap from '@/components/AuthBootstrap'
 import Analytics from '@/components/Analytics'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'
 
@@ -35,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ToastProvider>
           <AuthBootstrap />
           <Header />
-          <main>{children}</main>
+          <main><ErrorBoundary>{children}</ErrorBoundary></main>
           <Footer />
         </ToastProvider>
       </body>

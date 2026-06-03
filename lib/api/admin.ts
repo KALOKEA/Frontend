@@ -90,6 +90,23 @@ export interface Banner {
   sort_order?: number
 }
 
+export interface MonthlyStats {
+  month: string   // YYYY-MM
+  revenue: number // paise
+  orders: number
+}
+
+export interface AllReview {
+  id: string
+  rating: number
+  title?: string
+  comment?: string
+  is_approved: boolean
+  created_at: string
+  users?: { name?: string }
+  products?: { name?: string; slug?: string }
+}
+
 export interface ActivityLogEntry {
   id: string
   action: string
@@ -154,8 +171,18 @@ export const adminApi = {
     URL.revokeObjectURL(url)
   },
 
+  // monthly stats
+  getMonthlyStats: (months = 6) => api.get<MonthlyStats[]>(`/admin/monthly-stats?months=${months}`),
+
+  // coupons
+  updateCoupon: (id: string, body: Partial<Coupon>) => api.patch(`/coupons/${id}`, body),
+
   // reviews
   listPendingReviews: () => api.get<PendingReview[]>('/reviews/pending'),
+  listAllReviews: (page = 1, limit = 30) =>
+    api.get<{ data: AllReview[]; meta: { total: number; page: number; limit: number; total_pages: number } }>(
+      `/reviews/admin/all?page=${page}&limit=${limit}`,
+    ),
   approveReview: (id: string) => api.patch(`/reviews/${id}/approve`),
   rejectReview: (id: string) => api.delete(`/reviews/${id}/reject`),
 

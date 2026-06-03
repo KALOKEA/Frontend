@@ -69,7 +69,24 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
   const TABS = ['description', 'fabric', 'shipping', 'returns', 'reviews']
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#9b9b9b] mb-8">
+        <a href="/" className="hover:text-[#0a0a0a] transition-colors">Home</a>
+        <span>/</span>
+        <a href="/shop" className="hover:text-[#0a0a0a] transition-colors">Shop</a>
+        {product.categories && (
+          <>
+            <span>/</span>
+            <a href={`/shop?category=${product.categories.slug}`} className="hover:text-[#0a0a0a] transition-colors">
+              {product.categories.name}
+            </a>
+          </>
+        )}
+        <span>/</span>
+        <span className="text-[#6b6b6b] truncate max-w-[140px]">{product.name}</span>
+      </nav>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
         <ImageGallery images={product.product_images || []} productName={product.name} />
 
@@ -93,7 +110,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               </>
             )}
           </div>
-          <p className="text-[10px] font-sans text-[#6b6b6b]">Inclusive of all taxes</p>
+          <p className="text-[10px] font-sans text-[#6b6b6b]">+ GST calculated at checkout</p>
 
           {product.product_variants && product.product_variants.length > 0 && (
             <VariantPicker
@@ -130,15 +147,17 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
           <AddToCartButton product={product} selectedVariant={selectedVariant} quantity={quantity} />
 
-          <div className="grid grid-cols-3 gap-3 pt-4 border-t border-[#e8e4e0]">
+          {/* Trust badges */}
+          <div className="grid grid-cols-3 gap-2 pt-4 border-t border-[#e8e4e0]">
             {[
-              ['Free Returns', '7-day returns'],
-              ['Secure Pay', 'Razorpay encrypted'],
-              ['Fast Delivery', '3-5 business days'],
-            ].map(([title, sub]) => (
-              <div key={title} className="text-center">
-                <p className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a]">{title}</p>
-                <p className="text-[10px] font-sans text-[#6b6b6b]">{sub}</p>
+              { icon: '🚚', title: 'Free Delivery', sub: 'On orders ₹999+' },
+              { icon: '↩', title: '7-Day Returns', sub: 'Hassle-free' },
+              { icon: '🔒', title: 'Secure Pay', sub: 'Razorpay encrypted' },
+            ].map(b => (
+              <div key={b.title} className="text-center bg-[#faf8f5] border border-[#f0ece8] py-3 px-1">
+                <p className="text-base mb-0.5">{b.icon}</p>
+                <p className="text-[9px] font-sans tracking-widest uppercase text-[#0a0a0a] font-medium">{b.title}</p>
+                <p className="text-[9px] font-sans text-[#9b9b9b]">{b.sub}</p>
               </div>
             ))}
           </div>
