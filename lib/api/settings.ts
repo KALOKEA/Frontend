@@ -7,6 +7,10 @@ export interface StoreSettings {
   seller_state: string
   gst_rate: number
   admin_email: string
+  // Shipping (paise). Available after migration 007_shipping_settings.sql.
+  shipping_fee?: number
+  shipping_free_threshold?: number
+  cod_fee?: number
 }
 
 export interface GstReport {

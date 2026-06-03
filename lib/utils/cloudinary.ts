@@ -1,4 +1,4 @@
-const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'kalokea'
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dvece6zpc'
 
 export function cloudinaryUrl(publicId: string, transforms = 'f_auto,q_auto,w_600'): string {
   if (!publicId) return '/placeholder.jpg'

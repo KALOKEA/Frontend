@@ -16,7 +16,7 @@ export default function ProfilePage() {
     e.preventDefault()
     setLoading(true)
     try {
-      const updated = await api.patch<{ id: string; name: string; email?: string; phone?: string; role: string }>('/users/profile', { name })
+      const updated = await api.patch<{ id: string; name: string; email?: string; phone?: string; role: string }>('/users/me', { name })
       if (user && accessToken) setAuth(accessToken, { ...user, name: updated.name })
       toast('Profile updated')
     } catch {
