@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { productsApi, type Product, type ProductImageRow, type ProductVariant } from '@/lib/api/products'
 import { variantsApi } from '@/lib/api/variants'
@@ -11,7 +11,12 @@ import { formatPrice } from '@/lib/utils/formatPrice'
 const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
-// ─── Form state ───────────────────────────────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const QUICK_SIZES   = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Free Size']
+const QUICK_COLOURS = ['Black', 'White', 'Ivory', 'Navy', 'Red', 'Blush', 'Sage', 'Camel', 'Brown', 'Olive']
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface FormState {
   id?: string
@@ -44,16 +49,21 @@ function productToForm(p: Product): FormState {
   }
 }
 
-interface VariantDraft { size: string; colour: string; price: string; stock: string; sku: string }
-const emptyVariant: VariantDraft = { size: '', colour: '', price: '', stock: '', sku: '' }
+interface VariantDraft {
+  size: string; colour: string; price: string; stock: string; sku: string
+  _key?: string // local unique key for list rendering
+}
+const emptyVariant = (): VariantDraft => ({
+  size: '', colour: '', price: '', stock: '0', sku: '', _key: String(Date.now() + Math.random()),
+})
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [editing, setEditing] = useState<Product | 'new' | null>(null)
-  const [search, setSearch] = useState('')
+  const [products, setProducts]   = useState<Product[]>([])
+  const [loading, setLoading]     = useState(true)
+  const [editing, setEditing]     = useState<Product | 'new' | null>(null)
+  const [search, setSearch]       = useState('')
 
   function loadProducts() {
     setLoading(true)
@@ -69,6 +79,7 @@ export default function AdminProductsPage() {
       <ProductEditor
         initial={editing === 'new' ? null : editing}
         onBack={() => { setEditing(null); loadProducts() }}
+        onDuplicate={(p) => setEditing({ ...p, id: undefined as any, name: `${p.name} (copy)`, slug: `${p.slug}-copy`, is_active: false } as Product)}
       />
     )
   }
@@ -92,7 +103,7 @@ export default function AdminProductsPage() {
           + New product
         </button>
       </div>
-      {/* Search bar */}
+
       <div className="relative mb-4">
         <input
           value={search}
@@ -211,18 +222,36 @@ function ProductTable({ products, onEdit, onRefresh }: {
 
 // ─── Full-page product editor ─────────────────────────────────────────────────
 
-function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: () => void }) {
-  const [form, setForm] = useState<FormState>(initial ? productToForm(initial) : emptyForm())
-  const [images, setImages] = useState<ProductImageRow[]>([])
-  const [variants, setVariants] = useState<ProductVariant[]>([])
+function ProductEditor({
+  initial, onBack, onDuplicate,
+}: {
+  initial: Product | null
+  onBack: () => void
+  onDuplicate: (p: Product) => void
+}) {
+  const [form, setForm]           = useState<FormState>(initial ? productToForm(initial) : emptyForm())
+  const [images, setImages]       = useState<ProductImageRow[]>([])
+  const [variants, setVariants]   = useState<ProductVariant[]>([])
   const [categories, setCategories] = useState<Category[]>([])
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving]       = useState(false)
   const [uploading, setUploading] = useState(false)
-  const [toast, setToast] = useState<{ msg: string; type: 'ok' | 'err' } | null>(null)
-  const [vDraft, setVDraft] = useState<VariantDraft>(emptyVariant)
-  const [vSaving, setVSaving] = useState(false)
+  const [toast, setToast]         = useState<{ msg: string; type: 'ok' | 'err' } | null>(null)
   const [slugManual, setSlugManual] = useState(!!initial)
 
+  // ── Pending variants (for new products before first save) ──────────────────
+  const [pendingVariants, setPendingVariants] = useState<VariantDraft[]>([])
+  const [vDraft, setVDraft]       = useState<VariantDraft>(emptyVariant())
+  const [vSaving, setVSaving]     = useState(false)
+
+  // ── Size×colour matrix generator ──────────────────────────────────────────
+  const [showMatrix, setShowMatrix]     = useState(false)
+  const [matrixSizes, setMatrixSizes]   = useState<string[]>([])
+  const [matrixColours, setMatrixColours] = useState<string[]>([])
+  const [matrixCustomColour, setMatrixCustomColour] = useState('')
+  const [matrixPrice, setMatrixPrice]   = useState('')
+  const [matrixStock, setMatrixStock]   = useState('0')
+
+  const variantsSectionRef = useRef<HTMLDivElement>(null)
   const isNew = !form.id
 
   useEffect(() => {
@@ -250,6 +279,8 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
     setVariants(vars)
   }
 
+  // ── Save / create product (+ flush pending variants) ─────────────────────
+
   async function save() {
     if (!form.name.trim()) { showToast('Product name is required.', 'err'); return }
     const priceNum = parseFloat(form.base_price)
@@ -275,10 +306,35 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
         await productsApi.update(form.id, payload)
         showToast('Changes saved ✓')
       } else {
+        // ── Create product ────────────────────────────────────────────────
         const created = await productsApi.create(payload)
         setForm(f => ({ ...f, id: created.id, slug: created.slug }))
+
+        // Flush all pending variants in parallel
+        if (pendingVariants.length > 0) {
+          await Promise.all(
+            pendingVariants.map(v =>
+              variantsApi.create({
+                product_id: created.id,
+                size: v.size || undefined,
+                colour: v.colour || undefined,
+                price: Math.round(parseFloat(v.price || '0') * 100),
+                stock: parseInt(v.stock || '0', 10),
+                sku: v.sku || undefined,
+              }).catch(() => null)
+            )
+          )
+          setPendingVariants([])
+        }
+
         await refreshMedia(created.id)
-        showToast('Product created — add photos and variants below.')
+        showToast(
+          pendingVariants.length > 0
+            ? `Product created with ${pendingVariants.length} variant${pendingVariants.length > 1 ? 's' : ''} ✓ — add photos below.`
+            : 'Product created ✓ — add photos and variants below.'
+        )
+        // Scroll to variants / photos after a short delay
+        setTimeout(() => variantsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300)
       }
     } catch (e: any) {
       showToast(e?.message || 'Save failed', 'err')
@@ -287,14 +343,116 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
     }
   }
 
+  // ── Pending variant helpers (used before first save) ──────────────────────
+
+  function addPendingVariant() {
+    if (!vDraft.price) { showToast('Price is required for each variant.', 'err'); return }
+    setPendingVariants(prev => [...prev, { ...vDraft, _key: String(Date.now() + Math.random()) }])
+    setVDraft(emptyVariant())
+    showToast('Variant queued — will be created with the product.')
+  }
+
+  function removePendingVariant(key: string) {
+    setPendingVariants(prev => prev.filter(v => v._key !== key))
+  }
+
+  function updatePendingVariant(key: string, field: keyof VariantDraft, value: string) {
+    setPendingVariants(prev =>
+      prev.map(v => v._key === key ? { ...v, [field]: value } : v)
+    )
+  }
+
+  // ── Live variant helpers (after product exists) ───────────────────────────
+
+  async function addLiveVariant() {
+    if (!form.id) return
+    if (!vDraft.price) { showToast('Price is required.', 'err'); return }
+    setVSaving(true)
+    try {
+      await variantsApi.create({
+        product_id: form.id,
+        size: vDraft.size || undefined,
+        colour: vDraft.colour || undefined,
+        price: Math.round(parseFloat(vDraft.price) * 100),
+        stock: parseInt(vDraft.stock || '0', 10),
+        sku: vDraft.sku || undefined,
+      })
+      setVDraft(emptyVariant())
+      await refreshMedia(form.id)
+      showToast('Variant added ✓')
+    } catch (e: any) {
+      showToast(e?.message || 'Could not add variant', 'err')
+    } finally {
+      setVSaving(false)
+    }
+  }
+
+  // ── Matrix generator ──────────────────────────────────────────────────────
+
+  function generateMatrix() {
+    const allColours = [
+      ...matrixColours,
+      ...matrixCustomColour.split(',').map(c => c.trim()).filter(Boolean),
+    ]
+    if (matrixSizes.length === 0 && allColours.length === 0) {
+      showToast('Pick at least one size or colour.', 'err'); return
+    }
+    if (!matrixPrice) { showToast('Enter a base price for the matrix.', 'err'); return }
+
+    const sizes   = matrixSizes.length > 0 ? matrixSizes : ['']
+    const colours = allColours.length > 0   ? allColours  : ['']
+    const newDrafts: VariantDraft[] = []
+
+    for (const size of sizes) {
+      for (const colour of colours) {
+        const parts = [slugify(form.name || 'sku'), size, colour].filter(Boolean)
+        newDrafts.push({
+          size, colour, price: matrixPrice, stock: matrixStock || '0',
+          sku: parts.join('-').toUpperCase().slice(0, 40),
+          _key: String(Date.now() + Math.random()),
+        })
+      }
+    }
+
+    if (form.id) {
+      // Product already exists — create live variants
+      setSaving(true)
+      Promise.all(
+        newDrafts.map(v =>
+          variantsApi.create({
+            product_id: form.id!,
+            size: v.size || undefined,
+            colour: v.colour || undefined,
+            price: Math.round(parseFloat(v.price) * 100),
+            stock: parseInt(v.stock, 10),
+            sku: v.sku || undefined,
+          }).catch(() => null)
+        )
+      )
+        .then(() => refreshMedia(form.id!))
+        .then(() => showToast(`${newDrafts.length} variants added ✓`))
+        .catch(() => showToast('Some variants failed to create', 'err'))
+        .finally(() => { setSaving(false); setShowMatrix(false) })
+    } else {
+      // Queue for creation with product
+      setPendingVariants(prev => [...prev, ...newDrafts])
+      showToast(`${newDrafts.length} variants queued ✓`)
+      setShowMatrix(false)
+    }
+
+    // Reset matrix
+    setMatrixSizes([]); setMatrixColours([]); setMatrixCustomColour(''); setMatrixPrice(''); setMatrixStock('0')
+  }
+
+  // ── Photos helpers ────────────────────────────────────────────────────────
+
   async function onUpload(files: FileList | null) {
     if (!files || !form.id) return
     setUploading(true)
     try {
       const sorted = [...images].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
       for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-        const { url, public_id } = await uploadImage(file, 'products')
+        const { url, public_id } = await uploadImage(files[i], 'products')
         await productsApi.addImage(form.id, { url, public_id, sort_order: sorted.length + i })
       }
       await refreshMedia(form.id)
@@ -318,30 +476,8 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
     if (form.id) await refreshMedia(form.id)
   }
 
-  async function addVariant() {
-    if (!form.id) { showToast('Save product details first.', 'err'); return }
-    if (!vDraft.price || !vDraft.stock) { showToast('Price and stock qty are required.', 'err'); return }
-    setVSaving(true)
-    try {
-      await variantsApi.create({
-        product_id: form.id,
-        size: vDraft.size || undefined,
-        colour: vDraft.colour || undefined,
-        price: Math.round(parseFloat(vDraft.price) * 100),
-        stock: parseInt(vDraft.stock, 10),
-        sku: vDraft.sku || undefined,
-      })
-      setVDraft(emptyVariant)
-      await refreshMedia(form.id)
-      showToast('Variant added ✓')
-    } catch (e: any) {
-      showToast(e?.message || 'Could not add variant', 'err')
-    } finally {
-      setVSaving(false)
-    }
-  }
-
   const sortedImages = [...images].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+  const allVariants  = form.id ? variants : []
 
   return (
     <>
@@ -376,6 +512,15 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
           )}
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          {!isNew && (
+            <button
+              onClick={() => onDuplicate(initial!)}
+              className="px-3 py-2 text-xs uppercase tracking-widest border border-[#e8e4e0] hover:bg-[#faf8f5] transition-colors text-[#6b6b6b]"
+              title="Duplicate this product"
+            >
+              Duplicate
+            </button>
+          )}
           <button
             onClick={onBack}
             className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#f5f2ef] transition-colors"
@@ -406,6 +551,7 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
                 onChange={e => setName(e.target.value)}
                 className="inp"
                 placeholder="e.g. Floral Midi Dress"
+                autoFocus
               />
             </Field>
             <Field label="Slug (URL)">
@@ -415,7 +561,9 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
                 placeholder={form.name ? slugify(form.name) : 'auto-generated-from-name'}
                 className="inp"
               />
-              <p className="text-[11px] text-[#9b9b9b] mt-1">Leave blank to auto-generate. Cannot be changed after products are indexed by Google.</p>
+              <p className="text-[11px] text-[#9b9b9b] mt-1">
+                Leave blank to auto-generate. Avoid changing after Google has indexed the page.
+              </p>
             </Field>
             <Field label="Description">
               <textarea
@@ -423,7 +571,7 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 rows={5}
                 className="inp resize-y"
-                placeholder="Describe the fabric, fit, styling tips, care instructions…"
+                placeholder="Fabric, fit, care instructions, styling tips…"
               />
             </Field>
           </Card>
@@ -446,7 +594,7 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
                   value={form.compare_price}
                   onChange={e => setForm(f => ({ ...f, compare_price: e.target.value }))}
                   className="inp"
-                  placeholder="1499 (shown as strikethrough)"
+                  placeholder="1499 (strikethrough)"
                 />
               </Field>
             </div>
@@ -497,107 +645,271 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
             </Field>
           </Card>
 
-          {/* Variants */}
-          <Card title="Variants">
-            {!form.id ? (
-              <p className="text-sm text-[#9b9b9b] py-2">
-                Fill in the details above and click <strong>"Create product"</strong> to enable variants.
-              </p>
-            ) : (
-              <>
-                {variants.length > 0 ? (
-                  <div className="overflow-x-auto mb-4">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="text-left text-[10px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
-                          <th className="py-2 pr-3">Colour</th>
-                          <th className="py-2 pr-3">Size</th>
-                          <th className="py-2 pr-3">SKU</th>
-                          <th className="py-2 pr-3">Price ₹</th>
-                          <th className="py-2 pr-3">Stock</th>
-                          <th className="py-2"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {variants.map(v => (
-                          <VariantRow
-                            key={v.id}
-                            v={v}
-                            onSave={async (v2, stock, price) => {
-                              await variantsApi.update(v2.id, {
-                                stock: parseInt(stock, 10),
-                                price: Math.round(parseFloat(price) * 100),
-                              })
-                              if (form.id) refreshMedia(form.id)
-                            }}
-                            onDelete={async id => {
-                              await variantsApi.remove(id)
-                              if (form.id) refreshMedia(form.id)
-                            }}
-                          />
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-xs text-amber-600 mb-4">
-                    No variants yet — a product needs at least one variant to be purchasable.
-                  </p>
-                )}
+          {/* ── Variants ─────────────────────────────────────────────── */}
+          <div ref={variantsSectionRef}>
+            <Card title={
+              isNew && pendingVariants.length > 0
+                ? `Variants (${pendingVariants.length} queued)`
+                : allVariants.length > 0
+                  ? `Variants (${allVariants.length})`
+                  : 'Variants'
+            }>
 
-                {/* Add variant form */}
-                <div className="border border-[#e8e4e0] bg-[#faf8f5] p-3">
-                  <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-3">Add variant</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-2">
-                    <input
-                      value={vDraft.colour}
-                      onChange={e => setVDraft(d => ({ ...d, colour: e.target.value }))}
-                      placeholder="Colour"
-                      className="inp"
-                    />
-                    <input
-                      value={vDraft.size}
-                      onChange={e => setVDraft(d => ({ ...d, size: e.target.value }))}
-                      placeholder="Size  (XS / S / M / L / XL / Free)"
-                      className="inp"
-                    />
-                    <input
-                      value={vDraft.sku}
-                      onChange={e => setVDraft(d => ({ ...d, sku: e.target.value }))}
-                      placeholder="SKU (optional)"
-                      className="inp"
-                    />
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 items-end">
-                    <input
-                      type="number"
-                      value={vDraft.price}
-                      onChange={e => setVDraft(d => ({ ...d, price: e.target.value }))}
-                      placeholder="Price ₹"
-                      className="inp"
-                    />
-                    <input
-                      type="number"
-                      value={vDraft.stock}
-                      onChange={e => setVDraft(d => ({ ...d, stock: e.target.value }))}
-                      placeholder="Stock qty"
-                      className="inp"
-                    />
-                    <button
-                      onClick={addVariant}
-                      disabled={vSaving}
-                      className="px-3 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors"
-                    >
-                      {vSaving ? 'Adding…' : '+ Add'}
-                    </button>
-                  </div>
-                  <p className="text-[11px] text-[#9b9b9b] mt-2">
-                    Leave colour/size blank if this product has only one option. Price is excl. GST.
+              {/* ── LIVE variant table (product exists) ─────────────── */}
+              {!isNew && allVariants.length > 0 && (
+                <div className="overflow-x-auto mb-4">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-[10px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
+                        <th className="py-2 pr-3">Colour</th>
+                        <th className="py-2 pr-3">Size</th>
+                        <th className="py-2 pr-3">SKU</th>
+                        <th className="py-2 pr-3">Price ₹</th>
+                        <th className="py-2 pr-3">Stock</th>
+                        <th className="py-2"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allVariants.map(v => (
+                        <VariantRow
+                          key={v.id}
+                          v={v}
+                          onSave={async (v2, stock, price) => {
+                            await variantsApi.update(v2.id, {
+                              stock: parseInt(stock, 10),
+                              price: Math.round(parseFloat(price) * 100),
+                            })
+                            if (form.id) refreshMedia(form.id)
+                          }}
+                          onDelete={async id => {
+                            await variantsApi.remove(id)
+                            if (form.id) refreshMedia(form.id)
+                          }}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {!isNew && allVariants.length === 0 && (
+                <p className="text-xs text-amber-600 mb-4">
+                  No variants yet — a product needs at least one variant to be purchasable.
+                </p>
+              )}
+
+              {/* ── PENDING variant table (new product) ─────────────── */}
+              {isNew && pendingVariants.length > 0 && (
+                <div className="overflow-x-auto mb-4">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-[10px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
+                        <th className="py-2 pr-2">Colour</th>
+                        <th className="py-2 pr-2">Size</th>
+                        <th className="py-2 pr-2">SKU</th>
+                        <th className="py-2 pr-2">Price ₹</th>
+                        <th className="py-2 pr-2">Stock</th>
+                        <th className="py-2"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pendingVariants.map(v => (
+                        <tr key={v._key} className="border-b border-[#f0ece8] last:border-0">
+                          <td className="py-1.5 pr-2">
+                            <input value={v.colour} onChange={e => updatePendingVariant(v._key!, 'colour', e.target.value)}
+                              className="inp-sm" placeholder="—" />
+                          </td>
+                          <td className="py-1.5 pr-2">
+                            <input value={v.size} onChange={e => updatePendingVariant(v._key!, 'size', e.target.value)}
+                              className="inp-sm" placeholder="—" />
+                          </td>
+                          <td className="py-1.5 pr-2">
+                            <input value={v.sku} onChange={e => updatePendingVariant(v._key!, 'sku', e.target.value)}
+                              className="inp-sm" placeholder="auto" />
+                          </td>
+                          <td className="py-1.5 pr-2">
+                            <input type="number" value={v.price} onChange={e => updatePendingVariant(v._key!, 'price', e.target.value)}
+                              className="inp-sm w-20" />
+                          </td>
+                          <td className="py-1.5 pr-2">
+                            <input type="number" value={v.stock} onChange={e => updatePendingVariant(v._key!, 'stock', e.target.value)}
+                              className="inp-sm w-16" />
+                          </td>
+                          <td className="py-1.5 text-right">
+                            <button onClick={() => removePendingVariant(v._key!)}
+                              className="text-[10px] uppercase tracking-widest text-red-500 hover:underline">
+                              Remove
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p className="text-[11px] text-[#9b9b9b] mt-2 flex items-center gap-1">
+                    <span className="text-amber-600">●</span>
+                    These will be created when you click "Create product".
                   </p>
                 </div>
-              </>
-            )}
-          </Card>
+              )}
+
+              {/* ── Matrix generator toggle ──────────────────────────── */}
+              <div className="mb-3">
+                <button
+                  onClick={() => setShowMatrix(m => !m)}
+                  className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+                >
+                  {showMatrix ? '▲ Hide matrix generator' : '▼ Quick generate (size × colour matrix)'}
+                </button>
+              </div>
+
+              {showMatrix && (
+                <div className="border border-[#e8e4e0] bg-[#fdf8f4] p-4 mb-4">
+                  <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-3">
+                    Matrix generator — generates all size × colour combinations
+                  </p>
+
+                  <div className="mb-3">
+                    <p className="text-[11px] text-[#6b6b6b] mb-1.5">Sizes</p>
+                    <div className="flex flex-wrap gap-2">
+                      {QUICK_SIZES.map(s => (
+                        <label key={s} className="flex items-center gap-1 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={matrixSizes.includes(s)}
+                            onChange={e => setMatrixSizes(prev =>
+                              e.target.checked ? [...prev, s] : prev.filter(x => x !== s)
+                            )}
+                            className="accent-[#0a0a0a]"
+                          />
+                          <span className="text-xs">{s}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mb-3">
+                    <p className="text-[11px] text-[#6b6b6b] mb-1.5">Colours</p>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {QUICK_COLOURS.map(c => (
+                        <label key={c} className="flex items-center gap-1 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={matrixColours.includes(c)}
+                            onChange={e => setMatrixColours(prev =>
+                              e.target.checked ? [...prev, c] : prev.filter(x => x !== c)
+                            )}
+                            className="accent-[#0a0a0a]"
+                          />
+                          <span className="text-xs">{c}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <input
+                      value={matrixCustomColour}
+                      onChange={e => setMatrixCustomColour(e.target.value)}
+                      placeholder="Custom colours, comma-separated (e.g. Dusty Rose, Mint)"
+                      className="inp text-xs"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <Field label="Base price ₹ *">
+                      <input type="number" value={matrixPrice}
+                        onChange={e => setMatrixPrice(e.target.value)}
+                        className="inp" placeholder="999" />
+                    </Field>
+                    <Field label="Initial stock each">
+                      <input type="number" value={matrixStock}
+                        onChange={e => setMatrixStock(e.target.value)}
+                        className="inp" placeholder="0" />
+                    </Field>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={generateMatrix}
+                      disabled={saving}
+                      className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors"
+                    >
+                      {saving ? 'Generating…' : `Generate ${
+                        (() => {
+                          const s = matrixSizes.length || 1
+                          const c = (matrixColours.length + matrixCustomColour.split(',').filter(x => x.trim()).length) || 1
+                          return s * c
+                        })()
+                      } variants`}
+                    </button>
+                    <button
+                      onClick={() => setShowMatrix(false)}
+                      className="text-sm text-[#9b9b9b] hover:text-[#0a0a0a]"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ── Add single variant ────────────────────────────────── */}
+              <div className="border border-[#e8e4e0] bg-[#faf8f5] p-3">
+                <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-3">
+                  {isNew ? 'Add variant (queued until save)' : 'Add variant'}
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-2">
+                  <input
+                    value={vDraft.colour}
+                    onChange={e => setVDraft(d => ({ ...d, colour: e.target.value }))}
+                    placeholder="Colour"
+                    className="inp"
+                  />
+                  <input
+                    value={vDraft.size}
+                    onChange={e => setVDraft(d => ({ ...d, size: e.target.value }))}
+                    placeholder="Size  (XS / S / M / L / XL / Free)"
+                    className="inp"
+                  />
+                  <input
+                    value={vDraft.sku}
+                    onChange={e => setVDraft(d => ({ ...d, sku: e.target.value }))}
+                    placeholder="SKU (optional)"
+                    className="inp"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-2 items-end">
+                  <input
+                    type="number"
+                    value={vDraft.price}
+                    onChange={e => setVDraft(d => ({ ...d, price: e.target.value }))}
+                    placeholder="Price ₹"
+                    className="inp"
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') isNew ? addPendingVariant() : addLiveVariant()
+                    }}
+                  />
+                  <input
+                    type="number"
+                    value={vDraft.stock}
+                    onChange={e => setVDraft(d => ({ ...d, stock: e.target.value }))}
+                    placeholder="Stock qty"
+                    className="inp"
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') isNew ? addPendingVariant() : addLiveVariant()
+                    }}
+                  />
+                  <button
+                    onClick={isNew ? addPendingVariant : addLiveVariant}
+                    disabled={vSaving}
+                    className="px-3 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors"
+                  >
+                    {vSaving ? 'Adding…' : '+ Add'}
+                  </button>
+                </div>
+                <p className="text-[11px] text-[#9b9b9b] mt-2">
+                  Leave colour/size blank for single-option products. Price excludes GST.
+                  Press Enter to add quickly.
+                </p>
+              </div>
+            </Card>
+          </div>
         </div>
 
         {/* ── Right column ─────────────────────────────────────────────── */}
@@ -623,26 +935,28 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
             </div>
             {isNew && (
               <p className="text-[11px] text-[#9b9b9b] mt-4 pt-3 border-t border-[#f0ece8]">
-                Tip: keep as Draft while adding photos and variants. Activate when ready.
+                Tip: keep as Draft while setting up. Activate when ready to go live.
               </p>
             )}
           </Card>
 
           {/* Photos */}
-          <Card title="Photos">
+          <Card title={`Photos${sortedImages.length > 0 ? ` (${sortedImages.length})` : ''}`}>
             {!form.id ? (
-              <p className="text-sm text-[#9b9b9b] py-2">
-                Create the product to enable photo uploads.
-              </p>
+              <div className="py-3 text-center">
+                <p className="text-sm text-[#9b9b9b] mb-1">
+                  Photos are added after the product is created.
+                </p>
+                <p className="text-[11px] text-[#c8a4a5]">
+                  Fill in the details, add variants, then click "Create product" — the upload button will appear here.
+                </p>
+              </div>
             ) : (
               <>
                 {sortedImages.length > 0 && (
                   <div className="space-y-2 mb-3">
                     {sortedImages.map((img, idx) => (
-                      <div
-                        key={img.id}
-                        className="flex items-center gap-2 p-2 bg-[#faf8f5] border border-[#e8e4e0]"
-                      >
+                      <div key={img.id} className="flex items-center gap-2 p-2 bg-[#faf8f5] border border-[#e8e4e0]">
                         <div className="relative w-12 h-14 bg-[#f0ece8] overflow-hidden shrink-0">
                           <Image src={img.url} alt="" fill className="object-cover" sizes="48px" />
                         </div>
@@ -658,47 +972,27 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
                         </div>
                         {/* Reorder */}
                         <div className="flex flex-col gap-0.5">
-                          <button
-                            onClick={() => moveImage(idx, -1)}
-                            disabled={idx === 0}
+                          <button onClick={() => moveImage(idx, -1)} disabled={idx === 0}
                             className="text-[12px] leading-none text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-20 px-1 py-0.5"
-                            title="Move up"
-                          >
-                            ↑
-                          </button>
-                          <button
-                            onClick={() => moveImage(idx, 1)}
-                            disabled={idx === sortedImages.length - 1}
+                            title="Move up">↑</button>
+                          <button onClick={() => moveImage(idx, 1)} disabled={idx === sortedImages.length - 1}
                             className="text-[12px] leading-none text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-20 px-1 py-0.5"
-                            title="Move down"
-                          >
-                            ↓
-                          </button>
+                            title="Move down">↓</button>
                         </div>
                         {/* Actions */}
                         <div className="flex flex-col gap-1 items-end shrink-0">
                           {!img.is_primary && (
                             <button
-                              onClick={() =>
-                                productsApi.setPrimaryImage(img.id)
-                                  .then(() => { if (form.id) refreshMedia(form.id) })
-                                  .catch(() => {})
-                              }
+                              onClick={() => productsApi.setPrimaryImage(img.id)
+                                .then(() => { if (form.id) refreshMedia(form.id) }).catch(() => {})}
                               className="text-[9px] uppercase tracking-widest text-[#c8a4a5] hover:underline whitespace-nowrap"
-                            >
-                              Set primary
-                            </button>
+                            >Set primary</button>
                           )}
                           <button
-                            onClick={() =>
-                              productsApi.deleteImage(img.id)
-                                .then(() => { if (form.id) refreshMedia(form.id) })
-                                .catch(() => {})
-                            }
+                            onClick={() => productsApi.deleteImage(img.id)
+                              .then(() => { if (form.id) refreshMedia(form.id) }).catch(() => {})}
                             className="text-[9px] uppercase tracking-widest text-red-500 hover:underline"
-                          >
-                            Delete
-                          </button>
+                          >Delete</button>
                         </div>
                       </div>
                     ))}
@@ -710,28 +1004,35 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
                 <label className="block w-full px-4 py-2 text-sm border border-[#0a0a0a] text-center cursor-pointer hover:bg-[#faf8f5] transition-colors">
                   {uploading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <Spinner size="sm" />
-                      Uploading…
+                      <Spinner size="sm" />Uploading…
                     </span>
-                  ) : (
-                    '+ Upload photos'
-                  )}
+                  ) : '+ Upload photos'}
                   <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    hidden
-                    disabled={uploading}
+                    type="file" accept="image/jpeg,image/png,image/webp"
+                    multiple hidden disabled={uploading}
                     onChange={e => onUpload(e.target.files)}
                   />
                 </label>
                 <p className="text-[11px] text-[#9b9b9b] mt-2">
-                  JPEG / PNG / WebP · max 5 MB each.
-                  First photo auto-sets as primary.
+                  JPEG / PNG / WebP · max 5 MB · first photo auto-sets as primary.
                 </p>
               </>
             )}
           </Card>
+
+          {/* Quick info card */}
+          {isNew && pendingVariants.length > 0 && (
+            <div className="bg-[#fdf8f4] border border-[#e8e4e0] p-4">
+              <p className="text-[10px] uppercase tracking-widest text-[#b8860b] mb-2">Ready to create</p>
+              <p className="text-sm text-[#0a0a0a]">
+                {pendingVariants.length} variant{pendingVariants.length > 1 ? 's' : ''} queued
+              </p>
+              <p className="text-[11px] text-[#9b9b9b] mt-1">
+                Click "Create product" to save everything at once.
+              </p>
+            </div>
+          )}
+
         </div>
       </div>
 
@@ -744,9 +1045,16 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
           outline: none;
           background: white;
         }
-        :global(.inp:focus) {
-          border-color: #0a0a0a;
+        :global(.inp:focus) { border-color: #0a0a0a; }
+        :global(.inp-sm) {
+          width: 100%;
+          border: 1px solid #e8e4e0;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.8rem;
+          outline: none;
+          background: white;
         }
+        :global(.inp-sm:focus) { border-color: #0a0a0a; }
       `}</style>
     </>
   )
@@ -776,13 +1084,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <button
-      type="button"
-      onClick={() => onChange(!checked)}
+    <button type="button" onClick={() => onChange(!checked)}
       className={`relative inline-flex w-10 h-5 rounded-full transition-colors shrink-0 ${
         checked ? 'bg-[#0a0a0a]' : 'bg-[#d0ccc8]'
-      }`}
-    >
+      }`}>
       <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
         checked ? 'translate-x-5' : 'translate-x-0'
       }`} />
@@ -795,8 +1100,8 @@ function VariantRow({ v, onSave, onDelete }: {
   onSave: (v: ProductVariant, stock: string, price: string) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }) {
-  const [stock, setStock] = useState(String(v.stock))
-  const [price, setPrice] = useState(String(Math.round(v.price / 100)))
+  const [stock, setStock]   = useState(String(v.stock))
+  const [price, setPrice]   = useState(String(Math.round(v.price / 100)))
   const [saving, setSaving] = useState(false)
   return (
     <tr className="border-b border-[#f0ece8] last:border-0">
@@ -804,20 +1109,12 @@ function VariantRow({ v, onSave, onDelete }: {
       <td className="py-2 pr-3 text-[#0a0a0a]">{v.size || '—'}</td>
       <td className="py-2 pr-3 text-[#9b9b9b] text-xs">{v.sku || '—'}</td>
       <td className="py-2 pr-3">
-        <input
-          type="number"
-          value={price}
-          onChange={e => setPrice(e.target.value)}
-          className="w-20 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none"
-        />
+        <input type="number" value={price} onChange={e => setPrice(e.target.value)}
+          className="w-20 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none" />
       </td>
       <td className="py-2 pr-3">
-        <input
-          type="number"
-          value={stock}
-          onChange={e => setStock(e.target.value)}
-          className="w-16 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none"
-        />
+        <input type="number" value={stock} onChange={e => setStock(e.target.value)}
+          className="w-16 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none" />
       </td>
       <td className="py-2 text-right whitespace-nowrap">
         <button
@@ -827,10 +1124,8 @@ function VariantRow({ v, onSave, onDelete }: {
         >
           {saving ? '…' : 'Save'}
         </button>
-        <button
-          onClick={() => onDelete(v.id)}
-          className="text-[10px] uppercase tracking-widest text-red-500 hover:underline"
-        >
+        <button onClick={() => onDelete(v.id)}
+          className="text-[10px] uppercase tracking-widest text-red-500 hover:underline">
           Delete
         </button>
       </td>
