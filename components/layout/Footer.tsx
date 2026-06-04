@@ -6,10 +6,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
         {/* Top section: brand + links */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-6 mb-8">
 
-          {/* Brand — full width on the smallest screens */}
-          <div className="col-span-2 sm:col-span-1">
+          {/* Brand — full row on mobile, 1 column on sm+ */}
+          <div className="col-span-3 sm:col-span-1">
             <h4 className="font-serif text-lg tracking-widest text-white mb-1">KALOKEA</h4>
             <p className="text-[#6b6b6b] text-[11px] font-sans leading-relaxed">
               Fashion for every woman.

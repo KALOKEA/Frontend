@@ -250,11 +250,11 @@ export default function AdminCategoriesPage() {
       {/* ── Create / Edit modal ────────────────────────────────────────── */}
       {form && (
         <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/40 flex items-start sm:items-center justify-center z-50 p-4 overflow-y-auto"
           onClick={() => setForm(null)}
         >
           <div
-            className="bg-white w-full max-w-md p-6"
+            className="bg-white w-full max-w-md p-6 my-4"
             onClick={e => e.stopPropagation()}
           >
             <h2 className="font-serif text-xl mb-5 text-[#0a0a0a]">
