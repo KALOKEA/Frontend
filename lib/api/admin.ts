@@ -176,6 +176,26 @@ export const adminApi = {
     URL.revokeObjectURL(url)
   },
 
+  // orders CSV export
+  exportOrders: async (filters: { status?: string; from?: string; to?: string } = {}) => {
+    const params = new URLSearchParams()
+    if (filters.status) params.set('status', filters.status)
+    if (filters.from)   params.set('from', filters.from)
+    if (filters.to)     params.set('to', filters.to)
+    const res = await fetch(
+      `${BASE_URL}/orders/export${params.toString() ? '?' + params : ''}`,
+      { headers: getAccessToken() ? { Authorization: `Bearer ${getAccessToken()}` } : {}, credentials: 'include' }
+    )
+    if (!res.ok) throw new Error(`Export failed (${res.status})`)
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `kalokea-orders-${new Date().toISOString().slice(0, 10)}.csv`
+    document.body.appendChild(a); a.click(); a.remove()
+    URL.revokeObjectURL(url)
+  },
+
   // monthly stats
   getMonthlyStats: (months = 6) => api.get<MonthlyStats[]>(`/admin/monthly-stats?months=${months}`),
 

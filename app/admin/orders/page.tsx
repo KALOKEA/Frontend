@@ -35,6 +35,7 @@ export default function AdminOrdersPage() {
   const [courier, setCourier] = useState('')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
+  const [exporting, setExporting] = useState(false)
 
   const limit = 20
 
@@ -86,9 +87,23 @@ export default function AdminOrdersPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="font-serif text-3xl text-[#0a0a0a]">Orders</h1>
-        <span className="text-sm text-[#6b6b6b]">{total} total</span>
+      <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
+        <div>
+          <h1 className="font-serif text-3xl text-[#0a0a0a]">Orders</h1>
+          <p className="text-sm text-[#6b6b6b] mt-1">{total} total</p>
+        </div>
+        <button
+          onClick={async () => {
+            setExporting(true)
+            try { await adminApi.exportOrders({ status: statusFilter || undefined }) }
+            catch (e: any) { alert(e?.message || 'Export failed') }
+            finally { setExporting(false) }
+          }}
+          disabled={exporting}
+          className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] disabled:opacity-50 transition-colors"
+        >
+          {exporting ? 'Exporting…' : '↓ Export CSV'}
+        </button>
       </div>
 
       {/* Search */}
