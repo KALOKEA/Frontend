@@ -23,4 +23,6 @@ export const reviewsApi = {
     body?: string    // mapped to the DB `body` column
     order_id?: string
   }) => api.post('/reviews', data),
+
+  getMyReviews: () => api.get<ReviewItem[]>('/reviews/my'),
 }

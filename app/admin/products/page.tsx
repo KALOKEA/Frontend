@@ -53,6 +53,7 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Product | 'new' | null>(null)
+  const [search, setSearch] = useState('')
 
   function loadProducts() {
     setLoading(true)
@@ -72,9 +73,17 @@ export default function AdminProductsPage() {
     )
   }
 
+  const filtered = search.trim()
+    ? products.filter(p =>
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.slug.toLowerCase().includes(search.toLowerCase()) ||
+        p.categories?.name?.toLowerCase().includes(search.toLowerCase())
+      )
+    : products
+
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="font-serif text-3xl text-[#0a0a0a]">Products</h1>
         <button
           onClick={() => setEditing('new')}
@@ -83,9 +92,28 @@ export default function AdminProductsPage() {
           + New product
         </button>
       </div>
+      {/* Search bar */}
+      <div className="relative mb-4">
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search by name, category or slug…"
+          className="w-full border border-[#e8e4e0] px-4 py-2.5 text-sm focus:border-[#0a0a0a] outline-none pr-8"
+        />
+        {search && (
+          <button
+            onClick={() => setSearch('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9b9b9b] hover:text-[#0a0a0a] text-xl leading-none"
+          >×</button>
+        )}
+      </div>
+      {search.trim() && !loading && (
+        <p className="text-xs text-[#6b6b6b] mb-3">{filtered.length} of {products.length} products</p>
+      )}
+
       {loading
         ? <div className="flex justify-center py-20"><Spinner size="lg" /></div>
-        : <ProductTable products={products} onEdit={p => setEditing(p)} onRefresh={loadProducts} />
+        : <ProductTable products={filtered} onEdit={p => setEditing(p)} onRefresh={loadProducts} />
       }
     </>
   )

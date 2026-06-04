@@ -1,16 +1,95 @@
 'use client'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { reviewsApi, type ReviewItem } from '@/lib/api/reviews'
+import Spinner from '@/components/ui/Spinner'
 
-export default function ReviewsPage() {
+const STARS = (n: number) => (
+  <span className="text-[#c8a4a5] text-sm">
+    {'★'.repeat(n)}<span className="text-[#e8e4e0]">{'★'.repeat(5 - n)}</span>
+  </span>
+)
+
+export default function MyReviewsPage() {
+  const [reviews, setReviews] = useState<(ReviewItem & { products?: { name?: string; slug?: string } })[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    reviewsApi.getMyReviews()
+      .then(data => setReviews(Array.isArray(data) ? data : []))
+      .catch(() => setReviews([]))
+      .finally(() => setLoading(false))
+  }, [])
+
   return (
     <div>
       <h2 className="font-serif text-2xl text-[#0a0a0a] mb-6">My Reviews</h2>
-      <p className="text-sm font-sans text-[#6b6b6b]">
-        You can leave a review on any product page after your order is delivered.
-      </p>
-      <Link href="/account/orders" className="inline-block mt-4 text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] underline hover:text-[#c8a4a5]">
-        View My Orders
-      </Link>
+
+      {loading ? (
+        <div className="flex justify-center py-10"><Spinner size="lg" /></div>
+      ) : reviews.length === 0 ? (
+        <div className="text-center py-10 border border-[#e8e4e0] bg-white">
+          <p className="font-serif text-lg text-[#6b6b6b] mb-2">No reviews yet</p>
+          <p className="text-sm text-[#9b9b9b] mb-4">
+            After receiving your order, open the product page to leave a review.
+          </p>
+          <Link
+            href="/account/orders"
+            className="inline-block text-[10px] uppercase tracking-widest text-[#0a0a0a] border border-[#0a0a0a] px-5 py-2.5 hover:bg-[#0a0a0a] hover:text-white transition-colors"
+          >
+            View My Orders
+          </Link>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {reviews.map(r => {
+            const text = r.body || (r as any).comment || ''
+            const productName = r.products?.name || 'Product'
+            const productSlug = r.products?.slug
+
+            return (
+              <div key={r.id} className="bg-white border border-[#e8e4e0] p-5">
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div>
+                    {productSlug ? (
+                      <Link
+                        href={`/product/${productSlug}`}
+                        className="font-medium text-[#0a0a0a] hover:text-[#c8a4a5] hover:underline"
+                      >
+                        {productName}
+                      </Link>
+                    ) : (
+                      <p className="font-medium text-[#0a0a0a]">{productName}</p>
+                    )}
+                    <p className="text-[11px] text-[#9b9b9b] mt-0.5">
+                      {new Date(r.created_at).toLocaleDateString('en-IN', {
+                        day: '2-digit', month: 'long', year: 'numeric',
+                      })}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1.5 shrink-0">
+                    {STARS(r.rating)}
+                    <span className={`text-[9px] uppercase tracking-widest px-2 py-0.5 ${
+                      r.is_approved
+                        ? 'bg-[#e8f5e9] text-[#2e7d32]'
+                        : 'bg-[#fff8e1] text-[#f57f17]'
+                    }`}>
+                      {r.is_approved ? 'Published' : 'Pending review'}
+                    </span>
+                  </div>
+                </div>
+
+                {r.title && (
+                  <p className="text-sm font-medium text-[#0a0a0a] mb-1">{r.title}</p>
+                )}
+                {text && (
+                  <p className="text-sm text-[#6b6b6b] leading-relaxed">{text}</p>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

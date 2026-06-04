@@ -27,6 +27,7 @@ export default function AdminOrdersPage() {
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [statusFilter, setStatusFilter] = useState('')
+  const [search, setSearch] = useState('')
   const [editing, setEditing] = useState<AdminOrder | null>(null)
   const [detail, setDetail] = useState<AdminOrder | null>(null)
   const [newStatus, setNewStatus] = useState('pending')
@@ -71,13 +72,36 @@ export default function AdminOrdersPage() {
     }
   }
 
-  const visible = statusFilter ? orders.filter(o => o.status === statusFilter) : orders
+  const q = search.trim().toLowerCase()
+  const visible = orders.filter(o => {
+    const matchStatus = !statusFilter || o.status === statusFilter
+    const matchSearch = !q || (
+      o.order_number.toLowerCase().includes(q) ||
+      (o.users?.name || '').toLowerCase().includes(q) ||
+      (o.users?.email || '').toLowerCase().includes(q) ||
+      (o.address_snapshot?.name || '').toLowerCase().includes(q)
+    )
+    return matchStatus && matchSearch
+  })
 
   return (
     <>
       <div className="flex justify-between items-center mb-6">
         <h1 className="font-serif text-3xl text-[#0a0a0a]">Orders</h1>
         <span className="text-sm text-[#6b6b6b]">{total} total</span>
+      </div>
+
+      {/* Search */}
+      <div className="relative mb-4">
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search by order number, customer name or email…"
+          className="w-full border border-[#e8e4e0] px-4 py-2.5 text-sm focus:border-[#0a0a0a] outline-none pr-8"
+        />
+        {search && (
+          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9b9b9b] hover:text-[#0a0a0a] text-xl leading-none">×</button>
+        )}
       </div>
 
       {/* Status filter tabs */}
