@@ -224,17 +224,20 @@ function ProductEditor({ initial, onBack }: { initial: Product | null; onBack: (
 
   async function save() {
     if (!form.name.trim()) { showToast('Product name is required.', 'err'); return }
-    if (!form.base_price) { showToast('Selling price is required.', 'err'); return }
+    const priceNum = parseFloat(form.base_price)
+    if (!form.base_price || isNaN(priceNum) || priceNum <= 0) {
+      showToast('Enter a valid selling price greater than 0.', 'err'); return
+    }
     setSaving(true)
     const payload = {
       name: form.name.trim(),
       slug: form.slug.trim() || slugify(form.name),
       description: form.description || undefined,
       category_id: form.category_id || undefined,
-      base_price: Math.round(parseFloat(form.base_price) * 100),
+      base_price: Math.round(priceNum * 100),
       compare_price: form.compare_price ? Math.round(parseFloat(form.compare_price) * 100) : undefined,
       hsn_code: form.hsn_code || undefined,
-      gst_rate: form.gst_rate !== '' ? Number(form.gst_rate) : undefined,
+      gst_rate: form.gst_rate !== '' && !isNaN(Number(form.gst_rate)) ? Number(form.gst_rate) : undefined,
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
       is_featured: form.is_featured,
       is_active: form.is_active,
