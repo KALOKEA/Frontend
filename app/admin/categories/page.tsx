@@ -291,4 +291,33 @@ export default function AdminCategoriesPage() {
                 <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Status</label>
                 <select
                   value={form.is_active ? 'active' : 'inactive'}
-                  onChange={e => setForm(f => f ? { ...f, is_active: e.target.value === 'active' }
+                  onChange={e => setForm(f => f ? { ...f, is_active: e.target.value === 'active' } : f)}
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none bg-white"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setForm(null)}
+                className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={save}
+                disabled={saving}
+                className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors"
+              >
+                {saving ? 'Saving…' : form.id ? 'Save changes' : 'Create'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
