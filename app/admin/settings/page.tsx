@@ -125,6 +125,26 @@ export default function AdminSettingsPage() {
           <p className="text-[11px] text-[#9b9b9b] mt-1">Set shipping fee to 0 for always-free shipping. COD fee to 0 to disable the surcharge.</p>
         </div>
 
+        {/* Deploy hook */}
+        <div className="bg-white border border-[#e8e4e0] p-6">
+          <h2 className="font-serif text-lg text-[#0a0a0a] mb-1 pb-3 border-b border-[#f0ece8]">Auto-rebuild (Cloudflare deploy hook)</h2>
+          <p className="text-[11px] text-[#9b9b9b] mb-4">
+            When set, the backend calls this URL after every product create / update / deactivate —
+            triggering a Cloudflare Pages rebuild so new products appear without a manual redeploy.
+            <br />
+            <strong className="text-[#0a0a0a]">How to get the URL:</strong> Cloudflare Pages → your project →
+            Settings → Builds &amp; deployments → Deploy Hooks → Add deploy hook → copy the URL → paste in Railway as
+            <code className="bg-[#f0ece8] px-1 mx-0.5">CLOUDFLARE_DEPLOY_HOOK</code>.
+          </p>
+          <Field label="Deploy hook URL (Railway env var)">
+            <input
+              readOnly
+              value="Set CLOUDFLARE_DEPLOY_HOOK in Railway Variables — not stored here for security."
+              className="inp bg-[#faf8f5] text-[#9b9b9b] cursor-default select-none"
+            />
+          </Field>
+        </div>
+
         {/* Save */}
         <div className="flex items-center gap-3">
           <button onClick={save} disabled={saving}
