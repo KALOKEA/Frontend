@@ -64,8 +64,8 @@ export default function AdminReviewsPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="font-serif text-3xl text-[#0a0a0a]">Reviews</h1>
+      <div className="flex flex-wrap justify-between items-center mb-6 gap-3">
+        <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Reviews</h1>
         {tab === 'pending' && pending.length > 0 && (
           <span className="text-sm text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1">
             {pending.length} awaiting moderation

@@ -61,7 +61,7 @@ export default function AdminGstPage() {
   return (
     <>
       <div className="flex flex-wrap justify-between items-end gap-4 mb-2">
-        <h1 className="font-serif text-3xl text-[#0a0a0a]">GST &amp; Tax Tracking</h1>
+        <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">GST &amp; Tax Tracking</h1>
         <div className="flex flex-wrap items-end gap-3">
           <div>
             <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">From</label>
@@ -112,7 +112,7 @@ export default function AdminGstPage() {
             {/* CGST / SGST / IGST */}
             <div className="bg-white border border-[#e8e4e0] p-6">
               <h2 className="font-serif text-lg text-[#0a0a0a] mb-4">Net tax breakdown</h2>
-              <table className="w-full text-sm font-sans">
+              <table className="w-full min-w-[540px] text-sm font-sans">
                 <tbody>
                   <Row label="CGST (intra-state)" value={formatPrice(t!.cgst)} />
                   <Row label="SGST (intra-state)" value={formatPrice(t!.sgst)} />
@@ -128,7 +128,7 @@ export default function AdminGstPage() {
             {/* By transaction type */}
             <div className="bg-white border border-[#e8e4e0] p-6">
               <h2 className="font-serif text-lg text-[#0a0a0a] mb-4">By transaction type</h2>
-              <table className="w-full text-sm font-sans">
+              <table className="w-full min-w-[540px] text-sm font-sans">
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                     <th className="py-2">Type</th><th className="py-2 text-right">Taxable</th><th className="py-2 text-right">GST</th>
@@ -151,7 +151,7 @@ export default function AdminGstPage() {
           {summary.by_rate.length > 0 && (
             <div className="bg-white border border-[#e8e4e0] mb-8">
               <h2 className="font-serif text-lg text-[#0a0a0a] px-6 pt-5 pb-3">Rate-wise summary (GSTR-1)</h2>
-              <table className="w-full text-sm font-sans">
+              <table className="w-full min-w-[540px] text-sm font-sans">
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                     <th className="px-6 py-3">Rate</th><th className="px-4 py-3 text-right">Taxable</th>
@@ -178,7 +178,7 @@ export default function AdminGstPage() {
           {/* Transaction ledger */}
           <h2 className="font-serif text-lg text-[#0a0a0a] mb-3">Transaction ledger</h2>
           <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
-            <table className="w-full text-sm font-sans whitespace-nowrap">
+            <table className="w-full min-w-[540px] text-sm font-sans whitespace-nowrap">
               <thead>
                 <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                   <th className="px-4 py-3">Date</th><th className="px-4 py-3">Type</th><th className="px-4 py-3">Invoice</th>

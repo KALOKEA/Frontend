@@ -34,16 +34,18 @@ export default function FeaturedProducts() {
       <div className="text-center mb-8">
         <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-2">Hand-Picked</p>
         <h2 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] mb-6">Featured Pieces</h2>
-        <div className="flex items-center justify-center gap-0 border border-[#e8e4e0] w-fit mx-auto">
-          {TABS.map((t, i) => (
-            <button
-              key={t.label}
-              onClick={() => setTab(i)}
-              className={`px-5 py-2.5 text-[10px] font-sans tracking-widest uppercase transition-colors border-r last:border-r-0 border-[#e8e4e0] ${i === tab ? 'bg-[#0a0a0a] text-white' : 'text-[#6b6b6b] hover:text-[#0a0a0a]'}`}
-            >
-              {t.label}
-            </button>
-          ))}
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex items-center gap-0 border border-[#e8e4e0] w-fit mx-auto">
+            {TABS.map((t, i) => (
+              <button
+                key={t.label}
+                onClick={() => setTab(i)}
+                className={`px-4 sm:px-5 py-2.5 text-[10px] font-sans tracking-widest uppercase transition-colors border-r last:border-r-0 border-[#e8e4e0] whitespace-nowrap ${i === tab ? 'bg-[#0a0a0a] text-white' : 'text-[#6b6b6b] hover:text-[#0a0a0a]'}`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

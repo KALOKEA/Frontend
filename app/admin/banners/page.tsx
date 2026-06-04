@@ -75,8 +75,8 @@ export default function AdminBannersPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="font-serif text-3xl text-[#0a0a0a]">Banners</h1>
+      <div className="flex flex-wrap justify-between items-center mb-8 gap-3">
+        <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Banners</h1>
         <button
           onClick={() => { setForm({ ...empty }); setMsg(null) }}
           className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors"

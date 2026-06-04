@@ -35,8 +35,8 @@ export default function AdminDashboard() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="font-serif text-3xl text-[#0a0a0a]">Dashboard</h1>
+      <div className="flex flex-wrap justify-between items-start gap-2 mb-8">
+        <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Dashboard</h1>
         <p className="text-xs text-[#9b9b9b]">{new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
       </div>
 
@@ -60,7 +60,8 @@ export default function AdminDashboard() {
             </Link>
           </div>
           {recentOrders.length ? (
-            <table className="w-full text-sm font-sans">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[480px] text-sm font-sans">
               <tbody>
                 {recentOrders.map(o => (
                   <tr key={o.id} className="border-b border-[#f0ece8] last:border-0 hover:bg-[#faf8f5]">
@@ -79,6 +80,7 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+            </div>
           ) : (
             <p className="px-5 py-10 text-sm text-[#6b6b6b] text-center">No orders yet</p>
           )}

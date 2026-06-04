@@ -48,7 +48,7 @@ export default function AdminSettingsPage() {
 
   return (
     <>
-      <h1 className="font-serif text-3xl text-[#0a0a0a] mb-2">Settings</h1>
+      <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a] mb-2">Settings</h1>
       <p className="text-sm text-[#6b6b6b] mb-8">Business, GST and shipping configuration — all stored in the database, no redeploy needed.</p>
 
       <div className="space-y-6 max-w-2xl">

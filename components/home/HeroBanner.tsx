@@ -20,12 +20,12 @@ export default function HeroBanner() {
   }, [])
 
   return (
-    <section className="bg-[#faf8f5] py-20 md:py-32 px-4">
+    <section className="bg-[#faf8f5] py-16 md:py-32 px-4">
       <div className="max-w-4xl mx-auto text-center">
-        <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-6">
+        <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-4 md:mb-6">
           New Collection 2026
         </p>
-        <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-[#0a0a0a] mb-4 leading-none">
+        <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-[#0a0a0a] mb-4 leading-tight md:leading-none">
           Fashion for the{' '}
           <span
             className="italic text-[#c8a4a5] transition-opacity duration-300"
@@ -34,19 +34,19 @@ export default function HeroBanner() {
             {WORDS[wordIdx]}
           </span>
         </h1>
-        <p className="font-sans text-sm text-[#6b6b6b] max-w-lg mx-auto mb-10 leading-relaxed">
+        <p className="font-sans text-sm text-[#6b6b6b] max-w-lg mx-auto mb-8 md:mb-10 leading-relaxed px-2">
           Discover styles that speak before you do. Bold designs, quality fabrics, prices that make sense.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 sm:px-0">
           <Link
             href="/shop"
-            className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:bg-[#2a2a2a] transition-colors"
+            className="w-full sm:w-auto bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:bg-[#2a2a2a] transition-colors text-center"
           >
             Shop New Arrivals
           </Link>
           <Link
             href="/shop?category=sale"
-            className="border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:bg-[#0a0a0a] hover:text-white transition-colors"
+            className="w-full sm:w-auto border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:bg-[#0a0a0a] hover:text-white transition-colors text-center"
           >
             View Sale
           </Link>

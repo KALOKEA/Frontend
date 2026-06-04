@@ -89,8 +89,8 @@ export default function AdminCouponsPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="font-serif text-3xl text-[#0a0a0a]">Coupons</h1>
+      <div className="flex flex-wrap justify-between items-center mb-8 gap-3">
+        <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Coupons</h1>
         <button onClick={openCreate} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors">
           + New coupon
         </button>
@@ -99,8 +99,8 @@ export default function AdminCouponsPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
-        <div className="bg-white border border-[#e8e4e0]">
-          <table className="w-full text-sm font-sans">
+        <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
+          <table className="w-full min-w-[600px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                 <th className="px-4 py-3">Code</th>

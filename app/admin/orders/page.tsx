@@ -89,7 +89,7 @@ export default function AdminOrdersPage() {
     <>
       <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="font-serif text-3xl text-[#0a0a0a]">Orders</h1>
+          <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Orders</h1>
           <p className="text-sm text-[#6b6b6b] mt-1">{total} total</p>
         </div>
         <button
@@ -139,8 +139,8 @@ export default function AdminOrdersPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
-        <div className="bg-white border border-[#e8e4e0]">
-          <table className="w-full text-sm font-sans">
+        <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                 <th className="px-4 py-3">Order</th>

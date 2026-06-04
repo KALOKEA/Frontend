@@ -94,11 +94,11 @@ export default function AdminProductsPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="font-serif text-3xl text-[#0a0a0a]">Products</h1>
+      <div className="flex flex-wrap justify-between items-center mb-6 gap-3">
+        <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Products</h1>
         <button
           onClick={() => setEditing('new')}
-          className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors"
+          className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors shrink-0"
         >
           + New product
         </button>
@@ -154,14 +154,14 @@ function ProductTable({ products, onEdit, onRefresh }: {
   }
 
   return (
-    <div className="bg-white border border-[#e8e4e0]">
+    <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
       {!products.length ? (
         <div className="px-4 py-16 text-center">
           <p className="font-serif text-lg text-[#6b6b6b] mb-2">No products yet</p>
           <p className="text-xs text-[#9b9b9b]">Click "+ New product" above to add your first product.</p>
         </div>
       ) : (
-        <table className="w-full text-sm font-sans">
+        <table className="w-full min-w-[600px] text-sm font-sans">
           <thead>
             <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
               <th className="px-4 py-3 w-14">Image</th>

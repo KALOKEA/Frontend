@@ -61,10 +61,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Wishlist */}
+        {/* Wishlist — always visible on mobile, hover-only on desktop */}
         <button
           onClick={(e) => { e.preventDefault(); toggle(product.id) }}
-          className="absolute top-3 right-3 w-8 h-8 bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute top-3 right-3 w-8 h-8 bg-white/90 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
           aria-label="Wishlist"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill={wishlisted ? '#c8a4a5' : 'none'} stroke={wishlisted ? '#c8a4a5' : '#0a0a0a'} strokeWidth="1.5">
@@ -72,11 +72,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           </svg>
         </button>
 
-        {/* Quick add */}
+        {/* Quick add — always visible on mobile, slide-in on desktop */}
         {!isOutOfStock && (
           <Link
             href={`/product/${product.slug}`}
-            className="absolute bottom-0 left-0 right-0 bg-[#0a0a0a] text-white text-[10px] font-sans tracking-widest uppercase py-3 text-center translate-y-full group-hover:translate-y-0 transition-transform duration-200"
+            className="absolute bottom-0 left-0 right-0 bg-[#0a0a0a] text-white text-[10px] font-sans tracking-widest uppercase py-3 text-center translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-200"
           >
             View Product
           </Link>

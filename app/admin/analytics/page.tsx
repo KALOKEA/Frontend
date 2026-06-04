@@ -35,7 +35,7 @@ export default function AdminAnalyticsPage() {
 
   return (
     <>
-      <h1 className="font-serif text-3xl text-[#0a0a0a] mb-8">Analytics</h1>
+      <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a] mb-8">Analytics</h1>
 
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

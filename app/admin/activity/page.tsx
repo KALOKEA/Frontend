@@ -76,9 +76,9 @@ export default function AdminActivityPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-wrap justify-between items-center mb-8 gap-3">
         <div>
-          <h1 className="font-serif text-3xl text-[#0a0a0a]">Activity Log</h1>
+          <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Activity Log</h1>
           <p className="text-sm text-[#6b6b6b] mt-1">Every admin mutation — who did what and when.</p>
         </div>
         {total > 0 && (
@@ -111,8 +111,8 @@ export default function AdminActivityPage() {
           <p className="text-xs text-[#9b9b9b]">Admin actions will appear here once you start managing products, orders, and more.</p>
         </div>
       ) : (
-        <div className="bg-white border border-[#e8e4e0]">
-          <table className="w-full text-sm font-sans">
+        <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
+          <table className="w-full min-w-[540px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                 <th className="px-4 py-3">Action</th>

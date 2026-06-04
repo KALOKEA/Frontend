@@ -11,13 +11,13 @@ export default function TrustStrip() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#e8e4e0]">
           {items.map(item => (
-            <div key={item.title} className="flex items-center gap-3 px-6 py-5">
-              <span className="text-2xl shrink-0">{item.icon}</span>
-              <div>
-                <p className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] font-medium">
+            <div key={item.title} className="flex items-center gap-2 sm:gap-3 px-3 sm:px-6 py-4 sm:py-5">
+              <span className="text-xl sm:text-2xl shrink-0">{item.icon}</span>
+              <div className="min-w-0">
+                <p className="text-[9px] sm:text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] font-medium leading-tight">
                   {item.title}
                 </p>
-                <p className="text-[11px] font-sans text-[#6b6b6b] mt-0.5">{item.sub}</p>
+                <p className="text-[10px] sm:text-[11px] font-sans text-[#6b6b6b] mt-0.5 leading-tight">{item.sub}</p>
               </div>
             </div>
           ))}

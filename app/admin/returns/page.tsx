@@ -71,13 +71,13 @@ export default function AdminReturnsPage() {
 
   return (
     <>
-      <h1 className="font-serif text-3xl text-[#0a0a0a] mb-8">Returns</h1>
+      <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a] mb-8">Returns</h1>
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
-        <div className="bg-white border border-[#e8e4e0]">
-          <table className="w-full text-sm font-sans">
+        <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
+          <table className="w-full min-w-[540px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                 <th className="px-4 py-3">Order</th>

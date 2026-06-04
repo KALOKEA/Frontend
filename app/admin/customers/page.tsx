@@ -128,7 +128,7 @@ export default function AdminCustomersPage() {
       {/* Header */}
       <div className="flex flex-wrap justify-between items-start gap-3 mb-6">
         <div>
-          <h1 className="font-serif text-3xl text-[#0a0a0a]">Customers</h1>
+          <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Customers</h1>
           <p className="text-sm text-[#6b6b6b] mt-1">{total} registered users</p>
         </div>
         <div className="flex gap-2">
@@ -174,8 +174,8 @@ export default function AdminCustomersPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
-        <div className="bg-white border border-[#e8e4e0]">
-          <table className="w-full text-sm font-sans">
+        <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
+          <table className="w-full min-w-[600px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                 <th className="px-4 py-3">Name</th>

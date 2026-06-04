@@ -64,8 +64,8 @@ export default function AdminInventoryPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="font-serif text-3xl text-[#0a0a0a]">Inventory</h1>
+      <div className="flex flex-wrap justify-between items-center mb-8 gap-3">
+        <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Inventory</h1>
         <label className="flex items-center gap-2 text-sm text-[#6b6b6b]">
           <input type="checkbox" checked={lowOnly} onChange={(e) => setLowOnly(e.target.checked)} /> Low stock only (≤{LOW})
         </label>
@@ -74,8 +74,8 @@ export default function AdminInventoryPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
-        <div className="bg-white border border-[#e8e4e0]">
-          <table className="w-full text-sm font-sans">
+        <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
+          <table className="w-full min-w-[600px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                 <th className="px-4 py-3">Product</th>
