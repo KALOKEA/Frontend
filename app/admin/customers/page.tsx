@@ -87,6 +87,18 @@ export default function AdminCustomersPage() {
     finally { setDetailLoading(false) }
   }
 
+  async function deleteCustomer(c: AdminCustomer) {
+    if (!confirm(
+      `Delete "${c.name || c.email || 'this user'}"?\n\nBlocked if they have any orders — deactivate those first or change their role to "banned" instead.`
+    )) return
+    try {
+      await adminApi.deleteUser(c.id)
+      load(page)
+    } catch (e: any) {
+      alert(e?.message || 'Delete failed')
+    }
+  }
+
   async function saveUser() {
     if (!form) return
     if (!form.email && !form.phone) { setFormMsg('Email or phone is required'); return }
@@ -206,9 +218,15 @@ export default function AdminCustomersPage() {
                     </button>
                     <button
                       onClick={() => { setForm(userToForm(c)); setFormMsg(null) }}
-                      className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+                      className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline mr-3"
                     >
                       Edit
+                    </button>
+                    <button
+                      onClick={() => deleteCustomer(c)}
+                      className="text-[11px] uppercase tracking-widest text-red-500 hover:underline"
+                    >
+                      Delete
                     </button>
                   </td>
                 </tr>

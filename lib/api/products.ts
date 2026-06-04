@@ -59,6 +59,7 @@ export const productsApi = {
   create: (data: Partial<Product>) => api.post<Product>('/products', data),
   update: (id: string, data: Partial<Product>) => api.patch<Product>(`/products/${id}`, data),
   remove: (id: string) => api.delete(`/products/${id}`),
+  hardDelete: (id: string) => api.delete(`/products/${id}/permanent`),
 
   // Images
   listImages: (productId: string) => api.get<ProductImageRow[]>(`/products/${productId}/images`),

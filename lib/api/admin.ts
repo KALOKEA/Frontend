@@ -157,6 +157,7 @@ export const adminApi = {
     api.post<AdminCustomer>('/users', body),
   updateUser: (id: string, body: { name?: string; email?: string; phone?: string; role?: string }) =>
     api.patch<AdminCustomer>(`/users/${id}`, body),
+  deleteUser: (id: string) => api.delete(`/users/${id}`),
   // 1-click download of ALL customer data as CSV
   exportCustomers: async () => {
     const res = await fetch(`${BASE_URL}/users/export`, {

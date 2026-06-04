@@ -143,6 +143,16 @@ function ProductTable({ products, onEdit, onRefresh }: {
     onRefresh()
   }
 
+  async function hardDelete(p: Product) {
+    if (!confirm(`Permanently delete "${p.name}"?\n\nThis removes all variants and images and CANNOT be undone.\nOnly works if the product has no order history.`)) return
+    try {
+      await productsApi.hardDelete(p.id)
+      onRefresh()
+    } catch (e: any) {
+      alert(e?.message || 'Delete failed')
+    }
+  }
+
   return (
     <div className="bg-white border border-[#e8e4e0]">
       {!products.length ? (
@@ -203,12 +213,21 @@ function ProductTable({ products, onEdit, onRefresh }: {
                     >
                       Edit
                     </button>
-                    <button
-                      onClick={() => deactivate(p)}
-                      className="text-[11px] uppercase tracking-widest text-red-500 hover:underline"
-                    >
-                      Deactivate
-                    </button>
+                    {p.is_active ? (
+                      <button
+                        onClick={() => deactivate(p)}
+                        className="text-[11px] uppercase tracking-widest text-amber-600 hover:underline mr-4"
+                      >
+                        Deactivate
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => hardDelete(p)}
+                        className="text-[11px] uppercase tracking-widest text-red-600 hover:underline mr-4"
+                      >
+                        Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               )
