@@ -11,12 +11,13 @@ interface FormState {
   name: string
   slug: string
   description: string
+  image_url: string
   sort_order: string
   is_active: boolean
 }
 
 const emptyForm = (): FormState => ({
-  name: '', slug: '', description: '', sort_order: '99', is_active: true,
+  name: '', slug: '', description: '', image_url: '', sort_order: '99', is_active: true,
 })
 
 function catToForm(c: Category): FormState {
@@ -25,6 +26,7 @@ function catToForm(c: Category): FormState {
     name: c.name,
     slug: c.slug,
     description: c.description || '',
+    image_url: c.image_url || '',
     sort_order: String(c.sort_order ?? 99),
     is_active: c.is_active,
   }
@@ -76,6 +78,7 @@ export default function AdminCategoriesPage() {
       name: form.name.trim(),
       slug: form.slug.trim(),
       description: form.description || undefined,
+      image_url: form.image_url || undefined,
       sort_order: parseInt(form.sort_order, 10) || 99,
       is_active: form.is_active,
     }
@@ -244,6 +247,22 @@ export default function AdminCategoriesPage() {
                 placeholder="dresses"
               />
               <p className="text-[11px] text-[#9b9b9b] mt-1">Used in URLs and filters. Don't change once indexed.</p>
+            </div>
+
+            <div className="mb-3">
+              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Photo URL</label>
+              <input
+                value={form.image_url}
+                onChange={e => setForm(f => f ? { ...f, image_url: e.target.value } : f)}
+                className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                placeholder="https://res.cloudinary.com/... or Unsplash URL"
+              />
+              <p className="text-[11px] text-[#9b9b9b] mt-1">
+                Shown on the homepage "Shop the Look" grid. Paste a Cloudinary or Unsplash URL.
+                {form.image_url && (
+                  <span> <a href={form.image_url} target="_blank" rel="noopener noreferrer" className="text-[#c8a4a5] underline">Preview ↗</a></span>
+                )}
+              </p>
             </div>
 
             <div className="mb-3">

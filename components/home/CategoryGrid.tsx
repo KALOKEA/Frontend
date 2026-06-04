@@ -37,9 +37,9 @@ export default function CategoryGrid() {
             href={`/shop?category=${cat.slug}`}
             className="group relative overflow-hidden aspect-[3/4] bg-[#f4f2ef]"
           >
-            {CATEGORY_IMAGES[cat.slug] && (
+            {(cat.image_url || CATEGORY_IMAGES[cat.slug]) && (
               <img
-                src={CATEGORY_IMAGES[cat.slug]}
+                src={cat.image_url || CATEGORY_IMAGES[cat.slug]}
                 alt={cat.name}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />

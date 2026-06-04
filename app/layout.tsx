@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import CartDrawer from '@/components/layout/CartDrawer'
 import { ToastProvider } from '@/components/ui/Toast'
 import AuthBootstrap from '@/components/AuthBootstrap'
 import Analytics from '@/components/Analytics'
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ToastProvider>
           <AuthBootstrap />
           <Header />
+          <CartDrawer />
           <main><ErrorBoundary>{children}</ErrorBoundary></main>
           <Footer />
         </ToastProvider>

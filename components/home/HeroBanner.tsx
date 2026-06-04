@@ -53,22 +53,6 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Trust strip */}
-      <div className="mt-16 bg-[#0a0a0a] -mx-4 px-4 py-4">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          {[
-            ['Free Shipping', 'On orders above ₹999'],
-            ['Easy Returns', '7-day hassle-free returns'],
-            ['Secure Payment', 'Razorpay encrypted checkout'],
-            ['Made in India', 'Supporting local artisans'],
-          ].map(([title, sub]) => (
-            <div key={title}>
-              <p className="text-[10px] font-sans tracking-widest uppercase text-white mb-1">{title}</p>
-              <p className="text-[10px] font-sans text-[#6b6b6b]">{sub}</p>
-            </div>
-          ))}
-        </div>
-      </div>
     </section>
   )
 }
