@@ -5,6 +5,11 @@
 @tailwind utilities;
 
 :root {
+  /* Brand fonts — referenced by Tailwind's fontFamily config */
+  --font-cormorant: 'Cormorant Garamond';
+  --font-dm-sans: 'DM Sans';
+
+  /* Brand colours */
   --black: #0a0a0a;
   --white: #ffffff;
   --cream: #faf8f5;
