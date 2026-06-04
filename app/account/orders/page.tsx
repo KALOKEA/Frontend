@@ -8,34 +8,79 @@ import { formatPrice } from '@/lib/utils/formatPrice'
 import { useToast } from '@/components/ui/Toast'
 import Spinner from '@/components/ui/Spinner'
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  confirmed: 'bg-blue-100 text-blue-800',
-  processing: 'bg-blue-100 text-blue-800',
-  shipped: 'bg-purple-100 text-purple-800',
-  delivered: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-800',
-  refunded: 'bg-gray-100 text-gray-800',
+// ─── Status helpers ──────────────────────────────────────────────────────────
+
+const STATUS_STEPS = ['pending', 'confirmed', 'processing', 'shipped', 'delivered']
+
+const STATUS_META: Record<string, { label: string; bg: string; text: string; dot: string }> = {
+  pending:    { label: 'Pending',    bg: 'bg-amber-50',  text: 'text-amber-700',  dot: 'bg-amber-400' },
+  confirmed:  { label: 'Confirmed',  bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-400' },
+  processing: { label: 'Processing', bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-400' },
+  shipped:    { label: 'Shipped',    bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-400' },
+  delivered:  { label: 'Delivered',  bg: 'bg-green-50',  text: 'text-green-700',  dot: 'bg-green-500' },
+  cancelled:  { label: 'Cancelled',  bg: 'bg-red-50',    text: 'text-red-600',    dot: 'bg-red-400' },
+  refunded:   { label: 'Refunded',   bg: 'bg-gray-100',  text: 'text-gray-600',   dot: 'bg-gray-400' },
 }
+
+function StatusBadge({ status }: { status: string }) {
+  const m = STATUS_META[status] || { label: status, bg: 'bg-gray-100', text: 'text-gray-600', dot: 'bg-gray-400' }
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] uppercase tracking-widest font-medium rounded-full ${m.bg} ${m.text}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${m.dot}`} />
+      {m.label}
+    </span>
+  )
+}
+
+function OrderProgress({ status }: { status: string }) {
+  const idx = STATUS_STEPS.indexOf(status)
+  if (idx === -1) return null
+  return (
+    <div className="flex items-center gap-0 mb-4">
+      {STATUS_STEPS.map((step, i) => {
+        const done = i <= idx
+        const last = i === STATUS_STEPS.length - 1
+        return (
+          <div key={step} className="flex items-center flex-1 last:flex-none">
+            <div className="flex flex-col items-center">
+              <div className={`w-2.5 h-2.5 rounded-full border-2 transition-colors ${
+                done ? 'bg-[#c8a4a5] border-[#c8a4a5]' : 'bg-white border-[#d0ccc8]'
+              }`} />
+              <span className="text-[8px] uppercase tracking-wider mt-1 text-[#9b9b9b] hidden sm:block whitespace-nowrap">
+                {step === 'processing' ? 'Packing' : step.charAt(0).toUpperCase() + step.slice(1)}
+              </span>
+            </div>
+            {!last && (
+              <div className={`flex-1 h-px mx-1 ${i < idx ? 'bg-[#c8a4a5]' : 'bg-[#e8e4e0]'}`} />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function OrdersPage() {
   const { toast } = useToast()
-  const [orders, setOrders] = useState<Order[]>([])
-  const [returns, setReturns] = useState<ReturnRequest[]>([])
+  const [orders, setOrders]     = useState<Order[]>([])
+  const [returns, setReturns]   = useState<ReturnRequest[]>([])
   const [exchanges, setExchanges] = useState<ExchangeRequest[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading]   = useState(true)
+  const [expanded, setExpanded] = useState<string | null>(null)
 
-  // Return modal state
-  const [returnFor, setReturnFor] = useState<Order | null>(null)
-  const [reason, setReason] = useState<string>(RETURN_REASONS[0])
+  // Return modal
+  const [returnFor, setReturnFor]   = useState<Order | null>(null)
+  const [reason, setReason]         = useState<string>(RETURN_REASONS[0])
   const [submitting, setSubmitting] = useState(false)
 
-  // Exchange modal state
-  const [exchangeFor, setExchangeFor] = useState<Order | null>(null)
-  const [exItemId, setExItemId] = useState<string>('')
-  const [exOptions, setExOptions] = useState<ExchangeOptions | null>(null)
-  const [exVariantId, setExVariantId] = useState<string>('')
-  const [exReason, setExReason] = useState<string>(EXCHANGE_REASONS[0])
+  // Exchange modal
+  const [exchangeFor, setExchangeFor]   = useState<Order | null>(null)
+  const [exItemId, setExItemId]         = useState<string>('')
+  const [exOptions, setExOptions]       = useState<ExchangeOptions | null>(null)
+  const [exVariantId, setExVariantId]   = useState<string>('')
+  const [exReason, setExReason]         = useState<string>(EXCHANGE_REASONS[0])
   const [exLoadingOpts, setExLoadingOpts] = useState(false)
 
   function load() {
@@ -47,16 +92,17 @@ export default function OrdersPage() {
       setOrders(o as Order[])
       setReturns(r as ReturnRequest[])
       setExchanges(e as ExchangeRequest[])
+      // Auto-expand most recent order
+      if ((o as Order[]).length > 0) setExpanded((o as Order[])[0].id)
     }).finally(() => setLoading(false))
   }
   useEffect(load, [])
 
-  const returnByOrder = (orderId: string) => returns.find((r) => r.order_id === orderId)
-  const exchangeByOrder = (orderId: string) => exchanges.find((e) => e.order_id === orderId)
+  const returnByOrder   = (id: string) => returns.find(r => r.order_id === id)
+  const exchangeByOrder = (id: string) => exchanges.find(e => e.order_id === id)
 
   function openExchange(order: Order) {
-    setExchangeFor(order)
-    setExOptions(null); setExVariantId(''); setExReason(EXCHANGE_REASONS[0])
+    setExchangeFor(order); setExOptions(null); setExVariantId(''); setExReason(EXCHANGE_REASONS[0])
     const first = order.order_items?.[0]?.id || ''
     setExItemId(first)
     if (first) loadOptions(first)
@@ -64,34 +110,20 @@ export default function OrdersPage() {
 
   async function loadOptions(orderItemId: string) {
     setExItemId(orderItemId); setExVariantId(''); setExLoadingOpts(true)
-    try {
-      const opts = await exchangesApi.getOptions(orderItemId)
-      setExOptions(opts)
-    } catch {
-      setExOptions({ product_name: '', variants: [] })
-    } finally {
-      setExLoadingOpts(false)
-    }
+    try { setExOptions(await exchangesApi.getOptions(orderItemId)) }
+    catch { setExOptions({ product_name: '', variants: [] }) }
+    finally { setExLoadingOpts(false) }
   }
 
   async function submitExchange() {
     if (!exchangeFor || !exItemId || !exVariantId) return
     setSubmitting(true)
     try {
-      await exchangesApi.create({
-        order_id: exchangeFor.id,
-        order_item_id: exItemId,
-        new_variant_id: exVariantId,
-        reason: exReason,
-      })
+      await exchangesApi.create({ order_id: exchangeFor.id, order_item_id: exItemId, new_variant_id: exVariantId, reason: exReason })
       toast('Exchange request submitted')
-      setExchangeFor(null)
-      load()
-    } catch (e: any) {
-      toast(e?.message || 'Could not submit exchange', 'error')
-    } finally {
-      setSubmitting(false)
-    }
+      setExchangeFor(null); load()
+    } catch (e: any) { toast(e?.message || 'Could not submit exchange', 'error') }
+    finally { setSubmitting(false) }
   }
 
   async function openInvoice(orderId: string) {
@@ -100,9 +132,7 @@ export default function OrdersPage() {
       const w = window.open('', '_blank')
       if (w) { w.document.write(html); w.document.close() }
       else toast('Allow pop-ups to view the invoice', 'error')
-    } catch {
-      toast('Could not open invoice', 'error')
-    }
+    } catch { toast('Could not open invoice', 'error') }
   }
 
   async function submitReturn() {
@@ -111,166 +141,290 @@ export default function OrdersPage() {
     try {
       await returnsApi.create({ order_id: returnFor.id, reason })
       toast('Return request submitted')
-      setReturnFor(null)
-      load()
-    } catch (e: any) {
-      toast(e?.message || 'Could not submit return', 'error')
-    } finally {
-      setSubmitting(false)
-    }
+      setReturnFor(null); load()
+    } catch (e: any) { toast(e?.message || 'Could not submit return', 'error') }
+    finally { setSubmitting(false) }
   }
 
   if (loading) return <div className="flex justify-center py-16"><Spinner size="lg" /></div>
 
+  // ── Empty state ─────────────────────────────────────────────────────────────
   if (!orders.length) return (
-    <div className="text-center py-16">
-      <h2 className="font-serif text-2xl text-[#0a0a0a] mb-2">No orders yet</h2>
-      <p className="text-sm font-sans text-[#6b6b6b] mb-6">Time to treat yourself!</p>
-      <Link href="/shop" className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-6 py-3 hover:bg-[#2a2a2a]">
-        Start Shopping
-      </Link>
+    <div className="bg-white border border-[#e8e4e0]">
+      <div className="px-6 py-5 border-b border-[#f0ece8]">
+        <h2 className="font-serif text-2xl text-[#0a0a0a]">My Orders</h2>
+      </div>
+      <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+        <div className="w-16 h-16 rounded-full bg-[#faf8f5] border border-[#e8e4e0] flex items-center justify-center mb-5">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c8a4a5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </div>
+        <h3 className="font-serif text-xl text-[#0a0a0a] mb-2">No orders yet</h3>
+        <p className="text-sm text-[#6b6b6b] mb-8 max-w-xs leading-relaxed">
+          Your order history will appear here once you place your first order.
+        </p>
+        <Link
+          href="/shop"
+          className="inline-block bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-8 py-3.5 hover:bg-[#333] transition-colors"
+        >
+          Explore Collection
+        </Link>
+        <div className="mt-8 grid grid-cols-3 gap-6 text-center">
+          {[
+            { icon: '🚚', label: 'Free shipping', sub: 'on orders above ₹999' },
+            { icon: '↩️', label: 'Easy returns', sub: 'within 7 days' },
+            { icon: '🔒', label: 'Secure payments', sub: 'Razorpay & COD' },
+          ].map(b => (
+            <div key={b.label}>
+              <div className="text-2xl mb-1">{b.icon}</div>
+              <p className="text-[11px] font-medium text-[#0a0a0a]">{b.label}</p>
+              <p className="text-[10px] text-[#9b9b9b]">{b.sub}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 
+  // ── Orders list ─────────────────────────────────────────────────────────────
   return (
     <div>
-      <h2 className="font-serif text-2xl text-[#0a0a0a] mb-6">My Orders</h2>
-      <div className="space-y-4">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="font-serif text-2xl text-[#0a0a0a]">My Orders</h2>
+        <span className="text-[11px] uppercase tracking-widest text-[#9b9b9b]">{orders.length} order{orders.length !== 1 ? 's' : ''}</span>
+      </div>
+
+      <div className="space-y-3">
         {orders.map((order) => {
           const ret = returnByOrder(order.id)
-          const ex = exchangeByOrder(order.id)
-          const canReturn = order.status === 'delivered' && !ret && !ex
+          const ex  = exchangeByOrder(order.id)
+          const canReturn   = order.status === 'delivered' && !ret && !ex
           const canExchange = order.status === 'delivered' && !ret && !ex
-          return (
-            <div key={order.id} className="border border-[#e8e4e0] p-5">
-              <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-                <div>
-                  <p className="text-xs font-sans font-medium text-[#0a0a0a]">Order #{order.order_number}</p>
-                  <p className="text-[10px] font-sans text-[#6b6b6b]">
-                    {new Date(order.created_at).toLocaleDateString('en-IN')} · {order.order_items?.length || 0} item(s)
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className={`text-[10px] font-sans tracking-widest uppercase px-2 py-1 rounded ${STATUS_COLORS[order.status] || 'bg-gray-100 text-gray-800'}`}>
-                    {order.status}
-                  </span>
-                  <span className="text-sm font-sans font-medium text-[#0a0a0a]">{formatPrice(order.total)}</span>
-                </div>
-              </div>
+          const isOpen = expanded === order.id
+          const isActive = !['cancelled', 'refunded', 'delivered'].includes(order.status)
 
-              {order.order_items && (
-                <div className="flex flex-wrap gap-x-3 gap-y-1 mb-4">
-                  {order.order_items.slice(0, 3).map((item) => (
-                    <div key={item.id} className="text-[10px] font-sans text-[#6b6b6b]">
-                      {item.snapshot_name} × {item.quantity}
+          return (
+            <div key={order.id} className="bg-white border border-[#e8e4e0] overflow-hidden">
+
+              {/* Order header — always visible */}
+              <button
+                onClick={() => setExpanded(isOpen ? null : order.id)}
+                className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 hover:bg-[#faf8f5] transition-colors"
+              >
+                <div className="flex items-center gap-4 min-w-0">
+                  <StatusBadge status={order.status} />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-[#0a0a0a]">#{order.order_number}</p>
+                    <p className="text-[11px] text-[#9b9b9b] mt-0.5">
+                      {new Date(order.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      {' · '}
+                      {order.order_items?.length || 0} item{(order.order_items?.length || 0) !== 1 ? 's' : ''}
+                      {order.payment_method && (
+                        <span className="ml-2 text-[#c8a4a5] uppercase">
+                          {order.payment_method === 'cod' ? '· COD' : '· Paid online'}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="font-serif text-base text-[#0a0a0a]">{formatPrice(order.total)}</span>
+                  <svg
+                    width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9b9b9b" strokeWidth="2"
+                    className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                  >
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
+              </button>
+
+              {/* Expanded details */}
+              {isOpen && (
+                <div className="border-t border-[#f0ece8] px-5 pb-5 pt-4">
+
+                  {/* Progress tracker (only for active orders) */}
+                  {isActive && <OrderProgress status={order.status} />}
+
+                  {/* Tracking info */}
+                  {order.tracking_number && (
+                    <div className="bg-[#faf8f5] border border-[#e8e4e0] rounded px-4 py-3 mb-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b] mb-0.5">Tracking</p>
+                        <p className="text-sm font-medium text-[#0a0a0a]">{order.tracking_number}</p>
+                        {order.courier_name && <p className="text-[11px] text-[#6b6b6b]">{order.courier_name}</p>}
+                      </div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c8a4a5" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </div>
-                  ))}
-                  {(order.order_items.length > 3) && (
-                    <div className="text-[10px] font-sans text-[#6b6b6b]">+{order.order_items.length - 3} more</div>
                   )}
+
+                  {/* Items */}
+                  {order.order_items && order.order_items.length > 0 && (
+                    <div className="space-y-2 mb-4">
+                      {order.order_items.map((item) => (
+                        <div key={item.id} className="flex items-center gap-3">
+                          {/* Image placeholder */}
+                          <div className="w-12 h-14 bg-[#f4f2ef] border border-[#e8e4e0] shrink-0 flex items-center justify-center overflow-hidden">
+                            {(item as any).snapshot_image ? (
+                              <img src={(item as any).snapshot_image} alt={item.snapshot_name} className="w-full h-full object-cover" />
+                            ) : (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0ccc8" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-[#0a0a0a] font-medium truncate">{item.snapshot_name}</p>
+                            <p className="text-[11px] text-[#9b9b9b]">
+                              {[(item as any).snapshot_colour, (item as any).snapshot_size].filter(Boolean).join(' · ')}
+                              {(item as any).snapshot_colour || (item as any).snapshot_size ? ' · ' : ''}
+                              Qty {item.quantity}
+                            </p>
+                          </div>
+                          <p className="text-sm text-[#0a0a0a] shrink-0">{formatPrice(item.snapshot_price * item.quantity)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Delivery address */}
+                  {order.address_snapshot && (
+                    <div className="text-[11px] text-[#6b6b6b] mb-4 leading-relaxed">
+                      <span className="text-[10px] uppercase tracking-widest text-[#9b9b9b] block mb-1">Deliver to</span>
+                      {order.address_snapshot.name && <span>{order.address_snapshot.name}, </span>}
+                      {order.address_snapshot.line1 || order.address_snapshot.street}
+                      {order.address_snapshot.city && `, ${order.address_snapshot.city}`}
+                      {order.address_snapshot.state && `, ${order.address_snapshot.state}`}
+                      {order.address_snapshot.pincode && ` - ${order.address_snapshot.pincode}`}
+                    </div>
+                  )}
+
+                  {/* Order total breakdown */}
+                  <div className="border-t border-[#f0ece8] pt-3 mb-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6b6b6b]">Order total</span>
+                      <span className="font-medium text-[#0a0a0a]">{formatPrice(order.total)}</span>
+                    </div>
+                  </div>
+
+                  {/* Return/exchange status pills */}
+                  {(ret || ex) && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {ret && (
+                        <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest bg-amber-50 text-amber-700 px-3 py-1 rounded-full">
+                          Return · {ret.status}
+                        </span>
+                      )}
+                      {ex && (
+                        <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest bg-blue-50 text-blue-700 px-3 py-1 rounded-full">
+                          Exchange · {ex.status}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Action row */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      onClick={() => openInvoice(order.id)}
+                      className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors"
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      Invoice
+                    </button>
+
+                    {canReturn && (
+                      <button
+                        onClick={() => { setReturnFor(order); setReason(RETURN_REASONS[0]) }}
+                        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.05"/></svg>
+                        Return
+                      </button>
+                    )}
+                    {canExchange && (
+                      <button
+                        onClick={() => openExchange(order)}
+                        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                        Exchange
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
-
-              <div className="flex items-center gap-4 border-t border-[#f4f2ef] pt-3">
-                <button
-                  onClick={() => openInvoice(order.id)}
-                  className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a]"
-                >
-                  Invoice
-                </button>
-                {canReturn && (
-                  <button
-                    onClick={() => { setReturnFor(order); setReason(RETURN_REASONS[0]) }}
-                    className="text-[10px] font-sans tracking-widest uppercase text-[#c8a4a5] hover:underline"
-                  >
-                    Request return
-                  </button>
-                )}
-                {canExchange && (
-                  <button
-                    onClick={() => openExchange(order)}
-                    className="text-[10px] font-sans tracking-widest uppercase text-[#c8a4a5] hover:underline"
-                  >
-                    Request exchange
-                  </button>
-                )}
-                {ret && (
-                  <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">
-                    Return: {ret.status}
-                  </span>
-                )}
-                {ex && (
-                  <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">
-                    Exchange: {ex.status}
-                  </span>
-                )}
-              </div>
             </div>
           )
         })}
       </div>
 
+      {/* ── Return modal ──────────────────────────────────────────────────────── */}
       {returnFor && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setReturnFor(null)}>
-          <div className="bg-white w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setReturnFor(null)}>
+          <div className="bg-white w-full max-w-md p-6 shadow-xl" onClick={e => e.stopPropagation()}>
             <h3 className="font-serif text-xl text-[#0a0a0a] mb-1">Request a return</h3>
-            <p className="text-xs font-sans text-[#6b6b6b] mb-4">Order #{returnFor.order_number}</p>
-            <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Reason</label>
-            <select value={reason} onChange={(e) => setReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm mb-4">
-              {RETURN_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
+            <p className="text-xs text-[#6b6b6b] mb-5">Order #{returnFor.order_number}</p>
+            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Reason</label>
+            <select value={reason} onChange={e => setReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
+              {RETURN_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
-            <p className="text-[11px] font-sans text-[#6b6b6b] mb-4">Returns are accepted within 7 days of delivery for unworn items with original tags.</p>
+            <p className="text-[11px] text-[#9b9b9b] mb-5 leading-relaxed">
+              Returns are accepted within 7 days of delivery for unworn items with original tags attached.
+            </p>
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setReturnFor(null)} className="px-4 py-2 text-sm border border-[#e8e4e0]">Cancel</button>
-              <button onClick={submitReturn} disabled={submitting} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white disabled:opacity-50">
-                {submitting ? 'Submitting…' : 'Submit'}
+              <button onClick={() => setReturnFor(null)} className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] transition-colors">Cancel</button>
+              <button onClick={submitReturn} disabled={submitting} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors">
+                {submitting ? 'Submitting…' : 'Submit request'}
               </button>
             </div>
           </div>
         </div>
       )}
 
+      {/* ── Exchange modal ────────────────────────────────────────────────────── */}
       {exchangeFor && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setExchangeFor(null)}>
-          <div className="bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setExchangeFor(null)}>
+          <div className="bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
             <h3 className="font-serif text-xl text-[#0a0a0a] mb-1">Request an exchange</h3>
-            <p className="text-xs font-sans text-[#6b6b6b] mb-4">Order #{exchangeFor.order_number}</p>
+            <p className="text-xs text-[#6b6b6b] mb-5">Order #{exchangeFor.order_number}</p>
 
-            <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Item to exchange</label>
-            <select value={exItemId} onChange={(e) => loadOptions(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm mb-4">
-              {(exchangeFor.order_items || []).map((it) => (
+            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Item to exchange</label>
+            <select value={exItemId} onChange={e => loadOptions(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
+              {(exchangeFor.order_items || []).map(it => (
                 <option key={it.id} value={it.id}>
-                  {it.snapshot_name}{[it.snapshot_colour, it.snapshot_size].filter(Boolean).length ? ` (${[it.snapshot_colour, it.snapshot_size].filter(Boolean).join(', ')})` : ''} × {it.quantity}
+                  {it.snapshot_name}{[(it as any).snapshot_colour, (it as any).snapshot_size].filter(Boolean).length
+                    ? ` (${[(it as any).snapshot_colour, (it as any).snapshot_size].filter(Boolean).join(', ')})` : ''} × {it.quantity}
                 </option>
               ))}
             </select>
 
-            <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Exchange for</label>
+            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Exchange for</label>
             {exLoadingOpts ? (
               <div className="py-4"><Spinner /></div>
             ) : exOptions && exOptions.variants.length ? (
-              <select value={exVariantId} onChange={(e) => setExVariantId(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm mb-4">
+              <select value={exVariantId} onChange={e => setExVariantId(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
                 <option value="">Select a variant</option>
-                {exOptions.variants.map((v) => (
+                {exOptions.variants.map(v => (
                   <option key={v.id} value={v.id}>
                     {[v.colour, v.size].filter(Boolean).join(' · ') || 'Variant'} — {formatPrice(v.price)} ({v.stock} in stock)
                   </option>
                 ))}
               </select>
             ) : (
-              <p className="text-xs font-sans text-[#6b6b6b] mb-4">No other variants are available in stock for this item.</p>
+              <p className="text-xs text-[#6b6b6b] mb-4 py-2">No other variants are currently in stock for this item.</p>
             )}
 
-            <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Reason</label>
-            <select value={exReason} onChange={(e) => setExReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm mb-4">
-              {EXCHANGE_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
+            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Reason</label>
+            <select value={exReason} onChange={e => setExReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
+              {EXCHANGE_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
 
-            <p className="text-[11px] font-sans text-[#6b6b6b] mb-4">Any price or GST difference is settled when the exchange is approved. Exchanges follow the same 7-day window as returns.</p>
+            <p className="text-[11px] text-[#9b9b9b] mb-5 leading-relaxed">
+              Any price or GST difference is settled when the exchange is approved. Exchanges follow the same 7-day window as returns.
+            </p>
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setExchangeFor(null)} className="px-4 py-2 text-sm border border-[#e8e4e0]">Cancel</button>
-              <button onClick={submitExchange} disabled={submitting || !exVariantId} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white disabled:opacity-50">
-                {submitting ? 'Submitting…' : 'Submit'}
+              <button onClick={() => setExchangeFor(null)} className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] transition-colors">Cancel</button>
+              <button onClick={submitExchange} disabled={submitting || !exVariantId} className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors">
+                {submitting ? 'Submitting…' : 'Submit request'}
               </button>
             </div>
           </div>
