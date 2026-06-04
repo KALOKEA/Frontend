@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { create } from 'zustand'
 import { setAccessToken } from '@/lib/api/client'
 
@@ -8,15 +8,13 @@ interface User {
   email?: string
   phone?: string
   role: string
+  created_at?: string
 }
 
 interface AuthStore {
   user: User | null
   accessToken: string | null
   isLoggedIn: boolean
-  // True once the on-load session restore (AuthBootstrap) has settled, whether
-  // it succeeded or not. Guarded pages should wait for this before redirecting,
-  // otherwise an admin/customer is bounced to /login on every hard refresh.
   hydrated: boolean
   setAuth: (token: string, user: User) => void
   clearAuth: () => void

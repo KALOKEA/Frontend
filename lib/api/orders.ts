@@ -1,4 +1,4 @@
-import api from './client'
+﻿import api from './client'
 
 export interface Order {
   id: string
@@ -20,8 +20,12 @@ export interface Order {
   payment_method?: string
   payment_status: string
   created_at: string
+  tracking_number?: string
+  courier_name?: string
+  status_changed_at?: string
   address_snapshot: {
     name: string; phone: string; line1: string; line2?: string
+    line?: string; street?: string
     city: string; state: string; pincode: string
   }
   order_items?: {
@@ -70,8 +74,6 @@ export const ordersApi = {
     gstin?: string
   }) => api.post<Order>('/orders', data),
 
-  // Authoritative price + GST preview for the checkout summary. Pass the buyer
-  // state (via address_snapshot) so the CGST/SGST vs IGST split is correct.
   quote: (data: {
     address_id?: string
     address_snapshot?: { state?: string }
