@@ -1,6 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { categoriesApi, type Category } from '@/lib/api/categories'
+import { uploadImage } from '@/lib/api/upload'
 import Spinner from '@/components/ui/Spinner'
 
 const slugify = (s: string) =>
@@ -37,8 +39,10 @@ export default function AdminCategoriesPage() {
   const [loading, setLoading]       = useState(true)
   const [form, setForm]             = useState<FormState | null>(null)
   const [saving, setSaving]         = useState(false)
+  const [uploading, setUploading]   = useState(false)
   const [toast, setToast]           = useState<{ msg: string; type: 'ok' | 'err' } | null>(null)
   const [slugManual, setSlugManual] = useState(false)
+  const fileRef                     = useRef<HTMLInputElement>(null)
 
   function load() {
     setLoading(true)
@@ -53,6 +57,21 @@ export default function AdminCategoriesPage() {
   function showToast(msg: string, type: 'ok' | 'err' = 'ok') {
     setToast({ msg, type })
     setTimeout(() => setToast(null), 3000)
+  }
+
+  async function onImageUpload(files: FileList | null) {
+    if (!files || files.length === 0) return
+    setUploading(true)
+    try {
+      const { url } = await uploadImage(files[0], 'categories')
+      setForm(f => f ? { ...f, image_url: url } : f)
+      showToast('Photo uploaded ✓')
+    } catch (e: any) {
+      showToast(e?.message || 'Upload failed', 'err')
+    } finally {
+      setUploading(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
   }
 
   function setName(name: string) {
@@ -148,14 +167,15 @@ export default function AdminCategoriesPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
-        <div className="bg-white border border-[#e8e4e0]">
-          <table className="w-full text-sm font-sans">
+        <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
+          <table className="w-full min-w-[560px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
+                <th className="px-4 py-3 w-16">Photo</th>
                 <th className="px-4 py-3 w-8">#</th>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Slug</th>
-                <th className="px-4 py-3">Description</th>
+                <th className="px-4 py-3 hidden md:table-cell">Description</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
@@ -163,7 +183,7 @@ export default function AdminCategoriesPage() {
             <tbody>
               {categories.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-16 text-center text-[#6b6b6b]">
+                  <td colSpan={7} className="px-4 py-16 text-center text-[#6b6b6b]">
                     <p className="font-serif text-lg mb-1">No categories yet</p>
                     <p className="text-xs text-[#9b9b9b]">Click "+ New category" or run the seed script to add the 9 default categories.</p>
                   </td>
@@ -175,10 +195,24 @@ export default function AdminCategoriesPage() {
                     c.is_active ? 'hover:bg-[#faf8f5]' : 'opacity-50 hover:opacity-75 hover:bg-[#faf8f5]'
                   }`}
                 >
+                  {/* Thumbnail */}
+                  <td className="px-4 py-3">
+                    <div className="relative w-12 h-10 bg-[#f4f2ef] overflow-hidden shrink-0">
+                      {c.image_url ? (
+                        <Image src={c.image_url} alt={c.name} fill className="object-cover" sizes="48px" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0ccc8" strokeWidth="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-[#9b9b9b] text-xs">{c.sort_order}</td>
                   <td className="px-4 py-3 font-medium text-[#0a0a0a]">{c.name}</td>
                   <td className="px-4 py-3 font-mono text-xs text-[#6b6b6b]">{c.slug}</td>
-                  <td className="px-4 py-3 text-[#6b6b6b] text-xs max-w-[200px] truncate">
+                  <td className="px-4 py-3 text-[#6b6b6b] text-xs max-w-[200px] truncate hidden md:table-cell">
                     {c.description || '—'}
                   </td>
                   <td className="px-4 py-3">
@@ -249,13 +283,59 @@ export default function AdminCategoriesPage() {
               <p className="text-[11px] text-[#9b9b9b] mt-1">Used in URLs and filters. Don't change once indexed.</p>
             </div>
 
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Photo URL</label>
+            <div className="mb-4">
+              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-2">Category Photo</label>
+
+              {/* Preview */}
+              {form.image_url ? (
+                <div className="relative w-full aspect-[3/2] bg-[#f4f2ef] mb-2 overflow-hidden">
+                  <Image
+                    src={form.image_url}
+                    alt="Category preview"
+                    fill
+                    className="object-cover"
+                    sizes="400px"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => f ? { ...f, image_url: '' } : f)}
+                    className="absolute top-2 right-2 w-7 h-7 bg-black/60 text-white text-sm flex items-center justify-center hover:bg-black/80 transition-colors"
+                    title="Remove photo"
+                  >
+                    ×
+                  </button>
+                </div>
+              ) : (
+                <div className="w-full aspect-[3/2] bg-[#f4f2ef] flex items-center justify-center mb-2 border border-dashed border-[#d0ccc8]">
+                  <p className="text-[11px] text-[#9b9b9b] uppercase tracking-widest">No photo</p>
+                </div>
+              )}
+
+              {/* Upload button */}
+              <label className="block w-full px-4 py-2 text-sm border border-[#0a0a0a] text-center cursor-pointer hover:bg-[#faf8f5] transition-colors mb-2">
+                {uploading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Spinner size="sm" /> Uploading…
+                  </span>
+                ) : (
+                  form.image_url ? '↑ Replace photo' : '+ Upload photo'
+                )}
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  hidden
+                  disabled={uploading}
+                  onChange={e => onImageUpload(e.target.files)}
+                />
+              </label>
+
+              {/* Manual URL fallback */}
               <input
                 value={form.image_url}
                 onChange={e => setForm(f => f ? { ...f, image_url: e.target.value } : f)}
-                className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
-                placeholder="https://res.cloudinary.com/... or Unsplash URL"
+                className="w-full border border-[#e8e4e0] px-3 py-2 text-xs focus:border-[#0a0a0a] outline-none text-[#6b6b6b]"
+                placeholder="Or paste an image URL directly"
               />
               <p className="text-[11px] text-[#9b9b9b] mt-1">
                 Shown on the homepage "Shop the Look" grid. Paste a Cloudinary or Unsplash URL.
