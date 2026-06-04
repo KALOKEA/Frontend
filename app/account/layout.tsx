@@ -87,8 +87,8 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
   if (!hydrated || !isLoggedIn) return null
 
-  const memberSince = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
+  const memberSince = (user as any)?.created_at
+    ? new Date((user as any).created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
     : null
 
   const avatarLetters = initials(user?.name, user?.email || user?.phone)

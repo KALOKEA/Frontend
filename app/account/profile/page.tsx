@@ -52,9 +52,9 @@ export default function ProfilePage() {
           <p className="text-[11px] text-[#9b9b9b] truncate max-w-full">
             {user?.email || user?.phone || ''}
           </p>
-          {user?.created_at && (
+          {(user as any)?.created_at && (
             <p className="text-[10px] uppercase tracking-widest text-[#c8a4a5] mt-2">
-              Member since {new Date(user.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+              Member since {new Date((user as any).created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
             </p>
           )}
         </div>

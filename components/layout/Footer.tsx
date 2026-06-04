@@ -2,68 +2,50 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0a0a0a] text-white pt-16 pb-8 mt-16">
+    <footer className="bg-[#0a0a0a] text-white pt-8 pb-5 mt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-          <div>
-            <h4 className="font-serif text-2xl tracking-widest mb-4">KALOKEA</h4>
-            <p className="text-[#6b6b6b] text-xs font-sans leading-relaxed mb-4">
-              Fashion that celebrates every woman. Confident. Elegant. Unstoppable.
-            </p>
-            <div className="flex gap-3">
-              {['instagram','facebook','pinterest'].map((s) => (
-                <a key={s} href="#" className="w-8 h-8 border border-[#2a2a2a] flex items-center justify-center text-[#6b6b6b] hover:border-[#c8a4a5] hover:text-[#c8a4a5] transition-colors">
-                  <span className="text-[10px] uppercase">{s[0]}</span>
-                </a>
+
+        {/* Single compact row: brand + links */}
+        <div className="flex flex-col md:flex-row md:items-start gap-6 mb-6">
+
+          {/* Brand */}
+          <div className="shrink-0">
+            <h4 className="font-serif text-lg tracking-widest text-white mb-1">KALOKEA</h4>
+            <p className="text-[#6b6b6b] text-[11px] font-sans">Fashion for every woman.</p>
+          </div>
+
+          {/* Links — horizontal wrap */}
+          <div className="flex-1 flex flex-wrap gap-x-8 gap-y-3 md:justify-end text-[11px] font-sans">
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] uppercase tracking-widest text-[#6b6b6b] mb-0.5">Shop</span>
+              {['New Arrivals','Dresses','Tops','Bottoms','Sale'].map(c => (
+                <Link key={c} href={`/shop?category=${c.toLowerCase().replace(/ /g,'-')}`} className="text-[#9b9b9b] hover:text-[#c8a4a5] transition-colors">{c}</Link>
               ))}
             </div>
-          </div>
-
-          <div>
-            <h5 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Shop</h5>
-            <ul className="space-y-2">
-              {['New Arrivals','Dresses','Tops','Bottoms','Shoes','Bags','Accessories','Sale'].map((cat) => (
-                <li key={cat}>
-                  <Link href={`/shop?category=${cat.toLowerCase().replace(/ /g,'-')}`} className="text-xs font-sans text-[#e8e4e0] hover:text-[#c8a4a5] transition-colors">
-                    {cat}
-                  </Link>
-                </li>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] uppercase tracking-widest text-[#6b6b6b] mb-0.5">Account</span>
+              {[['Orders','/account/orders'],['Profile','/account/profile'],['Wishlist','/account/wishlist']].map(([l,h]) => (
+                <Link key={h} href={h} className="text-[#9b9b9b] hover:text-[#c8a4a5] transition-colors">{l}</Link>
               ))}
-            </ul>
-          </div>
-
-          <div>
-            <h5 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Account</h5>
-            <ul className="space-y-2">
-              {[['My Orders','/account/orders'],['My Profile','/account/profile'],['My Addresses','/account/addresses'],['Wishlist','/account/wishlist'],['My Reviews','/account/reviews']].map(([label, href]) => (
-                <li key={href}>
-                  <Link href={href} className="text-xs font-sans text-[#e8e4e0] hover:text-[#c8a4a5] transition-colors">{label}</Link>
-                </li>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] uppercase tracking-widest text-[#6b6b6b] mb-0.5">Help</span>
+              {[['Shipping','/shipping'],['Returns','/returns'],['Contact','/contact'],['About','/about']].map(([l,h]) => (
+                <Link key={h} href={h} className="text-[#9b9b9b] hover:text-[#c8a4a5] transition-colors">{l}</Link>
               ))}
-            </ul>
-          </div>
-
-          <div>
-            <h5 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Help</h5>
-            <ul className="space-y-2">
-              {[['Size Guide','/size-guide'],['Shipping','/shipping'],['Returns','/returns'],['Contact Us','/contact'],['About Us','/about'],['Privacy Policy','/privacy'],['Terms','/terms']].map(([label, href]) => (
-                <li key={href}>
-                  <Link href={href} className="text-xs font-sans text-[#e8e4e0] hover:text-[#c8a4a5] transition-colors">{label}</Link>
-                </li>
-              ))}
-            </ul>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-[#1a1a1a] pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-[11px] font-sans text-[#6b6b6b]">© 2026 Kalokea. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <span className="text-[10px] font-sans text-[#6b6b6b] tracking-widest">SECURE PAYMENTS</span>
-            <div className="flex gap-2">
-              {['Visa','MC','UPI','RZP'].map((m) => (
-                <span key={m} className="border border-[#2a2a2a] px-2 py-0.5 text-[9px] font-sans text-[#6b6b6b]">{m}</span>
-              ))}
-            </div>
+        {/* Bottom bar */}
+        <div className="border-t border-[#1a1a1a] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="text-[10px] font-sans text-[#6b6b6b]">© {new Date().getFullYear()} Kalokea. All rights reserved.</p>
+          <div className="flex items-center gap-3">
+            {['Visa','MC','UPI','RZP'].map(m => (
+              <span key={m} className="border border-[#2a2a2a] px-1.5 py-0.5 text-[9px] font-sans text-[#6b6b6b]">{m}</span>
+            ))}
+            <Link href="/privacy" className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#c8a4a5]">Privacy</Link>
+            <Link href="/terms" className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#c8a4a5]">Terms</Link>
           </div>
         </div>
       </div>
