@@ -352,9 +352,4 @@ export default function AdminOrdersPage() {
       )}
     </>
   )
-}iv>
-        </div>
-      )}
-    </>
-  )
 }
