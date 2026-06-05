@@ -36,6 +36,7 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState<string | null>(null)
   const [couponDiscount, setCouponDiscount] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isLoggedIn) { router.push('/login?redirect=/checkout'); return }
@@ -47,6 +48,12 @@ export default function CheckoutPage() {
     }).catch(() => setBilling((b) => ({ ...b, email: user?.email || '' })))
   }, [isLoggedIn, items.length, router, user?.email])
 
+  // Pre-load Razorpay script as soon as page mounts — avoids loading it inside
+  // an async chain which some mobile browsers treat as an untrusted context.
+  useEffect(() => {
+    import('@/lib/utils/razorpay').then(({ loadRazorpay }) => loadRazorpay()).catch(() => {})
+  }, [])
+
   // GA4 begin_checkout once, when the page loads with items.
   useEffect(() => {
     if (!items.length) return
@@ -56,18 +63,23 @@ export default function CheckoutPage() {
   }, [])
 
   const placeOrder = async () => {
+    setCheckoutError(null)
+
     // Validate billing details (matches the backend's required fields).
     const required: [keyof BillingForm, string][] = [
       ['first_name', 'First name'], ['line1', 'Street address'], ['city', 'Town / City'],
       ['state', 'State'], ['pincode', 'Postcode / PIN'], ['phone', 'Phone'],
     ]
     for (const [k, label] of required) {
-      if (!String(billing[k] || '').trim()) { toast(`${label} is required`, 'error'); return }
+      if (!String(billing[k] || '').trim()) {
+        setCheckoutError(`${label} is required`)
+        return
+      }
     }
-    if (billing.pincode.length !== 6) { toast('Enter a valid 6-digit PIN code', 'error'); return }
-    if (billing.phone.length !== 10) { toast('Enter a valid 10-digit phone number', 'error'); return }
+    if (billing.pincode.length !== 6) { setCheckoutError('Enter a valid 6-digit PIN code'); return }
+    if (billing.phone.length !== 10) { setCheckoutError('Enter a valid 10-digit phone number'); return }
     if (billing.gst_invoice && (!billing.gstin.trim() || !billing.company.trim())) {
-      toast('Company name and GSTIN are required for a GST invoice', 'error'); return
+      setCheckoutError('Company name and GSTIN are required for a GST invoice'); return
     }
 
     setLoading(true)
@@ -95,19 +107,19 @@ export default function CheckoutPage() {
         clearCart()
         router.push(`/checkout/success?order=${order.order_number}`)
       } else {
-        // Razorpay integration — ensure the checkout SDK is loaded first
-        // (static export has no global script tag, so load it on demand).
+        // Razorpay — script was pre-loaded on mount, so loadRazorpay resolves instantly.
         const [{ paymentsApi }, { loadRazorpay }] = await Promise.all([
           import('@/lib/api/payments'),
           import('@/lib/utils/razorpay'),
         ])
         const RazorpayCtor = await loadRazorpay()
         if (!RazorpayCtor) {
-          toast('Could not load the payment gateway. Check your connection and try again.', 'error')
-          setLoading(false)
+          setCheckoutError('Payment gateway failed to load. Please check your internet connection and try again.')
           return
         }
         const rzp = await paymentsApi.createOrder(order.id)
+        setLoading(false) // release loading state before opening modal
+
         const razorpay = new RazorpayCtor({
           key: rzp.key_id,
           amount: rzp.amount,
@@ -125,22 +137,26 @@ export default function CheckoutPage() {
           prefill: {
             name: `${billing.first_name} ${billing.last_name}`.trim(),
             email: billing.email || undefined,
-            contact: billing.phone || undefined,
+            // Razorpay requires +91 prefix for India
+            contact: billing.phone ? `+91${billing.phone}` : undefined,
           },
           theme: { color: '#0a0a0a' },
           modal: {
             ondismiss: () => {
-              toast('Payment cancelled. Your order is saved as pending — you can retry from My Orders.', 'error')
+              toast('Payment cancelled. You can retry from My Orders.', 'info')
             },
           },
         })
         razorpay.on('payment.failed', () => {
-          toast('Payment failed. Please try again or choose another method.', 'error')
+          setCheckoutError('Payment failed. Please try again or choose a different method.')
         })
         razorpay.open()
+        return // prevent finally from running setLoading(false) again
       }
     } catch (err) {
-      toast((err as Error).message || 'Failed to place order', 'error')
+      const msg = (err as Error).message || 'Failed to place order'
+      setCheckoutError(msg)
+      console.error('[Checkout] placeOrder error:', err)
     } finally {
       setLoading(false)
     }
@@ -171,6 +187,12 @@ export default function CheckoutPage() {
             <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Payment Method</h2>
             <PaymentSection selected={paymentMethod} onSelect={setPaymentMethod} />
           </section>
+
+          {checkoutError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded">
+              {checkoutError}
+            </div>
+          )}
 
           <Button onClick={placeOrder} loading={loading} size="lg" className="w-full">
             {paymentMethod === 'cod' ? 'Place Order' : 'Proceed to Payment'}
