@@ -104,6 +104,9 @@ export default function CheckoutPage() {
         gst_invoice: billing.gst_invoice,
         company_name: billing.company || undefined,
         gstin: billing.gst_invoice ? billing.gstin : undefined,
+        // Fallback: send frontend cart items so the order can be created even
+        // when server-side cart sync failed (e.g. item was out-of-stock at add time).
+        client_items: items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity })),
       })
 
       if (paymentMethod === 'cod') {
