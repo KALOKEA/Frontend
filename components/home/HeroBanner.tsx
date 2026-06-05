@@ -1,58 +1,71 @@
 'use client'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
-
-const WORDS = ['Confident', 'Elegant', 'Powerful', 'Unstoppable']
+import Image from 'next/image'
 
 export default function HeroBanner() {
-  const [wordIdx, setWordIdx] = useState(0)
-  const [fade, setFade] = useState(true)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFade(false)
-      setTimeout(() => {
-        setWordIdx((prev) => (prev + 1) % WORDS.length)
-        setFade(true)
-      }, 300)
-    }, 2500)
-    return () => clearInterval(interval)
-  }, [])
-
   return (
-    <section className="bg-[#faf8f5] py-16 md:py-32 px-4">
-      <div className="max-w-4xl mx-auto text-center">
-        <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-4 md:mb-6">
-          New Collection 2026
+    <section className="relative flex flex-col md:flex-row min-h-[92vh] bg-[#faf8f5] overflow-hidden">
+
+      {/* ── Mobile: image at top ── */}
+      <div className="md:hidden relative w-full overflow-hidden" style={{ height: '56vw', minHeight: 220, maxHeight: 400 }}>
+        <Image
+          src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=85&fit=crop&crop=top"
+          alt="Kalokea — Women's Fashion Collection"
+          fill
+          className="object-cover object-top"
+          priority
+          unoptimized
+        />
+      </div>
+
+      {/* ── Left: Text Content ── */}
+      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 md:px-14 lg:px-20 xl:px-28 py-12 md:py-0">
+        <p className="text-[10px] font-sans tracking-[0.35em] uppercase text-[#c8a4a5] mb-5">
+          New Collection — 2026
         </p>
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-[#0a0a0a] mb-4 leading-tight md:leading-none">
-          Fashion for the{' '}
-          <span
-            className="italic text-[#c8a4a5] transition-opacity duration-300"
-            style={{ opacity: fade ? 1 : 0 }}
-          >
-            {WORDS[wordIdx]}
-          </span>
+        <h1 className="font-serif text-[clamp(2.4rem,5vw,4.5rem)] leading-[1.05] text-[#0a0a0a] mb-6">
+          Dressed for<br />
+          <em className="not-italic italic text-[#c8a4a5]">Every Moment</em>
         </h1>
-        <p className="font-sans text-sm text-[#6b6b6b] max-w-lg mx-auto mb-8 md:mb-10 leading-relaxed px-2">
-          Discover styles that speak before you do. Bold designs, quality fabrics, prices that make sense.
+        <p className="font-sans text-[15px] text-[#6b6b6b] max-w-xs md:max-w-sm mb-10 leading-relaxed">
+          Timeless silhouettes, curated fabrics — pieces that move with you, season after season.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 sm:px-0">
+        <div className="flex flex-wrap gap-3 md:gap-4">
           <Link
             href="/shop"
-            className="w-full sm:w-auto bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:bg-[#2a2a2a] transition-colors text-center"
+            className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-7 py-3.5 hover:bg-[#c8a4a5] transition-colors duration-300"
           >
-            Shop New Arrivals
+            Shop Collection
           </Link>
           <Link
-            href="/shop?category=sale"
-            className="w-full sm:w-auto border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:bg-[#0a0a0a] hover:text-white transition-colors text-center"
+            href="/shop/new-arrivals"
+            className="border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-7 py-3.5 hover:border-[#c8a4a5] hover:text-[#c8a4a5] transition-colors duration-300"
           >
-            View Sale
+            New Arrivals
           </Link>
+        </div>
+        <div className="hidden md:flex items-center gap-3 mt-16 text-[#6b6b6b]">
+          <div className="w-8 h-px bg-[#6b6b6b]" />
+          <span className="text-[10px] font-sans tracking-[0.2em] uppercase">Scroll to explore</span>
         </div>
       </div>
 
+      {/* ── Right: Image — desktop only ── */}
+      <div className="hidden md:block flex-1 relative overflow-hidden">
+        <Image
+          src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=90&fit=crop&crop=top"
+          alt="Kalokea — Women's Fashion Collection"
+          fill
+          className="object-cover object-top hover:scale-[1.03] transition-transform duration-700"
+          priority
+          unoptimized
+        />
+        {/* Fade into background on left edge */}
+        <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#faf8f5] to-transparent" />
+      </div>
+
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c8a4a5]/40 to-transparent" />
     </section>
   )
 }
