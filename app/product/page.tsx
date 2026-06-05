@@ -1,22 +1,41 @@
-import Link from 'next/link'
-import type { Metadata } from 'next'
+'use client'
+/**
+ * Fallback for product pages not yet baked into the static build.
+ *
+ * With output:'export' + Cloudflare Pages, new products added after a deploy
+ * have no /product/[slug]/index.html. The _redirects rewrite serves THIS page
+ * instead (static files take priority, so existing pages are unaffected).
+ *
+ * This component reads the slug from window.location.pathname and renders the
+ * full ProductDetailClient which fetches the product live from the API.
+ */
+import { useEffect, useState } from 'react'
+import ProductDetailClient from './ProductDetailClient'
+import Spinner from '@/components/ui/Spinner'
 
-// Product detail now lives at /product/[slug] (statically prerendered).
-// This bare /product index just points shoppers to the shop listing.
-// (public/_redirects also 301s /product -> /shop at the edge.)
-export const metadata: Metadata = {
-  title: "Shop | Women's Fashion | KALOKEA",
-  robots: { index: false, follow: true },
-}
+export default function ProductFallbackPage() {
+  const [slug, setSlug] = useState<string | null>(null)
 
-export default function ProductIndexPage() {
-  return (
-    <div className="text-center py-24">
-      <h1 className="font-serif text-3xl text-[#0a0a0a] mb-3">Browse our collection</h1>
-      <p className="text-sm font-sans text-[#6b6b6b] mb-6">Discover the latest in women&apos;s fashion.</p>
-      <Link href="/shop" className="inline-block bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-6 py-3">
-        Go to Shop
-      </Link>
-    </div>
-  )
+  useEffect(() => {
+    // pathname is e.g. /product/new-dress/ → extract "new-dress"
+    const parts = window.location.pathname.replace(/\/$/, '').split('/')
+    const s = parts[parts.length - 1]
+    setSlug(s && s !== 'product' ? s : null)
+  }, [])
+
+  if (slug === null) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <Spinner size="lg" />
+      </div>
+    )
+  }
+
+  if (!slug) {
+    // Bare /product/ — redirect to shop
+    if (typeof window !== 'undefined') window.location.replace('/shop/')
+    return null
+  }
+
+  return <ProductDetailClient slug={slug} />
 }

@@ -5,6 +5,12 @@
 # Bare /product index → shop listing.
 /product  /shop/  301
 
+# Fallback for product pages NOT yet in the static build (new products added
+# after the last deploy). Static files take priority — this rewrite only fires
+# when /product/<slug>/index.html does not exist yet. The client JS at /product/
+# reads the slug from window.location.pathname and fetches the product live.
+/product/*  /product/  200
+
 # --- Legacy WooCommerce URL 301s ---------------------------------------------
 # WooCommerce product URLs were already /product/<slug>/ — those map 1:1 to the
 # new static pages, so no redirect is needed for them.
