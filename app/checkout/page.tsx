@@ -65,6 +65,10 @@ export default function CheckoutPage() {
   const placeOrder = async () => {
     setCheckoutError(null)
 
+    // Force-sync any local cart items that didn't reach the server yet
+    // (e.g. items added while offline, or when the initial sync was rejected).
+    await useCartStore.getState().mergeOnLogin().catch(() => {})
+
     // Validate billing details (matches the backend's required fields).
     const required: [keyof BillingForm, string][] = [
       ['first_name', 'First name'], ['line1', 'Street address'], ['city', 'Town / City'],
