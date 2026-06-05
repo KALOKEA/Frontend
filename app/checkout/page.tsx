@@ -32,7 +32,7 @@ export default function CheckoutPage() {
 
   const [addresses, setAddresses] = useState<Address[]>([])
   const [billing, setBilling] = useState<BillingForm>(emptyBilling)
-  const [paymentMethod, setPaymentMethod] = useState('upi')
+  const [paymentMethod, setPaymentMethod] = useState('razorpay')
   const [couponCode, setCouponCode] = useState<string | null>(null)
   const [couponDiscount, setCouponDiscount] = useState(0)
   const [loading, setLoading] = useState(false)

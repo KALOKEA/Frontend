@@ -28,8 +28,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
+  // Use canonical /shop/[category]/ paths, not query strings, for proper indexing.
   const categoryRoutes = categories.map((slug) => ({
-    url: `${SITE_URL}/shop/?category=${slug}`,
+    url: `${SITE_URL}/shop/${slug}/`,
     lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.7,

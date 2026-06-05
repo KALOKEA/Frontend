@@ -1,19 +1,39 @@
 'use client'
 import { useState } from 'react'
-import type { Metadata } from 'next'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }))
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSent(true)
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.message || 'Failed to send message')
+      }
+      setSent(true)
+    } catch (err) {
+      setError((err as Error).message || 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -60,7 +80,10 @@ export default function ContactPage() {
               placeholder="How can we help?"
             />
           </div>
-          <Button type="submit">Send Message</Button>
+          {error && (
+            <p className="text-sm font-sans text-[#c0392b]">{error}</p>
+          )}
+          <Button type="submit" loading={loading}>Send Message</Button>
         </form>
       )}
     </div>

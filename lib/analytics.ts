@@ -54,6 +54,25 @@ export function trackAddToCart(p: GAItemInput) {
   })
 }
 
+export function trackRemoveFromCart(p: GAItemInput) {
+  ga('remove_from_cart', {
+    currency: 'INR',
+    value: toRupees(p.price * (p.quantity ?? 1)),
+    items: [toGaItem(p)],
+  })
+}
+
+export function trackViewItemList(items: GAItemInput[], listName: string) {
+  ga('view_item_list', {
+    item_list_name: listName,
+    items: items.map(toGaItem),
+  })
+}
+
+export function trackSearch(searchTerm: string) {
+  ga('search', { search_term: searchTerm })
+}
+
 export function trackBeginCheckout(items: GAItemInput[], valuePaise: number) {
   ga('begin_checkout', {
     currency: 'INR',
