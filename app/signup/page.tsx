@@ -9,13 +9,14 @@ import { useToast } from '@/components/ui/Toast'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 
-function LoginContent() {
+function SignupContent() {
   const router = useRouter()
   const params = useSearchParams()
   const { setAuth } = useAuthStore()
   const { toast } = useToast()
 
-  const [step, setStep] = useState<'send' | 'verify'>('send')
+  const [step, setStep] = useState<'details' | 'otp'>('details')
+  const [name, setName] = useState('')
   const [identifier, setIdentifier] = useState('')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,15 +26,15 @@ function LoginContent() {
 
   const sendOtp = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!acceptedTerms) {
-      toast('Please accept the Terms & Conditions to continue', 'error')
-      return
-    }
+    if (!name.trim()) { toast('Please enter your full name', 'error'); return }
+    if (!identifier.trim()) { toast('Please enter your email or phone', 'error'); return }
+    if (!acceptedTerms) { toast('Please accept the Terms & Conditions to continue', 'error'); return }
+
     setLoading(true)
     try {
       await authApi.sendOtp(isEmail ? { email: identifier } : { phone: identifier })
-      toast('OTP sent successfully')
-      setStep('verify')
+      toast('OTP sent! Check your ' + (isEmail ? 'email' : 'phone'))
+      setStep('otp')
     } catch (err) {
       toast((err as Error).message || 'Failed to send OTP', 'error')
     } finally {
@@ -47,13 +48,12 @@ function LoginContent() {
     try {
       const res = await authApi.verifyOtp(
         isEmail
-          ? { email: identifier, otp, accepted_terms: acceptedTerms }
-          : { phone: identifier, otp, accepted_terms: acceptedTerms }
+          ? { email: identifier, otp, accepted_terms: true, name: name.trim() }
+          : { phone: identifier, otp, accepted_terms: true, name: name.trim() }
       )
-      setAuth(res.access_token, res.user)
-      // Merge the guest cart into the user's server cart (runs in the background).
+      setAuth(res.access_token, { ...res.user, name: name.trim() })
       useCartStore.getState().mergeOnLogin().catch(() => {})
-      toast('Welcome back!')
+      toast('Welcome to Kalokea, ' + name.split(' ')[0] + '! 🎉')
       const redirect = params.get('redirect') || '/'
       router.push(redirect)
     } catch (err) {
@@ -64,30 +64,38 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-4">
+    <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
+
+        {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Sign In</h1>
-          <p className="text-sm font-sans text-[#6b6b6b]">Enter your phone or email to receive a one-time code</p>
+          <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Create Account</h1>
+          <p className="text-sm font-sans text-[#6b6b6b]">Join Kalokea to track orders and save your details</p>
         </div>
 
-        {step === 'send' ? (
+        {step === 'details' ? (
           <form onSubmit={sendOtp} className="space-y-4">
+            <Input
+              label="Full name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Priya Sharma"
+              required
+              autoFocus
+            />
             <Input
               label="Phone or Email"
               value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
+              onChange={e => setIdentifier(e.target.value)}
               placeholder="+91 9999999999 or email@example.com"
               required
-              autoFocus
             />
             <label className="flex items-start gap-2.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={acceptedTerms}
-                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                onChange={e => setAcceptedTerms(e.target.checked)}
                 className="mt-0.5 accent-[#0a0a0a] w-4 h-4 shrink-0"
-                required
               />
               <span className="text-[11px] font-sans text-[#6b6b6b] leading-relaxed">
                 I agree to Kalokea&rsquo;s{' '}
@@ -105,48 +113,50 @@ function LoginContent() {
             </Button>
 
             <p className="text-center text-[11px] font-sans text-[#9b9b9b] pt-2">
-              New to Kalokea?{' '}
-              <Link href="/signup" className="text-[#0a0a0a] underline hover:text-[#c8a4a5]">
-                Create an account
+              Already have an account?{' '}
+              <Link href="/login" className="text-[#0a0a0a] underline hover:text-[#c8a4a5]">
+                Sign in
               </Link>
             </p>
           </form>
         ) : (
           <form onSubmit={verifyOtp} className="space-y-4">
-            <div className="text-center mb-2">
-              <p className="text-xs font-sans text-[#6b6b6b]">OTP sent to <span className="text-[#0a0a0a] font-medium">{identifier}</span></p>
+            <div className="bg-[#faf8f5] border border-[#e8e4e0] px-4 py-3 text-center">
+              <p className="text-[11px] font-sans text-[#6b6b6b]">OTP sent to</p>
+              <p className="text-sm font-sans text-[#0a0a0a] font-medium mt-0.5">{identifier}</p>
             </div>
             <Input
               label="Enter OTP"
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder="6-digit OTP"
+              onChange={e => setOtp(e.target.value)}
+              placeholder="6-digit code"
               maxLength={6}
               inputMode="numeric"
               required
               autoFocus
             />
             <Button type="submit" loading={loading} className="w-full">
-              Verify OTP
+              Verify &amp; Create Account
             </Button>
             <button
               type="button"
-              onClick={() => setStep('send')}
-              className="w-full text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a]"
+              onClick={() => { setStep('details'); setOtp('') }}
+              className="w-full text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors"
             >
-              Change number / email
+              ← Change email / phone
             </button>
           </form>
         )}
+
       </div>
     </div>
   )
 }
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <Suspense>
-      <LoginContent />
+      <SignupContent />
     </Suspense>
   )
 }

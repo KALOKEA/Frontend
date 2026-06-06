@@ -32,6 +32,7 @@ export default function CheckoutPage() {
 
   const [addresses, setAddresses] = useState<Address[]>([])
   const [billing, setBilling] = useState<BillingForm>(emptyBilling)
+  const [saveAddress, setSaveAddress] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState('razorpay')
   const [couponCode, setCouponCode] = useState<string | null>(null)
   const [couponDiscount, setCouponDiscount] = useState(0)
@@ -94,6 +95,23 @@ export default function CheckoutPage() {
 
     setLoading(true)
     try {
+      // Save billing address to profile if user opted in (fire-and-forget — don't block checkout).
+      if (saveAddress && isLoggedIn) {
+        addressesApi.create({
+          name: `${billing.first_name} ${billing.last_name}`.trim(),
+          phone: billing.phone,
+          line1: billing.line1,
+          line2: billing.line2 || undefined,
+          city: billing.city,
+          state: billing.state,
+          pincode: billing.pincode,
+        }).then(() => {
+          // Refresh addresses list so next checkout auto-fills this one.
+          addressesApi.getAll().then(setAddresses).catch(() => {})
+        }).catch(() => {})
+        setSaveAddress(false)
+      }
+
       const order = await ordersApi.create({
         address_snapshot: {
           name: `${billing.first_name} ${billing.last_name}`.trim(),
@@ -112,7 +130,7 @@ export default function CheckoutPage() {
         gstin: billing.gst_invoice ? billing.gstin : undefined,
         // Fallback: send frontend cart items so the order can be created even
         // when server-side cart sync failed (e.g. item was out-of-stock at add time).
-        client_items: items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity })),
+        cart_items: items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity })),
       })
 
       if (paymentMethod === 'cod') {
@@ -200,6 +218,21 @@ export default function CheckoutPage() {
             <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Billing details</h2>
             <BillingDetails value={billing} onChange={setBilling} savedAddresses={addresses} />
           </section>
+
+          {/* Save address — only shown to logged-in users */}
+          {isLoggedIn && (
+            <label className="flex items-center gap-2.5 cursor-pointer -mt-4">
+              <input
+                type="checkbox"
+                checked={saveAddress}
+                onChange={e => setSaveAddress(e.target.checked)}
+                className="w-4 h-4 accent-[#0a0a0a] shrink-0"
+              />
+              <span className="text-xs font-sans text-[#6b6b6b]">
+                Save this address to my profile for future orders
+              </span>
+            </label>
+          )}
 
           <section>
             <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Coupon Code</h2>
