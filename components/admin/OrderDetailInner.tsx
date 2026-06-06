@@ -31,9 +31,9 @@ function Flash({ msg }: { msg: { type: 'ok' | 'err'; text: string } | null }) {
   )
 }
 
-export default function AdminOrderDetailInner() {
+export default function AdminOrderDetailInner({ idOverride }: { idOverride?: string } = {}) {
   const params = useSearchParams()
-  const id     = params.get('id') || ''
+  const id     = idOverride || params.get('id') || ''
   const router = useRouter()
 
   const [order, setOrder]           = useState<any>(null)
@@ -258,6 +258,13 @@ export default function AdminOrderDetailInner() {
               <button disabled={trackLoading} onClick={handleTrack}
                 className="px-4 py-2 text-sm border border-[#e8e4e0] hover:border-[#0a0a0a] transition-colors disabled:opacity-40">
                 {trackLoading ? 'Loading…' : 'Refresh Tracking'}
+              </button>
+            )}
+            {inSR && hasAwb && (
+              <button disabled={srLoading}
+                onClick={() => srAction(() => adminApi.createReturnPickup(id), 'Return pickup created — check ShipRocket for AWB')}
+                className="px-4 py-2 text-sm border border-orange-300 text-orange-700 hover:bg-orange-50 transition-colors disabled:opacity-40">
+                ↩ Create Return Pickup
               </button>
             )}
           </div>

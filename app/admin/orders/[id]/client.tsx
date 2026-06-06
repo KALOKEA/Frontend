@@ -1,12 +1,12 @@
 'use client'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense } from 'react'
+import AdminOrderDetailInner from '@/components/admin/OrderDetailInner'
+import Spinner from '@/components/ui/Spinner'
 
 export default function AdminOrderIdClient({ id }: { id: string }) {
-  const router = useRouter()
-  useEffect(() => {
-    if (id) router.replace(`/admin/order-detail?id=${id}`)
-    else    router.replace('/admin/orders')
-  }, [id, router])
-  return null
+  return (
+    <Suspense fallback={<div className="flex justify-center py-20"><Spinner size="lg" /></div>}>
+      <AdminOrderDetailInner idOverride={id} />
+    </Suspense>
+  )
 }

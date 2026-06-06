@@ -286,5 +286,25 @@ export const adminApi = {
     api.post<any>(`/shiprocket/orders/${orderId}/cancel`, {}),
   getServiceability: (pincode: string) =>
     api.get<any>(`/shiprocket/serviceability/${pincode}`),
+  generateManifest: (shipmentIds: number[]) =>
+    api.post<{ manifest_url: string | null }>(`/shiprocket/manifest`, { shipment_ids: shipmentIds }),
+  syncTracking: () =>
+    api.post<{ updated: number }>(`/shiprocket/sync-tracking`, {}),
+  getNdrs: () =>
+    api.get<any>(`/shiprocket/ndrs`),
+  ndrAction: (shipmentId: string, action: 'reAttempt' | 'return', comment?: string) =>
+    api.post<any>(`/shiprocket/ndrs/${shipmentId}/action`, { action, comment }),
+  createReturnPickup: (orderId: string) =>
+    api.post<any>(`/shiprocket/orders/${orderId}/return`, {}),
+  getCodRemittance: () =>
+    api.get<any>(`/shiprocket/remittance`),
+  getPackagingProfiles: () =>
+    api.get<any[]>(`/shiprocket/packaging-profiles`),
+  createPackagingProfile: (body: { name: string; weight: number; length: number; breadth: number; height: number; is_default?: boolean }) =>
+    api.post<any>(`/shiprocket/packaging-profiles`, body),
+  deletePackagingProfile: (id: string) =>
+    api.delete<any>(`/shiprocket/packaging-profiles/${id}`),
+  setDefaultPackagingProfile: (id: string) =>
+    api.patch<any>(`/shiprocket/packaging-profiles/${id}/default`, {}),
 }
 
