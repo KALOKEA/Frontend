@@ -19,7 +19,8 @@ function cacheSet(key: string, data: unknown) {
 /** Call after a mutation so stale lists are re-fetched on next read. */
 export function invalidateCache(prefix?: string) {
   if (!prefix) { memCache.clear(); return }
-  for (const k of memCache.keys()) { if (k.startsWith(prefix)) memCache.delete(k) }
+  // forEach avoids Map iterator (needs downlevelIteration tsconfig flag)
+  memCache.forEach((_, k) => { if (k.startsWith(prefix)) memCache.delete(k) })
 }
 
 let accessToken: string | null = null

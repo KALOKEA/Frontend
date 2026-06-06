@@ -85,10 +85,10 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
 
   return (
     <>
-      <div className="flex gap-3">
+      <div className="flex gap-3 items-start">
         {/* ── Thumbnail strip ─────────────────────────────────────────── */}
         {media.length > 1 && (
-          <div className="flex flex-col gap-2 w-16 overflow-y-auto max-h-[520px]">
+          <div className="flex flex-col gap-2 w-16 overflow-y-auto" style={{ maxHeight: '100%' }}>
             {media.map((item, i) => (
               <button
                 key={i}
@@ -121,15 +121,19 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
           </div>
         )}
 
-        {/* ── Main viewer ──────────────────────────────────────────────── */}
-        <div className="relative flex-1 aspect-[3/4] overflow-hidden bg-[#f4f2ef] group">
+        {/* ── Main viewer — no fixed aspect ratio, image sets its own height ── */}
+        <div className="relative flex-1 bg-[#f4f2ef] group overflow-hidden">
           {current.type === 'image' ? (
             <>
+              {/* width/height are intrinsic hints for Next.js; CSS w-full h-auto
+                  makes the image fill width and set height from its natural ratio —
+                  zero empty space regardless of the image's actual dimensions. */}
               <Image
                 src={current.url}
                 alt={current.alt}
-                fill
-                className="object-contain object-top transition-opacity duration-500 cursor-zoom-in"
+                width={600}
+                height={800}
+                className="w-full h-auto block transition-opacity duration-500 cursor-zoom-in"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority={active === 0}
                 onClick={() => setZoomed(true)}
@@ -146,7 +150,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
               muted
               loop
               playsInline
-              className="w-full h-full object-cover"
+              className="w-full h-auto block"
             />
           )}
 
