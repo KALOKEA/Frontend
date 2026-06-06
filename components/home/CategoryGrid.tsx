@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { categoriesApi, type Category } from '@/lib/api/categories'
 
@@ -29,10 +30,13 @@ export default function CategoryGrid() {
             className="group relative overflow-hidden aspect-[3/4] bg-[#f4f2ef]"
           >
             {cat.image_url && (
-              <img
+              <Image
                 src={cat.image_url}
                 alt={cat.name}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 33vw"
+                loading="lazy"
               />
             )}
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />

@@ -15,8 +15,8 @@ export default function HomePage() {
     <>
       <HeroBanner />
       <TrustStrip />
-      <CategoryGrid />
       <FeaturedProducts />
+      <CategoryGrid />
       <NewsletterSignup />
     </>
   )

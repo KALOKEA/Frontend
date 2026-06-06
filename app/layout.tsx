@@ -29,8 +29,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        {/* Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Backend API — establish TCP+TLS early so first fetch is instant */}
+        <link rel="preconnect" href="https://backend-production-73aa.up.railway.app" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />
+        {/* Cloudinary — product images */}
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </head>
       <body>
         <script

@@ -94,7 +94,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                 key={i}
                 onClick={() => navigate(i)}
                 aria-label={item.type === 'video' ? 'Video' : `Image ${i + 1}`}
-                className={`relative flex-shrink-0 aspect-[3/4] overflow-hidden border-2 transition-colors ${
+                className={`relative flex-shrink-0 aspect-[3/4] overflow-hidden border-2 transition-colors bg-[#f4f2ef] ${
                   i === active
                     ? 'border-[#0a0a0a]'
                     : 'border-transparent hover:border-[#c8c4c0]'
@@ -105,7 +105,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                     src={item.url}
                     alt={item.alt}
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     sizes="64px"
                   />
                 ) : (
@@ -129,7 +129,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                 src={current.url}
                 alt={current.alt}
                 fill
-                className="object-cover transition-opacity duration-500 cursor-zoom-in"
+                className="object-contain transition-opacity duration-500 cursor-zoom-in"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority={active === 0}
                 onClick={() => setZoomed(true)}
