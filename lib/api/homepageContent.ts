@@ -2,6 +2,44 @@ import api from './client'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
+// ─── Aggregated homepage data ───────────────────────────────────────────────
+// Singleton promise — all homepage components (HeroBanner, TrustStrip,
+// FeaturedProducts, CategoryGrid, Newsletter) share one fetch per page load.
+// TTL: 60 s, then a fresh fetch on next access.
+
+export interface HomepageData {
+  cms: HomepageContent
+  categories: any[]
+  featured_products: any[]
+}
+
+let _homepagePromise: Promise<HomepageData> | null = null
+let _homepageTs = 0
+const HOMEPAGE_TTL = 60_000
+
+export function getHomepageData(): Promise<HomepageData> {
+  if (_homepagePromise && Date.now() - _homepageTs < HOMEPAGE_TTL) {
+    return _homepagePromise
+  }
+  _homepageTs = Date.now()
+  _homepagePromise = fetch(`${BASE_URL}/homepage`, { cache: 'default' })
+    .then((r) => r.ok ? r.json() : null)
+    .then((json) => {
+      const raw = json?.data ?? json
+      return {
+        cms: { ...HERO_DEFAULTS, ...(raw?.cms ?? {}) } as HomepageContent,
+        categories: raw?.categories ?? [],
+        featured_products: raw?.featured_products ?? [],
+      }
+    })
+    .catch(() => ({
+      cms: HERO_DEFAULTS,
+      categories: [],
+      featured_products: [],
+    }))
+  return _homepagePromise
+}
+
 export interface HomepageContent {
   hero_eyebrow: string
   hero_headline_1: string

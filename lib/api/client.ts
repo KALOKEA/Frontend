@@ -1,5 +1,27 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
+// ─── In-memory GET cache ────────────────────────────────────────────────────
+// Caches GET responses for 60 s so navigating back to a page is instant and
+// concurrent identical requests are de-duplicated into a single in-flight fetch.
+const GET_TTL = 60_000
+interface CacheEntry { data: unknown; expires: number }
+const memCache = new Map<string, CacheEntry>()
+
+function cacheGet<T>(key: string): T | null {
+  const entry = memCache.get(key)
+  if (entry && entry.expires > Date.now()) return entry.data as T
+  memCache.delete(key)
+  return null
+}
+function cacheSet(key: string, data: unknown) {
+  memCache.set(key, { data, expires: Date.now() + GET_TTL })
+}
+/** Call after a mutation so stale lists are re-fetched on next read. */
+export function invalidateCache(prefix?: string) {
+  if (!prefix) { memCache.clear(); return }
+  for (const k of memCache.keys()) { if (k.startsWith(prefix)) memCache.delete(k) }
+}
+
 let accessToken: string | null = null
 
 export function setAccessToken(token: string | null) {
@@ -11,6 +33,14 @@ export function getAccessToken() {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const isGet = !options.method || options.method === 'GET'
+
+  // Return cached result for anonymous GET requests (no auth header needed)
+  if (isGet && !accessToken) {
+    const hit = cacheGet<T>(path)
+    if (hit !== null) return hit
+  }
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
@@ -47,7 +77,12 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   }
 
   const json = await res.json()
-  return json.data !== undefined ? json.data : json
+  const result: T = json.data !== undefined ? json.data : json
+
+  // Cache anonymous GET responses
+  if (isGet && !accessToken) cacheSet(path, result)
+
+  return result
 }
 
 async function tryRefresh(): Promise<boolean> {

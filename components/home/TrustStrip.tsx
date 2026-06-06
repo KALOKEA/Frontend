@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
+import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 
 const ICONS = ['🚚', '↩', '🔒', '✦']
 
@@ -8,7 +8,7 @@ export default function TrustStrip() {
   const [c, setC] = useState(HERO_DEFAULTS)
 
   useEffect(() => {
-    homepageContentApi.getAll().then(setC).catch(() => {})
+    getHomepageData().then((d) => setC(d.cms)).catch(() => {})
   }, [])
 
   const items = [

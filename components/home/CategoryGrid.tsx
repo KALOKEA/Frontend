@@ -3,13 +3,22 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { categoriesApi, type Category } from '@/lib/api/categories'
+import { getHomepageData } from '@/lib/api/homepageContent'
 
 export default function CategoryGrid() {
   const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
-    categoriesApi.getAll().then((data) => {
-      setCategories(data.filter((c) => c.slug !== 'new-arrivals' && c.slug !== 'everything' && c.slug !== 'sale'))
+    // Use homepage aggregated data first (already in-flight from other components)
+    getHomepageData().then((d) => {
+      if (d.categories?.length) {
+        setCategories(d.categories)
+        return
+      }
+      // Fallback to direct fetch
+      return categoriesApi.getAll().then((data) => {
+        setCategories(data.filter((c) => c.slug !== 'new-arrivals' && c.slug !== 'everything' && c.slug !== 'sale'))
+      })
     }).catch(() => {})
   }, [])
 

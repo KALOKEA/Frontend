@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import api from '@/lib/api/client'
-import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
+import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState('')
@@ -10,9 +10,9 @@ export default function NewsletterSignup() {
   const [subtext, setSubtext] = useState(HERO_DEFAULTS.newsletter_subtext)
 
   useEffect(() => {
-    homepageContentApi.getAll().then((c) => {
-      if (c.newsletter_heading) setHeading(c.newsletter_heading)
-      if (c.newsletter_subtext) setSubtext(c.newsletter_subtext)
+    getHomepageData().then((d) => {
+      if (d.cms.newsletter_heading) setHeading(d.cms.newsletter_heading)
+      if (d.cms.newsletter_subtext) setSubtext(d.cms.newsletter_subtext)
     }).catch(() => {})
   }, [])
 

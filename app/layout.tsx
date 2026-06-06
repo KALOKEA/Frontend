@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -7,6 +8,23 @@ import { ToastProvider } from '@/components/ui/Toast'
 import AuthBootstrap from '@/components/AuthBootstrap'
 import Analytics from '@/components/Analytics'
 import ErrorBoundary from '@/components/ErrorBoundary'
+
+// Fonts downloaded at build time — served from Cloudflare Pages, zero external
+// font request at runtime. display:'swap' prevents invisible text during load.
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
+  display: 'swap',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-dm-sans',
+  display: 'swap',
+})
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'
 
@@ -27,11 +45,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
-        {/* Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Fonts now served locally via next/font — no Google Fonts DNS needed */}
         {/* Backend API — establish TCP+TLS early so first fetch is instant */}
         <link rel="preconnect" href="https://backend-production-73aa.up.railway.app" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />

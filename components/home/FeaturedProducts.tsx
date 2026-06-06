@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { productsApi, type Product } from '@/lib/api/products'
-import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
+import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 import ProductCard from '@/components/shop/ProductCard'
 import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 
@@ -29,8 +29,14 @@ export default function FeaturedProducts() {
   const [sectionHeading, setSectionHeading] = useState(HERO_DEFAULTS.featured_section_heading)
 
   useEffect(() => {
-    homepageContentApi.getAll().then((c) => {
-      if (c.featured_section_heading) setSectionHeading(c.featured_section_heading)
+    // Use the shared homepage fetch — no extra network request if already cached
+    getHomepageData().then((d) => {
+      if (d.cms.featured_section_heading) setSectionHeading(d.cms.featured_section_heading)
+      // Seed tab 0 (New Arrivals) with the pre-fetched featured_products so the
+      // grid appears instantly on first load without a second API call.
+      if (d.featured_products?.length) {
+        setCache((prev) => prev[0] ? prev : { ...prev, 0: d.featured_products })
+      }
     }).catch(() => {})
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -38,7 +44,7 @@ export default function FeaturedProducts() {
   const products = useMemo(() => cache[tab] || [], [cache, tab])
 
   useEffect(() => {
-    // Skip fetch if already cached
+    // Skip fetch if already cached (including the seed from homepage endpoint)
     if (cache[tab]) return
     setLoading(true)
     const t = TABS[tab]

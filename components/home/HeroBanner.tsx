@@ -2,13 +2,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { homepageContentApi, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
+import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 
 export default function HeroBanner() {
   const [c, setC] = useState<HomepageContent>(HERO_DEFAULTS)
 
   useEffect(() => {
-    homepageContentApi.getAll().then(setC).catch(() => {})
+    getHomepageData().then((d) => setC(d.cms)).catch(() => {})
   }, [])
 
   const isVideo = c.hero_mode === 'video' && !!c.hero_video_url
