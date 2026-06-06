@@ -11,7 +11,7 @@ export const dynamic = 'force-static'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
-  const staticRoutes = ['', 'shop', 'about', 'contact', 'shipping', 'returns', 'size-guide', 'privacy', 'terms']
+  const staticRoutes = ['', 'shop', 'about', 'contact', 'shipping', 'returns', 'size-guide', 'privacy', 'terms', 'track-order']
     .map((path) => ({
       url: `${SITE_URL}/${path ? path + '/' : ''}`,
       lastModified: now,

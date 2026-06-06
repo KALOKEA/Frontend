@@ -18,6 +18,8 @@ const NAV = [
   { label: 'Exchanges', href: '/admin/exchanges' },
   { label: 'Analytics', href: '/admin/analytics' },
   { label: 'GST', href: '/admin/gst' },
+  { label: 'Newsletter', href: '/admin/newsletter' },
+  { label: 'Email Log', href: '/admin/email-log' },
   { label: 'Activity', href: '/admin/activity' },
   { label: 'Settings', href: '/admin/settings' },
 ]

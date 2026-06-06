@@ -226,4 +226,65 @@ export const adminApi = {
       `/admin/activity-log?${params}`,
     )
   },
+
+  // newsletter
+  listNewsletterSubscribers: (page = 1, limit = 50, active?: string) => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+    if (active !== undefined) params.set('active', active)
+    return api.get<{ data: any[]; meta: { total: number; page: number; limit: number; total_pages: number } }>(
+      `/newsletter/admin/subscribers?${params}`,
+    )
+  },
+  exportNewsletterSubscribers: async () => {
+    const res = await fetch(`${BASE_URL}/newsletter/admin/export`, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        ...(getAccessToken() ? { Authorization: `Bearer ${getAccessToken()}` } : {}),
+      },
+      credentials: 'include',
+    })
+    if (!res.ok) throw new Error(`Export failed (${res.status})`)
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `kalokea-subscribers-${new Date().toISOString().slice(0, 10)}.csv`
+    document.body.appendChild(a); a.click(); a.remove()
+    URL.revokeObjectURL(url)
+  },
+
+  // email log
+  getEmailLog: (page = 1, limit = 50, status?: string, emailType?: string) => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+    if (status) params.set('status', status)
+    if (emailType) params.set('email_type', emailType)
+    return api.get<{ data: any[]; meta: { total: number; page: number; limit: number; total_pages: number } }>(
+      `/admin/email-log?${params}`,
+    )
+  },
+
+  // order detail
+  getOrderDetail: (id: string) =>
+    api.get<any>(`/orders/${id}`),
+  refundOrder: (orderId: string, body: { amount?: number; reason?: string }) =>
+    api.post<any>(`/payments/refund`, { order_id: orderId, ...body }),
+
+  // shiprocket
+  pushToShiprocket: (orderId: string, body: { weight?: number; length?: number; breadth?: number; height?: number; courier_id?: number }) =>
+    api.post<{ shiprocket_order_id: number; shiprocket_shipment_id: number; awb_code: string | null; courier_name: string | null }>(
+      `/shiprocket/orders/${orderId}/push`, body
+    ),
+  assignAwb: (orderId: string, courierId?: number) =>
+    api.post<{ awb_code: string; courier_name: string }>(`/shiprocket/orders/${orderId}/awb`, { courier_id: courierId }),
+  generateLabel: (orderId: string) =>
+    api.post<{ label_url: string }>(`/shiprocket/orders/${orderId}/label`, {}),
+  schedulePickup: (orderId: string) =>
+    api.post<any>(`/shiprocket/orders/${orderId}/pickup`, {}),
+  trackShipment: (orderId: string) =>
+    api.get<any>(`/shiprocket/orders/${orderId}/track`),
+  cancelShipment: (orderId: string) =>
+    api.post<any>(`/shiprocket/orders/${orderId}/cancel`, {}),
+  getServiceability: (pincode: string) =>
+    api.get<any>(`/shiprocket/serviceability/${pincode}`),
 }
+

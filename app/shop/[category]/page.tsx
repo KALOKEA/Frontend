@@ -97,5 +97,25 @@ export function generateMetadata({ params }: Props): Metadata {
 export default function CategoryPage({ params }: Props) {
   const meta = CATEGORY_META[params.category]
   const displayName = meta?.name ?? params.category.replace(/-/g, ' ')
-  return <CategoryShopClient category={params.category} displayName={displayName} />
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Shop', item: `${SITE_URL}/shop/` },
+      { '@type': 'ListItem', position: 3, name: displayName, item: `${SITE_URL}/shop/${params.category}/` },
+    ],
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <CategoryShopClient category={params.category} displayName={displayName} />
+    </>
+  )
 }
