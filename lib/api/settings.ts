@@ -12,6 +12,7 @@ export interface StoreSettings {
   shipping_free_threshold?: number
   cod_fee?: number
   live_chat_widget?: string
+  low_stock_threshold?: number
 }
 
 export interface GstReport {
