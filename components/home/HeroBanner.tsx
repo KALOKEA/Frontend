@@ -41,28 +41,28 @@ export default function HeroBanner() {
       </div>
 
       {/* ── Left: Text content ────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 md:px-14 lg:px-20 xl:px-28 py-12 md:py-0">
-        <p className="text-[10px] font-sans tracking-[0.35em] uppercase text-[#c8a4a5] mb-5">
+      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 md:px-14 lg:px-20 xl:px-28 py-10 md:py-0">
+        <p className="text-[10px] font-sans tracking-[0.35em] uppercase text-[#c8a4a5] mb-4 md:mb-5">
           {c.hero_eyebrow}
         </p>
-        <h1 className="font-serif text-[clamp(2.4rem,5vw,4.5rem)] leading-[1.05] text-[#0a0a0a] mb-6">
+        <h1 className="font-serif text-[clamp(2rem,5vw,4.5rem)] leading-[1.05] text-[#0a0a0a] mb-5 md:mb-6">
           {c.hero_headline_1}
           <br />
           <em className="not-italic italic text-[#c8a4a5]">{c.hero_headline_2}</em>
         </h1>
-        <p className="font-sans text-[15px] text-[#6b6b6b] max-w-xs md:max-w-sm mb-10 leading-relaxed">
+        <p className="font-sans text-[14px] sm:text-[15px] text-[#6b6b6b] max-w-xs md:max-w-sm mb-8 md:mb-10 leading-relaxed">
           {c.hero_subtext}
         </p>
-        <div className="flex flex-wrap gap-3 md:gap-4">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4">
           <Link
             href={c.hero_cta1_link || '/shop'}
-            className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-7 py-3.5 hover:bg-[#c8a4a5] transition-colors duration-300"
+            className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-7 py-3.5 hover:bg-[#c8a4a5] transition-colors duration-300 text-center"
           >
             {c.hero_cta1_label}
           </Link>
           <Link
             href={c.hero_cta2_link || '/shop'}
-            className="border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-7 py-3.5 hover:border-[#c8a4a5] hover:text-[#c8a4a5] transition-colors duration-300"
+            className="border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-7 py-3.5 hover:border-[#c8a4a5] hover:text-[#c8a4a5] transition-colors duration-300 text-center"
           >
             {c.hero_cta2_label}
           </Link>
@@ -95,8 +95,6 @@ export default function HeroBanner() {
         {/* Fade from left */}
         <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#faf8f5] to-transparent pointer-events-none" />
       </div>
-
-      {/* Bottom accent line */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c8a4a5]/40 to-transparent" />
     </section>
   )

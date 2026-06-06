@@ -30,6 +30,8 @@ body {
   font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
   background: #ffffff;
   color: #0a0a0a;
+  /* Prevent horizontal scroll on any viewport */
+  overflow-x: hidden;
 }
 
 h1, h2, h3, .font-serif {

@@ -41,6 +41,8 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
   const [paused, setPaused] = useState(false)
   const [zoomed, setZoomed] = useState(false)
   const pauseRef = useRef<ReturnType<typeof setTimeout>>()
+  // Touch swipe state
+  const touchStartX = useRef<number | null>(null)
 
   // ── Auto-scroll ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -85,44 +87,22 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
 
   return (
     <>
-      <div className="flex gap-3 items-start">
-        {/* ── Thumbnail strip ─────────────────────────────────────────── */}
-        {media.length > 1 && (
-          <div className="flex flex-col gap-2 w-16 overflow-y-auto" style={{ maxHeight: '100%' }}>
-            {media.map((item, i) => (
-              <button
-                key={i}
-                onClick={() => navigate(i)}
-                aria-label={item.type === 'video' ? 'Video' : `Image ${i + 1}`}
-                className={`relative flex-shrink-0 aspect-[3/4] overflow-hidden border-2 transition-colors bg-[#f4f2ef] ${
-                  i === active
-                    ? 'border-[#0a0a0a]'
-                    : 'border-transparent hover:border-[#c8c4c0]'
-                }`}
-              >
-                {item.type === 'image' ? (
-                  <Image
-                    src={item.url}
-                    alt={item.alt}
-                    fill
-                    className="object-contain object-top"
-                    sizes="64px"
-                  />
-                ) : (
-                  // Video thumbnail: dark tile with play icon
-                  <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        )}
+      {/* Mobile: column (main image top, thumbnails bottom horizontal strip)
+          Desktop md+: row (thumbnails left vertical, main image right)       */}
+      <div className="flex flex-col md:flex-row gap-3 md:items-start">
 
-        {/* ── Main viewer — no fixed aspect ratio, image sets its own height ── */}
-        <div className="relative flex-1 bg-[#f4f2ef] group overflow-hidden">
+        {/* ── Main viewer — top on mobile (order-1), right on desktop (order-2) ── */}
+        <div
+          className="relative flex-1 bg-[#f4f2ef] group overflow-hidden md:order-2"
+          onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX }}
+          onTouchEnd={(e) => {
+            if (touchStartX.current === null) return
+            const dx = e.changedTouches[0].clientX - touchStartX.current
+            touchStartX.current = null
+            if (Math.abs(dx) < 40) return // ignore tiny taps
+            if (dx < 0) next(); else prev()
+          }}
+        >
           {current.type === 'image' ? (
             <>
               {/* width/height are intrinsic hints for Next.js; CSS w-full h-auto
@@ -138,9 +118,9 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                 priority={active === 0}
                 onClick={() => setZoomed(true)}
               />
-              {/* Zoom hint badge */}
-              <span className="absolute bottom-3 right-3 bg-black/55 text-white text-[8px] font-sans tracking-widest px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none select-none">
-                CLICK TO ZOOM
+              {/* Zoom hint — tap on mobile, hover on desktop */}
+              <span className="absolute bottom-3 right-3 bg-black/55 text-white text-[8px] font-sans tracking-widest px-2 py-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity pointer-events-none select-none">
+                TAP TO ZOOM
               </span>
             </>
           ) : (
@@ -154,13 +134,13 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
             />
           )}
 
-          {/* ── Prev / Next arrows (shown on hover) ─────────────────── */}
+          {/* ── Prev / Next arrows ─────────────────────────────────── */}
           {media.length > 1 && (
             <>
               <button
                 onClick={prev}
                 aria-label="Previous image"
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-white"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5">
                   <path d="M15 18l-6-6 6-6" />
@@ -169,7 +149,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
               <button
                 onClick={next}
                 aria-label="Next image"
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-white"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5">
                   <path d="M9 18l6-6-6-6" />
@@ -178,9 +158,9 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
             </>
           )}
 
-          {/* ── Dot indicators ──────────────────────────────────────── */}
+          {/* ── Dot indicators (mobile only — desktop uses thumbnail strip) ── */}
           {media.length > 1 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden">
               {media.map((_, i) => (
                 <button
                   key={i}
@@ -194,6 +174,42 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
             </div>
           )}
         </div>
+
+        {/* ── Thumbnail strip ─────────────────────────────────────────────── */}
+        {/* Mobile: horizontal scroll row at bottom (order-2)                  */}
+        {/* Desktop md+: vertical left column (order-1, w-16)                  */}
+        {media.length > 1 && (
+          <div className="flex flex-row gap-2 overflow-x-auto pb-1 md:pb-0 md:flex-col md:w-16 md:overflow-x-hidden md:overflow-y-auto md:order-1">
+            {media.map((item, i) => (
+              <button
+                key={i}
+                onClick={() => navigate(i)}
+                aria-label={item.type === 'video' ? 'Video' : `Image ${i + 1}`}
+                className={`relative flex-shrink-0 w-14 md:w-16 aspect-[3/4] overflow-hidden border-2 transition-colors bg-[#f4f2ef] ${
+                  i === active
+                    ? 'border-[#0a0a0a]'
+                    : 'border-transparent hover:border-[#c8c4c0]'
+                }`}
+              >
+                {item.type === 'image' ? (
+                  <Image
+                    src={item.url}
+                    alt={item.alt}
+                    fill
+                    className="object-contain object-top"
+                    sizes="64px"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Zoom / Lightbox Modal ─────────────────────────────────────────── */}
@@ -253,7 +269,6 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
             </>
           )}
 
-          {/* Counter */}
           <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-[11px] font-sans tracking-widest">
             {active + 1} / {media.length}
           </p>

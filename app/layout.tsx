@@ -41,6 +41,7 @@ export const metadata: Metadata = {
   description: "Shop the latest women's fashion at Kalokea. Free shipping above ₹999.",
   keywords: 'women fashion, dresses, tops, co-ords, affordable fashion India',
   metadataBase: new URL('https://kalokea.pages.dev'),
+  viewport: { width: 'device-width', initialScale: 1, maximumScale: 5 },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

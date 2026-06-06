@@ -68,7 +68,7 @@ export default function BillingDetails({
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <F label="First name" req><input value={value.first_name} onChange={(e) => set('first_name', e.target.value)} className="inp" /></F>
         <F label="Last name" req><input value={value.last_name} onChange={(e) => set('last_name', e.target.value)} className="inp" /></F>
       </div>
@@ -84,7 +84,7 @@ export default function BillingDetails({
         <input value={value.line2} onChange={(e) => set('line2', e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="inp" />
       </F>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <F label="Town / City" req><input value={value.city} onChange={(e) => set('city', e.target.value)} className="inp" /></F>
         <F label="State" req>
           <select value={value.state} onChange={(e) => set('state', e.target.value)} className="inp">
@@ -94,7 +94,7 @@ export default function BillingDetails({
         </F>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <F label="Postcode / PIN" req>
           <input value={value.pincode} onChange={(e) => set('pincode', e.target.value.replace(/\D/g, '').slice(0, 6))} inputMode="numeric" className="inp" />
         </F>
@@ -122,7 +122,7 @@ export default function BillingDetails({
         )}
       </div>
 
-      <style jsx>{`:global(.inp){width:100%;border:1px solid #e8e4e0;padding:0.6rem 0.75rem;font-size:0.875rem;}`}</style>
+      <style jsx>{`:global(.inp){width:100%;border:1px solid #e8e4e0;padding:0.65rem 0.75rem;font-size:0.875rem;min-height:44px;outline:none;}.inp:focus{border-color:#0a0a0a;}`}</style>
     </div>
   )
 }
