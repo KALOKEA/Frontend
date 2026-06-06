@@ -1,16 +1,19 @@
 'use client'
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { productsApi, type Product, type ProductVariant } from '@/lib/api/products'
 import ImageGallery from '@/components/product/ImageGallery'
 import VariantPicker from '@/components/product/VariantPicker'
 import AddToCartButton from '@/components/product/AddToCartButton'
 import SizeGuidePopup from '@/components/product/SizeGuidePopup'
-import ProductReviews from '@/components/product/ProductReviews'
-import RelatedProducts from '@/components/product/RelatedProducts'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { trackViewItem } from '@/lib/analytics'
+
+// Lazy-load heavy below-fold sections
+const ProductReviews = dynamic(() => import('@/components/product/ProductReviews'), { ssr: false })
+const RelatedProducts = dynamic(() => import('@/components/product/RelatedProducts'), { ssr: false })
 
 export default function ProductDetailClient({ slug, initialProduct }: { slug: string; initialProduct?: Product }) {
   // When rendered from the static product page we already have the product
@@ -125,8 +128,8 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             <span className="font-sans text-xl text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
             {product.compare_price && product.compare_price > product.base_price && (
               <>
-                <span className="font-sans text-sm text-[#6b6b6b] line-through">{formatPrice(product.compare_price)}</span>
-                <span className="bg-[#c8a4a5] text-white text-[9px] font-sans tracking-widest uppercase px-2 py-0.5">
+                <span className="font-sans text-sm text-[#9b9b9b] line-through">{formatPrice(product.compare_price)}</span>
+                <span className="bg-[#DC2626] text-white text-[9px] font-sans font-bold tracking-widest uppercase px-2 py-0.5 shadow-sm">
                   -{discount}%
                 </span>
               </>

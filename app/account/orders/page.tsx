@@ -75,6 +75,10 @@ export default function OrdersPage() {
   const [reason, setReason]         = useState<string>(RETURN_REASONS[0])
   const [submitting, setSubmitting] = useState(false)
 
+  // Cancel confirmation
+  const [cancelFor, setCancelFor] = useState<Order | null>(null)
+  const [cancelling, setCancelling] = useState(false)
+
   // Exchange modal
   const [exchangeFor, setExchangeFor]   = useState<Order | null>(null)
   const [exItemId, setExItemId]         = useState<string>('')
@@ -100,6 +104,12 @@ export default function OrdersPage() {
 
   const returnByOrder   = (id: string) => returns.find(r => r.order_id === id)
   const exchangeByOrder = (id: string) => exchanges.find(e => e.order_id === id)
+
+  function isCancellable(order: Order): boolean {
+    if (order.status !== 'pending') return false
+    const placedMs = new Date(order.created_at).getTime()
+    return Date.now() - placedMs <= 12 * 60 * 60 * 1000
+  }
 
   function openExchange(order: Order) {
     setExchangeFor(order); setExOptions(null); setExVariantId(''); setExReason(EXCHANGE_REASONS[0])
@@ -144,6 +154,17 @@ export default function OrdersPage() {
       setReturnFor(null); load()
     } catch (e: any) { toast(e?.message || 'Could not submit return', 'error') }
     finally { setSubmitting(false) }
+  }
+
+  async function submitCancel() {
+    if (!cancelFor) return
+    setCancelling(true)
+    try {
+      await ordersApi.cancel(cancelFor.id)
+      toast('Order cancelled successfully')
+      setCancelFor(null); load()
+    } catch (e: any) { toast(e?.message || 'Could not cancel order', 'error') }
+    finally { setCancelling(false) }
   }
 
   if (loading) return <div className="flex justify-center py-16"><Spinner size="lg" /></div>
@@ -331,6 +352,16 @@ export default function OrdersPage() {
                       Invoice
                     </button>
 
+                    {isCancellable(order) && (
+                      <button
+                        onClick={() => setCancelFor(order)}
+                        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-red-500 hover:text-red-700 hover:underline transition-colors"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        Cancel Order
+                      </button>
+                    )}
+
                     {canReturn && (
                       <button
                         onClick={() => { setReturnFor(order); setReason(RETURN_REASONS[0]) }}
@@ -356,6 +387,35 @@ export default function OrdersPage() {
           )
         })}
       </div>
+
+      {/* ── Cancel confirmation modal ──────────────────────────────────────────── */}
+      {cancelFor && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCancelFor(null)}>
+          <div className="bg-white w-full max-w-sm p-6 shadow-xl" onClick={e => e.stopPropagation()}>
+            <h3 className="font-serif text-xl text-[#0a0a0a] mb-1">Cancel this order?</h3>
+            <p className="text-xs text-[#6b6b6b] mb-4">Order #{cancelFor.order_number}</p>
+            <p className="text-sm text-[#3a3a3a] mb-6 leading-relaxed">
+              Are you sure you want to cancel this order? This action cannot be undone.
+              If you paid online, a refund will be issued within 5–7 business days.
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setCancelFor(null)}
+                className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] transition-colors"
+              >
+                Keep Order
+              </button>
+              <button
+                onClick={submitCancel}
+                disabled={cancelling}
+                className="px-4 py-2 text-sm bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition-colors"
+              >
+                {cancelling ? 'Cancelling…' : 'Yes, Cancel Order'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Return modal ──────────────────────────────────────────────────────── */}
       {returnFor && (

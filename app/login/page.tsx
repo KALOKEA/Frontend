@@ -1,6 +1,7 @@
 'use client'
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { authApi } from '@/lib/api/auth'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import { useCartStore } from '@/lib/store/useCartStore'
@@ -18,11 +19,16 @@ function LoginContent() {
   const [identifier, setIdentifier] = useState('')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
 
   const isEmail = identifier.includes('@')
 
   const sendOtp = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!acceptedTerms) {
+      toast('Please accept the Terms & Conditions to continue', 'error')
+      return
+    }
     setLoading(true)
     try {
       await authApi.sendOtp(isEmail ? { email: identifier } : { phone: identifier })
@@ -40,7 +46,9 @@ function LoginContent() {
     setLoading(true)
     try {
       const res = await authApi.verifyOtp(
-        isEmail ? { email: identifier, otp } : { phone: identifier, otp }
+        isEmail
+          ? { email: identifier, otp, accepted_terms: acceptedTerms }
+          : { phone: identifier, otp, accepted_terms: acceptedTerms }
       )
       setAuth(res.access_token, res.user)
       // Merge the guest cart into the user's server cart (runs in the background).
@@ -73,7 +81,26 @@ function LoginContent() {
               required
               autoFocus
             />
-            <Button type="submit" loading={loading} className="w-full">
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-0.5 accent-[#0a0a0a] w-4 h-4 shrink-0"
+                required
+              />
+              <span className="text-[11px] font-sans text-[#6b6b6b] leading-relaxed">
+                I agree to Kalokea&rsquo;s{' '}
+                <Link href="/terms" className="text-[#0a0a0a] underline hover:text-[#c8a4a5]" target="_blank">
+                  Terms &amp; Conditions
+                </Link>{' '}
+                and{' '}
+                <Link href="/privacy-policy" className="text-[#0a0a0a] underline hover:text-[#c8a4a5]" target="_blank">
+                  Privacy Policy
+                </Link>
+              </span>
+            </label>
+            <Button type="submit" loading={loading} className="w-full" disabled={!acceptedTerms}>
               Send OTP
             </Button>
           </form>

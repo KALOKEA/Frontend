@@ -45,7 +45,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {discount > 0 && (
-            <span className="bg-[#c8a4a5] text-white text-[9px] font-sans tracking-widest uppercase px-2 py-0.5">
+            <span className="bg-[#DC2626] text-white text-[9px] font-sans font-bold tracking-widest uppercase px-2 py-0.5 shadow-sm">
               -{discount}%
             </span>
           )}
@@ -96,7 +96,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-2 mb-1">
           <span className="font-sans text-sm text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
           {product.compare_price && product.compare_price > product.base_price && (
-            <span className="font-sans text-xs text-[#6b6b6b] line-through">{formatPrice(product.compare_price)}</span>
+            <span className="font-sans text-xs text-[#9b9b9b] line-through">{formatPrice(product.compare_price)}</span>
           )}
         </div>
         {/* Star rating */}

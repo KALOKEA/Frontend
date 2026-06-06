@@ -1,6 +1,6 @@
 import ProductCard from './ProductCard'
 import type { Product } from '@/lib/api/products'
-import Spinner from '@/components/ui/Spinner'
+import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 
 interface ProductGridProps {
   products: Product[]
@@ -9,11 +9,7 @@ interface ProductGridProps {
 
 export default function ProductGrid({ products, loading }: ProductGridProps) {
   if (loading) {
-    return (
-      <div className="flex justify-center items-center py-24">
-        <Spinner size="lg" />
-      </div>
-    )
+    return <ProductGridSkeleton count={8} />
   }
 
   if (!products.length) {

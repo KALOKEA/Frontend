@@ -14,6 +14,20 @@ export interface HomepageContent {
   hero_image_url: string
   hero_video_url: string
   hero_mode: 'image' | 'video'
+  // Trust strip
+  trust_1_title: string
+  trust_1_sub: string
+  trust_2_title: string
+  trust_2_sub: string
+  trust_3_title: string
+  trust_3_sub: string
+  trust_4_title: string
+  trust_4_sub: string
+  // Newsletter
+  newsletter_heading: string
+  newsletter_subtext: string
+  // Featured section
+  featured_section_heading: string
   [key: string]: string
 }
 
@@ -31,6 +45,17 @@ export const HERO_DEFAULTS: HomepageContent = {
     'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=90&fit=crop&crop=top',
   hero_video_url: '',
   hero_mode: 'image',
+  trust_1_title: 'Free Delivery',
+  trust_1_sub: 'On orders above ₹999',
+  trust_2_title: 'Easy Returns',
+  trust_2_sub: '7-day hassle-free returns',
+  trust_3_title: 'Secure Payments',
+  trust_3_sub: 'Razorpay 256-bit encrypted',
+  trust_4_title: 'Made in India',
+  trust_4_sub: 'Proudly designed & sourced',
+  newsletter_heading: 'Join the Kalokea Family',
+  newsletter_subtext: 'Get early access to new arrivals, exclusive offers, and style inspiration straight to your inbox.',
+  featured_section_heading: 'Featured Pieces',
 }
 
 export const homepageContentApi = {

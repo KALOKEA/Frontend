@@ -1,9 +1,21 @@
+'use client'
+import { useEffect, useState } from 'react'
+import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
+
+const ICONS = ['🚚', '↩', '🔒', '✦']
+
 export default function TrustStrip() {
+  const [c, setC] = useState(HERO_DEFAULTS)
+
+  useEffect(() => {
+    homepageContentApi.getAll().then(setC).catch(() => {})
+  }, [])
+
   const items = [
-    { icon: '🚚', title: 'Free Delivery', sub: 'On orders above ₹999' },
-    { icon: '↩', title: 'Easy Returns', sub: '7-day hassle-free returns' },
-    { icon: '🔒', title: 'Secure Payments', sub: 'Razorpay 256-bit encrypted' },
-    { icon: '✦', title: 'Made in India', sub: 'Proudly designed & sourced' },
+    { icon: ICONS[0], title: c.trust_1_title, sub: c.trust_1_sub },
+    { icon: ICONS[1], title: c.trust_2_title, sub: c.trust_2_sub },
+    { icon: ICONS[2], title: c.trust_3_title, sub: c.trust_3_sub },
+    { icon: ICONS[3], title: c.trust_4_title, sub: c.trust_4_sub },
   ]
 
   return (

@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   /* Brand fonts — referenced by Tailwind's fontFamily config */
   --font-cormorant: 'Cormorant Garamond';

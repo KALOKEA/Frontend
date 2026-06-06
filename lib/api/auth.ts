@@ -4,7 +4,7 @@ export const authApi = {
   sendOtp: (data: { phone?: string; email?: string }) =>
     api.post<{ message: string }>('/auth/send-otp', data),
 
-  verifyOtp: (data: { phone?: string; email?: string; otp: string }) =>
+  verifyOtp: (data: { phone?: string; email?: string; otp: string; accepted_terms?: boolean }) =>
     api.post<{ access_token: string; user: { id: string; name?: string; role: string } }>('/auth/verify-otp', data),
 
   refresh: () =>

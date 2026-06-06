@@ -4,19 +4,53 @@ import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 
 // ─── Field definitions ────────────────────────────────────────────────────────
 
-const FIELDS = [
-  { key: 'hero_eyebrow',    label: 'Hero eyebrow text',    hint: 'e.g. NEW COLLECTION — 2026' },
-  { key: 'hero_headline_1', label: 'Hero headline line 1', hint: 'e.g. Dressed for' },
-  { key: 'hero_headline_2', label: 'Hero headline line 2 (italic accent)', hint: 'e.g. Every Moment' },
-  { key: 'hero_subtext',    label: 'Hero subtext',         hint: 'Short tagline below headline', long: true },
-  { key: 'hero_cta1_label', label: 'Button 1 label',       hint: 'e.g. Shop Collection' },
-  { key: 'hero_cta1_link',  label: 'Button 1 link',        hint: 'e.g. /shop' },
-  { key: 'hero_cta2_label', label: 'Button 2 label',       hint: 'e.g. New Arrivals' },
-  { key: 'hero_cta2_link',  label: 'Button 2 link',        hint: 'e.g. /shop?tag=new-arrivals' },
-  { key: 'hero_image_url',  label: 'Hero image URL',       hint: 'Direct image URL for the hero panel' },
-  { key: 'hero_video_url',  label: 'Hero video URL (mp4)', hint: 'Leave empty to use image instead' },
-  { key: 'hero_mode',       label: 'Hero mode',            hint: '"image" or "video"' },
+const SECTIONS = [
+  {
+    title: 'Hero Banner',
+    fields: [
+      { key: 'hero_eyebrow',    label: 'Hero eyebrow text',    hint: 'e.g. NEW COLLECTION — 2026' },
+      { key: 'hero_headline_1', label: 'Hero headline line 1', hint: 'e.g. Dressed for' },
+      { key: 'hero_headline_2', label: 'Hero headline line 2 (italic accent)', hint: 'e.g. Every Moment' },
+      { key: 'hero_subtext',    label: 'Hero subtext',         hint: 'Short tagline below headline', long: true },
+      { key: 'hero_cta1_label', label: 'Button 1 label',       hint: 'e.g. Shop Collection' },
+      { key: 'hero_cta1_link',  label: 'Button 1 link',        hint: 'e.g. /shop' },
+      { key: 'hero_cta2_label', label: 'Button 2 label',       hint: 'e.g. New Arrivals' },
+      { key: 'hero_cta2_link',  label: 'Button 2 link',        hint: 'e.g. /shop?tag=new-arrivals' },
+      { key: 'hero_image_url',  label: 'Hero image URL',       hint: 'Direct image URL for the hero panel' },
+      { key: 'hero_video_url',  label: 'Hero video URL (mp4)', hint: 'Leave empty to use image instead' },
+      { key: 'hero_mode',       label: 'Hero mode',            hint: '"image" or "video"' },
+    ],
+  },
+  {
+    title: 'Trust Strip',
+    fields: [
+      { key: 'trust_1_title', label: 'Badge 1 title', hint: 'e.g. Free Delivery' },
+      { key: 'trust_1_sub',   label: 'Badge 1 subtitle', hint: 'e.g. On orders above ₹999' },
+      { key: 'trust_2_title', label: 'Badge 2 title', hint: 'e.g. Easy Returns' },
+      { key: 'trust_2_sub',   label: 'Badge 2 subtitle', hint: 'e.g. 7-day hassle-free returns' },
+      { key: 'trust_3_title', label: 'Badge 3 title', hint: 'e.g. Secure Payments' },
+      { key: 'trust_3_sub',   label: 'Badge 3 subtitle', hint: 'e.g. Razorpay 256-bit encrypted' },
+      { key: 'trust_4_title', label: 'Badge 4 title', hint: 'e.g. Made in India' },
+      { key: 'trust_4_sub',   label: 'Badge 4 subtitle', hint: 'e.g. Proudly designed & sourced' },
+    ],
+  },
+  {
+    title: 'Featured Products Section',
+    fields: [
+      { key: 'featured_section_heading', label: 'Section heading', hint: 'e.g. Featured Pieces' },
+    ],
+  },
+  {
+    title: 'Newsletter Signup',
+    fields: [
+      { key: 'newsletter_heading', label: 'Newsletter heading', hint: 'e.g. Join the Kalokea Family' },
+      { key: 'newsletter_subtext', label: 'Newsletter subtext', hint: 'Short description below heading', long: true },
+    ],
+  },
 ] as const
+
+// Flat FIELDS for legacy type compatibility
+const FIELDS = SECTIONS.flatMap(s => s.fields)
 
 type FieldKey = typeof FIELDS[number]['key']
 
@@ -74,48 +108,53 @@ export default function AdminHomepagePage() {
         </div>
       )}
 
-      {/* Field list */}
-      <div className="space-y-4">
-        {FIELDS.map((field) => (
-          <div key={field.key} className="bg-white border border-[#e8e4e0] p-4">
-            <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">
-              {field.label}
-            </label>
-            <p className="text-[10px] font-sans text-[#9b9b9b] mb-2">{field.hint}</p>
+      {/* Sections */}
+      <div className="space-y-8">
+        {SECTIONS.map((section) => (
+          <div key={section.title}>
+            <h2 className="font-sans text-[10px] tracking-widest uppercase text-[#6b6b6b] mb-3 pb-2 border-b border-[#e8e4e0]">
+              {section.title}
+            </h2>
+            <div className="space-y-4">
+              {section.fields.map((field) => (
+                <div key={field.key} className="bg-white border border-[#e8e4e0] p-4">
+                  <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">
+                    {field.label}
+                  </label>
+                  <p className="text-[10px] font-sans text-[#9b9b9b] mb-2">{field.hint}</p>
 
-            <div className="flex gap-2 items-start">
-              {'long' in field && field.long ? (
-                <textarea
-                  rows={3}
-                  value={values[field.key] ?? ''}
-                  onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
-                  className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a] resize-none"
-                />
-              ) : (
-                <input
-                  type="text"
-                  value={values[field.key] ?? ''}
-                  onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSave(field.key)}
-                  className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a]"
-                />
-              )}
+                  <div className="flex gap-2 items-start">
+                    {'long' in field && field.long ? (
+                      <textarea
+                        rows={3}
+                        value={values[field.key] ?? ''}
+                        onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
+                        className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a] resize-none"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={values[field.key] ?? ''}
+                        onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSave(field.key)}
+                        className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a]"
+                      />
+                    )}
 
-              <button
-                onClick={() => handleSave(field.key)}
-                disabled={saving === field.key}
-                className={`shrink-0 px-4 py-2 text-[10px] font-sans tracking-widest uppercase transition-colors ${
-                  saved === field.key
-                    ? 'bg-green-600 text-white'
-                    : 'bg-[#0a0a0a] text-white hover:bg-[#c8a4a5]'
-                } disabled:opacity-50`}
-              >
-                {saving === field.key
-                  ? '…'
-                  : saved === field.key
-                  ? '✓ Saved'
-                  : 'Save'}
-              </button>
+                    <button
+                      onClick={() => handleSave(field.key)}
+                      disabled={saving === field.key}
+                      className={`shrink-0 px-4 py-2 text-[10px] font-sans tracking-widest uppercase transition-colors ${
+                        saved === field.key
+                          ? 'bg-green-600 text-white'
+                          : 'bg-[#0a0a0a] text-white hover:bg-[#c8a4a5]'
+                      } disabled:opacity-50`}
+                    >
+                      {saving === field.key ? '…' : saved === field.key ? '✓ Saved' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}

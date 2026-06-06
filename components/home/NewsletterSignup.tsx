@@ -1,10 +1,20 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import api from '@/lib/api/client'
+import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
+  const [heading, setHeading] = useState(HERO_DEFAULTS.newsletter_heading)
+  const [subtext, setSubtext] = useState(HERO_DEFAULTS.newsletter_subtext)
+
+  useEffect(() => {
+    homepageContentApi.getAll().then((c) => {
+      if (c.newsletter_heading) setHeading(c.newsletter_heading)
+      if (c.newsletter_subtext) setSubtext(c.newsletter_subtext)
+    }).catch(() => {})
+  }, [])
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,9 +31,9 @@ export default function NewsletterSignup() {
   return (
     <section className="bg-[#0a0a0a] py-16 px-4 text-center">
       <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-3">Stay in the Loop</p>
-      <h2 className="font-serif text-3xl md:text-4xl text-white mb-3">Join the Kalokea Family</h2>
+      <h2 className="font-serif text-3xl md:text-4xl text-white mb-3">{heading}</h2>
       <p className="text-sm font-sans text-[#6b6b6b] mb-8 max-w-md mx-auto">
-        Get early access to new arrivals, exclusive offers, and style inspiration straight to your inbox.
+        {subtext}
       </p>
 
       {status === 'done' ? (

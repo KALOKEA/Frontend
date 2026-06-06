@@ -41,7 +41,12 @@ export default function Footer() {
           {/* Help */}
           <div className="flex flex-col gap-2 text-[11px] font-sans">
             <span className="text-[9px] uppercase tracking-widest text-[#6b6b6b] mb-0.5">Help</span>
-            {([['Shipping','/shipping'],['Returns','/returns'],['Contact','/contact'],['About','/about']] as [string,string][]).map(([l,h]) => (
+            {([
+              ['Shipping Policy','/shipping-policy'],
+              ['Refund Policy','/refund-policy'],
+              ['Contact Us','/contact'],
+              ['About','/about'],
+            ] as [string,string][]).map(([l,h]) => (
               <Link key={h} href={h} className="text-[#9b9b9b] hover:text-[#c8a4a5] transition-colors">{l}</Link>
             ))}
           </div>
@@ -58,8 +63,10 @@ export default function Footer() {
                 {m}
               </span>
             ))}
-            <Link href="/privacy" className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#c8a4a5]">Privacy</Link>
+            <Link href="/privacy-policy" className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#c8a4a5]">Privacy</Link>
             <Link href="/terms" className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#c8a4a5]">Terms</Link>
+            <Link href="/refund-policy" className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#c8a4a5]">Refunds</Link>
+            <Link href="/shipping-policy" className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#c8a4a5]">Shipping</Link>
           </div>
         </div>
       </div>

@@ -18,6 +18,14 @@ module.exports = {
         serif: ['var(--font-cormorant)', 'Georgia', 'serif'],
         sans: ['var(--font-dm-sans)', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(200%)' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 1.5s infinite',
+      },
     },
   },
   plugins: [],
