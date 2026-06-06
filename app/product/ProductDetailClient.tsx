@@ -88,7 +88,11 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-        <ImageGallery images={product.product_images || []} productName={product.name} />
+        <ImageGallery
+          images={product.product_images || []}
+          productName={product.name}
+          videoUrl={product.video_url}
+        />
 
         <div className="space-y-5">
           {product.categories && (

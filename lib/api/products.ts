@@ -30,6 +30,7 @@ export interface Product {
   tags?: string[]
   hsn_code?: string
   gst_rate?: number
+  video_url?: string
   created_at: string
   categories?: { id: string; name: string; slug: string }
   product_images?: ProductImage[]
