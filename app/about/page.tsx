@@ -3,7 +3,7 @@ import CmsPageContent from '@/components/CmsPageContent'
 
 export const metadata: Metadata = {
   title: 'About Us | Kalokea',
-  description: 'Kalokea is a women's fashion brand celebrating confidence, elegance, and individuality.',
+  description: "Kalokea is a women's fashion brand celebrating confidence, elegance, and individuality.",
 }
 
 const STATIC_CONTENT = `<p>Kalokea was born from a simple belief: every woman deserves to wear something that makes her feel seen, celebrated, and entirely herself.</p><p>Founded in India, Kalokea works with skilled artisans and ethical manufacturers to bring you quality that lasts and styles that transcend trends.</p><p>From our dresses to our accessories, every piece is designed with one question in mind: does this make her feel unstoppable?</p>`

@@ -135,7 +135,7 @@ export default function AdminOrderDetailInner() {
       </div>
 
       {/* Info grid */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
         <div className="bg-white border border-[#e8e4e0] p-5">
           <h2 className="text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-3">Customer</h2>
           <p className="font-medium text-[#0a0a0a]">{order.users?.name || addr.name || '—'}</p>
@@ -172,7 +172,7 @@ export default function AdminOrderDetailInner() {
       {/* Items table */}
       <div className="bg-white border border-[#e8e4e0] mb-8">
         <h2 className="text-[11px] uppercase tracking-widest text-[#6b6b6b] px-5 pt-5 mb-3">Items ({items.length})</h2>
-        <table className="w-full text-sm">
+        <table className="min-w-[480px] w-full text-sm">
           <thead>
             <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
               <th className="px-5 pb-2">Product</th><th className="px-5 pb-2">SKU</th>

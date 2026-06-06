@@ -55,7 +55,7 @@ function PushForm({ orderId, onDone }: { orderId: string; onDone: () => void }) 
   return (
     <div className="mt-2 p-3 bg-[#faf8f5] border border-[#e8e4e0] text-[11px]">
       <p className="font-medium text-[#0a0a0a] mb-2 uppercase tracking-widest">Package Dimensions</p>
-      <div className="grid grid-cols-4 gap-2 mb-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
         {[
           ['Weight (kg)', weight, setWeight],
           ['Length (cm)', length, setLength],
@@ -172,13 +172,13 @@ export default function ShipmentsManager() {
         {showServiceability && (
           <div>
             <p className="text-[11px] text-[#6b6b6b] mb-3">Check which couriers can deliver to a pin code and estimated delivery days.</p>
-            <div className="flex gap-2 mb-3">
+            <div className="flex flex-col sm:flex-row gap-2 mb-3">
               <input
                 type="text" maxLength={6} value={pincode}
                 onChange={e => setPincode(e.target.value.replace(/\D/g, ''))}
                 onKeyDown={e => e.key === 'Enter' && checkServiceability()}
                 placeholder="Enter 6-digit pin code"
-                className="border border-[#e8e4e0] px-3 py-2 text-sm outline-none focus:border-[#c8a4a5] w-48"
+                className="border border-[#e8e4e0] px-3 py-2 text-sm outline-none focus:border-[#c8a4a5] flex-1 min-w-0 w-full sm:w-48"
               />
               <button
                 onClick={checkServiceability}
@@ -199,8 +199,8 @@ export default function ShipmentsManager() {
                   {(pinResult.data?.available_courier_companies || []).length === 0 ? (
                     <p className="text-amber-600 text-sm">No couriers available for this pin code.</p>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-[11px]">
+                    <div className="overflow-x-auto -mx-0">
+                      <table className="min-w-[480px] w-full text-[11px]">
                         <thead>
                           <tr className="border-b border-[#e8e4e0]">
                             <th className="text-left py-1.5 pr-4 text-[#6b6b6b] font-medium uppercase tracking-widest">Courier</th>
@@ -267,7 +267,7 @@ export default function ShipmentsManager() {
             return (
               <div key={order.id} className="bg-white border border-[#e8e4e0] p-4">
                 {/* Row header */}
-                <div className="flex flex-wrap items-start gap-3 justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-medium text-[#0a0a0a] text-sm">#{order.order_number}</span>
@@ -287,7 +287,7 @@ export default function ShipmentsManager() {
                   </div>
 
                   {/* Action buttons */}
-                  <div className="flex flex-wrap gap-1.5 shrink-0">
+                  <div className="flex flex-wrap gap-1.5 shrink-0 mt-2 sm:mt-0">
                     {!inSR && (
                       <button
                         onClick={() => setPushingId(pushingId === order.id ? null : order.id)}

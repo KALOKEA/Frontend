@@ -64,7 +64,7 @@ export default function AdminSettingsPage() {
           <Field label="Business address">
             <textarea value={form.seller_address} onChange={e => set('seller_address', e.target.value)} rows={2} className="inp" />
           </Field>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="GSTIN">
               <input value={form.seller_gstin} onChange={e => set('seller_gstin', e.target.value.toUpperCase())} placeholder="22AAAAA0000A1Z5" className="inp" />
             </Field>
@@ -75,7 +75,7 @@ export default function AdminSettingsPage() {
               </select>
             </Field>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="GST rate (%)">
               <input type="number" step="0.5" value={form.gst_rate} onChange={e => set('gst_rate', e.target.value)} className="inp" />
             </Field>
@@ -94,7 +94,7 @@ export default function AdminSettingsPage() {
           <p className="text-[11px] text-[#9b9b9b] mb-4">
             Requires migration <code className="bg-[#f0ece8] px-1">007_shipping_settings.sql</code> to be run in Supabase.
           </p>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Field label="Shipping fee ₹">
               <input
                 type="number"
