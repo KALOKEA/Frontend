@@ -42,6 +42,7 @@ export default function Footer() {
           <div className="flex flex-col gap-2 text-[11px] font-sans">
             <span className="text-[9px] uppercase tracking-widest text-[#6b6b6b] mb-0.5">Help</span>
             {([
+              ['Track Order','/track-order'],
               ['Shipping Policy','/shipping-policy'],
               ['Refund Policy','/refund-policy'],
               ['Contact Us','/contact'],

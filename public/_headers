@@ -13,6 +13,19 @@
 /*.ico
   Cache-Control: public, max-age=86400
 
+# Admin, account, checkout — private pages: never index, never cache
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/account/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/checkout/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
 # HTML pages — short TTL + stale-while-revalidate for fast CDN delivery + fresh content
 /*
   Cache-Control: public, max-age=60, stale-while-revalidate=300

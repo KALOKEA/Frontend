@@ -44,6 +44,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
     ...(options.headers as Record<string, string>),
   }
 
@@ -88,7 +89,11 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 async function tryRefresh(): Promise<boolean> {
   try {
-    const res = await fetch(`${BASE_URL}/auth/refresh`, { method: 'POST', credentials: 'include' })
+    const res = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    })
     if (!res.ok) return false
     const json = await res.json()
     const token = json.data?.access_token || json.access_token
