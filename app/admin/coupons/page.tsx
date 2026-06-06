@@ -29,7 +29,7 @@ function couponToForm(c: Coupon): FormState {
     value: c.type === 'fixed' ? String(Math.round(c.value / 100)) : String(c.value),
     min_order_value: c.min_order_value ? String(Math.round(c.min_order_value / 100)) : '',
     max_uses: c.max_uses ? String(c.max_uses) : '',
-    max_per_user: (c as any).max_per_user ? String((c as any).max_per_user) : '',
+    max_per_user: c.max_per_user ? String(c.max_per_user) : '',
     valid_until: c.valid_until ? c.valid_until.slice(0, 10) : '',
     is_active: c.is_active,
   }
@@ -128,9 +128,9 @@ export default function AdminCouponsPage() {
                     <td className="px-4 py-3 text-[#6b6b6b]">
                       {c.used_count ?? 0}
                       {c.max_uses ? <span className="text-[#9b9b9b]"> / {c.max_uses}</span> : ''}
-                      {(c as any).max_per_user ? (
+                      {c.max_per_user ? (
                         <span className="block text-[10px] text-[#9b9b9b]">
-                          max {(c as any).max_per_user}/customer
+                          max {c.max_per_user}/customer
                         </span>
                       ) : null}
                     </td>

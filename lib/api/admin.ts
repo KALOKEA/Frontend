@@ -39,6 +39,7 @@ export interface Coupon {
   value: number
   min_order_value?: number
   max_uses?: number
+  max_per_user?: number
   used_count?: number
   valid_until?: string
   is_active: boolean
