@@ -47,12 +47,7 @@ const SECTIONS = [
       { key: 'newsletter_subtext', label: 'Newsletter subtext', hint: 'Short description below heading', long: true },
     ],
   },
-] as const
-
-// Flat FIELDS for legacy type compatibility
-const FIELDS = SECTIONS.flatMap(s => s.fields)
-
-type FieldKey = typeof FIELDS[number]['key']
+] satisfies { title: string; fields: { key: string; label: string; hint: string; long?: boolean }[] }[]
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
