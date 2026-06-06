@@ -52,7 +52,7 @@ function SignupContent() {
           : { phone: identifier, otp, accepted_terms: true, name: name.trim() }
       )
       setAuth(res.access_token, { ...res.user, name: name.trim() })
-      useCartStore.getState().mergeOnLogin().catch(() => {})
+      await useCartStore.getState().mergeOnLogin().catch(() => {})
       toast('Welcome to Kalokea, ' + name.split(' ')[0] + '! 🎉')
       const redirect = params.get('redirect') || '/'
       router.push(redirect)

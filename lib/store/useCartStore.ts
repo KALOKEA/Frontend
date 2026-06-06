@@ -31,8 +31,26 @@ interface CartStore {
   closeCart: () => void
   toggleCart: () => void
 
-  // Backend sync (no-ops for guests; logged-in users mirror to the server)
+  /**
+   * Load the logged-in user's server cart and replace local state.
+   * Called by AuthBootstrap after every successful token refresh.
+   */
   hydrate: () => Promise<void>
+
+  /**
+   * Load the guest server cart using the stored session ID.
+   * Only updates local state if the server cart has items (so stale localStorage
+   * items aren't wiped on a brand-new session with an empty server cart).
+   */
+  guestHydrate: () => Promise<void>
+
+  /**
+   * Called immediately after OTP login / signup.
+   * 1. Server-side merge of the guest session cart into the user's cart.
+   * 2. Pushes any localStorage-only items (old behavior, no server sync yet).
+   * 3. Loads the authoritative server cart via hydrate().
+   * 4. Regenerates guestSessionId so the old guest cart can't be replayed.
+   */
   mergeOnLogin: () => Promise<void>
 
   itemCount: number
@@ -40,7 +58,6 @@ interface CartStore {
 }
 
 const generateId = () => Math.random().toString(36).slice(2)
-
 const isLoggedIn = () => useAuthStore.getState().isLoggedIn
 
 function mapServerItem(it: ServerCartItem): CartItem {
@@ -72,7 +89,10 @@ export const useCartStore = create<CartStore>()(
       isOpen: false,
       guestSessionId: generateId(),
 
+      // ─── Mutations ────────────────────────────────────────────────────────
+
       addItem: (newItem) => {
+        // 1. Optimistic local update first (instant UI feedback).
         set((state) => {
           const existing = state.items.find((i) => i.variant_id === newItem.variant_id)
           if (existing) {
@@ -84,43 +104,57 @@ export const useCartStore = create<CartStore>()(
               ),
             }
           }
-          return {
-            items: [...state.items, { ...newItem, id: newItem.variant_id }],
-          }
+          return { items: [...state.items, { ...newItem, id: newItem.variant_id }] }
         })
-        // Mirror to the server for logged-in users, then resync (server validates stock + assigns ids).
+
+        // 2. Mirror to server.
         if (isLoggedIn()) {
+          // Logged-in: add to user cart, then resync (server assigns real item ids).
           cartApi
             .add(newItem.variant_id, newItem.quantity)
             .then(() => get().hydrate())
             .catch(() => get().hydrate())
+        } else {
+          // Guest: push to server with session_id so items survive localStorage clear,
+          // device switches, and browser restarts.
+          const sid = get().guestSessionId
+          cartApi
+            .add(newItem.variant_id, newItem.quantity, sid)
+            .then(() => get().guestHydrate())
+            .catch(() => {}) // keep optimistic local state if server is unreachable
         }
       },
 
       removeItem: (variant_id) => {
         const item = get().items.find((i) => i.variant_id === variant_id)
         set((state) => ({ items: state.items.filter((i) => i.variant_id !== variant_id) }))
-        if (isLoggedIn() && item) {
+        if (!item) return
+
+        if (isLoggedIn()) {
           cartApi.remove(item.id).catch(() => {})
+        } else {
+          // item.id is either a server cart_item id or the variant_id (unsynced).
+          // Pass session_id so the backend can find the correct guest cart.
+          cartApi.remove(item.id, get().guestSessionId).catch(() => {})
         }
       },
 
       updateQuantity: (variant_id, quantity) => {
-        if (quantity <= 0) {
-          get().removeItem(variant_id)
-          return
-        }
+        if (quantity <= 0) { get().removeItem(variant_id); return }
         const item = get().items.find((i) => i.variant_id === variant_id)
         set((state) => ({
-          items: state.items.map((i) =>
-            i.variant_id === variant_id ? { ...i, quantity } : i
-          ),
+          items: state.items.map((i) => i.variant_id === variant_id ? { ...i, quantity } : i),
         }))
-        if (isLoggedIn() && item) {
-          cartApi
-            .update(item.id, quantity)
+        if (!item) return
+
+        if (isLoggedIn()) {
+          cartApi.update(item.id, quantity)
             .then(() => get().hydrate())
             .catch(() => get().hydrate())
+        } else {
+          cartApi.update(item.id, quantity, get().guestSessionId)
+            .then(() => get().guestHydrate())
+            .catch(() => {})
         }
       },
 
@@ -128,6 +162,8 @@ export const useCartStore = create<CartStore>()(
         set({ items: [] })
         if (isLoggedIn()) {
           cartApi.clear().catch(() => {})
+        } else {
+          cartApi.clear(get().guestSessionId).catch(() => {})
         }
       },
 
@@ -135,7 +171,8 @@ export const useCartStore = create<CartStore>()(
       closeCart: () => set({ isOpen: false }),
       toggleCart: () => set((s) => ({ isOpen: !s.isOpen })),
 
-      // Load the authoritative server cart (logged-in only).
+      // ─── Sync ─────────────────────────────────────────────────────────────
+
       hydrate: async () => {
         if (!isLoggedIn()) return
         try {
@@ -146,20 +183,47 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
-      // On login: push genuine guest items (id === variant_id) into the user's
-      // server cart, then load the merged server cart. Items already synced from a
-      // previous session are skipped so quantities never double-count.
-      mergeOnLogin: async () => {
-        const guestItems = get().items.filter((i) => i.id === i.variant_id)
-        for (const it of guestItems) {
-          try {
-            await cartApi.add(it.variant_id, it.quantity)
-          } catch {
-            // ignore individual failures (e.g. out of stock); hydrate reflects truth
+      guestHydrate: async () => {
+        if (isLoggedIn()) return
+        const sid = get().guestSessionId
+        if (!sid) return
+        try {
+          const res = await cartApi.get(sid)
+          const serverItems = (res.items || []).map(mapServerItem)
+          if (serverItems.length > 0) {
+            // Server cart wins — it is the source of truth.
+            set({ items: serverItems })
           }
+          // If server cart is empty, keep localStorage state (migration: user had
+          // items before server-side guest carts were added, they'll be pushed on
+          // next add/merge).
+        } catch {
+          // keep local state
         }
-        await get().hydrate()
       },
+
+      mergeOnLogin: async () => {
+        const sid = get().guestSessionId
+
+        // Step 1: Server-side merge of any server guest cart into the user's cart.
+        // If no guest cart exists on server this is a no-op (returns a message, not error).
+        await cartApi.merge(sid).catch(() => {})
+
+        // Step 2: Push any localStorage-only guest items that were never synced to
+        // the server (items where id === variant_id — old behavior pre-server-sync).
+        const localOnlyItems = get().items.filter((i) => i.id === i.variant_id)
+        for (const it of localOnlyItems) {
+          await cartApi.add(it.variant_id, it.quantity).catch(() => {})
+        }
+
+        // Step 3: Load the authoritative merged server cart.
+        await get().hydrate()
+
+        // Step 4: Regenerate guest session ID so the old guest cart can't be replayed.
+        set({ guestSessionId: generateId() })
+      },
+
+      // ─── Derived ──────────────────────────────────────────────────────────
 
       get itemCount() {
         return get().items.reduce((sum, i) => sum + i.quantity, 0)

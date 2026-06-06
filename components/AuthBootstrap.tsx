@@ -30,10 +30,14 @@ export default function AuthBootstrap() {
         const token = getAccessToken()
         if (cancelled || !user || !token) return
         useAuthStore.getState().setAuth(token, user)
-        // Pull the authoritative server cart now that we're authenticated.
-        await useCartStore.getState().hydrate()
+        // mergeOnLogin: server-merges guest session cart, pushes any
+        // localStorage-only leftovers, then loads the authoritative user cart.
+        await useCartStore.getState().mergeOnLogin()
       } catch {
         // Not logged in (no valid refresh cookie) — remain a guest.
+        // Hydrate the guest server cart so items added on another device/browser
+        // are visible here too (session_id is persisted in localStorage).
+        await useCartStore.getState().guestHydrate()
       } finally {
         // Mark restore as settled so guarded pages can safely evaluate auth.
         if (!cancelled) useAuthStore.getState().setHydrated(true)

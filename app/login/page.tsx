@@ -51,8 +51,8 @@ function LoginContent() {
           : { phone: identifier, otp, accepted_terms: acceptedTerms }
       )
       setAuth(res.access_token, res.user)
-      // Merge the guest cart into the user's server cart (runs in the background).
-      useCartStore.getState().mergeOnLogin().catch(() => {})
+      // Merge guest cart into user cart, then load the authoritative server cart.
+      await useCartStore.getState().mergeOnLogin().catch(() => {})
       toast('Welcome back!')
       const redirect = params.get('redirect') || '/'
       router.push(redirect)

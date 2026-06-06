@@ -72,7 +72,7 @@ export const ordersApi = {
     gst_invoice?: boolean
     company_name?: string
     gstin?: string
-    client_items?: { variant_id: string; quantity: number }[]
+    cart_items?: { variant_id: string; quantity: number }[]
   }) => api.post<Order>('/orders', data),
 
   quote: (data: {
