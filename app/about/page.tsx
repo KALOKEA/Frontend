@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
+import CmsPageContent from '@/components/CmsPageContent'
 
 export const metadata: Metadata = {
   title: 'About Us | Kalokea',
-  description: 'Kalokea is a women\'s fashion brand celebrating confidence, elegance, and individuality.',
+  description: 'Kalokea is a women's fashion brand celebrating confidence, elegance, and individuality.',
 }
+
+const STATIC_CONTENT = `<p>Kalokea was born from a simple belief: every woman deserves to wear something that makes her feel seen, celebrated, and entirely herself.</p><p>Founded in India, Kalokea works with skilled artisans and ethical manufacturers to bring you quality that lasts and styles that transcend trends.</p><p>From our dresses to our accessories, every piece is designed with one question in mind: does this make her feel unstoppable?</p>`
 
 export default function AboutPage() {
   return (
@@ -11,21 +14,7 @@ export default function AboutPage() {
       <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-3">Our Story</p>
       <h1 className="font-serif text-4xl md:text-5xl text-[#0a0a0a] mb-8">Made for Women Who Choose Themselves</h1>
 
-      <div className="space-y-6 text-sm font-sans text-[#6b6b6b] leading-loose">
-        <p>
-          Kalokea was born from a simple belief: every woman deserves to wear something that makes her feel seen,
-          celebrated, and entirely herself. We design fashion that speaks before you do — bold without being loud,
-          elegant without being out of reach.
-        </p>
-        <p>
-          Founded in India, Kalokea works with skilled artisans and ethical manufacturers to bring you quality
-          that lasts and styles that transcend trends. We believe fashion should be both beautiful and responsible.
-        </p>
-        <p>
-          From our dresses to our accessories, every piece is designed with one question in mind: does this make
-          her feel unstoppable? If the answer is yes, it earns its place in our collection.
-        </p>
-      </div>
+      <CmsPageContent slug="about" staticContent={STATIC_CONTENT} />
 
       <div className="grid grid-cols-3 gap-6 mt-12 pt-12 border-t border-[#e8e4e0]">
         {[

@@ -8,9 +8,8 @@ import { ToastProvider } from '@/components/ui/Toast'
 import AuthBootstrap from '@/components/AuthBootstrap'
 import Analytics from '@/components/Analytics'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import LiveChatWidget from '@/components/LiveChatWidget'
 
-// Fonts downloaded at build time — served from Cloudflare Pages, zero external
-// font request at runtime. display:'swap' prevents invisible text during load.
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600'],
@@ -53,11 +52,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
-        {/* Fonts now served locally via next/font — no Google Fonts DNS needed */}
-        {/* Backend API — establish TCP+TLS early so first fetch is instant */}
         <link rel="preconnect" href="https://backend-production-73aa.up.railway.app" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />
-        {/* Cloudinary — product images */}
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </head>
@@ -71,9 +67,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthBootstrap />
           <Header />
           <CartDrawer />
-          <main><ErrorBoundary>{children}</ErrorBoundary></main>
+          <main>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </main>
           <Footer />
         </ToastProvider>
+        <LiveChatWidget />
       </body>
     </html>
   )

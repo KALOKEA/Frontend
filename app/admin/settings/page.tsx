@@ -7,6 +7,7 @@ const DEFAULT_FORM: StoreSettings = {
   seller_name: 'KALOKEA', seller_address: '', seller_gstin: '',
   seller_state: '', gst_rate: 5, admin_email: '',
   shipping_fee: 4900, shipping_free_threshold: 99900, cod_fee: 4900,
+  live_chat_widget: '',
 }
 
 export default function AdminSettingsPage() {
@@ -123,6 +124,29 @@ export default function AdminSettingsPage() {
             </Field>
           </div>
           <p className="text-[11px] text-[#9b9b9b] mt-1">Set shipping fee to 0 for always-free shipping. COD fee to 0 to disable the surcharge.</p>
+        </div>
+
+
+        {/* Live Chat Widget */}
+        <div className="bg-white border border-[#e8e4e0] p-6">
+          <h2 className="font-serif text-lg text-[#0a0a0a] mb-1 pb-3 border-b border-[#f0ece8]">Live Chat / WhatsApp Widget</h2>
+          <p className="text-[11px] text-[#9b9b9b] mb-4">
+            Paste your Tawk.to, Crisp, or WhatsApp chat embed code here. It will be automatically injected into every page of the website. Leave blank to disable.
+            <br />
+            <strong className="text-[#0a0a0a]">Tawk.to:</strong> Dashboard → Administration → Chat Widget → copy the script tag.
+          </p>
+          <Field label="Widget embed code (script tag)">
+            <textarea
+              value={form.live_chat_widget ?? ''}
+              onChange={e => set('live_chat_widget', e.target.value)}
+              rows={4}
+              placeholder={'<script type=\'text/javascript\'>\n  var Tawk_API=...\n</script>'}
+              className="inp font-mono text-xs"
+            />
+          </Field>
+          {form.live_chat_widget && (
+            <p className="text-[10px] text-green-700 mt-1">✓ Widget active — will appear on all customer pages.</p>
+          )}
         </div>
 
         {/* Deploy hook */}

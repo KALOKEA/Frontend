@@ -1,0 +1,38 @@
+'use client'
+import { useEffect, useState } from 'react'
+
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+
+interface Props {
+  slug: string
+  staticContent?: string   // fallback shown while fetching
+}
+
+export default function CmsPageContent({ slug, staticContent }: Props) {
+  const [html, setHtml] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`${API}/cms/${slug}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data?.content) setHtml(data.content)
+        else if (staticContent) setHtml(staticContent)
+      })
+      .catch(() => { if (staticContent) setHtml(staticContent) })
+      .finally(() => setLoading(false))
+  }, [slug, staticContent])
+
+  if (loading && !staticContent) {
+    return <div className="py-8 text-center text-[#9b9b9b] text-sm animate-pulse">Loading…</div>
+  }
+
+  const content = html ?? staticContent ?? ''
+
+  return (
+    <div
+      className="prose prose-sm max-w-none text-[#6b6b6b] leading-loose [&_h2]:font-serif [&_h2]:text-xl [&_h2]:text-[#0a0a0a] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-serif [&_h3]:text-lg [&_h3]:text-[#0a0a0a] [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_a]:text-[#c8a4a5] [&_a]:underline [&_strong]:text-[#0a0a0a] [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
+  )
+}

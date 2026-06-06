@@ -11,6 +11,7 @@ export interface StoreSettings {
   shipping_fee?: number
   shipping_free_threshold?: number
   cod_fee?: number
+  live_chat_widget?: string
 }
 
 export interface GstReport {

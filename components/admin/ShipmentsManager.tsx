@@ -116,6 +116,23 @@ export default function ShipmentsManager() {
     return true
   })
 
+  // Serviceability checker
+  const [pincode, setPincode] = useState('')
+  const [pinResult, setPinResult] = useState<any>(null)
+  const [pinLoading, setPinLoading] = useState(false)
+  const [showServiceability, setShowServiceability] = useState(false)
+
+  async function checkServiceability() {
+    if (!pincode || pincode.length !== 6) return
+    setPinLoading(true); setPinResult(null)
+    try {
+      const data = await adminApi.getServiceability(pincode)
+      setPinResult(data)
+    } catch (e: any) {
+      setPinResult({ error: e?.message || 'Check failed' })
+    } finally { setPinLoading(false) }
+  }
+
   async function doAction(orderId: string, action: () => Promise<any>, successMsg: string) {
     setActionLoading(orderId); setMsg(null)
     try {
@@ -144,6 +161,72 @@ export default function ShipmentsManager() {
         <button onClick={() => { setLoading(true); load() }} className="text-[11px] uppercase tracking-widest text-[#6b6b6b] hover:text-[#0a0a0a] border border-[#e8e4e0] px-3 py-1.5">
           ↻ Refresh
         </button>
+      </div>
+
+      {/* Serviceability Checker */}
+      <div className="mb-6 bg-white border border-[#e8e4e0] p-4">
+        <div className="flex items-center justify-between mb-3 cursor-pointer" onClick={() => setShowServiceability(!showServiceability)}>
+          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a]">📍 Pin Code Serviceability Check</p>
+          <span className="text-[#9b9b9b] text-xs">{showServiceability ? '▲ Hide' : '▼ Show'}</span>
+        </div>
+        {showServiceability && (
+          <div>
+            <p className="text-[11px] text-[#6b6b6b] mb-3">Check which couriers can deliver to a pin code and estimated delivery days.</p>
+            <div className="flex gap-2 mb-3">
+              <input
+                type="text" maxLength={6} value={pincode}
+                onChange={e => setPincode(e.target.value.replace(/\D/g, ''))}
+                onKeyDown={e => e.key === 'Enter' && checkServiceability()}
+                placeholder="Enter 6-digit pin code"
+                className="border border-[#e8e4e0] px-3 py-2 text-sm outline-none focus:border-[#c8a4a5] w-48"
+              />
+              <button
+                onClick={checkServiceability}
+                disabled={pinLoading || pincode.length !== 6}
+                className="px-4 py-2 bg-[#0a0a0a] text-white text-[10px] uppercase tracking-widest hover:bg-[#2a2a2a] disabled:opacity-50"
+              >
+                {pinLoading ? 'Checking…' : 'Check'}
+              </button>
+            </div>
+            {pinResult && (
+              pinResult.error ? (
+                <p className="text-red-600 text-sm">{pinResult.error}</p>
+              ) : (
+                <div>
+                  <p className="text-[11px] text-[#6b6b6b] mb-2">
+                    Available couriers for pin code <strong className="text-[#0a0a0a]">{pincode}</strong>:
+                  </p>
+                  {(pinResult.data?.available_courier_companies || []).length === 0 ? (
+                    <p className="text-amber-600 text-sm">No couriers available for this pin code.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-[11px]">
+                        <thead>
+                          <tr className="border-b border-[#e8e4e0]">
+                            <th className="text-left py-1.5 pr-4 text-[#6b6b6b] font-medium uppercase tracking-widest">Courier</th>
+                            <th className="text-left py-1.5 pr-4 text-[#6b6b6b] font-medium uppercase tracking-widest">Est. Days</th>
+                            <th className="text-left py-1.5 pr-4 text-[#6b6b6b] font-medium uppercase tracking-widest">Rate (₹)</th>
+                            <th className="text-left py-1.5 text-[#6b6b6b] font-medium uppercase tracking-widest">COD</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(pinResult.data?.available_courier_companies || []).slice(0, 10).map((c: any, i: number) => (
+                            <tr key={i} className="border-b border-[#f0ece8]">
+                              <td className="py-1.5 pr-4 font-medium text-[#0a0a0a]">{c.courier_name}</td>
+                              <td className="py-1.5 pr-4 text-[#6b6b6b]">{c.estimated_delivery_days ?? '—'}</td>
+                              <td className="py-1.5 pr-4 text-[#6b6b6b]">₹{c.rate ?? '—'}</td>
+                              <td className="py-1.5 text-[#6b6b6b]">{c.cod === 1 ? '✓' : '✗'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )
+            )}
+          </div>
+        )}
       </div>
 
       {/* Filter tabs */}

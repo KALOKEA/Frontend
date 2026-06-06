@@ -2,8 +2,11 @@
 import { useState } from 'react'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
+import CmsPageContent from '@/components/CmsPageContent'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+
+const STATIC_CONTACT_INFO = `<p><strong>Email:</strong> support@kalokea.in<br><strong>WhatsApp:</strong> +91 93101 78308<br><strong>Hours:</strong> Monday – Saturday, 10 AM – 6 PM IST</p><p>For order tracking, visit our <a href="/track-order">Track Order</a> page.</p>`
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
@@ -39,23 +42,10 @@ export default function ContactPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16">
       <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-3">Get in Touch</p>
-      <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Contact Us</h1>
-      <p className="text-sm font-sans text-[#6b6b6b] mb-10">
-        We&apos;d love to hear from you. Send us a message and we&apos;ll respond within 24 hours.
-      </p>
+      <h1 className="font-serif text-4xl text-[#0a0a0a] mb-6">Contact Us</h1>
 
-      <div className="grid md:grid-cols-2 gap-8 mb-10">
-        {[
-          ['Email', 'hello@kalokea.in'],
-          ['WhatsApp', '+91 99999 99999'],
-          ['Hours', 'Mon–Sat, 10am–6pm IST'],
-          ['Returns', 'Within 7 days of delivery'],
-        ].map(([label, val]) => (
-          <div key={label}>
-            <p className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">{label}</p>
-            <p className="text-sm font-sans text-[#0a0a0a]">{val}</p>
-          </div>
-        ))}
+      <div className="mb-10">
+        <CmsPageContent slug="contact" staticContent={STATIC_CONTACT_INFO} />
       </div>
 
       {sent ? (
@@ -80,9 +70,7 @@ export default function ContactPage() {
               placeholder="How can we help?"
             />
           </div>
-          {error && (
-            <p className="text-sm font-sans text-[#c0392b]">{error}</p>
-          )}
+          {error && <p className="text-sm font-sans text-[#c0392b]">{error}</p>}
           <Button type="submit" loading={loading}>Send Message</Button>
         </form>
       )}

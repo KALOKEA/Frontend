@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 const NAV = [
   { label: 'Dashboard',  href: '/admin' },
   { label: 'Homepage',   href: '/admin/homepage' },
+  { label: 'CMS Pages',  href: '/admin/cms' },
   { label: 'Products',   href: '/admin/products' },
   { label: 'Categories', href: '/admin/categories' },
   { label: 'Orders', href: '/admin/orders' },
