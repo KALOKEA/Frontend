@@ -1,8 +1,6 @@
-// Server component — no 'use client'.
-// generateStaticParams() is required for dynamic routes with output:'export'.
-// Returns [] because admin order IDs are runtime UUIDs, not build-time known.
-
 import AdminOrderIdClient from './client'
+
+export const dynamicParams = false
 
 export function generateStaticParams() {
   return []
