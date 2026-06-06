@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { adminApi, type AdminOrder } from '@/lib/api/admin'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice } from '@/lib/utils/formatPrice'
@@ -291,10 +292,16 @@ export default function AdminOrdersPage() {
               <button onClick={() => setDetail(null)} className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5]">Close</button>
               <button
                 onClick={() => { setDetail(null); openEdit(detail) }}
-                className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333]"
+                className="px-4 py-2 text-sm border border-[#0a0a0a] hover:bg-[#faf8f5]"
               >
-                Update status
+                Update Status
               </button>
+              <Link
+                href={`/admin/order-detail?id=${detail.id}`}
+                className="px-4 py-2 text-sm bg-[#ff6600] text-white hover:bg-[#e55a00] transition-colors"
+              >
+                Full Details / Ship ↗
+              </Link>
             </div>
           </div>
         </div>
