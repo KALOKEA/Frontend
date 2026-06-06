@@ -84,6 +84,9 @@ export function generateMetadata({ params }: Props): Metadata {
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://kalokea.pages.dev/shop/${params.category}/`,
+    },
     openGraph: { title, description, type: 'website', siteName: 'Kalokea' },
     twitter: { card: 'summary_large_image', title, description },
   }

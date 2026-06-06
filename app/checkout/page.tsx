@@ -26,7 +26,7 @@ const toGaItems = (items: { product_id: string; variant_id: string; name: string
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { isLoggedIn, user } = useAuthStore()
+  const { isLoggedIn, user, hydrated } = useAuthStore()
   const { items, clearCart } = useCartStore()
   const { toast } = useToast()
 
@@ -39,6 +39,7 @@ export default function CheckoutPage() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!hydrated) return // wait for AuthBootstrap to restore session from refresh cookie
     if (!isLoggedIn) { router.push('/login?redirect=/checkout'); return }
     if (!items.length) { router.push('/cart'); return }
     addressesApi.getAll().then((data) => {
@@ -46,7 +47,7 @@ export default function CheckoutPage() {
       const def = data.find((a) => a.is_default) || data[0]
       setBilling((b) => def ? billingFromAddress(def, user?.email || '') : { ...b, email: user?.email || '' })
     }).catch(() => setBilling((b) => ({ ...b, email: user?.email || '' })))
-  }, [isLoggedIn, items.length, router, user?.email])
+  }, [isLoggedIn, hydrated, items.length, router, user?.email])
 
   // Pre-load Razorpay script as soon as page mounts — avoids loading it inside
   // an async chain which some mobile browsers treat as an untrusted context.
@@ -74,6 +75,11 @@ export default function CheckoutPage() {
       ['first_name', 'First name'], ['line1', 'Street address'], ['city', 'Town / City'],
       ['state', 'State'], ['pincode', 'Postcode / PIN'], ['phone', 'Phone'],
     ]
+    // Guests must provide an email for order confirmation and invoice access.
+    if (!isLoggedIn && !billing.email?.trim()) {
+      setCheckoutError('Email address is required to place an order as a guest')
+      return
+    }
     for (const [k, label] of required) {
       if (!String(billing[k] || '').trim()) {
         setCheckoutError(`${label} is required`)
@@ -134,9 +140,23 @@ export default function CheckoutPage() {
           order_id: rzp.razorpay_order_id,
           name: 'Kalokea',
           description: `Order ${order.order_number}`,
-          handler: () => {
-            // Webhook is the source of truth for payment status; this just
-            // moves the customer to the confirmation screen.
+          handler: async (response: {
+            razorpay_payment_id: string
+            razorpay_order_id: string
+            razorpay_signature: string
+          }) => {
+            // Verify signature server-side before showing success screen.
+            // This prevents a failed payment from landing on the success page.
+            try {
+              await paymentsApi.verifyPayment({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              })
+            } catch {
+              setCheckoutError('Payment verification failed. Please check My Orders or contact support.')
+              return
+            }
             trackPurchase(order.order_number, order.total, toGaItems(items))
             clearCart()
             router.push(`/checkout/success?order=${order.order_number}`)

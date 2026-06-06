@@ -1,3 +1,8 @@
+# ── Canonical URL consolidation ──────────────────────────────────────────────
+# These duplicate pages were removed; Google canonical is the -policy variant.
+/privacy          /privacy-policy/    301
+/shipping         /shipping-policy/   301
+
 # Product detail pages are now statically prerendered at /product/<slug>/
 # (app/product/[slug]). The old /product?slug= reverse-redirect has been removed
 # because it would hijack the real static pages.

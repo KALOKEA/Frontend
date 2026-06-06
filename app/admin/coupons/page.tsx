@@ -11,13 +11,14 @@ interface FormState {
   value: string
   min_order_value: string
   max_uses: string
+  max_per_user: string
   valid_until: string
   is_active: boolean
 }
 
 const emptyForm = (): FormState => ({
   code: '', type: 'percent', value: '', min_order_value: '',
-  max_uses: '', valid_until: '', is_active: true,
+  max_uses: '', max_per_user: '', valid_until: '', is_active: true,
 })
 
 function couponToForm(c: Coupon): FormState {
@@ -28,6 +29,7 @@ function couponToForm(c: Coupon): FormState {
     value: c.type === 'fixed' ? String(Math.round(c.value / 100)) : String(c.value),
     min_order_value: c.min_order_value ? String(Math.round(c.min_order_value / 100)) : '',
     max_uses: c.max_uses ? String(c.max_uses) : '',
+    max_per_user: (c as any).max_per_user ? String((c as any).max_per_user) : '',
     valid_until: c.valid_until ? c.valid_until.slice(0, 10) : '',
     is_active: c.is_active,
   }
@@ -65,6 +67,7 @@ export default function AdminCouponsPage() {
       value,
       min_order_value: form.min_order_value ? Math.round(parseFloat(form.min_order_value) * 100) : undefined,
       max_uses: form.max_uses ? parseInt(form.max_uses, 10) : undefined,
+      max_per_user: form.max_per_user ? parseInt(form.max_per_user, 10) : undefined,
       valid_until: form.valid_until || undefined,
       is_active: form.is_active,
     }
@@ -125,6 +128,11 @@ export default function AdminCouponsPage() {
                     <td className="px-4 py-3 text-[#6b6b6b]">
                       {c.used_count ?? 0}
                       {c.max_uses ? <span className="text-[#9b9b9b]"> / {c.max_uses}</span> : ''}
+                      {(c as any).max_per_user ? (
+                        <span className="block text-[10px] text-[#9b9b9b]">
+                          max {(c as any).max_per_user}/customer
+                        </span>
+                      ) : null}
                     </td>
                     <td className="px-4 py-3">
                       {c.valid_until ? (
@@ -209,7 +217,7 @@ export default function AdminCouponsPage() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Max uses</label>
+                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Max uses (global)</label>
                 <input
                   type="number"
                   value={form.max_uses}
@@ -218,6 +226,21 @@ export default function AdminCouponsPage() {
                   placeholder="Unlimited"
                 />
               </div>
+            </div>
+
+            <div className="mb-3">
+              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
+                Max uses per customer
+                <span className="normal-case ml-1 text-[#9b9b9b]">(leave blank = unlimited)</span>
+              </label>
+              <input
+                type="number"
+                min="1"
+                value={form.max_per_user}
+                onChange={e => setForm(f => f ? { ...f, max_per_user: e.target.value } : f)}
+                className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                placeholder="e.g. 1 (one-time use per customer)"
+              />
             </div>
 
             <div className="mb-4">

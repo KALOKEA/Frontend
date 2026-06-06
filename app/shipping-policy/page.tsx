@@ -4,6 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Shipping Policy | Kalokea',
   description: 'Kalokea shipping policy — free delivery above ₹999, standard 3–5 day delivery across India.',
+  alternates: { canonical: 'https://kalokea.pages.dev/shipping-policy/' },
 }
 
 export default function ShippingPolicyPage() {

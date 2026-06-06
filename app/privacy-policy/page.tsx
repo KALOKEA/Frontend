@@ -4,6 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Privacy Policy | Kalokea',
   description: 'How Kalokea collects, uses, and protects your personal information.',
+  alternates: { canonical: 'https://kalokea.pages.dev/privacy-policy/' },
 }
 
 export default function PrivacyPolicyPage() {
