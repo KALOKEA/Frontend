@@ -31,6 +31,8 @@ export interface Product {
   hsn_code?: string
   gst_rate?: number
   video_url?: string
+  avg_rating?: number
+  review_count?: number
   created_at: string
   categories?: { id: string; name: string; slug: string }
   product_images?: ProductImage[]

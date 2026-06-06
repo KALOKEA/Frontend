@@ -1,26 +1,35 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import Image from 'next/image'
 import DOMPurify from 'dompurify'
 import { reviewsApi, type ReviewItem } from '@/lib/api/reviews'
+import { uploadReviewMedia } from '@/lib/api/upload'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import Link from 'next/link'
 
-function Stars({ rating, interactive = false, onRate }: {
+// ─── Star component (yellow) ─────────────────────────────────────────────────
+
+function Stars({
+  rating,
+  interactive = false,
+  onRate,
+}: {
   rating: number
   interactive?: boolean
   onRate?: (n: number) => void
 }) {
   const [hover, setHover] = useState(0)
+  const active = interactive ? (hover || rating) : rating
   return (
     <div className={`flex gap-0.5 ${interactive ? 'cursor-pointer' : ''}`}>
-      {[1, 2, 3, 4, 5].map(s => (
+      {[1, 2, 3, 4, 5].map((s) => (
         <svg
           key={s}
-          width={interactive ? 22 : 13}
-          height={interactive ? 22 : 13}
+          width={interactive ? 24 : 13}
+          height={interactive ? 24 : 13}
           viewBox="0 0 24 24"
-          fill={(interactive ? (hover || rating) : rating) >= s ? '#c8a4a5' : 'none'}
-          stroke="#c8a4a5"
+          fill={active >= s ? '#F59E0B' : 'none'}
+          stroke="#F59E0B"
           strokeWidth="1.5"
           onMouseEnter={() => interactive && setHover(s)}
           onMouseLeave={() => interactive && setHover(0)}
@@ -35,11 +44,66 @@ function Stars({ rating, interactive = false, onRate }: {
 }
 
 function SafeText({ text }: { text: string }) {
-  const clean = typeof window !== 'undefined'
-    ? DOMPurify.sanitize(text, { ALLOWED_TAGS: [] })
-    : text.replace(/<[^>]*>/g, '')
+  const clean =
+    typeof window !== 'undefined'
+      ? DOMPurify.sanitize(text, { ALLOWED_TAGS: [] })
+      : text.replace(/<[^>]*>/g, '')
   return <>{clean}</>
 }
+
+// ─── Media thumbnail (image or video) ────────────────────────────────────────
+
+function MediaThumb({ url }: { url: string }) {
+  const isVideo = /\.(mp4|mov|webm)(\?|$)/i.test(url) || url.includes('/video/')
+  const [zoomed, setZoomed] = useState(false)
+
+  return (
+    <>
+      <button
+        onClick={() => setZoomed(true)}
+        className="relative w-16 h-16 overflow-hidden bg-[#f4f2ef] border border-[#e8e4e0] hover:border-[#0a0a0a] transition-colors flex-shrink-0"
+      >
+        {isVideo ? (
+          <div className="w-full h-full flex items-center justify-center bg-[#1a1a1a]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        ) : (
+          <Image src={url} alt="Review media" fill className="object-cover" sizes="64px" />
+        )}
+      </button>
+
+      {/* Lightbox */}
+      {zoomed && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setZoomed(false)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white/70 hover:text-white"
+            onClick={() => setZoomed(false)}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+          <div onClick={(e) => e.stopPropagation()}>
+            {isVideo ? (
+              <video src={url} controls autoPlay className="max-w-full max-h-[85vh] rounded" />
+            ) : (
+              <div className="relative" style={{ maxWidth: '90vw', maxHeight: '85vh' }}>
+                <img src={url} alt="Review media" className="max-w-full max-h-[85vh] object-contain" />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// ─── Main component ──────────────────────────────────────────────────────────
 
 export default function ProductReviews({ product_id }: { product_id: string }) {
   const { isLoggedIn } = useAuthStore()
@@ -51,29 +115,71 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
   const [rating, setRating] = useState(0)
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const [mediaFiles, setMediaFiles] = useState<File[]>([])
+  const [mediaPreviews, setMediaPreviews] = useState<string[]>([])
+  const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [submitMsg, setSubmitMsg] = useState<{ text: string; ok: boolean } | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   function loadReviews() {
     setLoading(true)
-    reviewsApi.getByProduct(product_id)
-      .then(data => setReviews(Array.isArray(data) ? data : []))
+    reviewsApi
+      .getByProduct(product_id)
+      .then((data) => setReviews(Array.isArray(data) ? data : []))
       .catch(() => setReviews([]))
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { loadReviews() }, [product_id]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { loadReviews() }, [product_id]) // eslint-disable-line
+
+  // Add media files (max 5 total)
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? [])
+    const combined = [...mediaFiles, ...files].slice(0, 5)
+    setMediaFiles(combined)
+    // Generate preview URLs
+    const previews = combined.map((f) =>
+      f.type.startsWith('video/') ? '__video__' : URL.createObjectURL(f),
+    )
+    setMediaPreviews(previews)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  function removeMedia(i: number) {
+    setMediaFiles((prev) => prev.filter((_, idx) => idx !== i))
+    setMediaPreviews((prev) => prev.filter((_, idx) => idx !== i))
+  }
 
   async function submitReview() {
     if (!rating) { setSubmitMsg({ text: 'Please select a star rating.', ok: false }); return }
     if (!body.trim()) { setSubmitMsg({ text: 'Please write something about the product.', ok: false }); return }
-    setSubmitting(true); setSubmitMsg(null)
+    setSubmitting(true)
+    setSubmitMsg(null)
     try {
-      await reviewsApi.create({ product_id, rating, title: title.trim() || undefined, body: body.trim() })
+      // Upload media first
+      let media_urls: string[] = []
+      if (mediaFiles.length > 0) {
+        setUploading(true)
+        const results = await Promise.all(mediaFiles.map((f) => uploadReviewMedia(f)))
+        media_urls = results.map((r) => r.url)
+        setUploading(false)
+      }
+
+      await reviewsApi.create({
+        product_id,
+        rating,
+        title: title.trim() || undefined,
+        body: body.trim(),
+        media_urls: media_urls.length > 0 ? media_urls : undefined,
+      })
+
       setSubmitMsg({ text: 'Thank you! Your review is pending approval and will appear shortly.', ok: true })
       setRating(0); setTitle(''); setBody('')
+      setMediaFiles([]); setMediaPreviews([])
       setShowForm(false)
     } catch (e: any) {
+      setUploading(false)
       setSubmitMsg({ text: e?.message || 'Could not submit review. Try again.', ok: false })
     } finally {
       setSubmitting(false)
@@ -82,21 +188,21 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
 
   if (loading) return <p className="text-xs text-[#9b9b9b] py-4">Loading reviews…</p>
 
-  const avg = reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0
+  const avg = reviews.length
+    ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+    : 0
 
   return (
     <div>
-      {/* Summary row */}
+      {/* Summary */}
       {reviews.length > 0 && (
         <div className="flex items-center gap-4 mb-5 pb-4 border-b border-[#e8e4e0]">
-          <div className="flex items-center gap-2">
-            <span className="font-serif text-3xl text-[#0a0a0a]">{avg.toFixed(1)}</span>
-            <div>
-              <Stars rating={Math.round(avg)} />
-              <p className="text-[11px] text-[#6b6b6b] mt-0.5">
-                {reviews.length} review{reviews.length > 1 ? 's' : ''}
-              </p>
-            </div>
+          <span className="font-serif text-3xl text-[#0a0a0a]">{avg.toFixed(1)}</span>
+          <div>
+            <Stars rating={Math.round(avg)} />
+            <p className="text-[11px] text-[#6b6b6b] mt-0.5">
+              {reviews.length} review{reviews.length > 1 ? 's' : ''}
+            </p>
           </div>
         </div>
       )}
@@ -104,8 +210,8 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
       {/* Review list */}
       {reviews.length > 0 ? (
         <div className="space-y-5 mb-6">
-          {reviews.map(r => {
-            const text = r.body || (r as any).comment || ''
+          {reviews.map((r) => {
+            const text = r.body || r.comment || ''
             return (
               <div key={r.id} className="border-b border-[#f0ece8] pb-5 last:border-0">
                 <div className="flex items-center justify-between mb-2">
@@ -116,7 +222,9 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                     </span>
                   </div>
                   <span className="text-[10px] text-[#9b9b9b]">
-                    {new Date(r.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    {new Date(r.created_at).toLocaleDateString('en-IN', {
+                      day: '2-digit', month: 'short', year: 'numeric',
+                    })}
                   </span>
                 </div>
                 {r.title && (
@@ -125,9 +233,17 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                   </p>
                 )}
                 {text && (
-                  <p className="text-sm font-sans text-[#6b6b6b] leading-relaxed">
+                  <p className="text-sm font-sans text-[#6b6b6b] leading-relaxed mb-3">
                     <SafeText text={text} />
                   </p>
+                )}
+                {/* Attached media */}
+                {r.media_urls && r.media_urls.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {r.media_urls.map((url, i) => (
+                      <MediaThumb key={i} url={url} />
+                    ))}
+                  </div>
                 )}
               </div>
             )
@@ -139,7 +255,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
         </p>
       )}
 
-      {/* Submit success message */}
+      {/* Submit success */}
       {submitMsg?.ok && (
         <p className="text-sm text-green-700 bg-green-50 border border-green-200 px-3 py-2 mb-4">
           {submitMsg.text}
@@ -166,10 +282,12 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
             </div>
 
             <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Title (optional)</label>
+              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
+                Title (optional)
+              </label>
               <input
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="Summarise your experience"
                 maxLength={120}
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none bg-white"
@@ -177,10 +295,12 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
             </div>
 
             <div className="mb-4">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Review *</label>
+              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
+                Review *
+              </label>
               <textarea
                 value={body}
-                onChange={e => setBody(e.target.value)}
+                onChange={(e) => setBody(e.target.value)}
                 rows={4}
                 placeholder="What did you like or dislike? How does it fit?"
                 maxLength={1000}
@@ -189,23 +309,75 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
               <p className="text-[10px] text-[#9b9b9b] mt-0.5 text-right">{body.length}/1000</p>
             </div>
 
+            {/* Media upload */}
+            <div className="mb-4">
+              <p className="text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-2">
+                Photos / Videos (optional, max 5)
+              </p>
+
+              {/* Previews */}
+              {mediaPreviews.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {mediaPreviews.map((preview, i) => (
+                    <div key={i} className="relative w-16 h-16 border border-[#e8e4e0] overflow-hidden bg-[#f4f2ef]">
+                      {preview === '__video__' ? (
+                        <div className="w-full h-full flex items-center justify-center bg-[#1a1a1a]">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      ) : (
+                        <img src={preview} alt="" className="w-full h-full object-cover" />
+                      )}
+                      <button
+                        onClick={() => removeMedia(i)}
+                        className="absolute top-0 right-0 w-5 h-5 bg-black/70 text-white flex items-center justify-center text-[10px] leading-none"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {mediaFiles.length < 5 && (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border border-dashed border-[#c8a4a5] text-[#c8a4a5] text-[10px] uppercase tracking-widest px-4 py-2 hover:bg-[#c8a4a5]/5 transition-colors"
+                  >
+                    + Add photos/videos
+                  </button>
+                </>
+              )}
+            </div>
+
             {submitMsg && !submitMsg.ok && (
               <p className="text-sm text-red-600 mb-3">{submitMsg.text}</p>
             )}
 
             <div className="flex gap-2">
               <button
-                onClick={() => { setShowForm(false); setSubmitMsg(null) }}
+                onClick={() => { setShowForm(false); setSubmitMsg(null); setMediaFiles([]); setMediaPreviews([]) }}
                 className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-white"
               >
                 Cancel
               </button>
               <button
                 onClick={submitReview}
-                disabled={submitting}
+                disabled={submitting || uploading}
                 className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50"
               >
-                {submitting ? 'Submitting…' : 'Submit review'}
+                {uploading ? 'Uploading media…' : submitting ? 'Submitting…' : 'Submit review'}
               </button>
             </div>
           </div>

@@ -93,12 +93,26 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Link href={`/product/${product.slug}`} className="block font-serif text-[#0a0a0a] hover:text-[#c8a4a5] transition-colors text-[15px] leading-snug mb-1">
           {product.name}
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mb-1">
           <span className="font-sans text-sm text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
           {product.compare_price && product.compare_price > product.base_price && (
             <span className="font-sans text-xs text-[#6b6b6b] line-through">{formatPrice(product.compare_price)}</span>
           )}
         </div>
+        {/* Star rating */}
+        {(product.review_count ?? 0) > 0 && (
+          <div className="flex items-center gap-1">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" strokeWidth="1">
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+            </svg>
+            <span className="text-[11px] font-sans text-[#0a0a0a] font-medium">
+              {Number(product.avg_rating ?? 0).toFixed(1)}
+            </span>
+            <span className="text-[11px] font-sans text-[#9b9b9b]">
+              ({product.review_count})
+            </span>
+          </div>
+        )}
       </div>
     </div>
   )

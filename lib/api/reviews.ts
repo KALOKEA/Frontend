@@ -5,14 +5,14 @@ export interface ReviewItem {
   rating: number
   title?: string
   comment?: string
-  body?: string   // legacy alias kept for compat
+  body?: string
   is_approved: boolean
   created_at: string
+  media_urls?: string[]
   users?: { name?: string }
 }
 
 export const reviewsApi = {
-  // Correct endpoint: GET /reviews/product/:productId
   getByProduct: (productId: string) =>
     api.get<ReviewItem[]>(`/reviews/product/${productId}`),
 
@@ -20,8 +20,9 @@ export const reviewsApi = {
     product_id: string
     rating: number
     title?: string
-    body?: string    // mapped to the DB `body` column
+    body?: string
     order_id?: string
+    media_urls?: string[]
   }) => api.post('/reviews', data),
 
   getMyReviews: () => api.get<ReviewItem[]>('/reviews/my'),

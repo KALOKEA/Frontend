@@ -103,6 +103,24 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
           <h1 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] leading-tight">{product.name}</h1>
 
+          {/* Rating summary */}
+          {(product.review_count ?? 0) > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map(s => (
+                  <svg key={s} width="13" height="13" viewBox="0 0 24 24"
+                    fill={(product.avg_rating ?? 0) >= s - 0.5 ? '#F59E0B' : 'none'}
+                    stroke="#F59E0B" strokeWidth="1.5">
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                  </svg>
+                ))}
+              </div>
+              <span className="text-[12px] font-sans text-[#6b6b6b]">
+                {Number(product.avg_rating ?? 0).toFixed(1)}/5 · {product.review_count} review{(product.review_count ?? 0) !== 1 ? 's' : ''}
+              </span>
+            </div>
+          )}
+
           <div className="flex items-center gap-3">
             <span className="font-sans text-xl text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
             {product.compare_price && product.compare_price > product.base_price && (
