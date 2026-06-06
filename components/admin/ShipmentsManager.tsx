@@ -627,7 +627,7 @@ export default function ShipmentsManager() {
                   </div>
 
                   {/* Feedback */}
-                  {msg?.id === order.id && (
+                  {msg && msg.id === order.id && (
                     <div className={`mt-2 px-3 py-2 text-[11px] border ${msg.type === 'ok' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
                       {msg.text}
                     </div>
