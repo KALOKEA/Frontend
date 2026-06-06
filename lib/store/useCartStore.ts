@@ -107,21 +107,25 @@ export const useCartStore = create<CartStore>()(
           return { items: [...state.items, { ...newItem, id: newItem.variant_id }] }
         })
 
-        // 2. Mirror to server.
+        // 2. Mirror to server — use the response to update item IDs.
+        //    NEVER call hydrate() here: if the server returns empty (schema issue,
+        //    stock error, etc.) it would wipe the optimistic local state.
         if (isLoggedIn()) {
-          // Logged-in: add to user cart, then resync (server assigns real item ids).
           cartApi
             .add(newItem.variant_id, newItem.quantity)
-            .then(() => get().hydrate())
-            .catch(() => get().hydrate())
+            .then((res) => {
+              if (res?.items?.length) set({ items: res.items.map(mapServerItem) })
+              // If server returned empty, keep optimistic state — don't wipe it.
+            })
+            .catch(() => {}) // keep optimistic state on any error
         } else {
-          // Guest: push to server with session_id so items survive localStorage clear,
-          // device switches, and browser restarts.
           const sid = get().guestSessionId
           cartApi
             .add(newItem.variant_id, newItem.quantity, sid)
-            .then(() => get().guestHydrate())
-            .catch(() => {}) // keep optimistic local state if server is unreachable
+            .then((res) => {
+              if (res?.items?.length) set({ items: res.items.map(mapServerItem) })
+            })
+            .catch(() => {})
         }
       },
 
@@ -149,11 +153,15 @@ export const useCartStore = create<CartStore>()(
 
         if (isLoggedIn()) {
           cartApi.update(item.id, quantity)
-            .then(() => get().hydrate())
-            .catch(() => get().hydrate())
+            .then((res) => {
+              if (res?.items?.length) set({ items: res.items.map(mapServerItem) })
+            })
+            .catch(() => {})
         } else {
           cartApi.update(item.id, quantity, get().guestSessionId)
-            .then(() => get().guestHydrate())
+            .then((res) => {
+              if (res?.items?.length) set({ items: res.items.map(mapServerItem) })
+            })
             .catch(() => {})
         }
       },
