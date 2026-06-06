@@ -105,7 +105,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                     src={item.url}
                     alt={item.alt}
                     fill
-                    className="object-contain"
+                    className="object-contain object-top"
                     sizes="64px"
                   />
                 ) : (
@@ -129,7 +129,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                 src={current.url}
                 alt={current.alt}
                 fill
-                className="object-contain transition-opacity duration-500 cursor-zoom-in"
+                className="object-contain object-top transition-opacity duration-500 cursor-zoom-in"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority={active === 0}
                 onClick={() => setZoomed(true)}
