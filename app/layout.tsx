@@ -45,7 +45,28 @@ export const metadata: Metadata = {
   title: "KALOKEA | Women's Fashion",
   description: "Shop the latest women's fashion at Kalokea. Free shipping above ₹999.",
   keywords: 'women fashion, dresses, tops, co-ords, affordable fashion India',
-  metadataBase: new URL('https://kalokea.pages.dev'),
+  metadataBase: new URL('https://kalokea.in'),
+  openGraph: {
+    type: 'website',
+    siteName: 'KALOKEA',
+    title: "KALOKEA | Women's Fashion",
+    description: "Shop the latest women's fashion at Kalokea. Free shipping above ₹999.",
+    url: 'https://kalokea.in',
+    images: [
+      {
+        url: 'https://kalokea.in/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: "KALOKEA — Women's Fashion",
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "KALOKEA | Women's Fashion",
+    description: "Shop the latest women's fashion at Kalokea. Free shipping above ₹999.",
+    images: ['https://kalokea.in/og-image.jpg'],
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

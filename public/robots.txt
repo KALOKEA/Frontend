@@ -5,6 +5,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /account/
 Disallow: /checkout/
-Disallow: /api/
+Disallow: /cart/
+Disallow: /login/
 
 Sitemap: https://kalokea.in/sitemap.xml

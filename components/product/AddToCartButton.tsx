@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/lib/store/useCartStore'
 import { useToast } from '@/components/ui/Toast'
-import { trackAddToCart } from '@/lib/analytics'
+import { trackAddToCart, metaAddToCart } from '@/lib/analytics'
 import type { Product, ProductVariant } from '@/lib/api/products'
 
 interface AddToCartButtonProps {
@@ -52,6 +52,12 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
       size: selectedVariant!.size,
       colour: selectedVariant!.colour,
       category: product.categories?.name,
+    })
+    metaAddToCart({
+      product_id: product.id,
+      name: product.name,
+      price: item.price,
+      quantity,
     })
     setTimeout(() => {
       setAdding(false)

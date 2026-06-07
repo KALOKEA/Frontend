@@ -11,7 +11,7 @@ import OrderSummary from '@/components/checkout/OrderSummary'
 import PaymentSection from '@/components/checkout/PaymentSection'
 import CouponInput from '@/components/checkout/CouponInput'
 import Button from '@/components/ui/Button'
-import { trackBeginCheckout, trackPurchase } from '@/lib/analytics'
+import { trackBeginCheckout, trackPurchase, metaInitiateCheckout, metaPurchase } from '@/lib/analytics'
 
 const toGaItems = (items: { product_id: string; variant_id: string; name: string; price: number; quantity: number; size?: string; colour?: string }[]) =>
   items.map((i) => ({
@@ -64,6 +64,7 @@ export default function CheckoutPage() {
     if (!items.length) return
     const value = items.reduce((s, i) => s + i.price * i.quantity, 0)
     trackBeginCheckout(toGaItems(items), value)
+    metaInitiateCheckout(value, items.reduce((s, i) => s + i.quantity, 0))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -138,6 +139,7 @@ export default function CheckoutPage() {
 
       if (paymentMethod === 'cod') {
         trackPurchase(order.order_number, order.total, toGaItems(items))
+        metaPurchase(order.order_number, order.total)
         clearCart()
         router.push(`/checkout/success?order=${order.order_number}`)
       } else {
@@ -179,6 +181,7 @@ export default function CheckoutPage() {
               return
             }
             trackPurchase(order.order_number, order.total, toGaItems(items))
+            metaPurchase(order.order_number, order.total)
             clearCart()
             router.push(`/checkout/success?order=${order.order_number}`)
           },

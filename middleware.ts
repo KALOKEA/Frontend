@@ -1,39 +1,34 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-
 /**
- * Edge middleware: server-side route protection via the refresh_token httpOnly cookie.
+ * ⚠️  DEAD CODE — this middleware file is intentionally non-functional.
  *
- * The access token lives only in memory (cleared on refresh). The refresh_token
- * cookie is the only persistent session signal accessible at the edge. If it is
- * absent, the user cannot possibly be logged in, so redirect them to /login.
+ * WHY: With `output: 'export'` in next.config.mjs, Next.js generates a fully
+ * static site. Static exports do NOT support edge middleware — Next.js throws
+ * "Middleware cannot be used with 'output: export'" at build time.
  *
- * This is defense-in-depth (the backend guards every endpoint with JwtAuthGuard /
- * AdminGuard too), but prevents the HTML shell of /admin from rendering for
- * unauthenticated visitors.
+ * Cloudflare Pages serves the static files directly. There is no Node/Edge
+ * runtime that could intercept requests and run this code.
+ *
+ * HOW AUTH PROTECTION ACTUALLY WORKS:
+ * - Backend guards: Every API endpoint uses JwtAuthGuard or AdminGuard.
+ *   An unauthenticated request simply gets a 401/403 from the backend.
+ * - Client-side redirect: account/layout.tsx and admin pages call useAuthStore
+ *   and push('/login') if hydrated && !isLoggedIn.
+ * - AuthBootstrap.tsx restores the session from the refresh_token cookie
+ *   on first load (httpOnly cookie → POST /auth/refresh → access token in memory).
+ *
+ * This file is kept so that if the project ever migrates away from static export
+ * (e.g. to Next.js server/edge runtime or a custom server), middleware-based
+ * protection can be re-enabled by removing the output: 'export' config option.
+ *
+ * The matcher config below is intentionally set to an empty array so that
+ * even if this code somehow ran, it would match nothing.
  */
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
 
-  // Presence of the httpOnly refresh_token cookie means the user has an active
-  // session (or recently expired one — AuthBootstrap will re-validate on mount).
-  const hasSession = request.cookies.has('refresh_token')
-
-  if (!hasSession) {
-    const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('redirect', pathname)
-    return NextResponse.redirect(loginUrl)
-  }
-
-  return NextResponse.next()
+export function middleware() {
+  // No-op. See comment above.
 }
 
 export const config = {
-  // Only run on routes that require authentication.
-  // Static files, API routes, and public pages are excluded automatically.
-  matcher: [
-    '/checkout/:path*',
-    '/account/:path*',
-    '/admin/:path*',
-  ],
+  matcher: [], // Empty: do not match any routes
 }
+

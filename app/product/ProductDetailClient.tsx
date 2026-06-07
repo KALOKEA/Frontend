@@ -9,7 +9,7 @@ import SizeGuidePopup from '@/components/product/SizeGuidePopup'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
-import { trackViewItem } from '@/lib/analytics'
+import { trackViewItem, metaViewContent } from '@/lib/analytics'
 import { addRecentlyViewed } from '@/lib/hooks/useRecentlyViewed'
 
 const ProductReviews = dynamic(() => import('@/components/product/ProductReviews'), { ssr: false })
@@ -36,6 +36,12 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
   useEffect(() => {
     if (!product) return
     trackViewItem({
+      product_id: product.id,
+      name: product.name,
+      price: product.base_price,
+      category: product.categories?.name,
+    })
+    metaViewContent({
       product_id: product.id,
       name: product.name,
       price: product.base_price,
