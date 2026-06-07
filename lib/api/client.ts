@@ -23,10 +23,28 @@ export function invalidateCache(prefix?: string) {
   memCache.forEach((_, k) => { if (k.startsWith(prefix)) memCache.delete(k) })
 }
 
-let accessToken: string | null = null
+// ─── Token persistence (sessionStorage) ────────────────────────────────────
+// The access token lives in memory so it's never exposed in localStorage across
+// tabs or to XSS in other browser sessions. But we also mirror it in
+// sessionStorage so a hard page-refresh within the same tab restores the token
+// without needing the cross-origin httpOnly cookie (which Chrome/Safari can
+// block as a "third-party" cookie when frontend and backend are on different
+// eTLD+1 domains).
+// sessionStorage is tab-scoped and cleared on tab close — good security tradeoff.
+const SESSION_KEY = '_kal_at'
+
+let accessToken: string | null = (() => {
+  // Initialise from sessionStorage on module load (runs once on page load).
+  // Guarded by try/catch — SSR or private-mode browsers may throw.
+  try { return typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(SESSION_KEY) : null } catch { return null }
+})()
 
 export function setAccessToken(token: string | null) {
   accessToken = token
+  try {
+    if (token) sessionStorage.setItem(SESSION_KEY, token)
+    else sessionStorage.removeItem(SESSION_KEY)
+  } catch { /* sessionStorage unavailable — memory-only fallback */ }
 }
 
 export function getAccessToken() {
