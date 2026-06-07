@@ -62,11 +62,11 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
     name: product.name,
     description: product.description || product.name,
     image: (product.product_images || []).map((i) => i.url).filter(Boolean),
-    sku: product.sku || product.id,
+    sku: product.id,
     brand: { '@type': 'Brand', name: 'Kalokea' },
     offers: {
       '@type': 'Offer',
-      url: `https://kalokea.in/product/${product.slug}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'}/product/${product.slug}`,
       priceCurrency: 'INR',
       // prices in paise → convert to rupees for schema
       price: (product.base_price / 100).toFixed(2),
@@ -250,45 +250,4 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             <div className="grid grid-cols-3 gap-2 pt-4 border-t border-[#e8e4e0]">
               {[
                 { icon: '🚚', title: 'Free Delivery', sub: 'On orders Rs.999+' },
-                { icon: 'return', title: '7-Day Returns', sub: 'Hassle-free' },
-                { icon: 'lock', title: 'Secure Pay', sub: 'Razorpay encrypted' },
-              ].map(b => (
-                <div key={b.title} className="text-center bg-[#faf8f5] border border-[#f0ece8] py-3 px-1">
-                  <p className="text-base mb-0.5">{b.icon === 'return' ? '↩' : b.icon === 'lock' ? '🔒' : b.icon}</p>
-                  <p className="text-[9px] font-sans tracking-widest uppercase text-[#0a0a0a] font-medium">{b.title}</p>
-                  <p className="text-[9px] font-sans text-[#9b9b9b]">{b.sub}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="border-t border-[#e8e4e0] pt-4 space-y-0">
-              {TABS.map((t) => (
-                <div key={t} className="border-b border-[#e8e4e0]">
-                  <button
-                    onClick={() => setTab(tab === t ? '' : t)}
-                    className="w-full flex items-center justify-between py-3 text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a]"
-                  >
-                    {t}
-                    <span>{tab === t ? '-' : '+'}</span>
-                  </button>
-                  {tab === t && (
-                    <div className="pb-4 text-xs font-sans text-[#6b6b6b] leading-relaxed">
-                      {t === 'description' && <p>{product.description || 'No description available.'}</p>}
-                      {t === 'fabric' && <p>100% premium quality fabric. Machine washable. Do not bleach.</p>}
-                      {t === 'shipping' && <p>Free shipping on orders above Rs.999. Standard delivery 3-5 business days.</p>}
-                      {t === 'returns' && <p>Easy 7-day returns. Item must be unworn with original tags.</p>}
-                      {t === 'reviews' && <ProductReviews product_id={product.id} />}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <RelatedProducts category_id={product.category_id} exclude_id={product.id} />
-        <RecentlyViewed excludeId={product.id} />
-      </div>
-    </>
-  )
-}
+                { icon: 'return', title: '7-Day Retur
