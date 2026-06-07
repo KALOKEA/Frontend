@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
+import FooterWrapper from '@/components/layout/FooterWrapper'
 import CartDrawer from '@/components/layout/CartDrawer'
 import { ToastProvider } from '@/components/ui/Toast'
 import AuthBootstrap from '@/components/AuthBootstrap'
@@ -76,7 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </ErrorBoundary>
           </main>
-          <Footer />
+          <FooterWrapper />
         </ToastProvider>
         <LiveChatWidget />
       </body>

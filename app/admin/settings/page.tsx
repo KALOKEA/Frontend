@@ -17,6 +17,8 @@ const DEFAULT_FORM: StoreSettings = {
   cod_fee: 4900,
   live_chat_widget: '',
   low_stock_threshold: 5,
+  footer_instagram_url: 'https://www.instagram.com/kalokea.in',
+  footer_whatsapp_url: 'https://wa.me/919999999999',
 }
 
 export default function AdminSettingsPage() {
@@ -221,6 +223,35 @@ export default function AdminSettingsPage() {
           ) : (
             <p className="text-[11px] text-[#9b9b9b] mt-1">No widget configured — chat bubble will not appear.</p>
           )}
+        </Section>
+
+        {/* ── Social & Brand ─────────────────────────────────── */}
+        <Section title="Social & brand links">
+          <p className="text-[11px] text-[#9b9b9b] mb-3">
+            These appear in the footer. Changes go live immediately — no redeploy needed.
+          </p>
+          <Field label="Instagram URL">
+            <input
+              value={form.footer_instagram_url ?? ''}
+              onChange={e => set('footer_instagram_url', e.target.value)}
+              placeholder="https://www.instagram.com/kalokea.in"
+              className={INP}
+            />
+          </Field>
+          <Field label="WhatsApp link">
+            <input
+              value={form.footer_whatsapp_url ?? ''}
+              onChange={e => set('footer_whatsapp_url', e.target.value)}
+              placeholder="https://wa.me/919876543210"
+              className={INP}
+            />
+            <p className="text-[11px] text-[#9b9b9b] mt-1">
+              Format: <code className="bg-[#f0ece8] px-1">https://wa.me/91XXXXXXXXXX</code> (country code + number, no spaces or dashes)
+            </p>
+          </Field>
+          <p className="text-[11px] text-[#9b9b9b] mt-1">
+            GSTIN in footer is pulled from <strong>Business name → GSTIN</strong> field above.
+          </p>
         </Section>
 
         {/* ── Cloudflare Deploy Hook ─────────────────────────── */}

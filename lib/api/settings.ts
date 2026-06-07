@@ -13,6 +13,9 @@ export interface StoreSettings {
   cod_fee?: number
   live_chat_widget?: string
   low_stock_threshold?: number
+  // Footer social / brand links (migration 022)
+  footer_instagram_url?: string
+  footer_whatsapp_url?: string
 }
 
 export interface GstReport {

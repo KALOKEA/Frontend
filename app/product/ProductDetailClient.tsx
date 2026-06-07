@@ -98,11 +98,24 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
     </div>
   )
 
-  const selectedVariant: ProductVariant | null = product.product_variants?.find((v) => {
-    const colourMatch = !selectedColour || v.colour === selectedColour
-    const sizeMatch = !selectedSize || v.size === selectedSize
-    return colourMatch && sizeMatch && v.is_active
-  }) || null
+  // Derive available options from active variants
+  const activeVariants = product.product_variants?.filter(v => v.is_active) || []
+  const uniqueColours  = [...new Set(activeVariants.map(v => v.colour).filter(Boolean))]
+  const uniqueSizes    = [...new Set(activeVariants.map(v => v.size).filter(Boolean))]
+  // Require colour selection only when multiple colour options exist
+  const needsColour    = uniqueColours.length > 1
+  // Always require size selection when any size options exist
+  const needsSize      = uniqueSizes.length > 0
+  // Gate: both required selections must be made before we compute a variant
+  const selectionReady = (!needsColour || !!selectedColour) && (!needsSize || !!selectedSize)
+
+  const selectedVariant: ProductVariant | null = selectionReady
+    ? (activeVariants.find(v => {
+        const colourMatch = !selectedColour || v.colour === selectedColour
+        const sizeMatch   = !selectedSize   || v.size   === selectedSize
+        return colourMatch && sizeMatch
+      }) ?? null)
+    : null
 
   const discount = formatDiscount(product.compare_price || 0, product.base_price)
   const stock = selectedVariant?.stock || 0
@@ -110,6 +123,13 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
   const TABS = ['description', 'fabric', 'shipping', 'returns', 'reviews']
   const hasVariants = (product.product_variants?.length ?? 0) > 0
   const isOOS = hasVariants && selectedVariant !== null && selectedVariant.stock === 0
+
+  // Prompt text for unselected state
+  const selectionPrompt = needsColour && !selectedColour && needsSize && !selectedSize
+    ? '— Select Colour & Size —'
+    : needsColour && !selectedColour
+    ? '— Select a Colour —'
+    : '— Select a Size —'
 
   return (
     <>
@@ -244,7 +264,16 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             </div>
 
             <div id="add-to-cart-btn">
-              <AddToCartButton product={product} selectedVariant={selectedVariant} quantity={quantity} />
+              {hasVariants && !selectionReady ? (
+                <button
+                  onClick={() => document.getElementById('variant-picker')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                  className="w-full py-4 text-[11px] font-sans tracking-widest uppercase bg-[#faf8f5] text-[#9b9b9b] border border-dashed border-[#c8a4a5] hover:bg-[#f0ece8] hover:text-[#6b6b6b] transition-colors"
+                >
+                  {selectionPrompt}
+                </button>
+              ) : (
+                <AddToCartButton product={product} selectedVariant={selectedVariant} quantity={quantity} />
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-2 pt-4 border-t border-[#e8e4e0]">
