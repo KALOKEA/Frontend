@@ -67,7 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="absolute top-3 right-3 w-8 h-8 bg-white/90 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
           aria-label="Wishlist"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill={wishlisted ? '#c8a4a5' : 'none'} stroke={wishlisted ? '#c8a4a5' : '#0a0a0a'} strokeWidth="1.5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill={wishlisted ? '#b91c1c' : 'none'} stroke={wishlisted ? '#b91c1c' : '#0a0a0a'} strokeWidth="1.5">
             <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
           </svg>
         </button>

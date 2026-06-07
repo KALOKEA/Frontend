@@ -254,10 +254,10 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               </div>
               <button
                 onClick={() => toggle(product.id)}
-                className="w-11 h-11 border border-[#e8e4e0] flex items-center justify-center hover:border-[#c8a4a5]"
+                className={`w-11 h-11 border flex items-center justify-center transition-colors ${wishlisted ? 'border-[#b91c1c]' : 'border-[#e8e4e0] hover:border-[#b91c1c]'}`}
                 aria-label="Add to wishlist"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlisted ? '#c8a4a5' : 'none'} stroke={wishlisted ? '#c8a4a5' : '#0a0a0a'} strokeWidth="1.5">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlisted ? '#b91c1c' : 'none'} stroke={wishlisted ? '#b91c1c' : '#0a0a0a'} strokeWidth="1.5">
                   <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
                 </svg>
               </button>
