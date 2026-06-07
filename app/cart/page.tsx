@@ -24,6 +24,8 @@ export default function CartPage() {
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
   const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : 4900
   const total = subtotal + shipping - couponDiscount
+  const amountToFree = Math.max(0, SHIPPING_THRESHOLD - subtotal)
+  const shippingProgress = Math.min(100, Math.round((subtotal / SHIPPING_THRESHOLD) * 100))
 
   return (
     <>
@@ -44,7 +46,29 @@ export default function CartPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 pb-24 lg:pb-10">
-        <h1 className="font-serif text-3xl text-[#0a0a0a] mb-8">Your Cart ({items.length})</h1>
+        <h1 className="font-serif text-3xl text-[#0a0a0a] mb-6">Your Cart ({items.length})</h1>
+
+        {/* Free shipping progress bar */}
+        <div className="mb-8 p-4 bg-[#faf8f5] border border-[#f0ece8]">
+          {amountToFree > 0 ? (
+            <>
+              <p className="text-[11px] font-sans text-[#6b6b6b] mb-2">
+                Add <span className="text-[#0a0a0a] font-medium">{formatPrice(amountToFree)}</span> more for{' '}
+                <span className="text-[#0a0a0a] font-medium">free shipping</span>
+              </p>
+              <div className="h-1 bg-[#e8e4e0] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#0a0a0a] rounded-full transition-all duration-500"
+                  style={{ width: `${shippingProgress}%` }}
+                />
+              </div>
+            </>
+          ) : (
+            <p className="text-[11px] font-sans text-[#0a0a0a] font-medium">
+              🎉 You&apos;ve unlocked free shipping!
+            </p>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">

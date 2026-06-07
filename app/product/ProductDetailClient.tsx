@@ -10,9 +10,11 @@ import Spinner from '@/components/ui/Spinner'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { trackViewItem } from '@/lib/analytics'
+import { addRecentlyViewed } from '@/lib/hooks/useRecentlyViewed'
 
 const ProductReviews = dynamic(() => import('@/components/product/ProductReviews'), { ssr: false })
 const RelatedProducts = dynamic(() => import('@/components/product/RelatedProducts'), { ssr: false })
+const RecentlyViewed = dynamic(() => import('@/components/product/RecentlyViewed'), { ssr: false })
 
 export default function ProductDetailClient({ slug, initialProduct }: { slug: string; initialProduct?: Product }) {
   const [product, setProduct] = useState<Product | null>(initialProduct ?? null)
@@ -39,7 +41,18 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
       price: product.base_price,
       category: product.categories?.name,
     })
-  }, [product])
+    // Track for Recently Viewed ring-buffer (localStorage)
+    const primaryImage =
+      product.product_images?.find((i) => i.is_primary)?.url ||
+      product.product_images?.[0]?.url
+    addRecentlyViewed({
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      base_price: product.base_price,
+      image: primaryImage,
+    })
+  }, [product?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) return (
     <div className="flex justify-center items-center min-h-[60vh]">
@@ -235,6 +248,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
         </div>
 
         <RelatedProducts category_id={product.category_id} exclude_id={product.id} />
+        <RecentlyViewed excludeId={product.id} />
       </div>
     </>
   )

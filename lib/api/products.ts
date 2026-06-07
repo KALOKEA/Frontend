@@ -59,6 +59,8 @@ export const productsApi = {
     return api.get<ProductsResponse>(`/products?${q}`)
   },
   getBySlug: (slug: string) => api.get<Product>(`/products/${slug}`),
+  getByIds: (ids: string[]) =>
+    ids.length ? api.get<Product[]>(`/products/by-ids?ids=${ids.join(',')}`) : Promise.resolve([]),
   create: (data: Partial<Product>) => api.post<Product>('/products', data),
   update: (id: string, data: Partial<Product>) => api.patch<Product>(`/products/${id}`, data),
   remove: (id: string) => api.delete(`/products/${id}`),

@@ -123,6 +123,8 @@ export const useCartStore = create<CartStore>()(
           cartApi
             .add(newItem.variant_id, newItem.quantity, sid)
             .then((res) => {
+              // If the user logged in while this request was in-flight, their
+              // mergeOnLogin will handle moving these items. Just update local state.
               if (res?.items?.length) set({ items: res.items.map(mapServerItem) })
             })
             .catch(() => {})
@@ -199,12 +201,18 @@ export const useCartStore = create<CartStore>()(
           const res = await cartApi.get(sid)
           const serverItems = (res.items || []).map(mapServerItem)
           if (serverItems.length > 0) {
-            // Server cart wins — it is the source of truth.
-            set({ items: serverItems })
+            // Server cart wins for items it knows about.
+            // Also preserve any optimistic local items not yet on server
+            // (id === variant_id means the server hasn't confirmed them yet).
+            const localOnly = get().items.filter(
+              (li) =>
+                li.id === li.variant_id &&
+                !serverItems.some((si) => si.variant_id === li.variant_id),
+            )
+            set({ items: [...serverItems, ...localOnly] })
           }
-          // If server cart is empty, keep localStorage state (migration: user had
-          // items before server-side guest carts were added, they'll be pushed on
-          // next add/merge).
+          // If server cart is empty, keep localStorage state (items may be
+          // in-flight or were added before server-side guest carts were added).
         } catch {
           // keep local state
         }
@@ -213,13 +221,18 @@ export const useCartStore = create<CartStore>()(
       mergeOnLogin: async () => {
         const sid = get().guestSessionId
 
+        // Snapshot local items BEFORE any async operations so we have a
+        // reference even if state changes while awaits are in-flight.
+        const localItemsSnapshot = [...get().items]
+
         // Step 1: Server-side merge of any server guest cart into the user's cart.
-        // If no guest cart exists on server this is a no-op (returns a message, not error).
+        // If no guest cart exists this is a no-op (returns a message, never throws).
         await cartApi.merge(sid).catch(() => {})
 
-        // Step 2: Push any localStorage-only guest items that were never synced to
-        // the server (items where id === variant_id — old behavior pre-server-sync).
-        const localOnlyItems = get().items.filter((i) => i.id === i.variant_id)
+        // Step 2: Push any localStorage-only items that were never synced to the
+        // server (id === variant_id — assigned optimistically before the first server
+        // response). This covers items added before login while the add was in-flight.
+        const localOnlyItems = localItemsSnapshot.filter((i) => i.id === i.variant_id)
         for (const it of localOnlyItems) {
           await cartApi.add(it.variant_id, it.quantity).catch(() => {})
         }
@@ -227,7 +240,19 @@ export const useCartStore = create<CartStore>()(
         // Step 3: Load the authoritative merged server cart.
         await get().hydrate()
 
-        // Step 4: Regenerate guest session ID so the old guest cart can't be replayed.
+        // Step 4: Safety net — if server returned empty but we had local items,
+        // the merge may have silently failed or there was a race condition (e.g.
+        // the guest add was still in-flight when merge ran). Push all snapshot
+        // items to the user cart and re-sync. Server handles duplicate quantities
+        // gracefully (won't run if server already has items from step 3).
+        if (get().items.length === 0 && localItemsSnapshot.length > 0) {
+          for (const it of localItemsSnapshot) {
+            await cartApi.add(it.variant_id, it.quantity).catch(() => {})
+          }
+          await get().hydrate()
+        }
+
+        // Step 5: Regenerate guest session ID so the old guest cart can't be replayed.
         set({ guestSessionId: generateId() })
       },
 

@@ -14,11 +14,8 @@ export default function WishlistPage() {
   useEffect(() => {
     if (!items.length) { setLoading(false); return }
     setLoading(true)
-    productsApi.getAll({ limit: '200' })
-      .then((res) => {
-        const filtered = (res.data || []).filter((p) => items.includes(p.id))
-        setProducts(filtered)
-      })
+    productsApi.getByIds(items)
+      .then((data) => setProducts(data || []))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false))
   }, [items])

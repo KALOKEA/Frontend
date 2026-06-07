@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Private areas — no indexing
+Disallow: /admin/
+Disallow: /account/
+Disallow: /checkout/
+Disallow: /api/
+
+Sitemap: https://kalokea.in/sitemap.xml
