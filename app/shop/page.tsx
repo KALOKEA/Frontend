@@ -19,6 +19,7 @@ function ActiveFilters() {
   const colour = params.get('colour')
   const minPrice = params.get('min_price')
   const sort = params.get('sort')
+  const search = params.get('search')
 
   function removeParam(...keys: string[]) {
     const p = new URLSearchParams(params.toString())
@@ -27,6 +28,7 @@ function ActiveFilters() {
     router.push(`/shop?${p.toString()}`)
   }
 
+  if (search) chips.push({ label: `Search: "${search}"`, remove: () => removeParam('search') })
   if (size) chips.push({ label: `Size: ${size}`, remove: () => removeParam('size') })
   if (colour) chips.push({ label: `Colour: ${colour}`, remove: () => removeParam('colour') })
   if (minPrice) {
@@ -102,6 +104,7 @@ function ShopContent() {
   const page = Number(params.get('page') || 1)
   const limit = 20
   const category = params.get('category')
+  const searchQuery = params.get('search')
 
   useEffect(() => {
     setLoading(true)
@@ -113,6 +116,7 @@ function ShopContent() {
     if (params.get('size')) query.size = params.get('size')!
     if (params.get('colour')) query.colour = params.get('colour')!
     if (params.get('featured')) query.featured = params.get('featured')!
+    if (params.get('search')) query.search = params.get('search')!
 
     productsApi.getAll(query)
       .then(res => { setProducts(res.data || []); setTotal(res.meta?.total || 0) })
@@ -125,9 +129,11 @@ function ShopContent() {
       {/* Page header */}
       <div className="mb-6">
         <h1 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] mb-1">
-          {category
-            ? category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-            : 'All Products'}
+          {searchQuery
+            ? `Results for "${searchQuery}"`
+            : category
+              ? category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+              : 'All Products'}
         </h1>
         <p className="text-xs font-sans text-[#6b6b6b]">{total} products</p>
       </div>

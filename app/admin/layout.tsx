@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import AdminSidebar from '@/components/admin/Sidebar'
 import Spinner from '@/components/ui/Spinner'
@@ -15,14 +15,15 @@ import Spinner from '@/components/ui/Spinner'
  */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const pathname = usePathname()
   const { user, isLoggedIn, hydrated } = useAuthStore()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     if (!hydrated) return
-    if (!isLoggedIn) { router.replace('/login'); return }
+    if (!isLoggedIn) { router.replace(`/login?redirect=${encodeURIComponent(pathname)}`); return }
     if (user?.role !== 'admin') { router.replace('/'); return }
-  }, [hydrated, isLoggedIn, user, router])
+  }, [hydrated, isLoggedIn, user, router, pathname])
 
   if (!hydrated || !isLoggedIn || user?.role !== 'admin') {
     return (

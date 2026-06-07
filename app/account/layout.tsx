@@ -72,7 +72,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
-    if (hydrated && !isLoggedIn) router.push('/login?redirect=/account')
+    if (hydrated && !isLoggedIn) router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
   }, [hydrated, isLoggedIn, router])
 
   // Close mobile nav on route change

@@ -59,8 +59,16 @@ export default function AuthBootstrap() {
       if (cancelled) return
       const { isLoggedIn } = useAuthStore.getState()
       if (!isLoggedIn) return
-      const ok = await tryRefresh() // rotates cookie + updates in-memory token
-      if (!ok) useAuthStore.getState().clearAuth()
+      // Attempt to rotate the refresh token cookie.
+      // Do NOT call clearAuth() on failure: the cross-origin httpOnly cookie is
+      // legitimately blocked by Chrome/Safari third-party cookie policies when the
+      // frontend (kalokea.pages.dev) and backend (railway.app) are on different
+      // eTLD+1 domains. A failed proactive refresh is NOT a sign that the user is
+      // logged out — they may still have a valid access token in localStorage.
+      // Auth expiry is handled naturally: the next protected API call returns 401,
+      // tryRefresh() is attempted, and if that also fails, the request throws an
+      // error that the UI handles. Let that path clear auth, not this timer.
+      await tryRefresh().catch(() => {})
     }
 
     const refreshTimer = setInterval(proactiveRefresh, PROACTIVE_REFRESH_MS)
