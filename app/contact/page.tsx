@@ -55,7 +55,7 @@ export default function ContactPage() {
         </div>
       ) : (
         <form onSubmit={submit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input label="Your Name" value={form.name} onChange={set('name')} required />
             <Input label="Email Address" type="email" value={form.email} onChange={set('email')} required />
           </div>
@@ -66,7 +66,7 @@ export default function ContactPage() {
               onChange={set('message')}
               rows={5}
               required
-              className="w-full border border-[#e8e4e0] bg-white px-4 py-3 text-sm font-sans text-[#0a0a0a] outline-none focus:border-[#0a0a0a] transition-colors placeholder:text-[#6b6b6b] resize-none"
+              className="w-full border border-[#e8e4e0] bg-white px-4 py-3 text-base font-sans text-[#0a0a0a] outline-none focus:border-[#0a0a0a] transition-colors placeholder:text-[#6b6b6b] resize-none"
               placeholder="How can we help?"
             />
           </div>

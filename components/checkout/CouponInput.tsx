@@ -52,12 +52,12 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           placeholder="Coupon code"
-          className="flex-1 border border-[#e8e4e0] border-r-0 px-4 py-3 text-xs font-sans outline-none focus:border-[#0a0a0a] uppercase placeholder:normal-case placeholder:text-[#6b6b6b]"
+          className="flex-1 border border-[#e8e4e0] border-r-0 px-4 py-3 text-base font-sans outline-none focus:border-[#0a0a0a] uppercase placeholder:normal-case placeholder:text-[#6b6b6b] min-h-[44px]"
         />
         <button
           onClick={apply}
           disabled={loading || !code}
-          className="bg-[#0a0a0a] text-white text-[10px] font-sans tracking-widest uppercase px-4 hover:bg-[#2a2a2a] disabled:opacity-50"
+          className="bg-[#0a0a0a] text-white text-[10px] font-sans tracking-widest uppercase px-4 min-h-[44px] hover:bg-[#2a2a2a] disabled:opacity-50"
         >
           {loading ? '...' : 'Apply'}
         </button>

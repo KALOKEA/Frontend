@@ -33,13 +33,13 @@ export default function AddressForm({ onSaved, onCancel }: AddressFormProps) {
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input label="Full Name" value={form.name} onChange={set('name')} required />
         <Input label="Phone" value={form.phone} onChange={set('phone')} type="tel" required />
       </div>
       <Input label="Address Line 1" value={form.line1} onChange={set('line1')} required />
       <Input label="Address Line 2 (Optional)" value={form.line2} onChange={set('line2')} />
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Input label="City" value={form.city} onChange={set('city')} required />
         <Input label="State" value={form.state} onChange={set('state')} required />
         <Input label="Pincode" value={form.pincode} onChange={set('pincode')} inputMode="numeric" required />

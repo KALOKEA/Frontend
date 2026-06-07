@@ -76,7 +76,8 @@ function MobileFilterDrawer({ open, onClose }: { open: boolean; onClose: () => v
           <h3 className="font-serif text-lg text-[#0a0a0a]">Filter</h3>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none -mr-2"
+            aria-label="Close filters"
           >
             ×
           </button>
@@ -147,7 +148,7 @@ function ShopContent() {
             {/* Mobile filter trigger */}
             <button
               onClick={() => setDrawerOpen(true)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2 border border-[#e8e4e0] text-[11px] uppercase tracking-widest text-[#0a0a0a] hover:bg-[#faf8f5]"
+              className="lg:hidden flex items-center gap-2 px-4 min-h-[44px] border border-[#e8e4e0] text-[11px] uppercase tracking-widest text-[#0a0a0a] hover:bg-[#faf8f5]"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <line x1="4" y1="6" x2="20" y2="6" />

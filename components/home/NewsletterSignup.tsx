@@ -45,13 +45,13 @@ export default function NewsletterSignup() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Your email address"
-            className="flex-1 w-full sm:w-auto bg-[#1a1a1a] border border-[#2a2a2a] text-white text-xs font-sans px-4 py-3.5 outline-none focus:border-[#c8a4a5] placeholder:text-[#6b6b6b]"
+            className="flex-1 w-full sm:w-auto bg-[#1a1a1a] border border-[#2a2a2a] text-white text-base font-sans px-4 min-h-[44px] outline-none focus:border-[#c8a4a5] placeholder:text-[#6b6b6b]"
             required
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="w-full sm:w-auto bg-[#c8a4a5] hover:bg-[#a07e80] text-white text-[10px] font-sans tracking-widest uppercase px-6 py-3.5 transition-colors disabled:opacity-50"
+            className="w-full sm:w-auto bg-[#c8a4a5] hover:bg-[#a07e80] text-white text-[10px] font-sans tracking-widest uppercase px-6 min-h-[44px] transition-colors disabled:opacity-50"
           >
             {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
           </button>

@@ -111,7 +111,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           </div>
           <button
             onClick={() => setMobileOpen(o => !o)}
-            className="p-2 text-[#6b6b6b] hover:text-[#0a0a0a]"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] -mr-2"
             aria-label="Toggle menu"
           >
             {mobileOpen ? (

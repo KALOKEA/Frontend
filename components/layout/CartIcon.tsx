@@ -6,7 +6,7 @@ export default function CartIcon() {
   const count = items.reduce((s, i) => s + i.quantity, 0)
 
   return (
-    <button onClick={toggleCart} className="relative p-1 text-[#0a0a0a]" aria-label="Cart">
+    <button onClick={toggleCart} className="relative min-w-[44px] min-h-[44px] flex items-center justify-center text-[#0a0a0a] hover:text-[#c8a4a5] transition-colors" aria-label="Cart">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
         <path d="M16 10a4 4 0 01-8 0"/>

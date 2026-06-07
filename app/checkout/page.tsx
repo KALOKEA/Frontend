@@ -41,13 +41,16 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!hydrated) return // wait for AuthBootstrap to restore session from refresh cookie
-    if (!isLoggedIn) { router.push('/login?redirect=/checkout'); return }
     if (!items.length) { router.push('/cart'); return }
-    addressesApi.getAll().then((data) => {
-      setAddresses(data)
-      const def = data.find((a) => a.is_default) || data[0]
-      setBilling((b) => def ? billingFromAddress(def, user?.email || '') : { ...b, email: user?.email || '' })
-    }).catch(() => setBilling((b) => ({ ...b, email: user?.email || '' })))
+    // Logged-in: load saved addresses and pre-fill email.
+    // Guests: skip address load (they enter details manually).
+    if (isLoggedIn) {
+      addressesApi.getAll().then((data) => {
+        setAddresses(data)
+        const def = data.find((a) => a.is_default) || data[0]
+        setBilling((b) => def ? billingFromAddress(def, user?.email || '') : { ...b, email: user?.email || '' })
+      }).catch(() => setBilling((b) => ({ ...b, email: user?.email || '' })))
+    }
   }, [isLoggedIn, hydrated, items.length, router, user?.email])
 
   // Pre-load Razorpay script as soon as page mounts — avoids loading it inside
@@ -216,7 +219,12 @@ export default function CheckoutPage() {
         <div className="space-y-8">
           <section>
             <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Billing details</h2>
-            <BillingDetails value={billing} onChange={setBilling} savedAddresses={addresses} />
+            <BillingDetails
+              value={billing}
+              onChange={setBilling}
+              savedAddresses={addresses}
+              showEmail={!isLoggedIn}
+            />
           </section>
 
           {/* Save address — only shown to logged-in users */}

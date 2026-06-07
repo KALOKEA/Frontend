@@ -46,6 +46,52 @@ h1, h2, h3, .font-serif {
 /* Transitions */
 * { -webkit-tap-highlight-color: transparent; }
 
+/* ── Form inputs (.inp) ─────────────────────────────────────────────────────
+   font-size: 1rem (16px) prevents iOS Safari from auto-zooming on focus.
+   min-height: 44px meets Apple HIG minimum touch target size.
+   Used across checkout/BillingDetails, search inputs, and other forms.
+────────────────────────────────────────────────────────────────────────── */
+.inp {
+  width: 100%;
+  border: 1px solid #e8e4e0;
+  padding: 0.65rem 0.75rem;
+  font-size: 1rem;        /* 16px — prevents iOS Safari zoom on focus */
+  font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+  color: #0a0a0a;
+  background: #ffffff;
+  min-height: 44px;       /* Apple HIG minimum touch target */
+  outline: none;
+  transition: border-color 0.15s;
+  appearance: none;       /* remove browser-default styling (esp. iOS select) */
+  -webkit-appearance: none;
+}
+.inp:focus {
+  border-color: #0a0a0a;
+}
+.inp:disabled {
+  background: #faf8f5;
+  color: #6b6b6b;
+  cursor: not-allowed;
+}
+/* Fix select arrow on all browsers */
+select.inp {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.25rem;
+}
+
+/* ── Touch targets ──────────────────────────────────────────────────────────
+   Ensure interactive elements meet 44px minimum on mobile.
+────────────────────────────────────────────────────────────────────────── */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @layer utilities {
   .text-rose-d { color: #a07e80; }
   .bg-rose-d { background-color: #a07e80; }

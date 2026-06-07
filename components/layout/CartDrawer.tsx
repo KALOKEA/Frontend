@@ -50,7 +50,7 @@ export default function CartDrawer() {
           </div>
           <button
             onClick={closeCart}
-            className="p-1.5 text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors -mr-2"
             aria-label="Close cart"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -119,12 +119,12 @@ export default function CartDrawer() {
                       <div className="flex items-center border border-[#e8e4e0]">
                         <button
                           onClick={() => updateQuantity(item.variant_id, Math.max(1, item.quantity - 1))}
-                          className="w-7 h-7 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-sm"
+                          className="w-9 h-9 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-sm"
                         >−</button>
-                        <span className="w-7 text-center text-xs text-[#0a0a0a]">{item.quantity}</span>
+                        <span className="w-8 text-center text-xs text-[#0a0a0a]">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.variant_id, Math.min(item.max_stock || 99, item.quantity + 1))}
-                          className="w-7 h-7 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-sm"
+                          className="w-9 h-9 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-sm"
                         >+</button>
                       </div>
                       <button

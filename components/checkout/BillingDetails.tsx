@@ -122,7 +122,6 @@ export default function BillingDetails({
         )}
       </div>
 
-      <style jsx>{`:global(.inp){width:100%;border:1px solid #e8e4e0;padding:0.65rem 0.75rem;font-size:0.875rem;min-height:44px;outline:none;}.inp:focus{border-color:#0a0a0a;}`}</style>
     </div>
   )
 }

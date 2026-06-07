@@ -228,13 +228,13 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
             <div className="flex items-center gap-4">
               <div className="flex items-center border border-[#e8e4e0]">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg">-</button>
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-11 h-11 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg">-</button>
                 <span className="w-10 text-center text-sm font-sans text-[#0a0a0a]">{quantity}</span>
-                <button onClick={() => setQuantity(Math.min(stock || 10, quantity + 1))} className="w-10 h-10 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg">+</button>
+                <button onClick={() => setQuantity(Math.min(stock || 10, quantity + 1))} className="w-11 h-11 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg">+</button>
               </div>
               <button
                 onClick={() => toggle(product.id)}
-                className="w-10 h-10 border border-[#e8e4e0] flex items-center justify-center hover:border-[#c8a4a5]"
+                className="w-11 h-11 border border-[#e8e4e0] flex items-center justify-center hover:border-[#c8a4a5]"
                 aria-label="Add to wishlist"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlisted ? '#c8a4a5' : 'none'} stroke={wishlisted ? '#c8a4a5' : '#0a0a0a'} strokeWidth="1.5">

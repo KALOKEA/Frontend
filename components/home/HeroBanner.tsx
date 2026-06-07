@@ -56,13 +56,13 @@ export default function HeroBanner() {
         <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4">
           <Link
             href={c.hero_cta1_link || '/shop'}
-            className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-7 py-3.5 hover:bg-[#c8a4a5] transition-colors duration-300 text-center"
+            className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-7 py-4 hover:bg-[#c8a4a5] transition-colors duration-300 text-center"
           >
             {c.hero_cta1_label}
           </Link>
           <Link
             href={c.hero_cta2_link || '/shop'}
-            className="border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-7 py-3.5 hover:border-[#c8a4a5] hover:text-[#c8a4a5] transition-colors duration-300 text-center"
+            className="border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-7 py-4 hover:border-[#c8a4a5] hover:text-[#c8a4a5] transition-colors duration-300 text-center"
           >
             {c.hero_cta2_label}
           </Link>
