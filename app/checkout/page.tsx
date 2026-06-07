@@ -201,7 +201,7 @@ export default function CheckoutPage() {
     } catch (err) {
       const msg = (err as Error).message || 'Failed to place order'
       setCheckoutError(msg)
-      console.error('[Checkout] placeOrder error:', err)
+      // Intentionally not logging here — error is surfaced to the user via setCheckoutError.
     } finally {
       setLoading(false)
     }

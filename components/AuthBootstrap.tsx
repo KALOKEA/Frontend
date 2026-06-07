@@ -6,9 +6,10 @@ import { getAccessToken, tryRefresh } from '@/lib/api/client'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import { useCartStore } from '@/lib/store/useCartStore'
 
-// How often to proactively refresh the access token (6 days — well inside the 7d expiry).
+// Proactive refresh interval — 12 minutes, well inside the 15-minute access token expiry.
 // This keeps the session alive as long as the tab is open, without any user action.
-const PROACTIVE_REFRESH_MS = 6 * 24 * 60 * 60 * 1000
+// Must be shorter than the token lifetime; 12m gives a 3-minute safety margin.
+const PROACTIVE_REFRESH_MS = 12 * 60 * 1000
 
 /**
  * Restores the auth session on every app load / hard refresh.
@@ -50,9 +51,10 @@ export default function AuthBootstrap() {
 
     restore()
 
-    // Proactive token refresh — runs every 6 days while the tab is open.
-    // Prevents the access token from expiring on long sessions without requiring
-    // the user to make a protected API call to trigger the 401 → refresh flow.
+    // Proactive token refresh — runs every 12 minutes while the tab is open.
+    // Prevents the 15-minute access token from expiring on active sessions
+    // without requiring the user to make a protected API call to trigger the
+    // 401 → refresh flow.
     const proactiveRefresh = async () => {
       if (cancelled) return
       const { isLoggedIn } = useAuthStore.getState()
