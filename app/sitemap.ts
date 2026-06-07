@@ -3,7 +3,7 @@ import { getAllProductSlugs, getAllCategorySlugs } from '@/lib/server/productsSe
 
 // Generated to /sitemap.xml at build (works with output:'export').
 // Product + category URLs are fetched from the backend during `next build`.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
 
 // Required for output:'export' — sitemap must be fully static.
 export const dynamic = 'force-static'

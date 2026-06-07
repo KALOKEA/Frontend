@@ -25,14 +25,25 @@ const dmSans = DM_Sans({
   display: 'swap',
 })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'KALOKEA',
+  name: 'Kalokea',
   url: SITE_URL,
-  description: "Women's fashion e-commerce — dresses, tops, co-ords and more.",
+  logo: `${SITE_URL}/logo.png`,
+  description: "India's curated women's fashion boutique — dresses, tops, shoes, bags and accessories.",
+  sameAs: [
+    'https://www.instagram.com/kalokea',
+    'https://www.facebook.com/kalokea',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'hello@kalokea.in',
+    availableLanguage: ['English', 'Hindi'],
+  },
 }
 
 export const viewport: Viewport = {
@@ -73,6 +84,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
+        {/* Favicon + icons */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        {/* API + images */}
         <link rel="preconnect" href="https://backend-production-73aa.up.railway.app" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
@@ -81,6 +98,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://checkout.razorpay.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://checkout.razorpay.com" />
         <link rel="dns-prefetch" href="https://api.razorpay.com" />
+        {/* Analytics — reduces first-beacon latency */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
       </head>
       <body>
         <script

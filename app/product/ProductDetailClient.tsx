@@ -72,7 +72,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
     brand: { '@type': 'Brand', name: 'Kalokea' },
     offers: {
       '@type': 'Offer',
-      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'}/product/${product.slug}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'}/product/${product.slug}`,
       priceCurrency: 'INR',
       // prices in paise → convert to rupees for schema
       price: (product.base_price / 100).toFixed(2),

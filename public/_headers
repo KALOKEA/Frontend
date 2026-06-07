@@ -13,7 +13,7 @@
 /*.ico
   Cache-Control: public, max-age=86400
 
-# Admin, account, checkout — private pages: never index, never cache
+# Admin, account, checkout, auth, cart — private/utility pages: never index, never cache
 /admin/*
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
@@ -23,6 +23,18 @@
   Cache-Control: no-store
 
 /checkout/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/login/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/signup/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/cart/*
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 

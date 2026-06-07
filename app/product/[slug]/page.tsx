@@ -3,7 +3,7 @@ import ProductDetailClient from '../ProductDetailClient'
 import { getAllProductSlugs, getProductBySlug } from '@/lib/server/productsServer'
 import { productMeta } from '@/lib/utils/seo'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.pages.dev'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
 
 export async function generateStaticParams() {
   const slugs = await getAllProductSlugs()
