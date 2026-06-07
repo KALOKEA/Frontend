@@ -100,8 +100,8 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
   // Derive available options from active variants
   const activeVariants = product.product_variants?.filter(v => v.is_active) || []
-  const uniqueColours  = [...new Set(activeVariants.map(v => v.colour).filter(Boolean))]
-  const uniqueSizes    = [...new Set(activeVariants.map(v => v.size).filter(Boolean))]
+  const uniqueColours  = Array.from(new Set(activeVariants.map(v => v.colour).filter(Boolean)))
+  const uniqueSizes    = Array.from(new Set(activeVariants.map(v => v.size).filter(Boolean)))
   // Require colour selection only when multiple colour options exist
   const needsColour    = uniqueColours.length > 1
   // Always require size selection when any size options exist
