@@ -3,6 +3,7 @@ import TrustStrip from '@/components/home/TrustStrip'
 import CategoryGrid from '@/components/home/CategoryGrid'
 import FeaturedProducts from '@/components/home/FeaturedProducts'
 import NewsletterSignup from '@/components/home/NewsletterSignup'
+import SectionDivider from '@/components/home/SectionDivider'
 import type { Metadata } from 'next'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
@@ -75,10 +76,26 @@ export default function HomePage() {
     <>
       {/* WebSite schema with SearchAction — homepage only. Organization is in root layout. */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+
+      {/* Hero — full bleed, cream bg */}
       <HeroBanner />
+
+      {/* Trust strip — bg-[#faf8f5], border top/bottom */}
       <TrustStrip />
+
+      {/* Ornament divider */}
+      <SectionDivider className="py-6 bg-white" />
+
+      {/* Featured products — white bg */}
       <FeaturedProducts />
+
+      {/* Ornament divider */}
+      <SectionDivider className="py-6 bg-[#faf8f5]" />
+
+      {/* Category grid — bg-[#faf8f5] */}
       <CategoryGrid />
+
+      {/* Newsletter — dark bg, no divider needed (already punchy) */}
       <NewsletterSignup />
     </>
   )

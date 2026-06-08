@@ -221,18 +221,19 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               </div>
             )}
 
-            <div className="flex items-center gap-3">
-              <span className="font-sans text-xl text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
+            <div className="flex items-baseline gap-3">
+              {/* Price in Cormorant display size */}
+              <span className="price-display text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
               {product.compare_price && product.compare_price > product.base_price && (
                 <>
-                  <span className="font-sans text-sm text-[#9b9b9b] line-through">{formatPrice(product.compare_price)}</span>
-                  <span className="bg-[#DC2626] text-white text-[9px] font-sans font-bold tracking-widest uppercase px-2 py-0.5 shadow-sm">
-                    -{discount}%
+                  <span className="font-sans text-[14px] text-[#9b9b9b] line-through">{formatPrice(product.compare_price)}</span>
+                  <span className="bg-[#c8a4a5] text-white text-[9px] font-sans font-semibold tracking-widest uppercase px-2.5 py-1">
+                    -{discount}% OFF
                   </span>
                 </>
               )}
             </div>
-            <p className="text-[10px] font-sans text-[#6b6b6b]">+ GST calculated at checkout</p>
+            <p className="text-[10px] font-sans text-[#9b9b9b] tracking-wide">Inclusive of all taxes · Free shipping above ₹999</p>
 
             {product.product_variants && product.product_variants.length > 0 && (
               <div id="variant-picker">
@@ -260,10 +261,10 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               </div>
               <button
                 onClick={() => toggle(product.id)}
-                className={`w-11 h-11 border flex items-center justify-center transition-colors ${wishlisted ? 'border-[#b91c1c]' : 'border-[#e8e4e0] hover:border-[#b91c1c]'}`}
+                className={`w-11 h-11 border flex items-center justify-center transition-all duration-200 hover:scale-105 ${wishlisted ? 'border-[#c8a4a5] bg-[#c8a4a5]/10' : 'border-[#e8e4e0] hover:border-[#c8a4a5]'}`}
                 aria-label="Add to wishlist"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlisted ? '#b91c1c' : 'none'} stroke={wishlisted ? '#b91c1c' : '#0a0a0a'} strokeWidth="1.5">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlisted ? '#c8a4a5' : 'none'} stroke={wishlisted ? '#c8a4a5' : '#0a0a0a'} strokeWidth="1.5">
                   <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
                 </svg>
               </button>
@@ -282,15 +283,43 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               )}
             </div>
 
+            {/* Feature strip */}
             <div className="grid grid-cols-3 gap-2 pt-4 border-t border-[#e8e4e0]">
               {[
-                { icon: '🚚', title: 'Free Delivery', sub: 'On orders Rs.999+' },
-                { icon: 'return', title: '7-Day Returns', sub: 'Hassle-free' },
-                { icon: 'lock', title: 'Secure Pay', sub: 'Razorpay encrypted' },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/>
+                      <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                  ),
+                  title: 'Free Delivery',
+                  sub: 'On orders ₹999+',
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                      <path d="M3 3v5h5"/>
+                    </svg>
+                  ),
+                  title: '7-Day Returns',
+                  sub: 'Hassle-free',
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                  ),
+                  title: 'Secure Pay',
+                  sub: 'Razorpay encrypted',
+                },
               ].map(b => (
-                <div key={b.title} className="text-center bg-[#faf8f5] border border-[#f0ece8] py-3 px-1">
-                  <p className="text-base mb-0.5">{b.icon === 'return' ? '↩' : b.icon === 'lock' ? '🔒' : b.icon}</p>
-                  <p className="text-[9px] font-sans tracking-widest uppercase text-[#0a0a0a] font-medium">{b.title}</p>
+                <div key={b.title} className="flex flex-col items-center text-center bg-[#faf8f5] border border-[#f0ece8] py-3.5 px-1 gap-1.5">
+                  <span className="text-[#c8a4a5]">{b.icon}</span>
+                  <p className="text-[9px] font-sans tracking-widest uppercase text-[#0a0a0a] font-medium leading-tight">{b.title}</p>
                   <p className="text-[9px] font-sans text-[#9b9b9b]">{b.sub}</p>
                 </div>
               ))}

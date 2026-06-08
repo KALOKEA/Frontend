@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { productsApi, type Product } from '@/lib/api/products'
 import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
@@ -17,9 +17,9 @@ interface Tab {
 const TABS: Tab[] = [
   { label: 'New Arrivals', sort: 'newest' },
   { label: 'Best Sellers', sort: 'bestseller' },
-  { label: 'Featured', featured: 'true' },
-  { label: 'Sale', category: 'sale' },
-  { label: 'View All', sort: 'newest', viewAll: true },
+  { label: 'Featured',     featured: 'true' },
+  { label: 'Sale',         category: 'sale' },
+  { label: 'View All',     sort: 'newest', viewAll: true },
 ]
 
 export default function FeaturedProducts() {
@@ -27,13 +27,11 @@ export default function FeaturedProducts() {
   const [cache, setCache] = useState<Record<number, Product[]>>({})
   const [loading, setLoading] = useState(false)
   const [sectionHeading, setSectionHeading] = useState(HERO_DEFAULTS.featured_section_heading)
+  const gridRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Use the shared homepage fetch — no extra network request if already cached
     getHomepageData().then((d) => {
       if (d.cms.featured_section_heading) setSectionHeading(d.cms.featured_section_heading)
-      // Seed tab 0 (New Arrivals) with the pre-fetched featured_products so the
-      // grid appears instantly on first load without a second API call.
       if (d.featured_products?.length) {
         setCache((prev) => prev[0] ? prev : { ...prev, 0: d.featured_products })
       }
@@ -44,7 +42,6 @@ export default function FeaturedProducts() {
   const products = useMemo(() => cache[tab] || [], [cache, tab])
 
   useEffect(() => {
-    // Skip fetch if already cached (including the seed from homepage endpoint)
     if (cache[tab]) return
     setLoading(true)
     const t = TABS[tab]
@@ -60,43 +57,82 @@ export default function FeaturedProducts() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab])
 
+  // Stagger-reveal each card as it enters viewport
+  useEffect(() => {
+    if (!gridRef.current || loading) return
+    const cards = Array.from(gridRef.current.querySelectorAll<HTMLElement>('[data-card]'))
+    cards.forEach(card => {
+      card.style.opacity = '0'
+      card.style.transform = 'translateY(28px)'
+      card.style.transition = ''
+    })
+    const timeout = setTimeout(() => {
+      cards.forEach((card, i) => {
+        card.style.transition = `opacity 0.5s ease ${i * 60}ms, transform 0.5s ease ${i * 60}ms`
+        card.style.opacity = '1'
+        card.style.transform = 'translateY(0)'
+      })
+    }, 30)
+    return () => clearTimeout(timeout)
+  }, [products, loading])
+
   return (
-    <section className="py-16 px-4 max-w-7xl mx-auto">
-      <div className="text-center mb-8">
-        <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-2">Hand-Picked</p>
-        <h2 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] mb-6">{sectionHeading}</h2>
-        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="flex items-center gap-0 border border-[#e8e4e0] w-fit mx-auto">
-            {TABS.map((t, i) => (
-              <button
-                key={t.label}
-                onClick={() => setTab(i)}
-                className={`px-4 sm:px-5 py-2.5 text-[10px] font-sans tracking-widest uppercase transition-colors border-r last:border-r-0 border-[#e8e4e0] whitespace-nowrap ${i === tab ? 'bg-[#0a0a0a] text-white' : 'text-[#6b6b6b] hover:text-[#0a0a0a]'}`}
-              >
-                {t.label}
-              </button>
-            ))}
+    <section className="py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Section header */}
+        <div className="text-center mb-12">
+          <p className="text-[10px] font-sans tracking-[0.35em] uppercase text-[#c8a4a5] mb-3">Hand-Picked</p>
+          <h2 className="font-serif font-light text-[#0a0a0a] mb-2" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+            {sectionHeading}
+          </h2>
+          {/* Rose underline accent */}
+          <div className="mx-auto w-10 h-px bg-[#c8a4a5] mt-4 mb-8" />
+
+          {/* Tab bar */}
+          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-0.5">
+            <div className="flex items-end gap-0 w-fit mx-auto border-b border-[#e8e4e0]">
+              {TABS.map((t, i) => (
+                <button
+                  key={t.label}
+                  onClick={() => setTab(i)}
+                  className={`relative px-4 sm:px-6 py-2.5 text-[10px] font-sans tracking-widest uppercase transition-colors whitespace-nowrap ${
+                    i === tab
+                      ? 'text-[#0a0a0a] font-medium'
+                      : 'text-[#9b9b9b] hover:text-[#0a0a0a]'
+                  }`}
+                >
+                  {t.label}
+                  {/* Active underline */}
+                  <span className={`absolute bottom-0 left-0 right-0 h-[2px] bg-[#c8a4a5] transition-all duration-300 ${i === tab ? 'opacity-100' : 'opacity-0'}`} />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {loading ? (
-        <ProductGridSkeleton count={8} />
-      ) : (
-        <>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
-            {products.map((p) => <ProductCard key={p.id} product={p} />)}
-          </div>
-          <div className="text-center mt-10">
-            <Link
-              href="/shop"
-              className="inline-block border border-[#0a0a0a] text-[#0a0a0a] text-[10px] font-sans tracking-widest uppercase px-8 py-3 hover:bg-[#0a0a0a] hover:text-white transition-colors duration-200"
-            >
-              View All Products
-            </Link>
-          </div>
-        </>
-      )}
+        {/* Grid */}
+        {loading ? (
+          <ProductGridSkeleton count={8} />
+        ) : (
+          <>
+            <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10">
+              {products.map((p) => (
+                <div key={p.id} data-card>
+                  <ProductCard product={p} />
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-12">
+              <Link
+                href="/shop"
+                className="btn-shimmer inline-block border border-[#0a0a0a] text-[#0a0a0a] text-[10px] font-sans tracking-widest uppercase px-10 py-3.5 hover:bg-[#0a0a0a] hover:text-white transition-colors duration-300 relative overflow-hidden"
+              >
+                View All Products
+              </Link>
+            </div>
+          </>
+        )}
+      </div>
     </section>
   )
 }

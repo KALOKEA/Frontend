@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layout/Header'
+import AnnouncementBar from '@/components/layout/AnnouncementBar'
 import FooterWrapper from '@/components/layout/FooterWrapper'
 import CartDrawer from '@/components/layout/CartDrawer'
 import { ToastProvider } from '@/components/ui/Toast'
@@ -111,6 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <ToastProvider>
           <AuthBootstrap />
+          <AnnouncementBar />
           <Header />
           <CartDrawer />
           <main>
