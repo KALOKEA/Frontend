@@ -96,10 +96,4 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
       <button
         onClick={handleBuyNow}
         disabled={adding || buyingNow}
-        className="w-full py-3.5 text-[11px] font-sans tracking-widest uppercase border border-[#0a0a0a] text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white disabled:opacity-60 transition-colors"
-      >
-        {buyingNow ? 'Going to checkout…' : 'Buy Now'}
-      </button>
-    </div>
-  )
-}
+        className="w-full py-3.5 text-[11px] font-sans tracking-widest uppercase border border-[#0a0a0a] text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-whit

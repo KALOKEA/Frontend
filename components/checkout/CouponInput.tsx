@@ -62,7 +62,4 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
           {loading ? '...' : 'Apply'}
         </button>
       </div>
-      {error && <p className="text-[11px] text-red-500 font-sans mt-1">{error}</p>}
-    </div>
-  )
-}
+      {error && <p className="text-[11px] text-red-500 font-sans mt-1">{e

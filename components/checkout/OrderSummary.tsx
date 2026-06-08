@@ -103,10 +103,4 @@ export default function OrderSummary({
   )
 }
 
-function Line({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div className={`flex justify-between text-xs font-sans ${accent ? 'text-[#7C4A2D]' : 'text-[#6b6b6b]'}`}>
-      <span>{label}</span><span>{value}</span>
-    </div>
-  )
-}
+function Line({ label, value, accent }: { label: string; value: string; a

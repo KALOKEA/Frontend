@@ -47,7 +47,4 @@ export default function AddressForm({ onSaved, onCancel }: AddressFormProps) {
       <div className="flex gap-3">
         <Button type="submit" loading={loading}>Save Address</Button>
         {onCancel && <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>}
-      </div>
-    </form>
-  )
-}
+ 

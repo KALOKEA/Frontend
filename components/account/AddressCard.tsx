@@ -1,4 +1,3 @@
-'use client'
 import type { Address } from '@/lib/api/addresses'
 
 export default function AddressCard({ address, onDelete, onSetDefault }: {
