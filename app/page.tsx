@@ -2,8 +2,11 @@ import HeroBanner from '@/components/home/HeroBanner'
 import TrustStrip from '@/components/home/TrustStrip'
 import CategoryGrid from '@/components/home/CategoryGrid'
 import FeaturedProducts from '@/components/home/FeaturedProducts'
+import EditorialBanner from '@/components/home/EditorialBanner'
+import BestSellers from '@/components/home/BestSellers'
+import PressStrip from '@/components/home/PressStrip'
+import InstagramGrid from '@/components/home/InstagramGrid'
 import NewsletterSignup from '@/components/home/NewsletterSignup'
-import SectionDivider from '@/components/home/SectionDivider'
 import type { Metadata } from 'next'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
@@ -74,28 +77,16 @@ const websiteJsonLd = {
 export default function HomePage() {
   return (
     <>
-      {/* WebSite schema with SearchAction — homepage only. Organization is in root layout. */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
 
-      {/* Hero — full bleed, cream bg */}
       <HeroBanner />
-
-      {/* Trust strip — bg-[#faf8f5], border top/bottom */}
       <TrustStrip />
-
-      {/* Ornament divider */}
-      <SectionDivider className="py-6 bg-white" />
-
-      {/* Featured products — white bg */}
-      <FeaturedProducts />
-
-      {/* Ornament divider */}
-      <SectionDivider className="py-6 bg-[#faf8f5]" />
-
-      {/* Category grid — bg-[#faf8f5] */}
       <CategoryGrid />
-
-      {/* Newsletter — dark bg, no divider needed (already punchy) */}
+      <FeaturedProducts />
+      <EditorialBanner />
+      <BestSellers />
+      <PressStrip />
+      <InstagramGrid />
       <NewsletterSignup />
     </>
   )

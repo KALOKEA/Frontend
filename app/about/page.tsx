@@ -11,7 +11,7 @@ const STATIC_CONTENT = `<p>Kalokea was born from a simple belief: every woman de
 export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-3">Our Story</p>
+      <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#7C4A2D] mb-3">Our Story</p>
       <h1 className="font-serif text-4xl md:text-5xl text-[#0a0a0a] mb-8">Made for Women Who Choose Themselves</h1>
 
       <CmsPageContent slug="about" staticContent={STATIC_CONTENT} />

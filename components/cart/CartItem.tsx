@@ -16,7 +16,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
       </Link>
 
       <div className="flex-1 min-w-0">
-        <Link href={`/product/${item.slug}`} className="font-serif text-sm text-[#0a0a0a] hover:text-[#c8a4a5] leading-snug block mb-1">
+        <Link href={`/product/${item.slug}`} className="font-serif text-sm text-[#0a0a0a] hover:text-[#7C4A2D] leading-snug block mb-1">
           {item.name}
         </Link>
         {(item.size || item.colour) && (

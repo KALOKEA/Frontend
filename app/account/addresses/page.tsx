@@ -27,7 +27,7 @@ export default function AddressesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-serif text-2xl text-[#0a0a0a]">My Addresses</h2>
-        <button onClick={() => setAdding(true)} className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] underline hover:text-[#c8a4a5]">
+        <button onClick={() => setAdding(true)} className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] underline hover:text-[#7C4A2D]">
           + Add New
         </button>
       </div>
@@ -45,7 +45,7 @@ export default function AddressesPage() {
         {addresses.map((addr) => (
           <div key={addr.id} className="border border-[#e8e4e0] p-4 relative">
             {addr.is_default && (
-              <span className="text-[9px] font-sans tracking-widest uppercase text-[#c8a4a5] mb-2 block">Default</span>
+              <span className="text-[9px] font-sans tracking-widest uppercase text-[#7C4A2D] mb-2 block">Default</span>
             )}
             <p className="text-sm font-sans font-medium text-[#0a0a0a]">{addr.name}</p>
             <p className="text-xs font-sans text-[#6b6b6b] mt-1">

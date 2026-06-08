@@ -6,33 +6,44 @@
 
 
 :root {
-  /* Brand fonts — referenced by Tailwind's fontFamily config */
+  /* Brand fonts */
   --font-cormorant: 'Cormorant Garamond';
   --font-dm-sans: 'DM Sans';
 
-  /* Brand colours */
-  --black:   #0a0a0a;
-  --ink:     #1a1a1a;
-  --white:   #ffffff;
-  --cream:   #faf8f5;
-  --parch:   #f0ece8;
-  --cream-2: #f4f2ef;
-  --rose:    #c8a4a5;
-  --rose-d:  #a07e80;
-  --mauve:   #7a5c5d;
-  --sand:    #d4b896;
-  --blush:   #e8d5c4;
-  --gray:    #6b6b6b;
-  --gray-l:  #e8e4e0;
-  --gray-ll: #f4f2ef;
+  /* ── New palette (Session 12) ──────────────────────────────────── */
+  --ivory:      #FDFAF6;
+  --linen:      #F2EAE0;
+  --stone:      #E0D4C4;
+  --sand:       #C4A882;
+  --sienna:     #7C4A2D;
+  --sienna-l:   #9E6544;
+  --sienna-d:   #5C3520;
+  --charcoal:   #1A1612;
+  --warm-gray:  #6B5E55;
+  --ink:        #0A0908;
+  --white:      #ffffff;
+
+  /* ── Legacy aliases (used by admin / older pages) ───────────────── */
+  --black:   #0A0908;
+  --cream:   #FDFAF6;
+  --parch:   #EDE4D9;
+  --cream-2: #F2EAE0;
+  --rose:    #7C4A2D;   /* remapped → sienna */
+  --rose-d:  #9E6544;   /* remapped → sienna-l */
+  --mauve:   #5C3520;
+  --sand-old:#C4A882;
+  --blush:   #EDE4D9;
+  --gray:    #6B5E55;
+  --gray-l:  #E0D4C4;
+  --gray-ll: #F2EAE0;
 }
 
 * { box-sizing: border-box; }
 
 body {
   font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-  background: #ffffff;
-  color: #0a0a0a;
+  background: #FDFAF6;
+  color: #0A0908;
   overflow-x: hidden;
 }
 
@@ -42,11 +53,14 @@ h1, h2, h3, .font-serif {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #f4f2ef; }
-::-webkit-scrollbar-thumb { background: #c8a4a5; border-radius: 2px; }
+::-webkit-scrollbar-track { background: #F2EAE0; }
+::-webkit-scrollbar-thumb { background: #7C4A2D; border-radius: 2px; }
 
 /* Tap highlight */
 * { -webkit-tap-highlight-color: transparent; }
+
+/* Text selection */
+::selection { background: #7C4A2D22; color: #0A0908; }
 
 
 /* ── Typography utilities ─────────────────────────────────────────────────── */
@@ -60,13 +74,53 @@ h1, h2, h3, .font-serif {
   font-family: var(--font-cormorant), Georgia, serif;
   font-style: italic;
   font-weight: 400;
-  color: var(--rose);
+  color: var(--sienna);
 }
 .text-label {
   font-family: var(--font-dm-sans), Helvetica Neue, Arial, sans-serif;
   font-size: 9px;
   letter-spacing: 0.35em;
   text-transform: uppercase;
+}
+.eyebrow {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--sienna);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 1px;
+  background: var(--sienna);
+  flex-shrink: 0;
+}
+.eyebrow-center {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--sienna);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.eyebrow-center::before,
+.eyebrow-center::after {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 1px;
+  background: var(--sienna);
+  flex-shrink: 0;
 }
 .price-display {
   font-family: var(--font-cormorant), Georgia, serif;
@@ -78,7 +132,6 @@ h1, h2, h3, .font-serif {
 
 
 /* ── Scroll-reveal system ─────────────────────────────────────────────────── */
-/* Elements start hidden; .revealed fires when IntersectionObserver fires */
 .reveal-ready {
   opacity: 0;
   transform: translateY(28px);
@@ -88,7 +141,6 @@ h1, h2, h3, .font-serif {
   opacity: 1;
   transform: translateY(0);
 }
-/* Staggered children — each child gets its own delay */
 .reveal-stagger > *:nth-child(1) { transition-delay: 0ms; }
 .reveal-stagger > *:nth-child(2) { transition-delay: 80ms; }
 .reveal-stagger > *:nth-child(3) { transition-delay: 160ms; }
@@ -134,13 +186,11 @@ h1, h2, h3, .font-serif {
   100% { transform: translateX(-50%); }
 }
 
-/* Utility animation classes */
 .animate-fade-up    { animation: fadeInUp    0.65s ease both; }
 .animate-fade-in    { animation: fadeIn      0.5s  ease both; }
 .animate-slide-left { animation: slideInLeft 0.65s ease both; }
 .animate-scale-in   { animation: scaleIn     0.5s  ease both; }
 
-/* Animation delay utilities */
 .anim-delay-0   { animation-delay: 0ms; }
 .anim-delay-100 { animation-delay: 100ms; }
 .anim-delay-200 { animation-delay: 200ms; }
@@ -155,12 +205,11 @@ h1, h2, h3, .font-serif {
 }
 .card-lift:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 20px 40px rgba(26,22,18,0.10);
 }
 
 
-/* ── Button shimmer effect ────────────────────────────────────────────────── */
-/* Apply .btn-shimmer to any button that should have the shimmer on hover */
+/* ── Button shimmer ───────────────────────────────────────────────────────── */
 .btn-shimmer {
   position: relative;
   overflow: hidden;
@@ -171,7 +220,7 @@ h1, h2, h3, .font-serif {
   top: 0; left: -100%;
   width: 60%;
   height: 100%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.16) 50%, transparent 100%);
   transform: skewX(-20deg);
   transition: none;
 }
@@ -181,8 +230,7 @@ h1, h2, h3, .font-serif {
 }
 
 
-/* ── Nav underline sweep ──────────────────────────────────────────────────── */
-/* Apply .nav-link to navigation anchor tags */
+/* ── Nav link underline sweep ─────────────────────────────────────────────── */
 .nav-link {
   position: relative;
 }
@@ -193,17 +241,18 @@ h1, h2, h3, .font-serif {
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--rose);
+  background: var(--sienna);
   transition: width 0.3s ease;
 }
 .nav-link:hover::after { width: 100%; }
 
 
-/* ── Rose focus glow ──────────────────────────────────────────────────────── */
-.rose-focus:focus {
+/* ── Focus glow ───────────────────────────────────────────────────────────── */
+.rose-focus:focus,
+.sienna-focus:focus {
   outline: none;
-  border-color: var(--rose) !important;
-  box-shadow: 0 0 0 3px rgba(200,164,165,0.18);
+  border-color: var(--sienna) !important;
+  box-shadow: 0 0 0 3px rgba(124,74,45,0.14);
 }
 
 
@@ -212,29 +261,29 @@ h1, h2, h3, .font-serif {
   display: flex;
   align-items: center;
   gap: 16px;
-  color: #c8a4a5;
+  color: var(--sienna);
 }
 .ornament-divider::before,
 .ornament-divider::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, #e8e4e0);
+  background: linear-gradient(to right, transparent, var(--stone));
 }
 .ornament-divider::after {
-  background: linear-gradient(to left, transparent, #e8e4e0);
+  background: linear-gradient(to left, transparent, var(--stone));
 }
 
 
 /* ── Form inputs (.inp) ──────────────────────────────────────────────────── */
 .inp {
   width: 100%;
-  border: 1px solid #e8e4e0;
+  border: 1px solid #E0D4C4;
   padding: 0.65rem 0.75rem;
   font-size: 1rem;
   font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-  color: #0a0a0a;
-  background: #ffffff;
+  color: #0A0908;
+  background: #FDFAF6;
   min-height: 44px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -242,16 +291,16 @@ h1, h2, h3, .font-serif {
   -webkit-appearance: none;
 }
 .inp:focus {
-  border-color: #c8a4a5;
-  box-shadow: 0 0 0 3px rgba(200,164,165,0.15);
+  border-color: #7C4A2D;
+  box-shadow: 0 0 0 3px rgba(124,74,45,0.12);
 }
 .inp:disabled {
-  background: #faf8f5;
-  color: #6b6b6b;
+  background: #F2EAE0;
+  color: #6B5E55;
   cursor: not-allowed;
 }
 select.inp {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B5E55' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   padding-right: 2.25rem;
@@ -272,13 +321,30 @@ select.inp {
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee 22s linear infinite;
+  animation: marquee 24s linear infinite;
 }
 .marquee-track:hover { animation-play-state: paused; }
 
 
+/* ── Link arrow utility ───────────────────────────────────────────────────── */
+.link-arrow::after {
+  content: ' →';
+  display: inline;
+  transition: letter-spacing 0.2s;
+}
+.link-arrow:hover::after {
+  letter-spacing: 0.1em;
+}
+
+
 @layer utilities {
-  .text-rose-d   { color: #a07e80; }
-  .bg-rose-d     { background-color: #a07e80; }
-  .border-rose-d { border-color: #a07e80; }
+  .text-rose-d      { color: #9E6544; }
+  .bg-rose-d        { background-color: #9E6544; }
+  .border-rose-d    { border-color: #9E6544; }
+  .text-sienna      { color: #7C4A2D; }
+  .bg-sienna        { background-color: #7C4A2D; }
+  .border-sienna    { border-color: #7C4A2D; }
+  .bg-ivory         { background-color: #FDFAF6; }
+  .bg-linen         { background-color: #F2EAE0; }
+  .bg-charcoal      { background-color: #1A1612; }
 }

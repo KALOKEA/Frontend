@@ -17,13 +17,10 @@ export default function HeroBanner() {
   const imageUrl = c.hero_image_url || HERO_DEFAULTS.hero_image_url
 
   return (
-    <section className="relative flex flex-col md:flex-row min-h-[92vh] bg-[#faf8f5] overflow-hidden">
+    <section className="relative flex flex-col md:flex-row overflow-hidden" style={{ minHeight: 'calc(100vh - 68px)', background: '#FDFAF6' }}>
 
-      {/* ── Mobile media ──────────────────────────────────────────── */}
-      <div
-        className="md:hidden relative w-full overflow-hidden"
-        style={{ height: '56vw', minHeight: 220, maxHeight: 400 }}
-      >
+      {/* ── Mobile media ───────────────────────────────────────────── */}
+      <div className="md:hidden relative w-full overflow-hidden" style={{ height: '58vw', minHeight: 220, maxHeight: 420 }}>
         {isVideo ? (
           <video src={c.hero_video_url} autoPlay muted loop playsInline className="w-full h-full object-cover object-top" />
         ) : (
@@ -33,99 +30,111 @@ export default function HeroBanner() {
             fill className="object-cover object-top" priority unoptimized
           />
         )}
-        {/* Subtle grain overlay on mobile */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#FDFAF6]/30 pointer-events-none" />
       </div>
 
-      {/* ── Left: Text ─────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 md:px-14 lg:px-20 xl:px-28 py-10 md:py-0 relative">
+      {/* ── Left: Text (43%) ───────────────────────────────────────── */}
+      <div
+        className="flex flex-col justify-center relative"
+        style={{ width: '100%', flex: '0 0 auto', padding: 'clamp(40px, 5vw, 80px) clamp(32px, 6vw, 100px)' }}
+      >
+        {/* MD+: fixed 43% width */}
+        <style>{`@media(min-width:768px){.hero-left{width:43%}}`}</style>
+        <div className="hero-left">
 
-        {/* Grain texture on cream side — desktop only */}
-        <div className="hidden md:block absolute inset-0 opacity-[0.025] pointer-events-none" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        }} />
+          {/* New collection badge */}
+          <div className={`inline-flex self-start items-center gap-2 border border-[#E0D4C4] px-3.5 py-1.5 mb-7 ${mounted ? 'animate-fade-in' : 'opacity-0'}`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7C4A2D]" style={{ animation: 'pulse 2s infinite' }} />
+            <span className="text-[9px] font-sans tracking-[0.28em] uppercase text-[#7C4A2D]">New Collection</span>
+          </div>
 
-        {/* New collection floating badge */}
-        <div
-          className={`inline-flex self-start items-center gap-2 bg-[#c8a4a5]/15 border border-[#c8a4a5]/30 px-3 py-1.5 mb-6 md:mb-8 ${mounted ? 'animate-fade-in anim-delay-0' : 'opacity-0'}`}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#c8a4a5] animate-pulse" />
-          <span className="text-[9px] font-sans tracking-[0.3em] uppercase text-[#a07e80]">New Collection</span>
-        </div>
+          {/* Eyebrow */}
+          <p className={`text-[9.5px] font-sans tracking-[0.35em] uppercase text-[#7C4A2D] mb-4 ${mounted ? 'animate-fade-up anim-delay-100' : 'opacity-0'}`}>
+            {c.hero_eyebrow}
+          </p>
 
-        {/* Eyebrow */}
-        <p className={`text-[10px] font-sans tracking-[0.35em] uppercase text-[#c8a4a5] mb-4 md:mb-5 ${mounted ? 'animate-fade-up anim-delay-100' : 'opacity-0'}`}>
-          {c.hero_eyebrow}
-        </p>
-
-        {/* Main headline — display size */}
-        <h1
-          className={`font-serif font-light text-[#0a0a0a] mb-5 md:mb-7 leading-[0.97] ${mounted ? 'animate-fade-up anim-delay-200' : 'opacity-0'}`}
-          style={{ fontSize: 'clamp(3rem, 7vw, 6.5rem)', letterSpacing: '-0.01em' }}
-        >
-          {c.hero_headline_1}
-          <br />
-          <em className="not-italic italic text-[#c8a4a5]">{c.hero_headline_2}</em>
-        </h1>
-
-        {/* Subtext */}
-        <p className={`font-sans text-[14px] sm:text-[15px] text-[#6b6b6b] max-w-xs md:max-w-sm mb-8 md:mb-10 leading-relaxed ${mounted ? 'animate-fade-up anim-delay-300' : 'opacity-0'}`}>
-          {c.hero_subtext}
-        </p>
-
-        {/* CTAs */}
-        <div className={`flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 ${mounted ? 'animate-fade-up anim-delay-400' : 'opacity-0'}`}>
-          <Link
-            href={c.hero_cta1_link || '/shop'}
-            className="btn-shimmer bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:bg-[#1a1a1a] transition-colors duration-300 text-center relative overflow-hidden"
+          {/* Headline */}
+          <h1
+            className={`font-serif font-light text-[#0A0908] mb-6 leading-[0.97] ${mounted ? 'animate-fade-up anim-delay-200' : 'opacity-0'}`}
+            style={{ fontSize: 'clamp(2.8rem, 6.5vw, 5.8rem)', letterSpacing: '-0.01em' }}
           >
-            {c.hero_cta1_label}
-          </Link>
-          <Link
-            href={c.hero_cta2_link || '/shop'}
-            className="border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:border-[#c8a4a5] hover:text-[#c8a4a5] transition-all duration-300 text-center"
-          >
-            {c.hero_cta2_label}
-          </Link>
-        </div>
+            {c.hero_headline_1}
+            <br />
+            <em className="not-italic italic" style={{ color: '#7C4A2D' }}>{c.hero_headline_2}</em>
+          </h1>
 
-        {/* Scroll indicator */}
-        <div className={`hidden md:flex items-center gap-3 mt-16 text-[#9b9b9b] ${mounted ? 'animate-fade-in anim-delay-500' : 'opacity-0'}`}>
-          <div className="w-6 h-px bg-[#c8a4a5]/50" />
-          <span className="text-[9px] font-sans tracking-[0.25em] uppercase">Scroll to explore</span>
-          <div className="w-6 h-px bg-[#c8a4a5]/50" />
+          {/* Subtext */}
+          <p className={`font-sans text-[14px] text-[#6B5E55] max-w-[340px] mb-9 leading-relaxed ${mounted ? 'animate-fade-up anim-delay-300' : 'opacity-0'}`}>
+            {c.hero_subtext}
+          </p>
+
+          {/* CTAs */}
+          <div className={`flex flex-col sm:flex-row flex-wrap gap-3 ${mounted ? 'animate-fade-up anim-delay-400' : 'opacity-0'}`}>
+            <Link
+              href={c.hero_cta1_link || '/shop'}
+              className="btn-shimmer bg-[#0A0908] text-[#FDFAF6] text-[9.5px] font-sans tracking-[0.22em] uppercase px-8 py-4 hover:bg-[#1A1612] transition-colors duration-300 text-center relative overflow-hidden"
+            >
+              {c.hero_cta1_label}
+            </Link>
+            <Link
+              href={c.hero_cta2_link || '/shop'}
+              className="border border-[#0A0908] text-[#0A0908] text-[9.5px] font-sans tracking-[0.22em] uppercase px-8 py-4 hover:border-[#7C4A2D] hover:text-[#7C4A2D] transition-all duration-300 text-center"
+            >
+              {c.hero_cta2_label}
+            </Link>
+          </div>
+
+          {/* Stats strip */}
+          <div className={`hidden md:flex items-center gap-0 mt-14 border-t border-[#E0D4C4] pt-6 ${mounted ? 'animate-fade-in anim-delay-500' : 'opacity-0'}`}>
+            {[
+              { num: '12K+', label: 'Women Trust Us' },
+              { num: '500+', label: 'Curated Styles' },
+              { num: '100%', label: 'Made in India' },
+            ].map((stat, i) => (
+              <div key={stat.label} className="flex items-center gap-5">
+                {i > 0 && <div className="w-px h-7 bg-[#E0D4C4] mx-5" />}
+                <div>
+                  <div className="font-serif text-[22px] font-light text-[#0A0908] leading-none">{stat.num}</div>
+                  <div className="text-[9px] font-sans tracking-[0.2em] uppercase text-[#6B5E55] mt-1">{stat.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* ── Right: Image / Video — desktop only ───────────────────── */}
-      <div className="hidden md:block flex-1 relative overflow-hidden">
+      {/* ── Right: Image (57%) — desktop only ─────────────────────── */}
+      <div
+        className="hidden md:block relative overflow-hidden"
+        style={{ flex: '1 1 0', position: 'relative' }}
+      >
         {isVideo ? (
           <video
             src={c.hero_video_url}
             autoPlay muted loop playsInline
-            className="w-full h-full object-cover object-top"
-            style={{ position: 'absolute', inset: 0 }}
+            className="absolute inset-0 w-full h-full object-cover object-top"
           />
         ) : (
           <Image
             src={imageUrl}
             alt="Kalokea — Women's Fashion Collection"
             fill
-            className="object-cover object-top hover:scale-[1.04] transition-transform duration-[1200ms] ease-out"
+            className="object-cover object-top"
+            style={{ transition: 'transform 1.4s cubic-bezier(0.25,0.46,0.45,0.94)' }}
             priority
             unoptimized
           />
         )}
-        {/* Left-side fade */}
-        <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#faf8f5] to-transparent pointer-events-none" />
-        {/* Subtle vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
+        {/* Left-edge ivory fade */}
+        <div className="absolute inset-y-0 left-0 w-20 pointer-events-none" style={{ background: 'linear-gradient(to right, #FDFAF6, transparent)' }} />
+        {/* Bottom vignette */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(26,22,18,0.08) 0%, transparent 40%)' }} />
+        {/* Made in India badge */}
+        <div className="absolute bottom-8 left-6 border-l-2 border-[#7C4A2D] pl-3 bg-[#FDFAF6]/90 py-1.5 pr-4">
+          <div className="text-[8px] font-sans tracking-[0.28em] uppercase text-[#7C4A2D]">Made in India</div>
+          <div className="text-[11px] font-sans text-[#0A0908] mt-0.5">Proudly designed &amp; crafted</div>
+        </div>
       </div>
-
-      {/* Bottom ornament line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c8a4a5]/50 to-transparent pointer-events-none" />
     </section>
   )
 }

@@ -7,7 +7,7 @@ interface SectionDividerProps {
 
 export default function SectionDivider({ symbol = '✦', className = '' }: SectionDividerProps) {
   return (
-    <div className={`ornament-divider my-2 text-[#c8a4a5] text-[10px] tracking-[0.3em] select-none ${className}`}>
+    <div className={`ornament-divider my-2 text-[#7C4A2D] text-[10px] tracking-[0.3em] select-none ${className}`}>
       {symbol}
     </div>
   )

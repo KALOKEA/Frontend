@@ -17,7 +17,7 @@ const CHART = [
 export default function SizeGuidePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-3">Fit Guide</p>
+      <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#7C4A2D] mb-3">Fit Guide</p>
       <h1 className="font-serif text-4xl text-[#0a0a0a] mb-4">Size Guide</h1>
       <p className="text-sm font-sans text-[#6b6b6b] mb-10">
         All measurements in centimetres (cm). If between sizes, we recommend sizing up for a relaxed fit.
@@ -47,7 +47,7 @@ export default function SizeGuidePage() {
         </table>
       </div>
 
-      <div className="mt-10 p-6 bg-[#faf8f5] border-l-2 border-[#c8a4a5]">
+      <div className="mt-10 p-6 bg-[#faf8f5] border-l-2 border-[#7C4A2D]">
         <h3 className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] mb-3">How to Measure</h3>
         <ul className="space-y-2 text-xs font-sans text-[#6b6b6b]">
           <li><strong className="text-[#0a0a0a]">Bust:</strong> Measure around the fullest part of your chest, keeping the tape parallel to the ground.</li>

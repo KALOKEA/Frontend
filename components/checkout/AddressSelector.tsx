@@ -25,7 +25,7 @@ export default function AddressSelector({ addresses, selected, onSelect, onNewAd
             name="address"
             checked={selected === addr.id}
             onChange={() => onSelect(addr.id)}
-            className="mt-1 accent-[#c8a4a5]"
+            className="mt-1 accent-[#7C4A2D]"
           />
           <div>
             <p className="text-xs font-sans font-medium text-[#0a0a0a]">{addr.name} · {addr.phone}</p>
@@ -33,7 +33,7 @@ export default function AddressSelector({ addresses, selected, onSelect, onNewAd
               {addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}, {addr.city}, {addr.state} – {addr.pincode}
             </p>
             {addr.is_default && (
-              <span className="text-[9px] font-sans tracking-widest uppercase text-[#c8a4a5]">Default</span>
+              <span className="text-[9px] font-sans tracking-widest uppercase text-[#7C4A2D]">Default</span>
             )}
           </div>
         </label>
@@ -49,7 +49,7 @@ export default function AddressSelector({ addresses, selected, onSelect, onNewAd
       ) : (
         <button
           onClick={() => setAddingNew(true)}
-          className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] underline hover:text-[#c8a4a5]"
+          className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] underline hover:text-[#7C4A2D]"
         >
           + Add New Address
         </button>

@@ -44,14 +44,14 @@ function OrderProgress({ status }: { status: string }) {
           <div key={step} className="flex items-center flex-1 last:flex-none">
             <div className="flex flex-col items-center">
               <div className={`w-2.5 h-2.5 rounded-full border-2 transition-colors ${
-                done ? 'bg-[#c8a4a5] border-[#c8a4a5]' : 'bg-white border-[#d0ccc8]'
+                done ? 'bg-[#7C4A2D] border-[#7C4A2D]' : 'bg-white border-[#d0ccc8]'
               }`} />
               <span className="text-[8px] uppercase tracking-wider mt-1 text-[#9b9b9b] hidden sm:block whitespace-nowrap">
                 {step === 'processing' ? 'Packing' : step.charAt(0).toUpperCase() + step.slice(1)}
               </span>
             </div>
             {!last && (
-              <div className={`flex-1 h-px mx-1 ${i < idx ? 'bg-[#c8a4a5]' : 'bg-[#e8e4e0]'}`} />
+              <div className={`flex-1 h-px mx-1 ${i < idx ? 'bg-[#7C4A2D]' : 'bg-[#e8e4e0]'}`} />
             )}
           </div>
         )
@@ -177,7 +177,7 @@ export default function OrdersPage() {
       </div>
       <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
         <div className="w-16 h-16 rounded-full bg-[#faf8f5] border border-[#e8e4e0] flex items-center justify-center mb-5">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c8a4a5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
           </svg>
         </div>
@@ -242,7 +242,7 @@ export default function OrdersPage() {
                       {' · '}
                       {order.order_items?.length || 0} item{(order.order_items?.length || 0) !== 1 ? 's' : ''}
                       {order.payment_method && (
-                        <span className="ml-2 text-[#c8a4a5] uppercase">
+                        <span className="ml-2 text-[#7C4A2D] uppercase">
                           {order.payment_method === 'cod' ? '· COD' : '· Paid online'}
                         </span>
                       )}
@@ -275,7 +275,7 @@ export default function OrdersPage() {
                         <p className="text-sm font-medium text-[#0a0a0a]">{order.tracking_number}</p>
                         {order.courier_name && <p className="text-[11px] text-[#6b6b6b]">{order.courier_name}</p>}
                       </div>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c8a4a5" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </div>
                   )}
 
@@ -365,7 +365,7 @@ export default function OrdersPage() {
                     {canReturn && (
                       <button
                         onClick={() => { setReturnFor(order); setReason(RETURN_REASONS[0]) }}
-                        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+                        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#7C4A2D] hover:underline"
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.05"/></svg>
                         Return
@@ -374,7 +374,7 @@ export default function OrdersPage() {
                     {canExchange && (
                       <button
                         onClick={() => openExchange(order)}
-                        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+                        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#7C4A2D] hover:underline"
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
                         Exchange

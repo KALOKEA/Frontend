@@ -146,7 +146,7 @@ export default function TrackOrderPage() {
                         <div className="flex items-center w-full">
                           <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium border-2 flex-shrink-0 ${
                             done ? 'bg-[#0a0a0a] border-[#0a0a0a] text-white' : 'bg-white border-[#d0ccc8] text-[#6b6b6b]'
-                          } ${current ? 'ring-2 ring-[#c8a4a5] ring-offset-2' : ''}`}>
+                          } ${current ? 'ring-2 ring-[#7C4A2D] ring-offset-2' : ''}`}>
                             {done && !current ? '✓' : i + 1}
                           </div>
                           {i < STATUS_STEPS.length - 1 && (

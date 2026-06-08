@@ -41,7 +41,7 @@ export default function ContactPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16">
-      <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-3">Get in Touch</p>
+      <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#7C4A2D] mb-3">Get in Touch</p>
       <h1 className="font-serif text-4xl text-[#0a0a0a] mb-6">Contact Us</h1>
 
       <div className="mb-10">
@@ -49,7 +49,7 @@ export default function ContactPage() {
       </div>
 
       {sent ? (
-        <div className="border border-[#c8a4a5] p-6 text-center">
+        <div className="border border-[#7C4A2D] p-6 text-center">
           <p className="font-serif text-2xl text-[#0a0a0a] mb-1">Thank you!</p>
           <p className="text-sm font-sans text-[#6b6b6b]">We&apos;ll get back to you within 24 hours.</p>
         </div>
@@ -74,6 +74,3 @@ export default function ContactPage() {
           <Button type="submit" loading={loading}>Send Message</Button>
         </form>
       )}
-    </div>
-  )
-}

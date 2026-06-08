@@ -14,7 +14,7 @@ export default function WishlistItem({ product }: { product: Product }) {
         {img && <Image src={img} alt={product.name} fill className="object-cover" sizes="64px" />}
       </Link>
       <div className="flex-1">
-        <Link href={`/product/${product.slug}`} className="font-serif text-sm text-[#0a0a0a] hover:text-[#c8a4a5]">{product.name}</Link>
+        <Link href={`/product/${product.slug}`} className="font-serif text-sm text-[#0a0a0a] hover:text-[#7C4A2D]">{product.name}</Link>
         <p className="text-xs font-sans text-[#0a0a0a] mt-1">{formatPrice(product.base_price)}</p>
         <button onClick={() => toggle(product.id)} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-red-500 mt-2 underline">
           Remove

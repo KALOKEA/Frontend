@@ -65,7 +65,7 @@ export default function PaymentSection({ selected, onSelect }: PaymentSectionPro
                   value={m.value}
                   checked={selected === m.value}
                   onChange={() => onSelect(m.value)}
-                  className="accent-[#c8a4a5]"
+                  className="accent-[#7C4A2D]"
                 />
                 <span className="text-sm">{m.icon}</span>
                 <span className="text-xs font-sans text-[#0a0a0a]">{m.label}</span>
@@ -89,7 +89,7 @@ export default function PaymentSection({ selected, onSelect }: PaymentSectionPro
           value="cod"
           checked={selected === 'cod'}
           onChange={() => onSelect('cod')}
-          className="accent-[#c8a4a5]"
+          className="accent-[#7C4A2D]"
         />
         <span className="text-sm">📦</span>
         <span className="text-xs font-sans text-[#0a0a0a]">Cash on Delivery</span>

@@ -57,7 +57,7 @@ export default function FeaturedProducts() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab])
 
-  // Stagger-reveal each card as it enters viewport
+  // Stagger reveal
   useEffect(() => {
     if (!gridRef.current || loading) return
     const cards = Array.from(gridRef.current.querySelectorAll<HTMLElement>('[data-card]'))
@@ -77,33 +77,33 @@ export default function FeaturedProducts() {
   }, [products, loading])
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-[#FDFAF6]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
         {/* Section header */}
         <div className="text-center mb-12">
-          <p className="text-[10px] font-sans tracking-[0.35em] uppercase text-[#c8a4a5] mb-3">Hand-Picked</p>
-          <h2 className="font-serif font-light text-[#0a0a0a] mb-2" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+          <div className="eyebrow-center mb-4">Hand-Picked</div>
+          <h2 className="font-serif font-light text-[#0A0908] mb-2" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
             {sectionHeading}
           </h2>
-          {/* Rose underline accent */}
-          <div className="mx-auto w-10 h-px bg-[#c8a4a5] mt-4 mb-8" />
+          {/* Sienna underline accent */}
+          <div className="mx-auto w-10 h-px bg-[#7C4A2D] mt-4 mb-8" />
 
           {/* Tab bar */}
           <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-0.5">
-            <div className="flex items-end gap-0 w-fit mx-auto border-b border-[#e8e4e0]">
+            <div className="flex items-end gap-0 w-fit mx-auto border-b border-[#E0D4C4]">
               {TABS.map((t, i) => (
                 <button
                   key={t.label}
                   onClick={() => setTab(i)}
-                  className={`relative px-4 sm:px-6 py-2.5 text-[10px] font-sans tracking-widest uppercase transition-colors whitespace-nowrap ${
+                  className={`relative px-4 sm:px-6 py-2.5 text-[9.5px] font-sans tracking-[0.22em] uppercase transition-colors whitespace-nowrap ${
                     i === tab
-                      ? 'text-[#0a0a0a] font-medium'
-                      : 'text-[#9b9b9b] hover:text-[#0a0a0a]'
+                      ? 'text-[#0A0908] font-medium'
+                      : 'text-[#9B8F87] hover:text-[#0A0908]'
                   }`}
                 >
                   {t.label}
-                  {/* Active underline */}
-                  <span className={`absolute bottom-0 left-0 right-0 h-[2px] bg-[#c8a4a5] transition-all duration-300 ${i === tab ? 'opacity-100' : 'opacity-0'}`} />
+                  <span className={`absolute bottom-0 left-0 right-0 h-[2px] bg-[#7C4A2D] transition-all duration-300 ${i === tab ? 'opacity-100' : 'opacity-0'}`} />
                 </button>
               ))}
             </div>
@@ -125,7 +125,7 @@ export default function FeaturedProducts() {
             <div className="text-center mt-12">
               <Link
                 href="/shop"
-                className="btn-shimmer inline-block border border-[#0a0a0a] text-[#0a0a0a] text-[10px] font-sans tracking-widest uppercase px-10 py-3.5 hover:bg-[#0a0a0a] hover:text-white transition-colors duration-300 relative overflow-hidden"
+                className="btn-shimmer inline-block border border-[#0A0908] text-[#0A0908] text-[9.5px] font-sans tracking-[0.22em] uppercase px-10 py-3.5 hover:bg-[#0A0908] hover:text-[#FDFAF6] transition-colors duration-300 relative overflow-hidden"
               >
                 View All Products
               </Link>

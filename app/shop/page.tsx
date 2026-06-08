@@ -48,12 +48,12 @@ function ActiveFilters() {
           className="flex items-center gap-1 px-3 py-1 text-[10px] uppercase tracking-widest bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors"
         >
           {c.label}
-          <span className="ml-1 text-[#c8a4a5]">×</span>
+          <span className="ml-1 text-[#7C4A2D]">×</span>
         </button>
       ))}
       <button
         onClick={() => router.push('/shop')}
-        className="text-[10px] uppercase tracking-widest text-[#c8a4a5] hover:underline ml-1"
+        className="text-[10px] uppercase tracking-widest text-[#7C4A2D] hover:underline ml-1"
       >
         Clear all
       </button>
@@ -169,21 +169,4 @@ function ShopContent() {
             </div>
           </div>
 
-          <ProductGrid products={products} loading={loading} />
-          <Suspense><Pagination total={total} page={page} limit={limit} /></Suspense>
-        </div>
-      </div>
-
-      {/* Mobile filter drawer */}
-      <MobileFilterDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
-    </div>
-  )
-}
-
-export default function ShopPage() {
-  return (
-    <Suspense>
-      <ShopContent />
-    </Suspense>
-  )
-}
+          <ProductGrid products={

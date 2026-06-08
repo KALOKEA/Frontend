@@ -5,7 +5,7 @@ import { reviewsApi, type ReviewItem } from '@/lib/api/reviews'
 import Spinner from '@/components/ui/Spinner'
 
 const STARS = (n: number) => (
-  <span className="text-[#c8a4a5] text-sm">
+  <span className="text-[#7C4A2D] text-sm">
     {'★'.repeat(n)}<span className="text-[#e8e4e0]">{'★'.repeat(5 - n)}</span>
   </span>
 )
@@ -54,7 +54,7 @@ export default function MyReviewsPage() {
                     {productSlug ? (
                       <Link
                         href={`/product/${productSlug}`}
-                        className="font-medium text-[#0a0a0a] hover:text-[#c8a4a5] hover:underline"
+                        className="font-medium text-[#0a0a0a] hover:text-[#7C4A2D] hover:underline"
                       >
                         {productName}
                       </Link>

@@ -31,7 +31,7 @@ export default function CmsPageContent({ slug, staticContent }: Props) {
 
   return (
     <div
-      className="prose prose-sm max-w-none text-[#6b6b6b] leading-loose [&_h2]:font-serif [&_h2]:text-xl [&_h2]:text-[#0a0a0a] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-serif [&_h3]:text-lg [&_h3]:text-[#0a0a0a] [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_a]:text-[#c8a4a5] [&_a]:underline [&_strong]:text-[#0a0a0a] [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
+      className="prose prose-sm max-w-none text-[#6b6b6b] leading-loose [&_h2]:font-serif [&_h2]:text-xl [&_h2]:text-[#0a0a0a] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-serif [&_h3]:text-lg [&_h3]:text-[#0a0a0a] [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_a]:text-[#7C4A2D] [&_a]:underline [&_strong]:text-[#0a0a0a] [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   )

@@ -100,7 +100,7 @@ export default function CategoryShopClient({ category, displayName }: Props) {
           <div className="text-center py-24">
             <p className="font-serif text-2xl text-[#0a0a0a] mb-2">No products yet</p>
             <p className="text-sm font-sans text-[#6b6b6b] mb-6">Check back soon — new styles are on their way.</p>
-            <Link href="/shop" className="text-[11px] font-sans tracking-widest uppercase underline text-[#0a0a0a] hover:text-[#c8a4a5] transition-colors">
+            <Link href="/shop" className="text-[11px] font-sans tracking-widest uppercase underline text-[#0a0a0a] hover:text-[#7C4A2D] transition-colors">
               Browse all collections
             </Link>
           </div>

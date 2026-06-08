@@ -8,7 +8,7 @@ export default function AddressCard({ address, onDelete, onSetDefault }: {
   return (
     <div className="border border-[#e8e4e0] p-4">
       {address.is_default && (
-        <span className="text-[9px] font-sans tracking-widest uppercase text-[#c8a4a5] mb-2 block">Default</span>
+        <span className="text-[9px] font-sans tracking-widest uppercase text-[#7C4A2D] mb-2 block">Default</span>
       )}
       <p className="text-sm font-sans font-medium text-[#0a0a0a]">{address.name}</p>
       <p className="text-xs font-sans text-[#6b6b6b] mt-1 leading-relaxed">

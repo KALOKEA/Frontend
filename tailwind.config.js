@@ -4,31 +4,42 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Core brand
-        black:      '#0a0a0a',
-        cream:      '#faf8f5',
-        'cream-2':  '#f4f2ef',
-        'cream-3':  '#e8e4e0',
-        rose:       '#c8a4a5',
-        'rose-d':   '#a07e80',
-        gray:       '#6b6b6b',
-        'gray-l':   '#e8e4e0',
-        'gray-ll':  '#f4f2ef',
-        // Extended palette (design upgrade)
-        ink:        '#1a1a1a',   // softer black for hovers/layers
-        parch:      '#f0ece8',   // warm parchment between cream and border
-        sand:       '#d4b896',   // warm caramel accent
-        mauve:      '#7a5c5d',   // deep rose for hover states
-        blush:      '#e8d5c4',   // light blush for bg tints
+        // ── NEW brand palette (Session 12) ──────────────────────────────────
+        ivory:      '#FDFAF6',   // warm off-white — main bg
+        linen:      '#F2EAE0',   // slightly deeper warm bg
+        stone:      '#E0D4C4',   // warm border / divider
+        sand:       '#C4A882',   // warm gold-tan accent
+        sienna: {
+          DEFAULT: '#7C4A2D',   // primary terracotta accent
+          light:   '#9E6544',   // hover sienna
+          dark:    '#5C3520',   // pressed sienna
+        },
+        charcoal:   '#1A1612',   // warm near-black for dark sections
+        'warm-gray':'#6B5E55',   // body text warm gray
+
+        // ── LEGACY — kept for admin & older pages ────────────────────────────
+        black:      '#0A0908',
+        cream:      '#FDFAF6',   // remapped → ivory
+        'cream-2':  '#F2EAE0',   // remapped → linen
+        'cream-3':  '#E0D4C4',   // remapped → stone
+        rose:       '#7C4A2D',   // remapped → sienna (all existing rose refs get sienna)
+        'rose-d':   '#9E6544',   // remapped → sienna-light
+        gray:       '#6B5E55',   // remapped → warm-gray
+        'gray-l':   '#E0D4C4',   // remapped → stone
+        'gray-ll':  '#F2EAE0',   // remapped → linen
+        ink:        '#1A1612',   // remapped → charcoal
+        parch:      '#EDE4D9',
+        mauve:      '#5C3520',
+        blush:      '#EDE4D9',
       },
       fontFamily: {
         serif: ['var(--font-cormorant)', 'Georgia', 'serif'],
         sans:  ['var(--font-dm-sans)', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       boxShadow: {
-        'card':  '0 4px 20px rgba(0,0,0,0.06)',
-        'float': '0 16px 40px rgba(0,0,0,0.10)',
-        'glow':  '0 0 20px rgba(200,164,165,0.25)',
+        'card':  '0 4px 20px rgba(26,22,18,0.07)',
+        'float': '0 16px 40px rgba(26,22,18,0.12)',
+        'glow':  '0 0 24px rgba(124,74,45,0.18)',
       },
       keyframes: {
         shimmer: {
@@ -65,14 +76,14 @@ module.exports = {
         },
       },
       animation: {
-        shimmer:       'shimmer 1.5s infinite',
-        'fade-up':     'fadeInUp 0.65s ease forwards',
-        'fade-in':     'fadeIn 0.5s ease forwards',
-        'slide-left':  'slideInLeft 0.65s ease forwards',
-        'scale-in':    'scaleIn 0.5s ease forwards',
-        'heart-pulse': 'heartPulse 0.35s ease',
+        shimmer:        'shimmer 1.5s infinite',
+        'fade-up':      'fadeInUp 0.65s ease forwards',
+        'fade-in':      'fadeIn 0.5s ease forwards',
+        'slide-left':   'slideInLeft 0.65s ease forwards',
+        'scale-in':     'scaleIn 0.5s ease forwards',
+        'heart-pulse':  'heartPulse 0.35s ease',
         'shimmer-sweep':'shimmerSweep 0.9s linear',
-        marquee:       'marquee 20s linear infinite',
+        marquee:        'marquee 22s linear infinite',
       },
       transitionDelay: {
         '75':  '75ms',

@@ -21,7 +21,7 @@ export default function Button({
 
   const variants = {
     primary: 'bg-[#0a0a0a] text-white hover:bg-[#2a2a2a]',
-    secondary: 'bg-[#c8a4a5] text-white hover:bg-[#a07e80]',
+    secondary: 'bg-[#7C4A2D] text-white hover:bg-[#5C3520]',
     outline: 'border border-[#0a0a0a] text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white',
     ghost: 'text-[#0a0a0a] hover:bg-[#f4f2ef]',
   }
@@ -43,7 +43,4 @@ export default function Button({
           <span className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
           {children}
         </span>
-      ) : children}
-    </button>
-  )
-}
+ 

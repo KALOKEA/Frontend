@@ -36,7 +36,7 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
 
   if (appliedCode) {
     return (
-      <div className="flex items-center justify-between border border-[#c8a4a5] px-4 py-3">
+      <div className="flex items-center justify-between border border-[#7C4A2D] px-4 py-3">
         <p className="text-xs font-sans text-[#0a0a0a]">
           Coupon <span className="font-medium">{appliedCode}</span> applied ✓
         </p>
@@ -62,7 +62,4 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
           {loading ? '...' : 'Apply'}
         </button>
       </div>
-      {error && <p className="text-[11px] text-red-500 font-sans mt-1">{error}</p>}
-    </div>
-  )
-}
+      {error && <p className="text-[11px] text-red-500 font-sans mt-1">{e

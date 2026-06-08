@@ -267,7 +267,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
         !showForm ? (
           <button
             onClick={() => setShowForm(true)}
-            className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+            className="text-[11px] uppercase tracking-widest text-[#7C4A2D] hover:underline"
           >
             + Write a review
           </button>
@@ -353,7 +353,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="border border-dashed border-[#c8a4a5] text-[#c8a4a5] text-[10px] uppercase tracking-widest px-4 py-2 hover:bg-[#c8a4a5]/5 transition-colors"
+                    className="border border-dashed border-[#7C4A2D] text-[#7C4A2D] text-[10px] uppercase tracking-widest px-4 py-2 hover:bg-[#7C4A2D]/5 transition-colors"
                   >
                     + Add photos/videos
                   </button>

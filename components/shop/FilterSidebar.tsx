@@ -28,7 +28,6 @@ export function useFilters() {
   return { params, updateParam, clearAll }
 }
 
-/** Shared filter panel content used in both sidebar and mobile drawer. */
 export function FilterPanel({ onApply }: { onApply?: () => void }) {
   const { params, updateParam, clearAll } = useFilters()
   const size = params.get('size')
@@ -44,7 +43,7 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
       {params.toString() && (
         <button
           onClick={() => { clearAll(); onApply?.() }}
-          className="text-[10px] font-sans tracking-widest uppercase text-[#c8a4a5] hover:text-[#a07e80] mb-6 block"
+          className="text-[10px] font-sans tracking-widest uppercase text-[#7C4A2D] hover:text-[#5C3520] mb-6 block"
         >
           Clear all filters
         </button>
@@ -52,7 +51,7 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
 
       {/* Price */}
       <div className="mb-6">
-        <h4 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-3">Price</h4>
+        <h4 className="text-[10px] font-sans tracking-widest uppercase text-[#6B5E55] mb-3">Price</h4>
         <div className="space-y-2">
           {PRICE_RANGES.map(r => (
             <label key={r.label} className="flex items-center gap-2 cursor-pointer">
@@ -65,9 +64,9 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
                   updateParam('max_price', String(r.max))
                   onApply?.()
                 }}
-                className="accent-[#c8a4a5]"
+                className="accent-[#7C4A2D]"
               />
-              <span className="text-xs font-sans text-[#0a0a0a]">{r.label}</span>
+              <span className="text-xs font-sans text-[#0A0908]">{r.label}</span>
             </label>
           ))}
           {params.get('min_price') && (
@@ -77,7 +76,7 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
                 updateParam('max_price', null)
                 onApply?.()
               }}
-              className="text-[10px] text-[#9b9b9b] hover:text-[#c8a4a5]"
+              className="text-[10px] text-[#9B8F87] hover:text-[#7C4A2D]"
             >
               Clear price
             </button>
@@ -87,7 +86,7 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
 
       {/* Size */}
       <div className="mb-6">
-        <h4 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-3">Size</h4>
+        <h4 className="text-[10px] font-sans tracking-widest uppercase text-[#6B5E55] mb-3">Size</h4>
         <div className="flex flex-wrap gap-2">
           {SIZES.map(s => (
             <button
@@ -95,8 +94,8 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
               onClick={() => apply('size', size === s ? null : s)}
               className={`px-3 py-1.5 text-[10px] font-sans tracking-widest border transition-colors ${
                 size === s
-                  ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white'
-                  : 'border-[#e8e4e0] text-[#0a0a0a] hover:border-[#0a0a0a]'
+                  ? 'border-[#7C4A2D] bg-[#7C4A2D] text-white'
+                  : 'border-[#E0D4C4] text-[#0A0908] hover:border-[#7C4A2D]'
               }`}
             >
               {s}
@@ -107,7 +106,7 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
 
       {/* Colour */}
       <div className="mb-6">
-        <h4 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-3">Colour</h4>
+        <h4 className="text-[10px] font-sans tracking-widest uppercase text-[#6B5E55] mb-3">Colour</h4>
         <div className="space-y-2">
           {COLOURS.map(c => (
             <label key={c} className="flex items-center gap-2 cursor-pointer">
@@ -115,9 +114,9 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
                 type="checkbox"
                 checked={colour === c}
                 onChange={() => apply('colour', colour === c ? null : c)}
-                className="accent-[#c8a4a5]"
+                className="accent-[#7C4A2D]"
               />
-              <span className="text-xs font-sans text-[#0a0a0a]">{c}</span>
+              <span className="text-xs font-sans text-[#0A0908]">{c}</span>
             </label>
           ))}
         </div>
@@ -126,7 +125,6 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
   )
 }
 
-/** Desktop sidebar wrapper. */
 export default function FilterSidebar() {
   return (
     <aside className="w-56 shrink-0">

@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 
-// Elegant thin-stroke SVG icons — replacing emojis
 const TruckIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
     <rect x="1" y="3" width="15" height="13" rx="1"/>
@@ -49,24 +48,24 @@ export default function TrustStrip() {
   ]
 
   return (
-    <section className="border-y border-[#e8e4e0] bg-[#faf8f5]">
+    <section className="border-y border-[#E0D4C4] bg-[#FDFAF6]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 divide-y divide-x-0 md:divide-y-0 md:divide-x divide-[#e8e4e0]">
+        <div className="grid grid-cols-2 md:grid-cols-4 divide-y divide-x-0 md:divide-y-0 md:divide-x divide-[#E0D4C4]">
           {items.map(({ Icon, title, sub }, idx) => (
             <div
               key={title}
-              className={`group flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 transition-colors hover:bg-[#f0ece8] ${
-                idx % 2 === 0 ? 'border-r border-[#e8e4e0] md:border-r-0' : ''
+              className={`group flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 transition-colors hover:bg-[#F2EAE0] ${
+                idx % 2 === 0 ? 'border-r border-[#E0D4C4] md:border-r-0' : ''
               }`}
             >
-              <div className="shrink-0 text-[#c8a4a5] transition-transform duration-300 group-hover:scale-110 group-hover:text-[#a07e80]">
+              <div className="shrink-0 text-[#7C4A2D] transition-transform duration-300 group-hover:scale-110 group-hover:text-[#5C3520]">
                 <Icon />
               </div>
               <div className="min-w-0">
-                <p className="text-[9px] sm:text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] font-medium leading-tight">
+                <p className="text-[9px] sm:text-[10px] font-sans tracking-widest uppercase text-[#0A0908] font-medium leading-tight">
                   {title}
                 </p>
-                <p className="text-[10px] sm:text-[11px] font-sans text-[#6b6b6b] mt-0.5 leading-snug">{sub}</p>
+                <p className="text-[10px] sm:text-[11px] font-sans text-[#6B5E55] mt-0.5 leading-snug">{sub}</p>
               </div>
             </div>
           ))}

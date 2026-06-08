@@ -21,7 +21,7 @@ export default function CartSummary({ couponDiscount = 0 }: { couponDiscount?: n
           <span>{formatPrice(subtotal)}</span>
         </div>
         {couponDiscount > 0 && (
-          <div className="flex justify-between text-xs font-sans text-[#c8a4a5]">
+          <div className="flex justify-between text-xs font-sans text-[#7C4A2D]">
             <span>Discount</span>
             <span>-{formatPrice(couponDiscount)}</span>
           </div>
@@ -31,7 +31,7 @@ export default function CartSummary({ couponDiscount = 0 }: { couponDiscount?: n
           <span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
         </div>
         {shipping > 0 && (
-          <p className="text-[10px] font-sans text-[#c8a4a5]">
+          <p className="text-[10px] font-sans text-[#7C4A2D]">
             Add {formatPrice(SHIPPING_THRESHOLD - subtotal)} more for free shipping
           </p>
         )}

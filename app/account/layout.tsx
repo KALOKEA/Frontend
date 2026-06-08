@@ -142,7 +142,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     {user?.email || user?.phone || ''}
                   </p>
                   {memberSince && (
-                    <p className="text-[10px] text-[#c8a4a5] uppercase tracking-widest mt-1">
+                    <p className="text-[10px] text-[#7C4A2D] uppercase tracking-widest mt-1">
                       Member since {memberSince}
                     </p>
                   )}
@@ -152,11 +152,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
               {/* Quick stats */}
               <div className="grid grid-cols-2 gap-2 pt-4 border-t border-[#f0ece8]">
                 <Link href="/account/orders" className="text-center p-2 rounded hover:bg-[#faf8f5] transition-colors group">
-                  <p className="font-serif text-lg text-[#0a0a0a] group-hover:text-[#c8a4a5] transition-colors">Orders</p>
+                  <p className="font-serif text-lg text-[#0a0a0a] group-hover:text-[#7C4A2D] transition-colors">Orders</p>
                   <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b]">History</p>
                 </Link>
                 <Link href="/account/wishlist" className="text-center p-2 rounded hover:bg-[#faf8f5] transition-colors group">
-                  <p className="font-serif text-lg text-[#0a0a0a] group-hover:text-[#c8a4a5] transition-colors">Wishlist</p>
+                  <p className="font-serif text-lg text-[#0a0a0a] group-hover:text-[#7C4A2D] transition-colors">Wishlist</p>
                   <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b]">Saved</p>
                 </Link>
               </div>
@@ -180,9 +180,9 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                   >
                     {/* Active indicator */}
                     {active && (
-                      <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#c8a4a5]" />
+                      <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#7C4A2D]" />
                     )}
-                    <span className={active ? 'text-[#c8a4a5]' : 'text-[#d0ccc8]'}>
+                    <span className={active ? 'text-[#7C4A2D]' : 'text-[#d0ccc8]'}>
                       {n.icon}
                     </span>
                     {n.label}
@@ -214,7 +214,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
               </p>
               <a
                 href="mailto:support@kalokea.in"
-                className="text-[10px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+                className="text-[10px] uppercase tracking-widest text-[#7C4A2D] hover:underline"
               >
                 support@kalokea.in
               </a>
@@ -222,9 +222,4 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           </aside>
 
           {/* ── Content ──────────────────────────────────────────────────── */}
-          <main className="flex-1 min-w-0">{children}</main>
-        </div>
-      </div>
-    </div>
-  )
-}
+          <main classN

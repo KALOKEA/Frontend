@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function ReturnsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#c8a4a5] mb-3">Returns & Exchanges</p>
+      <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#7C4A2D] mb-3">Returns & Exchanges</p>
       <h1 className="font-serif text-4xl text-[#0a0a0a] mb-8">Easy 7-Day Returns</h1>
 
       <div className="space-y-8 text-sm font-sans text-[#6b6b6b] leading-relaxed">
@@ -20,7 +20,7 @@ export default function ReturnsPage() {
         <section>
           <h2 className="font-serif text-xl text-[#0a0a0a] mb-3">How to Return</h2>
           <ol className="space-y-2 list-decimal list-inside">
-            <li>Log in to your account and go to <Link href="/account/orders" className="text-[#c8a4a5] underline">My Orders</Link></li>
+            <li>Log in to your account and go to <Link href="/account/orders" className="text-[#7C4A2D] underline">My Orders</Link></li>
             <li>Select the item you want to return and click &quot;Return/Exchange&quot;</li>
             <li>Choose your reason and submit the request</li>
             <li>We&apos;ll arrange a free pickup within 2–3 business days</li>
