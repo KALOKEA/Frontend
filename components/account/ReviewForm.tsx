@@ -40,7 +40,6 @@ export default function ReviewForm({ product_id, onSubmitted }: { product_id: st
         </div>
       </div>
       <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Review title" className="w-full border border-[#e8e4e0] px-4 py-3 text-base font-sans outline-none focus:border-[#0a0a0a] min-h-[44px]" />
-      <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Write your review..." rows={4} className="w-full border border-[#e8e4e0] px-4 py-3 text-base font-sans outline-none f
       <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Write your review..." rows={4} className="w-full border border-[#e8e4e0] px-4 py-3 text-base font-sans outline-none focus:border-[#0a0a0a] transition-colors min-h-[44px]" />
       <Button type="submit" disabled={loading} className="w-full">
         {loading ? 'Submitting...' : 'Submit Review'}
