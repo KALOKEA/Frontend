@@ -46,7 +46,7 @@ export default function OrderSummary({
   const total = quote?.total ?? Math.max(0, subtotal - discount) + shipping + codFee
 
   return (
-    <div className="bg-[#faf8f5] p-6 sticky top-24">
+    <div className="bg-[#faf8f5] p-6 lg:sticky lg:top-24">
       <h3 className="font-serif text-lg text-[#0a0a0a] mb-5">Order Summary</h3>
 
       <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
@@ -82,8 +82,13 @@ export default function OrderSummary({
           ) : (
             <Line label="IGST" value={formatPrice(quote.igst)} />
           )
+        ) : totalGst > 0 ? (
+          <Line label="GST" value={formatPrice(totalGst)} />
         ) : (
-          totalGst > 0 && <Line label="GST" value={formatPrice(totalGst)} />
+          <div className="flex justify-between text-xs font-sans text-[#9b9b9b]">
+            <span>GST</span>
+            <span>Included in price</span>
+          </div>
         )}
 
         <Line label="Shipping" value={shipping === 0 ? 'Free' : formatPrice(shipping)} />
@@ -92,7 +97,7 @@ export default function OrderSummary({
         <div className="flex justify-between text-sm font-sans font-medium text-[#0a0a0a] pt-2 border-t border-[#e8e4e0]">
           <span>Total</span><span>{formatPrice(total)}</span>
         </div>
-        <p className="text-[10px] font-sans text-[#6b6b6b] pt-1">Inclusive of GST. Tax shown above.</p>
+        <p className="text-[10px] font-sans text-[#9b9b9b] pt-1">All prices are GST-inclusive as per Indian tax law.</p>
       </div>
     </div>
   )

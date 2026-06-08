@@ -218,8 +218,18 @@ export default function CheckoutPage() {
       <h1 className="font-serif text-3xl text-[#0a0a0a] mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Left */}
-        <div className="space-y-8">
+        {/* Order summary — shows FIRST on mobile (order-1), right column on desktop (lg:order-2) */}
+        <div className="order-1 lg:order-2">
+          <OrderSummary
+            couponDiscount={couponDiscount}
+            couponCode={couponCode}
+            paymentMethod={paymentMethod}
+            addressState={billing.state}
+          />
+        </div>
+
+        {/* Form — shows SECOND on mobile (order-2), left column on desktop (lg:order-1) */}
+        <div className="space-y-8 order-2 lg:order-1">
           <section>
             <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Billing details</h2>
             <BillingDetails
@@ -269,14 +279,6 @@ export default function CheckoutPage() {
             {paymentMethod === 'cod' ? 'Place Order' : 'Proceed to Payment'}
           </Button>
         </div>
-
-        {/* Right */}
-        <OrderSummary
-          couponDiscount={couponDiscount}
-          couponCode={couponCode}
-          paymentMethod={paymentMethod}
-          addressState={billing.state}
-        />
       </div>
     </div>
   )

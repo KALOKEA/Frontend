@@ -108,21 +108,36 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   return result
 }
 
+// ─── Refresh mutex ─────────────────────────────────────────────────────────
+// Prevents concurrent 401 retries from each firing their own /auth/refresh.
+// Token rotation means only the FIRST refresh succeeds; subsequent calls with
+// the same (now-rotated) cookie fail → token_version mismatch → "Session revoked".
+// Solution: every concurrent caller waits on the same in-flight promise.
+let _refreshInFlight: Promise<boolean> | null = null
+
 export async function tryRefresh(): Promise<boolean> {
-  try {
-    const res = await fetch(`${BASE_URL}/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    })
-    if (!res.ok) return false
-    const json = await res.json()
-    const token = json.data?.access_token || json.access_token
-    if (token) { setAccessToken(token); return true }
-    return false
-  } catch {
-    return false
-  }
+  if (_refreshInFlight) return _refreshInFlight
+
+  _refreshInFlight = (async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      })
+      if (!res.ok) return false
+      const json = await res.json()
+      const token = json.data?.access_token || json.access_token
+      if (token) { setAccessToken(token); return true }
+      return false
+    } catch {
+      return false
+    } finally {
+      _refreshInFlight = null
+    }
+  })()
+
+  return _refreshInFlight
 }
 
 export const api = {

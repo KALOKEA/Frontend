@@ -25,6 +25,7 @@ interface FormState {
   hsn_code: string; gst_rate: string
   category_id: string; tags: string
   is_featured: boolean; is_active: boolean
+  sort_weight: string
 }
 
 const emptyForm = (): FormState => ({
@@ -33,6 +34,7 @@ const emptyForm = (): FormState => ({
   hsn_code: '', gst_rate: '',
   category_id: '', tags: '',
   is_featured: false, is_active: true,
+  sort_weight: '0',
 })
 
 function productToForm(p: Product): FormState {
@@ -46,6 +48,7 @@ function productToForm(p: Product): FormState {
     category_id: p.category_id || '',
     tags: (p.tags || []).join(', '),
     is_featured: p.is_featured, is_active: p.is_active,
+    sort_weight: String((p as any).sort_weight ?? 0),
   }
 }
 
@@ -319,40 +322,57 @@ function ProductEditor({
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
       is_featured: form.is_featured,
       is_active: form.is_active,
+      sort_weight: parseInt(form.sort_weight, 10) || 0,
     }
     try {
       if (form.id) {
         await productsApi.update(form.id, payload)
         showToast('Changes saved ✓')
       } else {
-        // ── Create product ────────────────────────────────────────────────
-        const created = await productsApi.create(payload)
+        // ── Create product (auto-retry with suffix on slug collision) ─────
+        let created
+        try {
+          created = await productsApi.create(payload)
+        } catch (e: any) {
+          if (e?.message?.includes('slug') || e?.message?.includes('products_slug_key')) {
+            // Slug already taken — append short random suffix and retry once
+            const suffix = Date.now().toString(36).slice(-4)
+            created = await productsApi.create({ ...payload, slug: `${payload.slug}-${suffix}` })
+          } else {
+            throw e
+          }
+        }
         setForm(f => ({ ...f, id: created.id, slug: created.slug }))
 
-        // Flush all pending variants in parallel
-        if (pendingVariants.length > 0) {
-          await Promise.all(
-            pendingVariants.map(v =>
-              variantsApi.create({
+        // Flush pending variants SEQUENTIALLY — parallel POSTs risk a mid-flight
+        // 401 that partially saves variants (token race condition root cause).
+        const pendingCount = pendingVariants.length
+        if (pendingCount > 0) {
+          let saved = 0
+          for (const v of pendingVariants) {
+            try {
+              await variantsApi.create({
                 product_id: created.id,
                 size: v.size || undefined,
                 colour: v.colour || undefined,
                 price: Math.round(parseFloat(v.price || '0') * 100),
                 stock: parseInt(v.stock || '0', 10),
                 sku: v.sku || undefined,
-              }).catch(() => null)
-            )
-          )
+              })
+              saved++
+            } catch { /* skip individual failures */ }
+          }
           setPendingVariants([])
+          await refreshMedia(created.id)
+          showToast(
+            saved === pendingCount
+              ? `Product created with ${saved} variant${saved > 1 ? 's' : ''} ✓ — add photos below.`
+              : `Product created — ${saved}/${pendingCount} variants saved. Add remaining below.`
+          )
+        } else {
+          await refreshMedia(created.id)
+          showToast('Product created ✓ — add photos and variants below.')
         }
-
-        await refreshMedia(created.id)
-        showToast(
-          pendingVariants.length > 0
-            ? `Product created with ${pendingVariants.length} variant${pendingVariants.length > 1 ? 's' : ''} ✓ — add photos below.`
-            : 'Product created ✓ — add photos and variants below.'
-        )
-        // Scroll to variants / photos after a short delay
         setTimeout(() => variantsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300)
       }
     } catch (e: any) {
@@ -434,24 +454,33 @@ function ProductEditor({
     }
 
     if (form.id) {
-      // Product already exists — create live variants
-      setSaving(true)
-      Promise.all(
-        newDrafts.map(v =>
-          variantsApi.create({
-            product_id: form.id!,
-            size: v.size || undefined,
-            colour: v.colour || undefined,
-            price: Math.round(parseFloat(v.price) * 100),
-            stock: parseInt(v.stock, 10),
-            sku: v.sku || undefined,
-          }).catch(() => null)
+      // Product already exists — create live variants SEQUENTIALLY to avoid
+      // token-rotation race condition (parallel POSTs can partially fail on 401)
+      setSaving(true);
+      (async () => {
+        let saved = 0
+        for (const v of newDrafts) {
+          try {
+            await variantsApi.create({
+              product_id: form.id!,
+              size: v.size || undefined,
+              colour: v.colour || undefined,
+              price: Math.round(parseFloat(v.price) * 100),
+              stock: parseInt(v.stock, 10),
+              sku: v.sku || undefined,
+            })
+            saved++
+          } catch { /* skip individual failure */ }
+        }
+        await refreshMedia(form.id!)
+        showToast(
+          saved === newDrafts.length
+            ? `${saved} variant${saved > 1 ? 's' : ''} added ✓`
+            : `${saved}/${newDrafts.length} variants added — retry the rest.`
         )
-      )
-        .then(() => refreshMedia(form.id!))
-        .then(() => showToast(`${newDrafts.length} variants added ✓`))
-        .catch(() => showToast('Some variants failed to create', 'err'))
-        .finally(() => { setSaving(false); setShowMatrix(false) })
+        setSaving(false)
+        setShowMatrix(false)
+      })()
     } else {
       // Queue for creation with product
       setPendingVariants(prev => [...prev, ...newDrafts])
@@ -597,7 +626,7 @@ function ProductEditor({
 
           {/* Pricing */}
           <Card title="Pricing & GST">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Selling price ₹ (excl. GST) *">
                 <input
                   type="number"
@@ -947,10 +976,24 @@ function ProductEditor({
               <label className="flex items-center justify-between gap-4 cursor-pointer">
                 <div>
                   <p className="text-sm text-[#0a0a0a]">Featured</p>
-                  <p className="text-[11px] text-[#9b9b9b]">Shown in homepage carousel</p>
+                  <p className="text-[11px] text-[#9b9b9b]">Shown in homepage Featured tab</p>
                 </div>
                 <Toggle checked={form.is_featured} onChange={v => setForm(f => ({ ...f, is_featured: v }))} />
               </label>
+              <div className="flex items-start justify-between gap-4 pt-3 border-t border-[#f0ece8]">
+                <div>
+                  <p className="text-sm text-[#0a0a0a]">Best Seller rank</p>
+                  <p className="text-[11px] text-[#9b9b9b]">Higher = appears first in Best Sellers tab. 0 = not a bestseller.</p>
+                </div>
+                <input
+                  type="number"
+                  min="0"
+                  max="999"
+                  value={form.sort_weight}
+                  onChange={e => setForm(f => ({ ...f, sort_weight: e.target.value }))}
+                  className="w-20 border border-[#e8e4e0] px-2 py-1.5 text-sm font-sans text-center focus:outline-none focus:border-[#0a0a0a]"
+                />
+              </div>
             </div>
             {isNew && (
               <p className="text-[11px] text-[#9b9b9b] mt-4 pt-3 border-t border-[#f0ece8]">
