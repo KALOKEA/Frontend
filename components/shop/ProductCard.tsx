@@ -15,15 +15,15 @@ function getPrimaryImage(product: Product): string {
   return primary?.url || product.product_images?.[0]?.url || '/placeholder.jpg'
 }
 
-/** Extract unique swatch colors from variants (up to 5) */
+/** Extract unique swatch colours from variants (up to 5) */
 function getSwatches(product: Product): string[] {
-  const colors: string[] = []
+  const colours: string[] = []
   for (const v of product.product_variants ?? []) {
-    if (v.color && !colors.includes(v.color) && colors.length < 5) {
-      colors.push(v.color)
+    if (v.colour && !colours.includes(v.colour) && colours.length < 5) {
+      colours.push(v.colour)
     }
   }
-  return colors
+  return colours
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -75,14 +75,9 @@ export default function ProductCard({ product }: ProductCardProps) {
               Sold Out
             </span>
           )}
-          {product.is_new && !isOutOfStock && (
+          {product.is_featured && !discount && !isOutOfStock && (
             <span className="bg-[#0a0a0a] text-white text-[9px] font-sans tracking-widest uppercase px-2.5 py-1">
               New
-            </span>
-          )}
-          {product.is_featured && !product.is_new && !discount && !isOutOfStock && (
-            <span className="bg-white/90 text-[#0a0a0a] text-[9px] font-sans tracking-widest uppercase px-2.5 py-1 border border-[#e8e4e0]">
-              Featured
             </span>
           )}
         </div>
@@ -139,12 +134,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Color swatches */}
         {swatches.length > 0 && (
           <div className="flex items-center gap-1.5 mb-1.5">
-            {swatches.map((color) => (
+            {swatches.map((colour) => (
               <span
-                key={color}
-                title={color}
+                key={colour}
+                title={colour}
                 className="w-3 h-3 rounded-full border border-[#e8e4e0] ring-offset-1 hover:ring-1 hover:ring-[#c8a4a5] transition-all cursor-default"
-                style={{ backgroundColor: color.startsWith('#') ? color : undefined }}
+                style={{ backgroundColor: colour.toLowerCase() }}
               />
             ))}
             {(product.product_variants?.length ?? 0) > swatches.length && (
