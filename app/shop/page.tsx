@@ -169,4 +169,21 @@ function ShopContent() {
             </div>
           </div>
 
-          <ProductGrid products={
+          <ProductGrid products={products} loading={loading} />
+          <Suspense><Pagination total={total} page={page} limit={limit} /></Suspense>
+        </div>
+      </div>
+
+      {/* Mobile filter drawer */}
+      <MobileFilterDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+    </div>
+  )
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense>
+      <ShopContent />
+    </Suspense>
+  )
+}

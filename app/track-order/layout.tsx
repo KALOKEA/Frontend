@@ -8,4 +8,6 @@ export const metadata: Metadata = {
   alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'}/track-order/` },
 }
 
-export default function TrackOrderLayout({ children }: { children: React.ReactNod
+export default function TrackOrderLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
+}
