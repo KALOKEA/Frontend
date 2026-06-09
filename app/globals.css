@@ -58,6 +58,20 @@ h1, h2, h3, .font-serif {
 
 /* Tap highlight */
 * { -webkit-tap-highlight-color: transparent; }
+/* ── iOS Safari: prevent input zoom (inputs need font-size >= 16px) ──────── */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
 
 /* Text selection */
 ::selection { background: #7C4A2D22; color: #0A0908; }

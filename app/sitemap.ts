@@ -5,13 +5,14 @@ import { getAllProductSlugs, getAllCategorySlugs } from '@/lib/server/productsSe
 // Product + category URLs are fetched from the backend during `next build`.
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
 
-// Required for output:'export' — sitemap must be fully static.
+// Required for output:'export' -- sitemap must be fully static.
 export const dynamic = 'force-static'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
-  const staticRoutes = ['', 'shop', 'about', 'contact', 'shipping', 'returns', 'size-guide', 'privacy', 'terms', 'track-order']
+  // Use canonical policy-page paths -- /shipping and /privacy redirect here via _redirects.
+  const staticRoutes = ['', 'shop', 'about', 'contact', 'shipping-policy', 'refund-policy', 'returns', 'size-guide', 'privacy-policy', 'terms', 'track-order']
     .map((path) => ({
       url: `${SITE_URL}/${path ? path + '/' : ''}`,
       lastModified: now,

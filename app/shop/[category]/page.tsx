@@ -102,4 +102,100 @@ const CATEGORY_META: Record<string, {
   },
   shoes: {
     name: 'Shoes',
-    title: "Women's Shoes Online India — Heels, Flats & Sandals | Kaloke
+    title: "Women's Shoes Online India — Heels, Flats & Sandals | Kalokea",
+    description: "Shop women's shoes online in India — heels, flats, sandals & more. Premium quality footwear at Kalokea. Free shipping above ₹999.",
+    keywords: [
+      "women's shoes online india", "buy women's shoes india",
+      "heels for women india", "flats for women india", "sandals for women india",
+      "women's footwear india", "women's casual shoes india",
+      "women's formal shoes india", "women's shoe collection india",
+      "women's party heels india",
+    ],
+  },
+  bags: {
+    name: 'Bags',
+    title: "Women's Bags & Handbags Online India | Kalokea",
+    description:
+      "Shop Kalokea's curated women's bag collection — totes, clutches, sling bags, chain bags and more in premium materials.",
+    keywords: [
+      "women's bags online india", "handbags for women india",
+      "tote bags india", "clutch bags india", "sling bags india",
+      "women's purse online india", "women's handbag collection india",
+      "chain bags india", "women's bag brands india",
+    ],
+  },
+  accessories: {
+    name: 'Accessories',
+    title: "Women's Accessories Online India — Jewellery, Scarves & More | Kalokea",
+    description:
+      "Complete your look with Kalokea's women's accessories — jewellery, scarves, belts, and more.",
+    keywords: [
+      "women's accessories online india", "jewellery for women india",
+      "scarves india", "belts for women india", "women's accessories collection",
+    ],
+  },
+  sale: {
+    name: 'Sale',
+    title: "Women's Fashion Sale — Up to 50% Off | Kalokea",
+    description:
+      "Shop Kalokea's sale — discounts on dresses, tops, bottoms, shoes and accessories. Limited time offers on premium women's fashion.",
+    keywords: [
+      "women's fashion sale india", "discounted women's clothing india",
+      "women's dresses on sale india", "fashion sale india",
+    ],
+  },
+  everything: {
+    name: 'Shop All',
+    title: "Shop All Women's Fashion | Kalokea",
+    description:
+      "Browse Kalokea's complete collection of women's fashion — dresses, tops, bottoms, shoes, bags and accessories.",
+    keywords: [
+      "shop all women's fashion india", "women's clothing collection india",
+    ],
+  },
+}
+
+// ── Metadata ──────────────────────────────────────────────────────────────────
+
+export async function generateStaticParams() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/categories`, { next: { revalidate: 3600 } })
+    if (!res.ok) return Object.keys(CATEGORY_META).map(category => ({ category }))
+    const json = await res.json()
+    const slugs: string[] = (json?.data || []).map((c: { slug: string }) => c.slug)
+    return slugs.length ? slugs.map(category => ({ category })) : Object.keys(CATEGORY_META).map(category => ({ category }))
+  } catch {
+    return Object.keys(CATEGORY_META).map(category => ({ category }))
+  }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const m = CATEGORY_META[params.category]
+  if (!m) return { title: 'Shop | Kalokea' }
+  const url = `${SITE_URL}/shop/${params.category}/`
+  return {
+    title: m.title,
+    description: m.description,
+    keywords: m.keywords.join(', '),
+    alternates: { canonical: url },
+    openGraph: {
+      title: m.title,
+      description: m.description,
+      url,
+      siteName: 'Kalokea',
+      type: 'website',
+    },
+  }
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+export default function CategoryShopPage({ params }: Props) {
+  const meta = CATEGORY_META[params.category]
+  return (
+    <CategoryShopClient
+      category={params.category}
+      displayName={meta?.name || params.category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+    />
+  )
+}

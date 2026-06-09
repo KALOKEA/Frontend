@@ -10,15 +10,18 @@ export default function ReviewForm({ product_id, onSubmitted }: { product_id: st
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError(null)
     try {
       await reviewsApi.create({ product_id, rating, title, body })
       toast('Review submitted — pending approval')
       onSubmitted?.()
     } catch {
+      setError('Failed to submit review. Please try again.')
       toast('Failed to submit review', 'error')
     } finally {
       setLoading(false)
@@ -40,4 +43,11 @@ export default function ReviewForm({ product_id, onSubmitted }: { product_id: st
         </div>
       </div>
       <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Review title" className="w-full border border-[#e8e4e0] px-4 py-3 text-base font-sans outline-none focus:border-[#0a0a0a] min-h-[44px]" />
-      <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Write your review..." rows={4} className="w-full border border-[#e8e4e0] px-4 py-3 text-base font-sans outline-none f
+      <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Write your review..." rows={4} className="w-full border border-[#e8e4e0] px-4 py-3 text-base font-sans outline-none focus:border-[#0a0a0a] resize-none" />
+      {error && <p className="text-sm font-sans text-red-600">{error}</p>}
+      <button type="submit" disabled={loading} className="bg-[#0A0908] text-white text-[10px] font-sans tracking-widest uppercase px-8 py-3 hover:bg-[#7C4A2D] transition-colors disabled:opacity-50">
+        {loading ? 'Submitting…' : 'Submit Review'}
+      </button>
+    </form>
+  )
+}

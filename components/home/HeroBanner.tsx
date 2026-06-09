@@ -17,7 +17,7 @@ export default function HeroBanner() {
   const imageUrl = c.hero_image_url || HERO_DEFAULTS.hero_image_url
 
   return (
-    <section className="relative flex flex-col md:flex-row overflow-hidden" style={{ minHeight: 'calc(100vh - 68px)', background: '#FDFAF6' }}>
+    <section className="relative flex flex-col md:flex-row overflow-hidden min-h-[calc(100vh-58px)] md:min-h-[calc(100vh-68px)]" style={{ background: '#FDFAF6' }}>
 
       {/* ── Mobile media ───────────────────────────────────────────── */}
       <div className="md:hidden relative w-full overflow-hidden" style={{ height: '58vw', minHeight: 220, maxHeight: 420 }}>

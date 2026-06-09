@@ -7,17 +7,17 @@ import MobileMenu from './MobileMenu'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 
 const NAV_LEFT = [
-  { label: 'New Arrivals', href: '/shop?category=new-arrivals' },
-  { label: 'Dresses',      href: '/shop?category=dresses' },
-  { label: 'Tops',         href: '/shop?category=tops' },
-  { label: 'Bottoms',      href: '/shop?category=bottoms' },
+  { label: 'New Arrivals', href: '/shop/new-arrivals/' },
+  { label: 'Dresses',      href: '/shop/dresses/' },
+  { label: 'Tops',         href: '/shop/tops/' },
+  { label: 'Bottoms',      href: '/shop/bottoms/' },
 ]
 
 const NAV_RIGHT = [
-  { label: 'Shoes',        href: '/shop?category=shoes' },
-  { label: 'Bags',         href: '/shop?category=bags' },
-  { label: 'Accessories',  href: '/shop?category=accessories' },
-  { label: 'Sale',         href: '/shop?category=sale', accent: true },
+  { label: 'Shoes',        href: '/shop/shoes/' },
+  { label: 'Bags',         href: '/shop/bags/' },
+  { label: 'Accessories',  href: '/shop/accessories/' },
+  { label: 'Sale',         href: '/shop/sale/', accent: true },
 ]
 
 export default function Header() {
@@ -190,7 +190,7 @@ export default function Header() {
                   key={term}
                   onClick={() => {
                     setSearchOpen(false)
-                    router.push(`/shop?category=${term.toLowerCase().replace(/ /g, '-')}`)
+                    router.push(`/shop/${term.toLowerCase().replace(/ /g, '-')}/`)
                   }}
                   className="text-[9.5px] uppercase tracking-[0.2em] text-[#6B5E55] border border-[#E0D4C4] px-3 py-1.5 hover:border-[#7C4A2D] hover:text-[#7C4A2D] transition-colors"
                 >

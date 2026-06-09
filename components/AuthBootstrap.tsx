@@ -3,28 +3,40 @@
 import { useEffect } from 'react'
 import { authApi } from '@/lib/api/auth'
 import { getAccessToken, tryRefresh } from '@/lib/api/client'
-import { useAuthStore } from '@/lib/store/useAuthStore'
+import { useAuthStore, loadStoredSession } from '@/lib/store/useAuthStore'
 import { useCartStore } from '@/lib/store/useCartStore'
 
-// Proactive refresh interval — 12 minutes, well inside the 15-minute access token expiry.
-// This keeps the session alive as long as the tab is open, without any user action.
-// Must be shorter than the token lifetime; 12m gives a 3-minute safety margin.
-const PROACTIVE_REFRESH_MS = 12 * 60 * 1000
+// How often to proactively rotate the access token while the tab is open.
+// Must be shorter than the backend's token lifetime (typically 15 min).
+// 10 min gives a 5-min safety margin even if the backend uses a 15-min TTL.
+const PROACTIVE_REFRESH_MS = 10 * 60 * 1000
 
 /**
- * Restores the auth session on every app load / hard refresh.
+ * Restores auth state on every page load / hard refresh.
  *
- * The access token lives only in memory (cleared on refresh), but the refresh
- * token is an httpOnly cookie that survives. Calling /auth/me with no access
- * token returns 401, which the API client transparently handles by hitting
- * /auth/refresh (using the cookie), storing the new access token, and retrying.
- * So a single me() call both refreshes the token and returns the user.
+ * FAST PATH (localStorage)
+ * ------------------------
+ * If there is a valid stored session (user object + timestamp within 7 days),
+ * we call setAuth() and setHydrated(true) IMMEDIATELY — no spinner, no wait.
+ * This prevents the "flash of logged-out state" that used to log users out on
+ * every refresh when the cross-domain httpOnly refresh cookie was blocked.
  *
- * On success: populate auth store + merge/load the server cart.
- * On failure (no/expired refresh cookie): remain a guest + load guest cart.
+ * Then we fire a background /auth/me to verify with the server and refresh
+ * user data (name changes, role changes, etc.) without blocking the UI.
  *
- * Also starts a proactive refresh timer (every 6 days) so the session never
- * silently expires while the user is active in the tab.
+ * SLOW PATH (no stored session)
+ * -----------------------------
+ * No localStorage entry found (first login, 7-day expiry, or explicit logout).
+ * Call /auth/me which triggers the 401 → /auth/refresh → /auth/me flow.
+ * On success: setAuth() + merge cart.
+ * On failure: remain as guest.
+ *
+ * WHY two paths?
+ * The httpOnly refresh cookie is sometimes blocked by browsers when the
+ * frontend (kalokea.in) and backend (railway.app) are on different eTLD+1
+ * domains (Chrome/Safari SameSite policies). The fast path makes auth
+ * independent of the cookie for routine page refreshes. The cookie is still
+ * used for the proactive token rotation below.
  *
  * Renders nothing; mounted once in the root layout.
  */
@@ -33,48 +45,82 @@ export default function AuthBootstrap() {
     let cancelled = false
 
     const restore = async () => {
-      try {
-        const user = await authApi.me()
-        const token = getAccessToken()
-        if (cancelled || !user || !token) return
-        useAuthStore.getState().setAuth(token, user)
-        // mergeOnLogin: server-merges guest session cart into user cart, then loads it.
-        await useCartStore.getState().mergeOnLogin()
-      } catch {
-        // Not logged in — remain a guest.
-        // Load any server-side guest cart (items added from another device / browser).
-        await useCartStore.getState().guestHydrate()
-      } finally {
+      const stored = loadStoredSession()
+
+      if (stored) {
+        // ── FAST PATH: restore from localStorage immediately ────────────────
+        // Set auth state right now so layouts never see hydrated=true + isLoggedIn=false.
+        // Access token may be expired, but the next protected API call will
+        // handle the 401 -> tryRefresh flow transparently.
+        const currentToken = getAccessToken() ?? ''
+        useAuthStore.getState().setAuth(currentToken, stored.user)
         if (!cancelled) useAuthStore.getState().setHydrated(true)
+
+        // Background server verification: refresh the token + update user data.
+        // Runs without blocking the UI. Errors are silently ignored — if the
+        // refresh cookie is blocked by the browser, the stored session keeps
+        // the user logged in and protected API calls will handle 401s on demand.
+        ;(async () => {
+          try {
+            const user = await authApi.me()
+            const token = getAccessToken()
+            if (cancelled || !user || !token) return
+            // Update user data in case anything changed (name, role, etc.)
+            useAuthStore.getState().setAuth(token, user)
+            // Merge + load the server cart now that we have a fresh token.
+            await useCartStore.getState().mergeOnLogin()
+          } catch {
+            // me() failed — try an explicit refresh before giving up.
+            const refreshed = await tryRefresh().catch(() => false)
+            if (refreshed && !cancelled) {
+              try {
+                const user = await authApi.me()
+                const token = getAccessToken()
+                if (user && token && !cancelled) {
+                  useAuthStore.getState().setAuth(token, user)
+                  await useCartStore.getState().mergeOnLogin()
+                }
+              } catch { /* still failed — stored session stays, token refreshes on next API call */ }
+            }
+            // If refresh also failed (cross-domain cookie blocked), that is OK.
+            // The stored session keeps isLoggedIn=true. The user can browse their
+            // account pages; any protected API call will attempt tryRefresh() again.
+          }
+        })()
+      } else {
+        // ── SLOW PATH: no stored session — try server-side restore ──────────
+        try {
+          const user = await authApi.me()
+          const token = getAccessToken()
+          if (cancelled || !user || !token) return
+          useAuthStore.getState().setAuth(token, user)
+          await useCartStore.getState().mergeOnLogin()
+        } catch {
+          // Not logged in — remain a guest.
+          await useCartStore.getState().guestHydrate()
+        } finally {
+          if (!cancelled) useAuthStore.getState().setHydrated(true)
+        }
       }
     }
 
     restore()
 
-    // Proactive token refresh — runs every 12 minutes while the tab is open.
-    // Prevents the 15-minute access token from expiring on active sessions
-    // without requiring the user to make a protected API call to trigger the
-    // 401 → refresh flow.
+    // Proactive token rotation every 10 minutes.
+    // Keeps the access token fresh while the tab is open without requiring
+    // the user to make a protected API call.  On failure we do NOT call
+    // clearAuth() — the cross-domain cookie may be blocked and the stored
+    // session handles persistence independently.
     const proactiveRefresh = async () => {
       if (cancelled) return
       const { isLoggedIn } = useAuthStore.getState()
       if (!isLoggedIn) return
-      // Attempt to rotate the refresh token cookie.
-      // Do NOT call clearAuth() on failure: the cross-origin httpOnly cookie is
-      // legitimately blocked by Chrome/Safari third-party cookie policies when the
-      // frontend (kalokea.pages.dev) and backend (railway.app) are on different
-      // eTLD+1 domains. A failed proactive refresh is NOT a sign that the user is
-      // logged out — they may still have a valid access token in localStorage.
-      // Auth expiry is handled naturally: the next protected API call returns 401,
-      // tryRefresh() is attempted, and if that also fails, the request throws an
-      // error that the UI handles. Let that path clear auth, not this timer.
       await tryRefresh().catch(() => {})
     }
 
     const refreshTimer = setInterval(proactiveRefresh, PROACTIVE_REFRESH_MS)
 
-    // Also refresh when the tab becomes visible again after being backgrounded
-    // (device sleep, screen lock, or long inactive period).
+    // Also refresh on tab focus (device wake / screen unlock / long background).
     const onVisibility = () => {
       if (document.visibilityState === 'visible') proactiveRefresh()
     }

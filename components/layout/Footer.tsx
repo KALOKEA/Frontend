@@ -68,10 +68,10 @@ export default function Footer({
         </div>
 
         {/* Links grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-12">
 
           {/* Brand col */}
-          <div className="col-span-3 sm:col-span-1">
+          <div className="col-span-2 sm:col-span-1">
             <p className="text-[12px] font-sans text-[#4A4040] leading-relaxed mb-5 max-w-[190px]">
               Thoughtfully curated women's fashion — celebrating Indian craft and the modern woman.
             </p>
@@ -106,12 +106,20 @@ export default function Footer({
           {/* Shop */}
           <div className="flex flex-col gap-2.5">
             <span className="text-[9px] uppercase tracking-[0.28em] text-[#7C4A2D] mb-1 font-sans">Shop</span>
-            {['New Arrivals','Dresses','Tops','Bottoms','Shoes','Bags','Sale'].map(c => (
+            {([
+              ['New Arrivals', '/shop/?category=new-arrivals'],
+              ['Dresses',      '/shop/dresses/'],
+              ['Tops',         '/shop/tops/'],
+              ['Bottoms',      '/shop/bottoms/'],
+              ['Shoes',        '/shop/shoes/'],
+              ['Bags',         '/shop/bags/'],
+              ['Sale',         '/shop/sale/'],
+            ] as [string, string][]).map(([label, href]) => (
               <Link
-                key={c}
-                href={`/shop?category=${c.toLowerCase().replace(/ /g,'-')}`}
+                key={href}
+                href={href}
                 className="text-[11px] font-sans text-[#4A4040] hover:text-[#C4A882] transition-colors leading-relaxed"
-              >{c}</Link>
+              >{label}</Link>
             ))}
           </div>
 

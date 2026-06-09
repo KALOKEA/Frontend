@@ -290,3 +290,96 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                   icon: (
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/>
+                      <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/>
+                      <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                    </svg>
+                  ),
+                  label: 'Free Shipping',
+                  sub: 'Orders above ₹999',
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                    </svg>
+                  ),
+                  label: '7-Day Returns',
+                  sub: 'Free pickup',
+                },
+                {
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                  ),
+                  label: 'Secure Checkout',
+                  sub: 'UPI · Cards · COD',
+                },
+              ].map(({ icon, label, sub }) => (
+                <div key={label} className="flex flex-col items-center text-center gap-1.5 py-3">
+                  <div className="text-[#7C4A2D]">{icon}</div>
+                  <p className="text-[10px] font-sans font-medium tracking-widest uppercase text-[#0A0908] leading-tight">{label}</p>
+                  <p className="text-[10px] font-sans text-[#9B8F87]">{sub}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Tabs — Description / Fabric / Shipping / Returns / Reviews */}
+            <div className="pt-4 border-t border-[#e8e4e0]">
+              <div className="flex gap-0 border-b border-[#E0D4C4] overflow-x-auto">
+                {TABS.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTab(t)}
+                    className={`relative px-4 py-2.5 text-[9.5px] font-sans tracking-[0.18em] uppercase whitespace-nowrap transition-colors ${
+                      t === tab ? 'text-[#0A0908] font-medium' : 'text-[#9B8F87] hover:text-[#0A0908]'
+                    }`}
+                  >
+                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                    <span className={`absolute bottom-0 left-0 right-0 h-[2px] bg-[#7C4A2D] transition-opacity ${t === tab ? 'opacity-100' : 'opacity-0'}`} />
+                  </button>
+                ))}
+              </div>
+
+              <div className="pt-5 text-[13px] font-sans text-[#6B5E55] leading-relaxed">
+                {tab === 'description' && (
+                  <p>{product.description || 'A beautifully crafted piece made with care and attention to detail.'}</p>
+                )}
+                {tab === 'fabric' && (
+                  <p>Premium quality fabric. Care instructions: Gentle machine wash or dry clean. Do not bleach. Do not tumble dry.</p>
+                )}
+                {tab === 'shipping' && (
+                  <div className="space-y-2">
+                    <p>Metro cities: 2–3 business days</p>
+                    <p>Pan India: 5–7 business days</p>
+                    <p>Free shipping on orders above ₹999. Cash on Delivery available.</p>
+                  </div>
+                )}
+                {tab === 'returns' && (
+                  <div className="space-y-2">
+                    <p>7-day hassle-free return window from date of delivery.</p>
+                    <p>Item must be unworn, unwashed, and in original packaging with tags attached.</p>
+                    <p>Free return pickup. Refund processed in 5–7 business days.</p>
+                  </div>
+                )}
+                {tab === 'reviews' && (
+                  <ProductReviews product_id={product.id} />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Related Products */}
+        <div className="mt-16 pt-10 border-t border-[#E0D4C4]">
+          <RelatedProducts exclude_id={product.id} category_id={product.categories?.id} />
+        </div>
+
+        {/* Recently Viewed */}
+        <div className="mt-10 pt-10 border-t border-[#E0D4C4]">
+          <RecentlyViewed excludeId={product.id} />
+        </div>
+      </div>
+    </>
+  )
+}

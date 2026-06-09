@@ -92,7 +92,7 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
             <button
               key={s}
               onClick={() => apply('size', size === s ? null : s)}
-              className={`px-3 py-1.5 text-[10px] font-sans tracking-widest border transition-colors ${
+              className={`px-3 py-2.5 min-h-[44px] text-[10px] font-sans tracking-widest border transition-colors ${
                 size === s
                   ? 'border-[#7C4A2D] bg-[#7C4A2D] text-white'
                   : 'border-[#E0D4C4] text-[#0A0908] hover:border-[#7C4A2D]'

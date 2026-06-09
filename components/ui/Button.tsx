@@ -43,4 +43,7 @@ export default function Button({
           <span className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
           {children}
         </span>
- 
+       ) : children}
+    </button>
+  )
+}

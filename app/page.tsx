@@ -1,10 +1,14 @@
 import HeroBanner from '@/components/home/HeroBanner'
 import TrustStrip from '@/components/home/TrustStrip'
+import QuoteStrip from '@/components/home/QuoteStrip'
 import CategoryGrid from '@/components/home/CategoryGrid'
 import FeaturedProducts from '@/components/home/FeaturedProducts'
 import EditorialBanner from '@/components/home/EditorialBanner'
 import BestSellers from '@/components/home/BestSellers'
 import PressStrip from '@/components/home/PressStrip'
+import ShopTheLook from '@/components/home/ShopTheLook'
+import WhyKalokea from '@/components/home/WhyKalokea'
+import Testimonials from '@/components/home/Testimonials'
 import InstagramGrid from '@/components/home/InstagramGrid'
 import NewsletterSignup from '@/components/home/NewsletterSignup'
 import type { Metadata } from 'next'
@@ -81,11 +85,15 @@ export default function HomePage() {
 
       <HeroBanner />
       <TrustStrip />
+      <QuoteStrip />
       <CategoryGrid />
       <FeaturedProducts />
       <EditorialBanner />
       <BestSellers />
       <PressStrip />
+      <ShopTheLook />
+      <WhyKalokea />
+      <Testimonials />
       <InstagramGrid />
       <NewsletterSignup />
     </>

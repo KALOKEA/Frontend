@@ -3,15 +3,15 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 
 const NAV_LINKS = [
-  { label: 'New Arrivals', href: '/shop?category=new-arrivals' },
-  { label: 'Dresses',      href: '/shop?category=dresses' },
-  { label: 'Tops',         href: '/shop?category=tops' },
-  { label: 'Bottoms',      href: '/shop?category=bottoms' },
-  { label: 'Shoes',        href: '/shop?category=shoes' },
-  { label: 'Bags',         href: '/shop?category=bags' },
-  { label: 'Accessories',  href: '/shop?category=accessories' },
-  { label: 'Sale',         href: '/shop?category=sale', accent: true },
-  { label: 'Everything',   href: '/shop' },
+  { label: 'New Arrivals', href: '/shop/new-arrivals/' },
+  { label: 'Dresses',      href: '/shop/dresses/' },
+  { label: 'Tops',         href: '/shop/tops/' },
+  { label: 'Bottoms',      href: '/shop/bottoms/' },
+  { label: 'Shoes',        href: '/shop/shoes/' },
+  { label: 'Bags',         href: '/shop/bags/' },
+  { label: 'Accessories',  href: '/shop/accessories/' },
+  { label: 'Sale',         href: '/shop/sale/', accent: true },
+  { label: 'Everything',   href: '/shop/' },
 ]
 
 interface MobileMenuProps {

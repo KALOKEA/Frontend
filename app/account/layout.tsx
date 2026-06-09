@@ -222,4 +222,9 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           </aside>
 
           {/* ── Content ──────────────────────────────────────────────────── */}
-          <main classN
+          <main className="flex-1 min-w-0">{children}</main>
+        </div>
+      </div>
+    </div>
+  )
+}

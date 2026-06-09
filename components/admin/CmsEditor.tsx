@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import DOMPurify from 'dompurify'
 import api from '@/lib/api/client'
 import Spinner from '@/components/ui/Spinner'
 
@@ -92,7 +93,7 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
         {preview ? (
           <div
             className="min-h-[300px] border border-[#e8e4e0] p-4 prose prose-sm max-w-none text-[#0a0a0a] text-sm leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: typeof window !== 'undefined' ? DOMPurify.sanitize(content) : content }}
           />
         ) : (
           <textarea

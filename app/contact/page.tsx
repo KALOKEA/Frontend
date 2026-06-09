@@ -74,3 +74,6 @@ export default function ContactPage() {
           <Button type="submit" loading={loading}>Send Message</Button>
         </form>
       )}
+    </div>
+  )
+}

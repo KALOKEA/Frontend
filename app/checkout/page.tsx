@@ -264,4 +264,22 @@ export default function CheckoutPage() {
             />
           </section>
 
-          <secti
+          <section>
+            <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Payment Method</h2>
+            <PaymentSection selected={paymentMethod} onSelect={setPaymentMethod} />
+          </section>
+
+          {checkoutError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm font-sans px-4 py-3">
+              {checkoutError}
+            </div>
+          )}
+
+          <Button type="button" loading={loading} onClick={placeOrder} className="w-full">
+            {paymentMethod === 'cod' ? 'Place Order (COD)' : 'Pay Now'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

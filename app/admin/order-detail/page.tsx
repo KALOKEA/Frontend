@@ -1,7 +1,3 @@
-// Deprecated: order detail is now at /admin/orders/[id]
-// This page is no longer linked anywhere; redirect to the orders list.
-import { redirect } from 'next/navigation'
-
-export default function OrderDetailRedirect() {
-  redirect('/admin/orders')
-}
+// DEAD CODE - order detail is at /admin/orders/[id]. Remove with: git rm -r app/admin/order-detail/
+import { redirect } from "next/navigation"
+export default function OrderDetailRedirect() { redirect("/admin/orders") }

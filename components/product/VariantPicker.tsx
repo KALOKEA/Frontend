@@ -172,7 +172,7 @@ export default function VariantPicker({
                   title={c}
                   aria-label={c}
                   aria-pressed={selected}
-                  className={`relative w-8 h-8 rounded-full transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0a0a0a] ${
+                  className={`relative w-10 h-10 rounded-full transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0a0a0a] ${
                     selected
                       ? 'scale-110 ring-2 ring-offset-2 ring-[#0a0a0a]'
                       : 'ring-1 ring-[#d4d0cc] hover:ring-[#0a0a0a] hover:scale-105'
@@ -218,7 +218,7 @@ export default function VariantPicker({
                   onClick={() => !oos && onSizeChange(s)}
                   disabled={oos}
                   aria-pressed={selectedSize === s}
-                  className={`px-3 py-1.5 text-[10px] font-sans tracking-widest border transition-colors relative ${
+                  className={`px-4 py-2.5 min-h-[44px] text-[10px] font-sans tracking-widest border transition-colors relative ${
                     oos
                       ? 'border-[#e8e4e0] text-[#d0ccc8] cursor-not-allowed line-through'
                       : selectedSize === s

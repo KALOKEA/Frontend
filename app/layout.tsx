@@ -34,7 +34,7 @@ const organizationJsonLd = {
   name: 'Kalokea',
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
-  description: "India's curated women's fashion boutique — dresses, tops, shoes, bags and accessories.",
+  description: "India's curated women's fashion boutique -- dresses, tops, shoes, bags and accessories.",
   sameAs: [
     'https://www.instagram.com/kalokea',
     'https://www.facebook.com/kalokea',
@@ -55,28 +55,28 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "KALOKEA | Women's Fashion",
-  description: "Shop the latest women's fashion at Kalokea. Free shipping above ₹999.",
+  description: "Shop the latest women's fashion at Kalokea. Free shipping above Rs.999.",
   keywords: 'women fashion, dresses, tops, co-ords, affordable fashion India',
   metadataBase: new URL('https://kalokea.in'),
   openGraph: {
     type: 'website',
     siteName: 'KALOKEA',
     title: "KALOKEA | Women's Fashion",
-    description: "Shop the latest women's fashion at Kalokea. Free shipping above ₹999.",
+    description: "Shop the latest women's fashion at Kalokea. Free shipping above Rs.999.",
     url: 'https://kalokea.in',
     images: [
       {
         url: 'https://kalokea.in/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: "KALOKEA — Women's Fashion",
+        alt: "KALOKEA -- Women's Fashion",
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: "KALOKEA | Women's Fashion",
-    description: "Shop the latest women's fashion at Kalokea. Free shipping above ₹999.",
+    description: "Shop the latest women's fashion at Kalokea. Free shipping above Rs.999.",
     images: ['https://kalokea.in/og-image.jpg'],
   },
 }
@@ -85,8 +85,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
-        {/* Favicon + icons */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        {/* Favicon + icons -- SVG is the primary; PNG fallbacks for older browsers */}
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
         <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -95,11 +95,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        {/* Razorpay — preconnect so the payment modal opens instantly */}
+        {/* Razorpay -- preconnect so the payment modal opens instantly */}
         <link rel="preconnect" href="https://checkout.razorpay.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://checkout.razorpay.com" />
         <link rel="dns-prefetch" href="https://api.razorpay.com" />
-        {/* Analytics — reduces first-beacon latency */}
+        {/* Analytics -- reduces first-beacon latency */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://connect.facebook.net" />

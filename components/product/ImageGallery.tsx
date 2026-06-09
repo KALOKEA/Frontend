@@ -140,7 +140,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
               <button
                 onClick={prev}
                 aria-label="Previous image"
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-white"
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-white"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5">
                   <path d="M15 18l-6-6 6-6" />
@@ -149,7 +149,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
               <button
                 onClick={next}
                 aria-label="Next image"
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-white"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-white"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5">
                   <path d="M9 18l6-6-6-6" />
