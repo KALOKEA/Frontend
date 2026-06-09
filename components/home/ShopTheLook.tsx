@@ -1,24 +1,23 @@
 'use client'
 import Link from 'next/link'
 
-// Cloudinary images — update slugs once real look images are uploaded
 const LOOKS = [
   {
     title: 'The Golden Hour',
     tags: ['Aurelia Dress', 'Chain Bag'],
-    image: 'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_700/looks/look-1.jpg',
+    image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=700&q=80',
     href: '/shop',
   },
   {
     title: 'Power Dressing',
     tags: ['Elara Blazer', 'Wrap Skirt'],
-    image: 'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_700/looks/look-2.jpg',
+    image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=700&q=80',
     href: '/shop',
   },
   {
     title: 'Weekend Edit',
     tags: ['Linen Co-ord', 'Rhea Tote'],
-    image: 'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_700/looks/look-3.jpg',
+    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=80',
     href: '/shop',
   },
 ]

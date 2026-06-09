@@ -70,7 +70,7 @@ export default function CategoryShopClient({ category, displayName }: Props) {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="border border-[#e8e4e0] text-xs font-sans text-[#0a0a0a] px-3 py-1.5 outline-none focus:border-[#0a0a0a] bg-white cursor-pointer"
+            className="border border-[#e8e4e0] text-xs font-sans text-[#0a0a0a] px-3 py-1.5 min-h-[44px] outline-none focus:border-[#0a0a0a] bg-white cursor-pointer"
             aria-label="Sort products"
           >
             {(Object.entries(SORT_LABELS) as [SortOption, string][]).map(([val, label]) => (

@@ -53,12 +53,17 @@ export default function TrackOrderPage() {
     e.preventDefault()
     setLoading(true); setResult(null); setError(null)
     try {
-      const res = await fetch(
-        `${BASE_URL}/orders/track?order_number=${encodeURIComponent(orderNumber.trim())}&email=${encodeURIComponent(email.trim())}`,
-        { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
-      )
+      const res = await fetch(`${BASE_URL}/orders/guest/track`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ order_number: orderNumber.trim(), email: email.trim() }),
+      })
       if (!res.ok) { setError('Order not found. Please check your order number and email.'); return }
-      const data = await res.json()
+      const json = await res.json()
+      const data = json.data ?? json
       setResult(data)
     } catch {
       setError('Something went wrong. Please try again.')

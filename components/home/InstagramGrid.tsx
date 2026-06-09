@@ -3,14 +3,14 @@ import Link from 'next/link'
 
 const INSTAGRAM_URL = 'https://www.instagram.com/kalokea.in'
 
-// Static Cloudinary images — replace slugs with real post IDs as needed
+// Unsplash fashion images for Instagram grid — replace with real Cloudinary URLs once uploaded
 const GRID_IMAGES = [
-  'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_600/instagram/post1.jpg',
-  'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_600/instagram/post2.jpg',
-  'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_600/instagram/post3.jpg',
-  'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_600/instagram/post4.jpg',
-  'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_600/instagram/post5.jpg',
-  'https://res.cloudinary.com/kalokea/image/upload/q_auto,f_auto,w_600/instagram/post6.jpg',
+  'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80',
+  'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80',
+  'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=80',
+  'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=600&q=80',
+  'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80',
+  'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=600&q=80',
 ]
 
 const InstagramIcon = () => (

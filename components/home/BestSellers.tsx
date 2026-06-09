@@ -25,16 +25,16 @@ export default function BestSellers() {
         {/* Header */}
         <div className="flex items-end justify-between mb-10">
           <div>
-            <div className="eyebrow mb-3">Community Favourites</div>
+            <div className="eyebrow mb-3">Most Loved</div>
             <h2 className="font-serif font-light text-[#0A0908]" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)' }}>
-              Our Best Sellers
+              Best <em className="italic" style={{ color: '#7C4A2D' }}>Sellers</em>
             </h2>
           </div>
           <Link
             href="/shop?sort=bestseller"
             className="hidden sm:block text-[9.5px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] border-b border-[#7C4A2D]/40 pb-0.5 hover:text-[#5C3520] transition-colors whitespace-nowrap"
           >
-            View All →
+            See All →
           </Link>
         </div>
 
@@ -77,7 +77,7 @@ export default function BestSellers() {
                 href="/shop?sort=bestseller"
                 className="text-[9.5px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] border-b border-[#7C4A2D]/40 pb-0.5"
               >
-                View All Best Sellers →
+                See All Best Sellers →
               </Link>
             </div>
           </>

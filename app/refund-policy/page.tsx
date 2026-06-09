@@ -4,15 +4,15 @@ import CmsPageContent from '@/components/CmsPageContent'
 
 export const metadata: Metadata = {
   title: 'Refund & Return Policy | Kalokea',
-  description: 'Kalokea refund and return policy — 7-day returns on eligible items.',
+  description: 'Kalokea refund and return policy — 15-day returns on eligible items.',
   alternates: { canonical: 'https://kalokea.in/refund-policy/' },
 }
 
 const SC = [
   '<h2>Overview</h2>',
-  '<p>We want you to love what you ordered. If something is not right, we accept returns and exchanges within <strong>7 days of delivery</strong> on eligible items.</p>',
+  '<p>We want you to love what you ordered. If something is not right, we accept returns and exchanges within <strong>15 days of delivery</strong> on eligible items.</p>',
   '<h2>Eligibility</h2>',
-  '<p>To be eligible, your item must be: unworn and unwashed with original tags attached, returned within 7 days of delivery, and in its original packaging.</p>',
+  '<p>To be eligible, your item must be: unworn and unwashed with original tags attached, returned within 15 days of delivery, and in its original packaging.</p>',
   '<p>Items <strong>not eligible</strong> for return: sale items, intimate wear, accessories, and final-sale items.</p>',
   '<h2>How to Initiate a Return</h2>',
   '<p>Log in to your account, go to <strong>My Orders</strong>, select the order, and click <strong>Request Return</strong>. Our team reviews requests within 24-48 hours and sends a return shipping label.</p>',

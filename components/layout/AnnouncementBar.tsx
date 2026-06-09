@@ -2,11 +2,11 @@
 import { useState } from 'react'
 
 const MESSAGES = [
-  { text: 'Free shipping on orders above ₹999', highlight: '₹999' },
-  { text: 'New arrivals — just dropped this week', highlight: 'just dropped' },
-  { text: 'Easy 7-day returns · No questions asked', highlight: '' },
-  { text: 'Secure checkout · UPI · Razorpay · COD', highlight: '' },
-  { text: '100% Made in India · Crafted with love', highlight: '100% Made in India' },
+  { text: 'Free Shipping on Orders Above ₹999', highlight: '₹999' },
+  { text: 'New Arrivals Every Friday', highlight: 'Every Friday' },
+  { text: 'Easy 15-Day Returns', highlight: '15-Day Returns' },
+  { text: 'Ethically Sourced Fabrics', highlight: 'Ethically Sourced' },
+  { text: 'COD Available Pan India', highlight: 'COD Available' },
 ]
 
 export default function AnnouncementBar() {

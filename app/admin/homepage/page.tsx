@@ -8,7 +8,7 @@ const SECTIONS = [
   {
     title: 'Hero Banner',
     fields: [
-      { key: 'hero_eyebrow',    label: 'Hero eyebrow text',    hint: 'e.g. NEW COLLECTION — 2026' },
+      { key: 'hero_eyebrow',    label: 'Hero eyebrow text',    hint: 'e.g. SS 2025 Collection' },
       { key: 'hero_headline_1', label: 'Hero headline line 1', hint: 'e.g. Dressed for' },
       { key: 'hero_headline_2', label: 'Hero headline line 2 (italic accent)', hint: 'e.g. Every Moment' },
       { key: 'hero_subtext',    label: 'Hero subtext',         hint: 'Short tagline below headline', long: true },
@@ -27,7 +27,7 @@ const SECTIONS = [
       { key: 'trust_1_title', label: 'Badge 1 title', hint: 'e.g. Free Delivery' },
       { key: 'trust_1_sub',   label: 'Badge 1 subtitle', hint: 'e.g. On orders above ₹999' },
       { key: 'trust_2_title', label: 'Badge 2 title', hint: 'e.g. Easy Returns' },
-      { key: 'trust_2_sub',   label: 'Badge 2 subtitle', hint: 'e.g. 7-day hassle-free returns' },
+      { key: 'trust_2_sub',   label: 'Badge 2 subtitle', hint: 'e.g. 15-day hassle-free returns' },
       { key: 'trust_3_title', label: 'Badge 3 title', hint: 'e.g. Secure Payments' },
       { key: 'trust_3_sub',   label: 'Badge 3 subtitle', hint: 'e.g. Razorpay 256-bit encrypted' },
       { key: 'trust_4_title', label: 'Badge 4 title', hint: 'e.g. Made in India' },

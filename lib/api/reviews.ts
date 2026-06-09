@@ -4,12 +4,16 @@ export interface ReviewItem {
   id: string
   rating: number
   title?: string
+  /** Backend GET /reviews/product/{id} returns 'comment'; POST /reviews sends 'body'.
+   *  Both fields are documented here; components use `r.body || r.comment` to handle both. */
   comment?: string
   body?: string
   is_approved: boolean
   created_at: string
   media_urls?: string[]
   users?: { name?: string }
+  /** Backend may join products data on getMyReviews */
+  products?: { name?: string; slug?: string }
 }
 
 export const reviewsApi = {

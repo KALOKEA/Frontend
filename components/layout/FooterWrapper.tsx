@@ -7,13 +7,15 @@ const HIDDEN_PATHS = ['/checkout', '/checkout/']
 
 interface FooterSettings {
   footer_instagram_url: string
-  footer_whatsapp_url: string
-  seller_gstin: string
+  footer_facebook_url:  string
+  footer_pinterest_url: string
+  seller_gstin:         string
 }
 
 const FALLBACK: FooterSettings = {
   footer_instagram_url: 'https://www.instagram.com/kalokea.in',
-  footer_whatsapp_url:  'https://wa.me/919999999999',
+  footer_facebook_url:  'https://www.facebook.com/kalokea.in',
+  footer_pinterest_url: 'https://www.pinterest.com/kalokea',
   seller_gstin:         '',
 }
 
@@ -35,7 +37,8 @@ export default function FooterWrapper() {
   return (
     <Footer
       instagramUrl={settings.footer_instagram_url}
-      whatsappUrl={settings.footer_whatsapp_url}
+      facebookUrl={settings.footer_facebook_url}
+      pinterestUrl={settings.footer_pinterest_url}
       gstin={settings.seller_gstin}
     />
   )

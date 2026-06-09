@@ -290,7 +290,6 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                   icon: (
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/>
-                      <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/>
                       <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
                     </svg>
                   ),
@@ -303,7 +302,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                       <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
                     </svg>
                   ),
-                  label: '7-Day Returns',
+                  label: '15-Day Returns',
                   sub: 'Free pickup',
                 },
                 {
@@ -357,7 +356,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                 )}
                 {tab === 'returns' && (
                   <div className="space-y-2">
-                    <p>7-day hassle-free return window from date of delivery.</p>
+                    <p>15-day hassle-free return window from date of delivery.</p>
                     <p>Item must be unworn, unwashed, and in original packaging with tags attached.</p>
                     <p>Free return pickup. Refund processed in 5–7 business days.</p>
                   </div>

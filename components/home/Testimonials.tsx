@@ -12,7 +12,7 @@ const TESTIMONIALS = [
     rating: 5,
   },
   {
-    text: 'I was hesitant to buy online but the return policy put my mind at ease. The Rhea Tote arrived beautifully packaged and is gorgeous. Delivery was 2 days — incredibly fast!',
+    text: "I was hesitant to buy online but the return policy put my mind at ease. The Rhea Tote arrived beautifully packaged and it's gorgeous. Delivery was 2 days — incredibly fast!",
     author: 'Meera Nair',
     location: 'Delhi, NCR',
     rating: 5,

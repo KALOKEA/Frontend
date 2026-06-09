@@ -46,7 +46,7 @@ export default function CartPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 pb-24 lg:pb-10">
-        <h1 className="font-serif text-3xl text-[#0a0a0a] mb-6">Your Cart ({items.length})</h1>
+        <h1 className="font-serif text-3xl text-[#0a0a0a] mb-6">Your Bag ({items.length})</h1>
 
         {/* Free shipping progress bar */}
         <div className="mb-8 p-4 bg-[#faf8f5] border border-[#f0ece8]">

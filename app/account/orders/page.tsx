@@ -194,7 +194,7 @@ export default function OrdersPage() {
         <div className="mt-8 grid grid-cols-3 gap-6 text-center">
           {[
             { icon: '🚚', label: 'Free shipping', sub: 'on orders above ₹999' },
-            { icon: '↩️', label: 'Easy returns', sub: 'within 7 days' },
+            { icon: '↩️', label: 'Easy returns', sub: 'within 15 days' },
             { icon: '🔒', label: 'Secure payments', sub: 'Razorpay & COD' },
           ].map(b => (
             <div key={b.label}>
@@ -286,8 +286,8 @@ export default function OrdersPage() {
                         <div key={item.id} className="flex items-center gap-3">
                           {/* Image placeholder */}
                           <div className="w-12 h-14 bg-[#f4f2ef] border border-[#e8e4e0] shrink-0 flex items-center justify-center overflow-hidden">
-                            {(item as any).snapshot_image ? (
-                              <img src={(item as any).snapshot_image} alt={item.snapshot_name} className="w-full h-full object-cover" />
+                            {item.snapshot_image_url ? (
+                              <img src={item.snapshot_image_url} alt={item.snapshot_name} className="w-full h-full object-cover" />
                             ) : (
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0ccc8" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                             )}
@@ -428,7 +428,7 @@ export default function OrdersPage() {
               {RETURN_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
             <p className="text-[11px] text-[#9b9b9b] mb-5 leading-relaxed">
-              Returns are accepted within 7 days of delivery for unworn items with original tags attached.
+              Returns are accepted within 15 days of delivery for unworn items with original tags attached.
             </p>
             <div className="flex gap-2 justify-end">
               <button onClick={() => setReturnFor(null)} className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] transition-colors">Cancel</button>
@@ -479,7 +479,7 @@ export default function OrdersPage() {
             </select>
 
             <p className="text-[11px] text-[#9b9b9b] mb-5 leading-relaxed">
-              Any price or GST difference is settled when the exchange is approved. Exchanges follow the same 7-day window as returns.
+              Any price or GST difference is settled when the exchange is approved. Exchanges follow the same 15-day window as returns.
             </p>
             <div className="flex gap-2 justify-end">
               <button onClick={() => setExchangeFor(null)} className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] transition-colors">Cancel</button>

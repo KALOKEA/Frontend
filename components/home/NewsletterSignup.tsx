@@ -6,12 +6,10 @@ import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 export default function NewsletterSignup() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
-  const [heading, setHeading] = useState(HERO_DEFAULTS.newsletter_heading)
   const [subtext, setSubtext] = useState(HERO_DEFAULTS.newsletter_subtext)
 
   useEffect(() => {
     getHomepageData().then((d) => {
-      if (d.cms.newsletter_heading) setHeading(d.cms.newsletter_heading)
       if (d.cms.newsletter_subtext) setSubtext(d.cms.newsletter_subtext)
     }).catch(() => {})
   }, [])
@@ -29,63 +27,42 @@ export default function NewsletterSignup() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-[#1A1612] py-24 px-4 text-center">
+    <section className="py-20 px-4 text-center bg-[#F0EAE1]">
+      <div className="max-w-[560px] mx-auto">
 
-      {/* Editorial background watermark */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none select-none absolute inset-0 flex items-center justify-center overflow-hidden"
-      >
-        <span
-          className="font-serif font-light text-white whitespace-nowrap"
-          style={{ fontSize: 'clamp(5rem, 18vw, 16rem)', opacity: 0.04, letterSpacing: '0.1em' }}
-        >
-          KALOKEA
-        </span>
-      </div>
+        <p className="text-[10px] font-sans tracking-[0.28em] uppercase text-[#7C4A2D] mb-4">
+          Stay Connected
+        </p>
 
-      {/* Subtle top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-[#7C4A2D] opacity-[0.08] blur-3xl pointer-events-none" />
-
-      <div className="relative">
-        {/* Incentive badge */}
-        <div className="inline-flex items-center gap-2 bg-[#7C4A2D]/15 border border-[#7C4A2D]/30 px-4 py-1.5 mb-6">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5">
-            <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/>
-          </svg>
-          <span className="text-[9px] font-sans tracking-[0.25em] uppercase text-[#C4A882]">10% off your first order</span>
-        </div>
-
-        <p className="text-[10px] font-sans tracking-[0.35em] uppercase text-[#7C4A2D] mb-3">Stay in the Loop</p>
         <h2
-          className="font-serif font-light text-white mb-3"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
+          className="font-serif font-light text-[#0A0908] mb-3"
+          style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}
         >
-          {heading}
+          Join the <em className="italic" style={{ color: '#7C4A2D' }}>KALOKEA</em> Circle
         </h2>
-        <p className="text-[14px] font-sans text-[#6B5E55] mb-10 max-w-sm mx-auto leading-relaxed">
+        <p className="text-[14px] font-sans text-[#6B5E55] mb-8 max-w-sm mx-auto leading-relaxed">
           {subtext}
         </p>
 
         {status === 'done' ? (
           <div className="text-center">
-            <p className="font-serif text-[#C4A882] text-xl mb-1">Thank you!</p>
-            <p className="text-[12px] font-sans text-[#6B5E55] tracking-wide">Check your inbox for your discount code.</p>
+            <p className="font-serif text-[#7C4A2D] text-xl mb-1">Thank you!</p>
+            <p className="text-[12px] font-sans text-[#6B5E55] tracking-wide">We'll be in touch soon.</p>
           </div>
         ) : (
-          <form onSubmit={submit} className="flex flex-col sm:flex-row items-stretch justify-center gap-0 max-w-md mx-auto">
+          <form onSubmit={submit} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
-              className="sienna-focus flex-1 w-full sm:w-auto bg-[#252019] border border-[#2A2220] focus:border-[#7C4A2D] text-white text-[14px] font-sans px-5 min-h-[48px] outline-none placeholder:text-[#4A4040] transition-colors"
+              className="flex-1 w-full sm:w-auto border border-[#D4C8BC] focus:border-[#7C4A2D] bg-white text-[#0A0908] text-[14px] font-sans px-5 min-h-[48px] outline-none placeholder:text-[#B5A89E] transition-colors rounded-none"
               required
             />
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="btn-shimmer w-full sm:w-auto bg-[#7C4A2D] hover:bg-[#5C3520] text-white text-[10px] font-sans tracking-widest uppercase px-7 min-h-[48px] transition-colors disabled:opacity-50 whitespace-nowrap relative overflow-hidden"
+              className="w-full sm:w-auto bg-[#0A0908] hover:bg-[#7C4A2D] text-white text-[10px] font-sans tracking-widest uppercase px-8 min-h-[48px] transition-colors disabled:opacity-50 whitespace-nowrap border-none rounded-none"
             >
               {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
             </button>
@@ -93,12 +70,8 @@ export default function NewsletterSignup() {
         )}
 
         {status === 'error' && (
-          <p className="text-red-400 text-[11px] font-sans mt-3 tracking-wide">Something went wrong. Please try again.</p>
+          <p className="text-red-600 text-[11px] font-sans mt-3 tracking-wide">Something went wrong. Please try again.</p>
         )}
-
-        <p className="text-[10px] font-sans text-[#3A3230] tracking-wide mt-6">
-          Join 12,000+ women who shop smarter · Unsubscribe anytime
-        </p>
       </div>
     </section>
   )

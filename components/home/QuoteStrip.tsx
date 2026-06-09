@@ -15,7 +15,7 @@ export default function QuoteStrip() {
           className="font-serif font-light leading-relaxed text-[#0A0908]"
           style={{ fontSize: 'clamp(1.5rem, 3vw, 2.4rem)' }}
         >
-          &ldquo;Fashion is the armour to survive the reality of everyday life &mdash;{' '}
+          &ldquo;Fashion is the armor to survive the reality of everyday life &mdash;{' '}
           <em className="italic" style={{ color: '#7C4A2D' }}>make it yours.</em>&rdquo;
         </blockquote>
 

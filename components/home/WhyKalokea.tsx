@@ -18,7 +18,7 @@ const REASONS = [
     ),
   },
   {
-    title: 'Fast Pan-India Delivery',
+    title: 'Fast Delivery',
     desc: 'Metro cities receive orders within 2–3 days. Pan India delivery in 5–7 days. Real-time ShipRocket tracking at every step.',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -31,7 +31,7 @@ const REASONS = [
   },
   {
     title: 'Hassle-Free Returns',
-    desc: 'Changed your mind? No problem. We offer a 7-day return window with free pickup — no questions asked, no drama.',
+    desc: 'Changed your mind? No problem. We offer a 15-day return window with free pickup — no questions asked, no drama.',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="23 4 23 10 17 10"/>

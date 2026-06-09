@@ -110,12 +110,12 @@ export default function CartDrawer() {
                       <div className="flex items-center border border-[#E0D4C4]">
                         <button
                           onClick={() => updateQuantity(item.variant_id, Math.max(1, item.quantity - 1))}
-                          className="w-9 h-9 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] text-sm"
+                          className="w-11 h-11 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] text-sm"
                         >−</button>
                         <span className="w-8 text-center text-xs text-[#0A0908]">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.variant_id, Math.min(item.max_stock || 99, item.quantity + 1))}
-                          className="w-9 h-9 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] text-sm"
+                          className="w-11 h-11 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] text-sm"
                         >+</button>
                       </div>
                       <button

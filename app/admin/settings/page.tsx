@@ -18,7 +18,8 @@ const DEFAULT_FORM: StoreSettings = {
   live_chat_widget: '',
   low_stock_threshold: 5,
   footer_instagram_url: 'https://www.instagram.com/kalokea.in',
-  footer_whatsapp_url: 'https://wa.me/919999999999',
+  footer_facebook_url:  'https://www.facebook.com/kalokea.in',
+  footer_pinterest_url: 'https://www.pinterest.com/kalokea',
 }
 
 export default function AdminSettingsPage() {
@@ -238,16 +239,21 @@ export default function AdminSettingsPage() {
               className={INP}
             />
           </Field>
-          <Field label="WhatsApp link">
+          <Field label="Facebook URL">
             <input
-              value={form.footer_whatsapp_url ?? ''}
-              onChange={e => set('footer_whatsapp_url', e.target.value)}
-              placeholder="https://wa.me/919876543210"
+              value={form.footer_facebook_url ?? ''}
+              onChange={e => set('footer_facebook_url', e.target.value)}
+              placeholder="https://www.facebook.com/kalokea.in"
               className={INP}
             />
-            <p className="text-[11px] text-[#9b9b9b] mt-1">
-              Format: <code className="bg-[#f0ece8] px-1">https://wa.me/91XXXXXXXXXX</code> (country code + number, no spaces or dashes)
-            </p>
+          </Field>
+          <Field label="Pinterest URL">
+            <input
+              value={form.footer_pinterest_url ?? ''}
+              onChange={e => set('footer_pinterest_url', e.target.value)}
+              placeholder="https://www.pinterest.com/kalokea"
+              className={INP}
+            />
           </Field>
           <p className="text-[11px] text-[#9b9b9b] mt-1">
             GSTIN in footer is pulled from <strong>Business name → GSTIN</strong> field above.
