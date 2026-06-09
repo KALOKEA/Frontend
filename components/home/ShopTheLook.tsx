@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 
 // Cloudinary images — update slugs once real look images are uploaded
