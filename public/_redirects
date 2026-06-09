@@ -45,6 +45,7 @@
 /?p=:id                         /shop/                301
 /?page_id=:id                   /                     301
 
+
 # NOTE: For any other old URL that still 404s, find it in Google Search Console
 # (Pages → Not indexed) and add an explicit line here, e.g.:
 #   /old-path   /new-path   301
