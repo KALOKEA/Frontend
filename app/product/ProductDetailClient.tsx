@@ -345,7 +345,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                   <p>{product.description || 'A beautifully crafted piece made with care and attention to detail.'}</p>
                 )}
                 {tab === 'fabric' && (
-                  <p>Premium quality fabric. Care instructions: Gentle machine wash or dry clean. Do not bleach. Do not tumble dry.</p>
+                  <p>{product.fabric_care || 'Premium quality fabric. Care instructions: Gentle machine wash or dry clean. Do not bleach. Do not tumble dry.'}</p>
                 )}
                 {tab === 'shipping' && (
                   <div className="space-y-2">
@@ -356,7 +356,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                 )}
                 {tab === 'returns' && (
                   <div className="space-y-2">
-                    <p>15-day hassle-free return window from date of delivery.</p>
+                    <p>7-day hassle-free return window from date of delivery.</p>
                     <p>Item must be unworn, unwashed, and in original packaging with tags attached.</p>
                     <p>Free return pickup. Refund processed in 5–7 business days.</p>
                   </div>

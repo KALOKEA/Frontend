@@ -31,6 +31,7 @@ export interface Product {
   hsn_code?: string
   gst_rate?: number
   video_url?: string
+  fabric_care?: string
   avg_rating?: number
   review_count?: number
   created_at: string

@@ -27,11 +27,18 @@ const SECTIONS = [
       { key: 'trust_1_title', label: 'Badge 1 title', hint: 'e.g. Free Delivery' },
       { key: 'trust_1_sub',   label: 'Badge 1 subtitle', hint: 'e.g. On orders above ₹999' },
       { key: 'trust_2_title', label: 'Badge 2 title', hint: 'e.g. Easy Returns' },
-      { key: 'trust_2_sub',   label: 'Badge 2 subtitle', hint: 'e.g. 15-day hassle-free returns' },
+      { key: 'trust_2_sub',   label: 'Badge 2 subtitle', hint: 'e.g. 7-day hassle-free returns' },
       { key: 'trust_3_title', label: 'Badge 3 title', hint: 'e.g. Secure Payments' },
       { key: 'trust_3_sub',   label: 'Badge 3 subtitle', hint: 'e.g. Razorpay 256-bit encrypted' },
       { key: 'trust_4_title', label: 'Badge 4 title', hint: 'e.g. Made in India' },
       { key: 'trust_4_sub',   label: 'Badge 4 subtitle', hint: 'e.g. Proudly designed & sourced' },
+    ],
+  },
+  {
+    title: 'Category Grid',
+    fields: [
+      { key: 'category_heading',    label: 'Section heading', hint: 'e.g. Find Your Signature' },
+      { key: 'category_eyebrow',   label: 'Eyebrow label',   hint: 'e.g. Shop by Category' },
     ],
   },
   {
@@ -41,9 +48,41 @@ const SECTIONS = [
     ],
   },
   {
+    title: 'Quote Strip',
+    fields: [
+      { key: 'quote_text',   label: 'Quote text',   hint: 'e.g. "Wear what makes you feel alive."', long: true },
+      { key: 'quote_author', label: 'Quote author', hint: 'e.g. — Kalokea' },
+    ],
+  },
+  {
+    title: 'Editorial Banner',
+    fields: [
+      { key: 'editorial_eyebrow',   label: 'Eyebrow text',      hint: 'e.g. The Edit' },
+      { key: 'editorial_heading',   label: 'Heading',           hint: 'e.g. Season\'s New Chapter' },
+      { key: 'editorial_subtext',   label: 'Subtext',           hint: 'Short tagline', long: true },
+      { key: 'editorial_cta_label', label: 'Button label',      hint: 'e.g. Explore the Edit' },
+      { key: 'editorial_cta_link',  label: 'Button link',       hint: 'e.g. /shop/?tag=editorial' },
+      { key: 'editorial_image_url', label: 'Background image',  hint: 'Direct image URL' },
+    ],
+  },
+  {
+    title: 'Best Sellers Section',
+    fields: [
+      { key: 'bestseller_heading', label: 'Section heading', hint: 'e.g. Best Sellers' },
+      { key: 'bestseller_eyebrow', label: 'Eyebrow label',   hint: 'e.g. Most Loved' },
+    ],
+  },
+  {
+    title: 'Testimonials',
+    fields: [
+      { key: 'testimonials_heading', label: 'Section heading', hint: 'e.g. What Our Customers Say' },
+      { key: 'testimonials_eyebrow', label: 'Eyebrow label',   hint: 'e.g. Reviews' },
+    ],
+  },
+  {
     title: 'Newsletter Signup',
     fields: [
-      { key: 'newsletter_heading', label: 'Newsletter heading', hint: 'e.g. Join the Kalokea Family' },
+      { key: 'newsletter_heading', label: 'Newsletter heading', hint: 'e.g. Join the Kalokea Circle' },
       { key: 'newsletter_subtext', label: 'Newsletter subtext', hint: 'Short description below heading', long: true },
     ],
   },

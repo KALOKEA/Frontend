@@ -31,7 +31,7 @@ export default function Header() {
   const isTransparent = isHome && !scrolled
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 6)
+    const handler = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', handler)
     return () => window.removeEventListener('scroll', handler)
   }, [])

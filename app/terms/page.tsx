@@ -19,7 +19,7 @@ const SC = [
   '<h2>Shipping</h2>',
   '<p>We ship across India via ShipRocket. Delivery timelines are estimates and may vary. For detailed shipping information, see our <a href="/shipping-policy/">Shipping Policy</a>.</p>',
   '<h2>Returns and Refunds</h2>',
-  '<p>We offer 15-day returns on eligible items. For full details, see our <a href="/refund-policy/">Refund & Return Policy</a>.</p>',
+  '<p>We offer 7-day returns on eligible items. For full details, see our <a href="/refund-policy/">Refund & Return Policy</a>.</p>',
   '<h2>Intellectual Property</h2>',
   '<p>All content on kalokea.in — including text, images, logos, and design — is the property of Kalokea and protected by copyright law. You may not reproduce or use it without prior written permission.</p>',
   '<h2>User Accounts</h2>',

@@ -45,8 +45,8 @@ const CODIcon = () => (
 )
 
 export default function Footer({
-  instagramUrl = 'https://www.instagram.com/kalokea.in',
-  facebookUrl  = 'https://www.facebook.com/kalokea.in',
+  instagramUrl = 'https://www.instagram.com/kalokea.fashion',
+  facebookUrl  = 'https://www.facebook.com/kalokea.fashion',
   pinterestUrl = 'https://www.pinterest.com/kalokea',
   gstin        = '',
 }: FooterProps) {

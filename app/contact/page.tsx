@@ -86,7 +86,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-sans uppercase tracking-widest text-[#9B8F87] mb-0.5">Phone / WhatsApp</p>
-                    <p className="font-sans text-[14px] text-[#0A0908]">+91 93101 78308</p>
+                    <p className="font-sans text-[14px] text-[#0A0908]">+91 87996 10432</p>
                     <p className="text-[11px] font-sans text-[#6B5E55]">Mon – Sat, 10 AM – 6 PM IST</p>
                   </div>
                 </div>

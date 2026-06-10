@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import { categoriesApi, type Category } from '@/lib/api/categories'
-import { getHomepageData } from '@/lib/api/homepageContent'
+import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 
 // Unsplash fallback images — same as design reference prototype
 const FALLBACK_IMAGES: Record<string, string> = {
@@ -58,10 +58,12 @@ const MOSAIC_PLACEMENT = [
 
 export default function CategoryGrid() {
   const [categories, setCategories] = useState<Category[]>([])
+  const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
   const gridRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     getHomepageData().then((d) => {
+      setCms(d.cms)
       if (d.categories?.length) {
         setCategories(d.categories)
         return
@@ -96,13 +98,14 @@ export default function CategoryGrid() {
           className="block text-[0.72rem] font-semibold tracking-[0.20em] uppercase mb-2.5"
           style={{ color: '#7C4A2D' }}
         >
-          Shop by Category
+          {cms.category_eyebrow || 'Shop by Category'}
         </span>
         <h2
           className="font-serif font-normal leading-[1.15]"
           style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)', color: '#0A0806' }}
         >
-          Find Your <em className="italic font-light">Signature</em>
+          {cms.category_heading || 'Find Your '}
+          {!cms.category_heading && <em className="italic font-light">Signature</em>}
         </h2>
       </div>
 

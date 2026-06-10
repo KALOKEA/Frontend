@@ -4,7 +4,7 @@ import { useState } from 'react'
 const MESSAGES = [
   { text: 'Free Shipping on Orders Above ₹999', highlight: '₹999' },
   { text: 'New Arrivals Every Friday', highlight: 'Every Friday' },
-  { text: 'Easy 15-Day Returns', highlight: '15-Day Returns' },
+  { text: 'Easy 7-Day Returns', highlight: '7-Day Returns' },
   { text: 'Ethically Sourced Fabrics', highlight: 'Ethically Sourced' },
   { text: 'COD Available Pan India', highlight: 'COD Available' },
 ]

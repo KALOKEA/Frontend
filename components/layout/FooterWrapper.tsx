@@ -13,7 +13,7 @@ interface FooterSettings {
 }
 
 const FALLBACK: FooterSettings = {
-  footer_instagram_url: 'https://www.instagram.com/kalokea.in',
+  footer_instagram_url: 'https://www.instagram.com/kalokea.fashion',
   footer_facebook_url:  'https://www.facebook.com/kalokea.in',
   footer_pinterest_url: 'https://www.pinterest.com/kalokea',
   seller_gstin:         '',

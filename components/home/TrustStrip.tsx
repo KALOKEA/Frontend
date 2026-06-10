@@ -30,7 +30,7 @@ const ITEMS = [
         <path d="M3 3v5h5"/>
       </svg>
     ),
-    title: '15-Day Easy Returns',
+    title: '7-Day Easy Returns',
     sub: 'Hassle-free return policy',
   },
   {

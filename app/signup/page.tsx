@@ -17,23 +17,27 @@ function SignupContent() {
 
   const [step, setStep] = useState<'details' | 'otp'>('details')
   const [name, setName] = useState('')
-  const [identifier, setIdentifier] = useState('')
+  const [phone, setPhone] = useState('')          // Required mobile number
+  const [email, setEmail] = useState('')          // Optional email for OTP
+  const [otpChannel, setOtpChannel] = useState<'phone' | 'email'>('phone')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
 
-  const isEmail = identifier.includes('@')
-
   const sendOtp = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim()) { toast('Please enter your full name', 'error'); return }
-    if (!identifier.trim()) { toast('Please enter your email or phone', 'error'); return }
+    if (!phone.trim() || phone.length < 10) { toast('Please enter a valid 10-digit mobile number', 'error'); return }
     if (!acceptedTerms) { toast('Please accept the Terms & Conditions to continue', 'error'); return }
+
+    // Determine OTP channel: use phone if provided, else email
+    const identifier = phone.trim()
+    setOtpChannel('phone')
 
     setLoading(true)
     try {
-      await authApi.sendOtp(isEmail ? { email: identifier } : { phone: identifier })
-      toast('OTP sent! Check your ' + (isEmail ? 'email' : 'phone'))
+      await authApi.sendOtp({ phone: identifier })
+      toast('OTP sent to +91' + identifier)
       setStep('otp')
     } catch (err) {
       toast((err as Error).message || 'Failed to send OTP', 'error')
@@ -46,11 +50,14 @@ function SignupContent() {
     e.preventDefault()
     setLoading(true)
     try {
-      const res = await authApi.verifyOtp(
-        isEmail
-          ? { email: identifier, otp, accepted_terms: true, name: name.trim() }
-          : { phone: identifier, otp, accepted_terms: true, name: name.trim() }
-      )
+      const identifier = phone.trim()
+      const res = await authApi.verifyOtp({
+        phone: identifier,
+        otp,
+        accepted_terms: true,
+        name: name.trim(),
+        ...(email.trim() ? { email: email.trim() } : {}),
+      })
       setAuth(res.access_token, { ...res.user, name: name.trim() })
       await useCartStore.getState().mergeOnLogin().catch(() => {})
       toast('Welcome to Kalokea, ' + name.split(' ')[0] + '! 🎉')
@@ -84,11 +91,20 @@ function SignupContent() {
               autoFocus
             />
             <Input
-              label="Phone or Email"
-              value={identifier}
-              onChange={e => setIdentifier(e.target.value)}
-              placeholder="+91 9999999999 or email@example.com"
+              label="Mobile number"
+              value={phone}
+              onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+              placeholder="10-digit mobile number"
+              inputMode="numeric"
               required
+              type="tel"
+            />
+            <Input
+              label="Email address (optional)"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              type="email"
             />
             <label className="flex items-start gap-2.5 cursor-pointer">
               <input
@@ -123,7 +139,7 @@ function SignupContent() {
           <form onSubmit={verifyOtp} className="space-y-4">
             <div className="bg-[#faf8f5] border border-[#e8e4e0] px-4 py-3 text-center">
               <p className="text-[11px] font-sans text-[#6b6b6b]">OTP sent to</p>
-              <p className="text-sm font-sans text-[#0a0a0a] font-medium mt-0.5">{identifier}</p>
+              <p className="text-sm font-sans text-[#0a0a0a] font-medium mt-0.5">+91 {phone}</p>
             </div>
             <Input
               label="Enter OTP"
@@ -143,7 +159,7 @@ function SignupContent() {
               onClick={() => { setStep('details'); setOtp('') }}
               className="w-full text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors"
             >
-              ← Change email / phone
+              ← Change details
             </button>
           </form>
         )}

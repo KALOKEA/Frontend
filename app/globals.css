@@ -10,32 +10,48 @@
   --font-cormorant: 'Cormorant Garamond';
   --font-dm-sans: 'DM Sans';
 
-  /* ── New palette (Session 12) ──────────────────────────────────── */
-  --ivory:      #FDFAF6;
+  /* ── Reference design variables (index.html / styles.css) ────── */
+  --white:      #FFFFFF;
+  --ivory:      #F9F6F2;
+  --ivory-2:    #F0EAE1;
+  --ivory-3:    #E4DDD4;
+  --ink:        #0A0806;
+  --dark:       #1E1208;
+  --brown:      #7C4A2D;
+  --brown-h:    #6A3D25;
+  --brown-lt:   #C49070;
+  --brown-pale: #F4EAE2;
+  --text:       #160F09;
+  --muted:      #7A6E68;
+  --serif:      'Cormorant Garamond';
+  --sans:       'DM Sans';
+  --max:        1380px;
+  --gutter:     52px;
+  --nav-h:      68px;
+
+  /* ── Extended palette ────────────────────────────────────────── */
   --linen:      #F2EAE0;
   --stone:      #E0D4C4;
   --sand:       #C4A882;
-  --sienna:     #7C4A2D;
+  --sienna:     #7C4A2D;   /* = --brown */
   --sienna-l:   #9E6544;
   --sienna-d:   #5C3520;
   --charcoal:   #1A1612;
   --warm-gray:  #6B5E55;
-  --ink:        #0A0908;
-  --white:      #ffffff;
 
   /* ── Legacy aliases (used by admin / older pages) ───────────────── */
-  --black:   #0A0908;
-  --cream:   #FDFAF6;
+  --black:   #0A0806;
+  --cream:   #F9F6F2;
   --parch:   #EDE4D9;
-  --cream-2: #F2EAE0;
-  --rose:    #7C4A2D;   /* remapped → sienna */
-  --rose-d:  #9E6544;   /* remapped → sienna-l */
+  --cream-2: #F0EAE1;
+  --rose:    #7C4A2D;
+  --rose-d:  #9E6544;
   --mauve:   #5C3520;
   --sand-old:#C4A882;
   --blush:   #EDE4D9;
-  --gray:    #6B5E55;
+  --gray:    #7A6E68;
   --gray-l:  #E0D4C4;
-  --gray-ll: #F2EAE0;
+  --gray-ll: #F0EAE1;
 }
 
 * { box-sizing: border-box; }
@@ -146,6 +162,36 @@ h1, h2, h3, .font-serif {
 
 
 /* ── Scroll-reveal system ─────────────────────────────────────────────────── */
+/* Reference classes: .reveal / .reveal-left / .reveal-right + .visible        */
+/* Matches reference styles.css + script.js exactly                             */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: none;
+}
+/* Aliases used by newer components */
 .reveal-ready {
   opacity: 0;
   transform: translateY(28px);
@@ -335,7 +381,7 @@ select.inp {
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee 24s linear infinite;
+  animation: marquee 28s linear infinite;
 }
 .marquee-track:hover { animation-play-state: paused; }
 

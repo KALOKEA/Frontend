@@ -10,6 +10,9 @@ import AuthBootstrap from '@/components/AuthBootstrap'
 import Analytics from '@/components/Analytics'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import LiveChatWidget from '@/components/LiveChatWidget'
+import WhatsAppButton from '@/components/layout/WhatsAppButton'
+import BackToTop from '@/components/layout/BackToTop'
+import ScrollRevealInit from '@/components/ScrollRevealInit'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -36,8 +39,8 @@ const organizationJsonLd = {
   logo: `${SITE_URL}/logo.png`,
   description: "India's curated women's fashion boutique -- dresses, tops, shoes, bags and accessories.",
   sameAs: [
-    'https://www.instagram.com/kalokea',
-    'https://www.facebook.com/kalokea',
+    'https://www.instagram.com/kalokea.fashion',
+    'https://www.facebook.com/kalokea.in',
   ],
   contactPoint: {
     '@type': 'ContactPoint',
@@ -54,9 +57,89 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "KALOKEA | Women's Fashion",
-  description: "Shop the latest women's fashion at Kalokea. Free shipping above Rs.999.",
-  keywords: 'women fashion, dresses, tops, co-ords, affordable fashion India',
+  title: "KALOKEA | Women's Fashion — Dresses, Tops & More",
+  description: "Shop the latest women's fashion at Kalokea — dresses, tops, co-ords, bags and accessories. Free shipping above ₹999. Easy 7-day returns. COD available pan India.",
+  keywords: [
+    // Brand
+    'kalokea', 'kalokea fashion', 'kalokea women', 'kalokea online',
+    // Core categories
+    "women's fashion india", "women's clothing online", "ladies fashion india", "girls fashion online",
+    "women's dresses", "women's tops", "women's kurtas", "women's blouses",
+    "women's co-ords", "women's palazzo", "women's skirts", "women's pants",
+    "women's bags", "women's handbags", "women's tote bags", "women's sling bags",
+    "women's accessories", "women's jewellery", "women's earrings",
+    // Dress types
+    'maxi dress', 'midi dress', 'mini dress', 'floral dress', 'casual dress',
+    'party wear dress', 'summer dress', 'western dress', 'bodycon dress',
+    'a-line dress', 'wrap dress', 'shift dress', 'shirt dress',
+    'ethnic dress', 'fusion dress', 'indo-western dress',
+    // Tops
+    'crop top', 'women top', 'flowy top', 'linen top', 'cotton top',
+    'printed top', 'embroidered top', 'designer top', 'trendy top',
+    'formal top women', 'casual top women', 'boho top',
+    // Bottoms
+    'palazzo pants', 'wide leg pants', 'straight pants', 'high waist pants',
+    'flared skirt', 'pencil skirt', 'wrap skirt', 'midi skirt',
+    // Co-ords & sets
+    'co-ord set', 'matching set women', 'co-ord set india', 'two piece set',
+    'crop top skirt set', 'loungewear set', 'linen co-ord',
+    // Ethnic & fusion
+    'kurta set', 'kurti women', 'indo-western', 'ethnic wear online',
+    'fusion wear india', 'desi fashion', 'indian fashion online',
+    // Bags
+    'women handbag', 'tote bag', 'shoulder bag', 'crossbody bag',
+    'clutch bag', 'bucket bag', 'leather bag women', 'canvas bag women',
+    // Fashion descriptors
+    'affordable fashion india', 'budget fashion india', 'stylish women india',
+    'trendy clothes india', 'everyday fashion', 'office wear women',
+    'party wear women', 'beach wear women', 'vacation outfits',
+    'summer collection india', 'festive wear women',
+    // Style movements
+    'boho fashion india', 'minimalist fashion', 'capsule wardrobe india',
+    'slow fashion india', 'sustainable fashion india', 'ethical fashion india',
+    // Shopping terms
+    'buy dresses online india', 'buy tops online india', 'buy women clothes online',
+    'online shopping for women', 'women fashion website india',
+    'new arrivals women fashion', 'sale women clothes',
+    'discount women clothing india', 'free shipping clothes india',
+    // Fabric
+    'linen dress women', 'cotton dress women', 'georgette dress',
+    'rayon kurta', 'silk top women', 'chiffon dress',
+    // Occasions
+    'bridal wear', 'wedding guest outfit', 'reception outfit women',
+    'office wear india', 'casual wear women india', 'date night outfit',
+    'college girl fashion', 'work from home outfit',
+    // City-specific
+    'women fashion mumbai', 'women fashion delhi', 'women fashion bangalore',
+    'women fashion chennai', 'women fashion hyderabad', 'women fashion pune',
+    'women fashion kolkata', 'women fashion ahmedabad',
+    // Lifestyle & brand terms
+    'kalokea dresses', 'kalokea tops', 'kalokea bags', 'kalokea co-ords',
+    'shop kalokea', 'kalokea india', 'kalokea new arrivals',
+    'women boutique online india', 'premium women fashion',
+    'curated women fashion', 'women fashion brand india',
+    'made in india fashion', 'indian women clothing brand',
+    // Price & value
+    'affordable dresses india', 'cheap women clothes india',
+    'fashion under 999', 'fashion under 1999', 'best price women fashion',
+    'value fashion india', 'quality women clothes',
+    // Returns & services
+    'cod fashion india', 'cash on delivery clothes', '7 day return policy',
+    'easy return fashion', 'free delivery fashion india',
+    // SEO long-tail
+    'best women fashion brand india 2025', 'top women clothing store india',
+    'women online boutique india', 'ladies suit sets online',
+    'trendy kurta sets online', 'western wear for women india',
+    'latest fashion for women india', 'stylish clothes for women online',
+    'new fashion arrivals india every friday', 'friday fashion drop',
+    'ethically sourced clothes india', 'women premium ethnic wear',
+    'indo-western fusion wear online', 'bollywood inspired fashion',
+    'celebrity fashion india', 'instagram fashion india',
+    'ootd india women', 'fashion blogger india outfit',
+    'women party outfits india', 'bridesmaid outfits india',
+    'mehndi outfit women', 'sangeet outfit', 'garba wear women',
+    'navratri outfit', 'diwali fashion women', 'eid outfits women',
+  ].join(', '),
   metadataBase: new URL('https://kalokea.in'),
   openGraph: {
     type: 'website',
@@ -123,6 +206,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <FooterWrapper />
         </ToastProvider>
         <LiveChatWidget />
+        <WhatsAppButton />
+        <BackToTop />
+        <ScrollRevealInit />
       </body>
     </html>
   )

@@ -66,6 +66,25 @@ export interface HomepageContent {
   newsletter_subtext: string
   // Featured section
   featured_section_heading: string
+  // Category grid
+  category_heading: string
+  category_eyebrow: string
+  // Quote strip
+  quote_text: string
+  quote_author: string
+  // Editorial banner
+  editorial_eyebrow: string
+  editorial_heading: string
+  editorial_subtext: string
+  editorial_cta_label: string
+  editorial_cta_link: string
+  editorial_image_url: string
+  // Best sellers
+  bestseller_heading: string
+  bestseller_eyebrow: string
+  // Testimonials
+  testimonials_heading: string
+  testimonials_eyebrow: string
   [key: string]: string
 }
 
@@ -86,7 +105,7 @@ export const HERO_DEFAULTS: HomepageContent = {
   trust_1_title: 'Free Delivery',
   trust_1_sub: 'On orders above ₹999',
   trust_2_title: 'Easy Returns',
-  trust_2_sub: '15-day hassle-free returns',
+  trust_2_sub: '7-day hassle-free returns',
   trust_3_title: 'Secure Payments',
   trust_3_sub: 'Razorpay 256-bit encrypted',
   trust_4_title: 'Made in India',
@@ -94,6 +113,20 @@ export const HERO_DEFAULTS: HomepageContent = {
   newsletter_heading: 'Join the KALOKEA Circle',
   newsletter_subtext: 'Be the first to know about new arrivals, exclusive offers, and style tips curated just for you.',
   featured_section_heading: 'Featured Pieces',
+  category_heading: 'Find Your Signature',
+  category_eyebrow: 'Shop by Category',
+  quote_text: '"Wear what makes you feel alive."',
+  quote_author: '— KALOKEA',
+  editorial_eyebrow: 'The Edit',
+  editorial_heading: "Season's New Chapter",
+  editorial_subtext: 'Explore our curated editorial selection — pieces chosen for their craft, their story, and the way they make you feel.',
+  editorial_cta_label: 'Explore the Edit',
+  editorial_cta_link: '/shop/?tag=editorial',
+  editorial_image_url: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&fit=crop',
+  bestseller_heading: 'Best Sellers',
+  bestseller_eyebrow: 'Most Loved',
+  testimonials_heading: 'What Our Customers Say',
+  testimonials_eyebrow: 'Reviews',
 }
 
 export const homepageContentApi = {

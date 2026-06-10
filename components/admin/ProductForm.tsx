@@ -19,6 +19,7 @@ export default function ProductForm({ product, onSaved }: ProductFormProps) {
     name: product?.name || '',
     slug: product?.slug || '',
     description: product?.description || '',
+    fabric_care: (product as any)?.fabric_care || '',
     base_price: product?.base_price ? String(product.base_price / 100) : '',
     compare_price: product?.compare_price ? String(product.compare_price / 100) : '',
     is_featured: product?.is_featured ?? false,
@@ -60,6 +61,18 @@ export default function ProductForm({ product, onSaved }: ProductFormProps) {
       <div>
         <label className="text-[11px] uppercase tracking-widest text-[#6b6b6b] font-sans block mb-1">Description</label>
         <textarea value={form.description} onChange={set('description')} rows={4} className="w-full border border-[#e8e4e0] px-4 py-3 text-sm font-sans outline-none focus:border-[#0a0a0a] resize-none" />
+      </div>
+      <div>
+        <label className="text-[11px] uppercase tracking-widest text-[#6b6b6b] font-sans block mb-1">
+          Fabric &amp; Care Instructions
+        </label>
+        <textarea
+          value={form.fabric_care}
+          onChange={set('fabric_care')}
+          rows={3}
+          placeholder="e.g. 100% Cotton. Machine wash cold, gentle cycle. Do not bleach. Tumble dry low. Cool iron."
+          className="w-full border border-[#e8e4e0] px-4 py-3 text-sm font-sans outline-none focus:border-[#0a0a0a] resize-none"
+        />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <Input label="Price (₹)" value={form.base_price} onChange={set('base_price')} type="number" step="0.01" required />
