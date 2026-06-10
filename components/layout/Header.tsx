@@ -32,7 +32,8 @@ export default function Header() {
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', handler)
+    handler() // set correct state immediately on mount (matches reference script.js)
+    window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])
 

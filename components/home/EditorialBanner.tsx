@@ -1,6 +1,5 @@
 'use client'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 
@@ -18,14 +17,17 @@ export default function EditorialBanner() {
 
       {/* Left — image panel */}
       <div className="relative overflow-hidden" style={{ flex: '1 1 0', minHeight: 320 }}>
-        <Image
+        {/* Use plain <img> to bypass next/image custom Cloudinary loader for external URLs */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={imageUrl}
           alt={c.editorial_heading || 'The Edit — Kalokea'}
-          fill
-          className="object-cover object-center"
-          sizes="(max-width: 768px) 100vw, 50vw"
+          className="absolute inset-0 w-full h-full object-cover object-center"
           loading="lazy"
-          unoptimized
+          onError={(e) => {
+            const el = e.currentTarget as HTMLImageElement
+            el.src = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&fit=crop'
+          }}
         />
         {/* Sienna overlay on hover */}
         <div
