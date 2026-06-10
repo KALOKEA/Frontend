@@ -25,16 +25,43 @@ function getSwatches(product: Product): string[] {
   return colours
 }
 
+// Render a half-star or full star fill for decimal ratings
+function StarFill({ index, rating }: { index: number; rating: number }) {
+  const filled = rating >= index
+  const half   = !filled && rating >= index - 0.5
+  const fillId = `star-half-${index}-${Math.round(rating * 10)}`
+
+  if (filled) {
+    return <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="#D4A853" />
+  }
+  if (half) {
+    return (
+      <>
+        <defs>
+          <linearGradient id={fillId} x1="0" x2="1" y1="0" y2="0">
+            <stop offset="50%" stopColor="#D4A853" />
+            <stop offset="50%" stopColor="#E8E0D5" />
+          </linearGradient>
+        </defs>
+        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill={`url(#${fillId})`} />
+      </>
+    )
+  }
+  return <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="#E8E0D5" />
+}
+
 export default function ProductCard({ product }: ProductCardProps) {
   const { toggle, isWishlisted } = useWishlistStore()
-  const [hovered, setHovered] = useState(false)
+  const [hovered, setHovered]   = useState(false)
   const [wishlisting, setWishlisting] = useState(false)
-  const wishlisted = isWishlisted(product.id)
-  const discount = formatDiscount(product.compare_price || 0, product.base_price)
+  const wishlisted   = isWishlisted(product.id)
+  const discount     = formatDiscount(product.compare_price || 0, product.base_price)
   const isOutOfStock = !product.product_variants?.some((v) => v.is_active && v.stock > 0)
-  const imgUrl = getPrimaryImage(product)
-  const hoverImg = product.product_images?.[1]?.url || imgUrl
-  const swatches = getSwatches(product)
+  const imgUrl       = getPrimaryImage(product)
+  const hoverImg     = product.product_images?.[1]?.url || imgUrl
+  const swatches     = getSwatches(product)
+  const rating       = product.avg_rating ?? 0
+  const reviewCount  = product.review_count ?? 0
 
   function handleWishlist(e: React.MouseEvent) {
     e.preventDefault()
@@ -44,8 +71,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <div className="group relative card-lift">
-      {/* Image container */}
+    <div className="group relative">
+
+      {/* ── Image container ─────────────────────────────────────── */}
       <div
         className="relative overflow-hidden bg-[#F2EAE0] aspect-[3/4]"
         onMouseEnter={() => setHovered(true)}
@@ -56,35 +84,35 @@ export default function ProductCard({ product }: ProductCardProps) {
             src={hovered ? hoverImg : imgUrl}
             alt={product.name}
             fill
-            className="object-cover transition-all duration-700 group-hover:scale-[1.06]"
+            className="object-cover transition-all duration-700 group-hover:scale-[1.04]"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             unoptimized
           />
         </Link>
 
-        {/* Top-left badges */}
+        {/* ── Top-left badges — rounded pill like reference ── */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
           {discount > 0 && (
-            <span className="bg-[#7C4A2D] text-white text-[9px] font-sans font-semibold tracking-widest uppercase px-2.5 py-1 shadow-sm">
-              -{discount}% OFF
+            <span className="bg-[#7C4A2D] text-white text-[9px] font-sans font-semibold tracking-widest uppercase rounded-full px-2.5 py-1 shadow-sm">
+              -{discount}%
             </span>
           )}
           {isOutOfStock && (
-            <span className="bg-[#6b6b6b]/90 text-white text-[9px] font-sans tracking-widest uppercase px-2.5 py-1">
+            <span className="bg-[#5a5a5a]/90 text-white text-[9px] font-sans tracking-widest uppercase rounded-full px-2.5 py-1">
               Sold Out
             </span>
           )}
           {product.is_featured && !discount && !isOutOfStock && (
-            <span className="bg-[#0A0908] text-white text-[9px] font-sans tracking-widest uppercase px-2.5 py-1">
-              New
+            <span className="bg-[#0A0908] text-white text-[9px] font-sans font-semibold tracking-widest uppercase rounded-full px-2.5 py-1">
+              NEW
             </span>
           )}
         </div>
 
-        {/* Wishlist button */}
+        {/* ── Wishlist button — top-right ── */}
         <button
           onClick={handleWishlist}
-          className={`absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 shadow-sm flex items-center justify-center z-10 transition-all duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:scale-110 ${wishlisting ? 'animate-heart-pulse' : ''}`}
+          className={`absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 shadow-sm flex items-center justify-center z-10 transition-all duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:scale-110 ${wishlisting ? 'scale-125' : ''}`}
           aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <svg
@@ -97,65 +125,74 @@ export default function ProductCard({ product }: ProductCardProps) {
           </svg>
         </button>
 
-        {/* Quick-view CTA */}
+        {/* ── Add to Bag CTA — slides up from bottom on hover ── */}
         {!isOutOfStock && (
           <Link
             href={`/product/${product.slug}/`}
-            className="btn-shimmer absolute bottom-0 left-0 right-0 bg-[#0A0908] text-white text-[10px] font-sans tracking-widest uppercase py-3.5 text-center translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300 ease-out relative overflow-hidden z-10"
+            className="absolute bottom-0 left-0 right-0 bg-[#0A0908] text-white text-[10px] font-sans font-semibold tracking-[0.15em] uppercase py-3.5 text-center translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300 ease-out z-10 hover:bg-[#1a1208]"
           >
-            View Product
+            Add to Bag
           </Link>
         )}
       </div>
 
-      {/* Card info */}
-      <div className="pt-3 pb-1">
-        {product.categories && (
-          <p className="text-[9px] font-sans text-[#9B8F87] tracking-[0.18em] uppercase mb-1">
-            {product.categories.name}
-          </p>
-        )}
+      {/* ── Card info ──────────────────────────────────────────── */}
+      <div className="pt-3 pb-2">
+
+        {/* Product name */}
         <Link
           href={`/product/${product.slug}/`}
-          className="block font-serif text-[#0A0908] hover:text-[#7C4A2D] transition-colors leading-snug mb-1.5 text-[15px]"
+          className="block font-serif text-[#0A0908] hover:text-[#7C4A2D] transition-colors leading-snug mb-1.5"
+          style={{ fontSize: '0.9rem' }}
         >
           {product.name}
         </Link>
 
         {/* Price row */}
         <div className="flex items-baseline gap-2 mb-2">
-          <span className="font-sans text-[13px] font-medium text-[#0A0908]">{formatPrice(product.base_price)}</span>
+          <span className="font-sans text-[13px] font-medium text-[#0A0908]">
+            {formatPrice(product.base_price)}
+          </span>
           {product.compare_price && product.compare_price > product.base_price && (
-            <span className="font-sans text-[12px] text-[#9B8F87] line-through">{formatPrice(product.compare_price)}</span>
+            <span className="font-sans text-[12px] text-[#9B8F87] line-through">
+              {formatPrice(product.compare_price)}
+            </span>
           )}
         </div>
 
+        {/* Star ratings — gold stars + decimal rating like reference ── */}
+        {reviewCount > 0 && (
+          <div className="flex items-center gap-1 mb-2">
+            {[1, 2, 3, 4, 5].map(i => (
+              <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="none">
+                <StarFill index={i} rating={rating} />
+              </svg>
+            ))}
+            <span className="text-[11px] font-sans text-[#6B5E55] ml-0.5 font-medium">
+              {rating.toFixed(1)}
+            </span>
+            <span className="text-[10px] font-sans text-[#9B8F87]">
+              ({reviewCount})
+            </span>
+          </div>
+        )}
+
         {/* Color swatches */}
         {swatches.length > 0 && (
-          <div className="flex items-center gap-1.5 mb-1.5">
+          <div className="flex items-center gap-1.5">
             {swatches.map((colour) => (
               <span
                 key={colour}
                 title={colour}
-                className="w-3 h-3 rounded-full border border-[#E0D4C4] ring-offset-1 hover:ring-1 hover:ring-[#7C4A2D] transition-all cursor-default"
+                className="w-3.5 h-3.5 rounded-full border border-[#D8CFC5] hover:ring-1 hover:ring-offset-1 hover:ring-[#7C4A2D] transition-all cursor-default"
                 style={{ backgroundColor: colour.toLowerCase() }}
               />
             ))}
             {(product.product_variants?.length ?? 0) > swatches.length && (
-              <span className="text-[10px] font-sans text-[#9B8F87]">+{(product.product_variants?.length ?? 0) - swatches.length}</span>
+              <span className="text-[10px] font-sans text-[#9B8F87]">
+                +{(product.product_variants?.length ?? 0) - swatches.length}
+              </span>
             )}
-          </div>
-        )}
-
-        {/* Star rating */}
-        {(product.review_count ?? 0) > 0 && (
-          <div className="flex items-center gap-1">
-            {[1,2,3,4,5].map(i => (
-              <svg key={i} width="9" height="9" viewBox="0 0 24 24" fill={(product.avg_rating ?? 0) >= i ? '#7C4A2D' : 'none'} stroke="#7C4A2D" strokeWidth="1.5">
-                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-              </svg>
-            ))}
-            <span className="text-[10px] font-sans text-[#6B5E55] ml-0.5">({product.review_count})</span>
           </div>
         )}
       </div>
