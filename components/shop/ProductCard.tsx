@@ -31,7 +31,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [wishlisting, setWishlisting] = useState(false)
   const wishlisted = isWishlisted(product.id)
   const discount = formatDiscount(product.compare_price || 0, product.base_price)
-  const isOutOfStock = product.product_variants?.every((v) => v.stock === 0) ?? false
+  const isOutOfStock = !product.product_variants?.some((v) => v.is_active && v.stock > 0)
   const imgUrl = getPrimaryImage(product)
   const hoverImg = product.product_images?.[1]?.url || imgUrl
   const swatches = getSwatches(product)
@@ -51,7 +51,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <Link href={`/product/${product.slug}`} tabIndex={-1}>
+        <Link href={`/product/${product.slug}/`} tabIndex={-1}>
           <Image
             src={hovered ? hoverImg : imgUrl}
             alt={product.name}
@@ -100,7 +100,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Quick-view CTA */}
         {!isOutOfStock && (
           <Link
-            href={`/product/${product.slug}`}
+            href={`/product/${product.slug}/`}
             className="btn-shimmer absolute bottom-0 left-0 right-0 bg-[#0A0908] text-white text-[10px] font-sans tracking-widest uppercase py-3.5 text-center translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300 ease-out relative overflow-hidden z-10"
           >
             View Product
@@ -116,7 +116,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </p>
         )}
         <Link
-          href={`/product/${product.slug}`}
+          href={`/product/${product.slug}/`}
           className="block font-serif text-[#0A0908] hover:text-[#7C4A2D] transition-colors leading-snug mb-1.5 text-[15px]"
         >
           {product.name}

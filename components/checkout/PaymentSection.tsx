@@ -3,6 +3,8 @@
 interface PaymentSectionProps {
   selected: string
   onSelect: (method: string) => void
+  /** COD surcharge in rupees (int). Displayed next to the COD option. Defaults to 49. */
+  codFeeRupees?: number
 }
 
 // UPI, Card, Net Banking and Wallet all open Razorpay's hosted checkout modal —
@@ -17,7 +19,7 @@ const ONLINE_METHODS = [
 
 const isOnline = (v: string) => ONLINE_METHODS.some((m) => m.value === v)
 
-export default function PaymentSection({ selected, onSelect }: PaymentSectionProps) {
+export default function PaymentSection({ selected, onSelect, codFeeRupees = 49 }: PaymentSectionProps) {
   const onlineSelected = isOnline(selected)
 
   return (
@@ -93,7 +95,7 @@ export default function PaymentSection({ selected, onSelect }: PaymentSectionPro
         />
         <span className="text-sm">📦</span>
         <span className="text-xs font-sans text-[#0a0a0a]">Cash on Delivery</span>
-        <span className="ml-auto text-[10px] font-sans text-[#9b9b9b]">+₹49 fee</span>
+        <span className="ml-auto text-[10px] font-sans text-[#9b9b9b]">+₹{codFeeRupees} fee</span>
       </label>
 
     </div>

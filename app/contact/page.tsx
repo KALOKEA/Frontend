@@ -127,7 +127,7 @@ export default function ContactPage() {
             <div className="border border-[#E0D4C4] p-5 bg-white">
               <p className="text-[11px] font-sans text-[#6B5E55] leading-relaxed">
                 For order tracking, visit our{' '}
-                <a href="/track-order" className="text-[#7C4A2D] underline underline-offset-2">Track Order</a>{' '}
+                <a href="/track-order/" className="text-[#7C4A2D] underline underline-offset-2">Track Order</a>{' '}
                 page for real-time updates.
               </p>
             </div>

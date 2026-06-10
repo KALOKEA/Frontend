@@ -15,7 +15,7 @@ export default function SortDropdown() {
   const onChange = (value: string) => {
     const p = new URLSearchParams(params.toString())
     p.set('sort', value)
-    router.push(`/shop?${p.toString()}`)
+    router.push(`/shop/?${p.toString()}`)
   }
 
   return (

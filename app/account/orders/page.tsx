@@ -186,7 +186,7 @@ export default function OrdersPage() {
           Your order history will appear here once you place your first order.
         </p>
         <Link
-          href="/shop"
+          href="/shop/"
           className="inline-block bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-8 py-3.5 hover:bg-[#333] transition-colors"
         >
           Explore Collection

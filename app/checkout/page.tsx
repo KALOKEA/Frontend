@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   const [addresses, setAddresses] = useState<Address[]>([])
   const [billing, setBilling] = useState<BillingForm>(emptyBilling)
   const [saveAddress, setSaveAddress] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState('razorpay')
+  const [paymentMethod, setPaymentMethod] = useState('upi')
   const [couponCode, setCouponCode] = useState<string | null>(null)
   const [couponDiscount, setCouponDiscount] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -41,7 +41,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!hydrated) return // wait for AuthBootstrap to restore session from refresh cookie
-    if (!items.length) { router.push('/cart'); return }
+    if (!items.length) { router.push('/cart/'); return }
     // Logged-in: load saved addresses and pre-fill email.
     // Guests: skip address load (they enter details manually).
     if (isLoggedIn) {
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
         trackPurchase(order.order_number, order.total, toGaItems(items))
         metaPurchase(order.order_number, order.total)
         clearCart()
-        router.push(`/checkout/success?order=${order.order_number}`)
+        router.push(`/checkout/success/?order=${order.order_number}`)
       } else {
         // Razorpay — script was pre-loaded on mount, so loadRazorpay resolves instantly.
         const [{ paymentsApi }, { loadRazorpay }] = await Promise.all([
@@ -183,7 +183,7 @@ export default function CheckoutPage() {
             trackPurchase(order.order_number, order.total, toGaItems(items))
             metaPurchase(order.order_number, order.total)
             clearCart()
-            router.push(`/checkout/success?order=${order.order_number}`)
+            router.push(`/checkout/success/?order=${order.order_number}`)
           },
           prefill: {
             name: `${billing.first_name} ${billing.last_name}`.trim(),

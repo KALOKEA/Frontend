@@ -7,26 +7,26 @@ import { authApi } from '@/lib/api/auth'
 import { useToast } from '@/components/ui/Toast'
 
 const NAV = [
-  { label: 'Dashboard',  href: '/admin' },
-  { label: 'Homepage',   href: '/admin/homepage' },
-  { label: 'CMS Pages',  href: '/admin/cms' },
-  { label: 'Products',   href: '/admin/products' },
-  { label: 'Categories', href: '/admin/categories' },
-  { label: 'Orders',     href: '/admin/orders' },
-  { label: 'Shipments',  href: '/admin/shipments' },
-  { label: 'Inventory',  href: '/admin/inventory' },
-  { label: 'Coupons',    href: '/admin/coupons' },
-  { label: 'Banners',    href: '/admin/banners' },
-  { label: 'Customers',  href: '/admin/customers' },
-  { label: 'Reviews',    href: '/admin/reviews' },
-  { label: 'Returns',    href: '/admin/returns' },
-  { label: 'Exchanges',  href: '/admin/exchanges' },
-  { label: 'Analytics',  href: '/admin/analytics' },
-  { label: 'GST',        href: '/admin/gst' },
-  { label: 'Newsletter', href: '/admin/newsletter' },
-  { label: 'Email Log',  href: '/admin/email-log' },
-  { label: 'Activity',   href: '/admin/activity' },
-  { label: 'Settings',   href: '/admin/settings' },
+  { label: 'Dashboard',  href: '/admin/' },
+  { label: 'Homepage',   href: '/admin/homepage/' },
+  { label: 'CMS Pages',  href: '/admin/cms/' },
+  { label: 'Products',   href: '/admin/products/' },
+  { label: 'Categories', href: '/admin/categories/' },
+  { label: 'Orders',     href: '/admin/orders/' },
+  { label: 'Shipments',  href: '/admin/shipments/' },
+  { label: 'Inventory',  href: '/admin/inventory/' },
+  { label: 'Coupons',    href: '/admin/coupons/' },
+  { label: 'Banners',    href: '/admin/banners/' },
+  { label: 'Customers',  href: '/admin/customers/' },
+  { label: 'Reviews',    href: '/admin/reviews/' },
+  { label: 'Returns',    href: '/admin/returns/' },
+  { label: 'Exchanges',  href: '/admin/exchanges/' },
+  { label: 'Analytics',  href: '/admin/analytics/' },
+  { label: 'GST',        href: '/admin/gst/' },
+  { label: 'Newsletter', href: '/admin/newsletter/' },
+  { label: 'Email Log',  href: '/admin/email-log/' },
+  { label: 'Activity',   href: '/admin/activity/' },
+  { label: 'Settings',   href: '/admin/settings/' },
 ]
 
 interface SidebarProps {
@@ -58,7 +58,8 @@ export default function AdminSidebar({ open = false, onClose }: SidebarProps) {
           key={n.href}
           href={n.href}
           className={`flex items-center px-5 py-2.5 text-[11px] font-sans tracking-widest uppercase transition-colors ${
-            pathname === n.href
+            // Dashboard exact match; all others: active if pathname starts with the href
+            (n.href === '/admin/' ? pathname === '/admin/' : pathname.startsWith(n.href))
               ? 'bg-[#faf8f5] text-[#0a0a0a] font-medium border-l-2 border-[#c8a4a5]'
               : 'text-[#6b6b6b] hover:text-[#0a0a0a] hover:bg-[#faf8f5]'
           }`}

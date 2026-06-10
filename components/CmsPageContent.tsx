@@ -17,7 +17,9 @@ export default function CmsPageContent({ slug, staticContent }: Props) {
     fetch(`${API}/cms/${slug}`)
       .then(r => r.json())
       .then(data => {
-        if (data?.content) setHtml(data.content)
+        // Backend wraps all responses in { success, data, timestamp }
+        const payload = data?.data ?? data
+        if (payload?.content) setHtml(payload.content)
         else if (staticContent) setHtml(staticContent)
       })
       .catch(() => { if (staticContent) setHtml(staticContent) })

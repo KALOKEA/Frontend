@@ -15,6 +15,7 @@ export interface StoreSettings {
   low_stock_threshold?: number
   // Footer social / brand links (migration 022 + 023)
   footer_instagram_url?: string
+  footer_whatsapp_url?: string
   footer_facebook_url?: string
   footer_pinterest_url?: string
 }
@@ -22,7 +23,7 @@ export interface StoreSettings {
 export interface GstReport {
   period: string
   gst_rate: number
-  orders: number
+  ledger_rows: number
   gross_sales: number
   net_value: number
   total_gst: number

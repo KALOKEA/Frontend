@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import { categoriesApi, type Category } from '@/lib/api/categories'
 import { getHomepageData } from '@/lib/api/homepageContent'
 
-// Unsplash fallback images (same as prototype) — used when backend image_url is empty
+// Unsplash fallback images — same as design reference prototype
 const FALLBACK_IMAGES: Record<string, string> = {
   dresses:     'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=75',
   tops:        'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=600&q=75',
@@ -16,7 +16,8 @@ const FALLBACK_IMAGES: Record<string, string> = {
   default:     'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=75',
 }
 
-// Static fallback categories — shown when backend returns no categories
+// Static fallback — used when backend returns no categories
+// Order matches design: Dresses(1), Tops(2-center), Bags(3), Bottoms(4), Accessories(5)
 const STATIC_CATEGORIES: Category[] = [
   { id: 'c1', name: 'Dresses',     slug: 'dresses',     image_url: '', sort_order: 1, is_active: true },
   { id: 'c2', name: 'Tops',        slug: 'tops',         image_url: '', sort_order: 2, is_active: true },
@@ -29,6 +30,31 @@ function getCatImage(cat: Category): string {
   if (cat.image_url) return cat.image_url
   return FALLBACK_IMAGES[cat.slug] || FALLBACK_IMAGES.default
 }
+
+/**
+ * Mosaic layout — matches design reference CSS exactly:
+ *
+ * Desktop 12-col grid (≥768px):
+ *   card[0] Dresses:     col 1/5,  row 1/2,  aspect 3/4   (left-top portrait)
+ *   card[1] Tops:        col 5/9,  row 1/3,  auto height  (center tall — spans both rows)
+ *   card[2] Bags:        col 9/13, row 1/2,  aspect 3/4   (right-top portrait)
+ *   card[3] Bottoms:     col 1/5,  row 2/3,  aspect 3/2   (left-bottom landscape)
+ *   card[4] Accessories: col 9/13, row 2/3,  aspect 3/2   (right-bottom landscape)
+ *
+ * Mobile 2-col grid (<768px): all cards span 1 col, aspect 3/4
+ */
+const MOSAIC_PLACEMENT = [
+  // card[0]: left-top portrait
+  'md:col-start-1 md:col-end-5 md:row-start-1 md:row-end-2 md:aspect-[3/4]',
+  // card[1]: center tall (spans both rows — no aspect, height from combined rows)
+  'md:col-start-5 md:col-end-9 md:row-start-1 md:row-end-3 md:aspect-auto',
+  // card[2]: right-top portrait
+  'md:col-start-9 md:col-end-13 md:row-start-1 md:row-end-2 md:aspect-[3/4]',
+  // card[3]: left-bottom landscape
+  'md:col-start-1 md:col-end-5 md:row-start-2 md:row-end-3 md:aspect-[3/2]',
+  // card[4]: right-bottom landscape
+  'md:col-start-9 md:col-end-13 md:row-start-2 md:row-end-3 md:aspect-[3/2]',
+]
 
 export default function CategoryGrid() {
   const [categories, setCategories] = useState<Category[]>([])
@@ -58,78 +84,68 @@ export default function CategoryGrid() {
     return () => obs.disconnect()
   }, [categories])
 
-  // Always render — static fallback ensures categories is never empty after mount
-  const cats = categories.length ? categories : STATIC_CATEGORIES
-  const [featured, ...rest] = cats.slice(0, 6)
+  const cats = (categories.length ? categories : STATIC_CATEGORIES).slice(0, 5)
 
   return (
-    <section className="py-20 bg-[#F2EAE0]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    /* section-sm: padding 48px 0 */
+    <section className="py-12">
 
-        {/* Section header */}
-        <div className="text-center mb-12">
-          <div className="eyebrow-center mb-4">Shop by Category</div>
-          <h2 className="font-serif font-light text-[#0A0908]" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
-            Find Your <em className="italic" style={{ color: '#7C4A2D' }}>Signature</em>
-          </h2>
-        </div>
+      {/* Section header — left-aligned, inside container (.section-head) */}
+      <div className="mx-auto px-4 sm:px-8 mb-10" style={{ maxWidth: 1380 }}>
+        <span
+          className="block text-[0.72rem] font-semibold tracking-[0.20em] uppercase mb-2.5"
+          style={{ color: '#7C4A2D' }}
+        >
+          Shop by Category
+        </span>
+        <h2
+          className="font-serif font-normal leading-[1.15]"
+          style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)', color: '#0A0806' }}
+        >
+          Find Your <em className="italic font-light">Signature</em>
+        </h2>
+      </div>
 
-        {/* Grid */}
-        <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
-
-          {/* Featured — spans 2 cols on md+ */}
-          {featured && (
-            <Link
-              href={`/shop?category=${featured.slug}`}
-              className="group relative overflow-hidden bg-[#E0D4C4] col-span-2 md:col-span-1 row-span-2 aspect-[3/4] md:aspect-auto"
-              style={{ minHeight: 420 }}
-            >
-              <Image
-                src={getCatImage(featured)}
-                alt={featured.name}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                sizes="(max-width: 768px) 100vw, 33vw"
-                loading="lazy"
-                unoptimized
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-black/18 to-transparent group-hover:from-black/76 transition-all duration-500" />
-              <div className="absolute inset-0 flex flex-col items-start justify-end p-6 sm:p-8 text-[#FDFAF6]">
-                <span className="text-[9px] font-sans tracking-[0.28em] uppercase text-[#FDFAF6]/60 mb-2">Featured</span>
-                <p className="font-serif font-light text-[1.6rem] leading-tight tracking-wide">{featured.name}</p>
-                <span className="mt-3 text-[9.5px] font-sans tracking-widest uppercase border-b border-[#C4A882] pb-0.5 text-[#C4A882] group-hover:text-white transition-colors">
-                  Shop Now →
-                </span>
-              </div>
-            </Link>
-          )}
-
-          {/* Rest */}
-          {rest.slice(0, 5).map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/shop?category=${cat.slug}`}
-              className="group relative overflow-hidden bg-[#E0D4C4] aspect-square"
-            >
-              <Image
-                src={getCatImage(cat)}
-                alt={cat.name}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.06]"
-                sizes="(max-width: 768px) 50vw, 25vw"
-                loading="lazy"
-                unoptimized
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent group-hover:from-black/70 transition-all duration-500" />
-              <div className="absolute inset-0 flex flex-col items-center justify-end pb-4 sm:pb-5 px-3 text-[#FDFAF6] text-center">
-                <p className="font-serif font-light text-[1rem] sm:text-[1.1rem] tracking-wide leading-tight">{cat.name}</p>
-                <span className="mt-1.5 text-[9px] font-sans tracking-widest uppercase text-[#C4A882] opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
-                  Shop Now
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+      {/* Mosaic grid — full-width with own max-width + padding (matches .mosaic CSS) */}
+      {/* Responsive gutter: px-4 mobile → px-7 sm → px-[52px] lg (matches --gutter CSS var) */}
+      <div
+        ref={gridRef}
+        className="grid grid-cols-2 md:grid-cols-12 gap-3 mx-auto px-4 sm:px-7 lg:px-[52px]"
+        style={{ maxWidth: 1380 }}
+      >
+        {cats.map((cat, i) => (
+          <Link
+            key={cat.id}
+            href={`/shop/${cat.slug}/`}
+            className={`group relative overflow-hidden bg-[#E4DDD4] aspect-[3/4] ${MOSAIC_PLACEMENT[i] ?? ''}`}
+            style={{ borderRadius: 4 }}
+          >
+            <Image
+              src={getCatImage(cat)}
+              alt={cat.name}
+              fill
+              className="object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.05]"
+              sizes="(max-width: 768px) 50vw, 33vw"
+              loading="lazy"
+              unoptimized
+            />
+            {/* Gradient overlay — matches ::after in design CSS */}
+            <div
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(to top, rgba(10,8,6,0.65) 0%, transparent 55%)' }}
+            />
+            {/* Label — matches .mosaic-label */}
+            <div className="absolute bottom-5 left-5 z-10 text-white">
+              <span
+                className="block text-[0.68rem] font-semibold tracking-[0.20em] uppercase mb-1"
+                style={{ opacity: 0.7 }}
+              >
+                Category
+              </span>
+              <h3 className="font-serif font-normal text-[1.3rem]">{cat.name}</h3>
+            </div>
+          </Link>
+        ))}
       </div>
     </section>
   )

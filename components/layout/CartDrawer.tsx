@@ -92,7 +92,7 @@ export default function CartDrawer() {
                   {/* Details */}
                   <div className="flex-1 min-w-0">
                     <Link
-                      href={`/product/${item.slug}`}
+                      href={`/product/${item.slug}/`}
                       onClick={closeCart}
                       className="text-sm font-medium text-[#0A0908] hover:text-[#7C4A2D] transition-colors line-clamp-2 leading-tight"
                     >
@@ -147,14 +147,14 @@ export default function CartDrawer() {
             <p className="text-[10px] text-[#9B8F87]">GST and shipping calculated at checkout</p>
 
             <Link
-              href="/checkout"
+              href="/checkout/"
               onClick={closeCart}
               className="block w-full bg-[#0A0908] text-[#FDFAF6] text-[10px] font-sans tracking-[0.22em] uppercase text-center py-4 hover:bg-[#1A1612] transition-colors"
             >
               Checkout
             </Link>
             <Link
-              href="/cart"
+              href="/cart/"
               onClick={closeCart}
               className="block w-full border border-[#E0D4C4] text-[#0A0908] text-[10px] font-sans tracking-[0.22em] uppercase text-center py-3 hover:bg-[#F2EAE0] transition-colors"
             >

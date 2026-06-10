@@ -29,7 +29,7 @@ export default function FooterWrapper() {
   useEffect(() => {
     fetch(`${API}/settings/public`)
       .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d) setSettings({ ...FALLBACK, ...d }) })
+      .then(d => { if (d) setSettings({ ...FALLBACK, ...(d?.data ?? d) }) })
       .catch(() => {/* keep fallback */})
   }, [])
 

@@ -5,10 +5,12 @@ const API = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.
 
 export default function LiveChatWidget() {
   useEffect(() => {
-    fetch(`${API}/settings`)
+    fetch(`${API}/settings/public`)
       .then(r => r.json())
       .then(settings => {
-        const script = settings?.live_chat_widget?.trim()
+        // Backend wraps all responses in { success, data, timestamp } — unwrap.
+        const payload = settings?.data ?? settings
+        const script = payload?.live_chat_widget?.trim()
         if (!script) return
         const container = document.createElement('div')
         container.id = 'kalokea-chat-widget'

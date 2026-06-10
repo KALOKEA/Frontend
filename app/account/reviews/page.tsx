@@ -34,7 +34,7 @@ export default function MyReviewsPage() {
             After receiving your order, open the product page to leave a review.
           </p>
           <Link
-            href="/account/orders"
+            href="/account/orders/"
             className="inline-block text-[10px] uppercase tracking-widest text-[#0a0a0a] border border-[#0a0a0a] px-5 py-2.5 hover:bg-[#0a0a0a] hover:text-white transition-colors"
           >
             View My Orders
@@ -53,7 +53,7 @@ export default function MyReviewsPage() {
                   <div>
                     {productSlug ? (
                       <Link
-                        href={`/product/${productSlug}`}
+                        href={`/product/${productSlug}/`}
                         className="font-medium text-[#0a0a0a] hover:text-[#7C4A2D] hover:underline"
                       >
                         {productName}

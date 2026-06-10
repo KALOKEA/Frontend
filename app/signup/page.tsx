@@ -99,11 +99,11 @@ function SignupContent() {
               />
               <span className="text-[11px] font-sans text-[#6b6b6b] leading-relaxed">
                 I agree to Kalokea&rsquo;s{' '}
-                <Link href="/terms" className="text-[#0a0a0a] underline hover:text-[#7C4A2D]" target="_blank">
+                <Link href="/terms/" className="text-[#0a0a0a] underline hover:text-[#7C4A2D]" target="_blank">
                   Terms &amp; Conditions
                 </Link>{' '}
                 and{' '}
-                <Link href="/privacy-policy" className="text-[#0a0a0a] underline hover:text-[#7C4A2D]" target="_blank">
+                <Link href="/privacy-policy/" className="text-[#0a0a0a] underline hover:text-[#7C4A2D]" target="_blank">
                   Privacy Policy
                 </Link>
               </span>
@@ -114,7 +114,7 @@ function SignupContent() {
 
             <p className="text-center text-[11px] font-sans text-[#9b9b9b] pt-2">
               Already have an account?{' '}
-              <Link href="/login" className="text-[#0a0a0a] underline hover:text-[#7C4A2D]">
+              <Link href="/login/" className="text-[#0a0a0a] underline hover:text-[#7C4A2D]">
                 Sign in
               </Link>
             </p>

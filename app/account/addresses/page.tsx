@@ -16,9 +16,13 @@ export default function AddressesPage() {
   }, [])
 
   const remove = async (id: string) => {
-    await addressesApi.remove(id).catch(() => toast('Failed to delete', 'error'))
-    setAddresses((prev) => prev.filter((a) => a.id !== id))
-    toast('Address removed')
+    try {
+      await addressesApi.remove(id)
+      setAddresses((prev) => prev.filter((a) => a.id !== id))
+      toast('Address removed')
+    } catch {
+      toast('Failed to delete address', 'error')
+    }
   }
 
   if (loading) return <div className="flex justify-center py-16"><Spinner /></div>
@@ -55,7 +59,7 @@ export default function AddressesPage() {
             </p>
             <div className="flex gap-3 mt-3">
               {!addr.is_default && (
-                <button onClick={() => addressesApi.setDefault(addr.id).then(() => setAddresses((prev) => prev.map((a) => ({ ...a, is_default: a.id === addr.id }))))} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] underline">
+                <button onClick={() => addressesApi.setDefault(addr.id).then(() => setAddresses((prev) => prev.map((a) => ({ ...a, is_default: a.id === addr.id })))).catch(() => toast('Failed to set default', 'error'))} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] underline">
                   Set Default
                 </button>
               )}

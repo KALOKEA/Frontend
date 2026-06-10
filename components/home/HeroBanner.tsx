@@ -66,13 +66,13 @@ export default function HeroBanner() {
           {/* CTAs */}
           <div className={`flex flex-col sm:flex-row flex-wrap gap-4 ${mounted ? 'animate-fade-up anim-delay-400' : 'opacity-0'}`}>
             <Link
-              href={c.hero_cta1_link || '/shop'}
+              href={c.hero_cta1_link || '/shop/'}
               className="btn-shimmer border border-white/50 text-white text-[9.5px] font-sans tracking-[0.22em] uppercase px-8 py-4 hover:bg-white/10 transition-colors duration-300 text-center relative overflow-hidden"
             >
               {c.hero_cta1_label}
             </Link>
             <Link
-              href={c.hero_cta2_link || '/shop'}
+              href={c.hero_cta2_link || '/shop/'}
               className="text-[9.5px] font-sans tracking-[0.22em] uppercase px-8 py-4 text-center transition-all duration-300"
               style={{ background: '#C4A882', color: '#1A1612' }}
             >

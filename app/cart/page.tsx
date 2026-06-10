@@ -37,7 +37,7 @@ export default function CartPage() {
             <p className="text-sm font-sans font-medium text-[#0a0a0a]">{formatPrice(total)}</p>
           </div>
           <Link
-            href="/checkout"
+            href="/checkout/"
             className="shrink-0 bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-5 py-3 hover:bg-[#2a2a2a] transition-colors"
           >
             Checkout

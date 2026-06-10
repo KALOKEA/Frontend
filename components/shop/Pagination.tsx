@@ -17,7 +17,7 @@ export default function Pagination({ total, page, limit }: PaginationProps) {
   const goTo = (p: number) => {
     const sp = new URLSearchParams(params.toString())
     sp.set('page', String(p))
-    router.push(`/shop?${sp.toString()}`)
+    router.push(`/shop/?${sp.toString()}`)
   }
 
   return (

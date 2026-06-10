@@ -33,8 +33,8 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
       )}
 
       <div
-        className={`fixed top-0 left-0 h-full w-[82vw] max-w-[320px] bg-[#FDFAF6] z-50 transform transition-transform duration-300 flex flex-col ${
-          open ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed top-0 right-0 h-full w-[82vw] max-w-[320px] bg-[#FDFAF6] z-50 transform transition-transform duration-300 flex flex-col ${
+          open ? 'translate-x-0' : 'translate-x-full'
         }`}
         aria-modal="true"
         role="dialog"
@@ -73,7 +73,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         {/* Footer links */}
         <div className="px-5 py-4 border-t border-[#E0D4C4] flex flex-col gap-1 shrink-0">
           <Link
-            href="/account"
+            href="/account/"
             onClick={onClose}
             className="flex items-center gap-3 min-h-[44px] text-sm font-sans text-[#6B5E55] hover:text-[#0A0908] transition-colors"
           >
@@ -84,7 +84,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             My Account
           </Link>
           <Link
-            href="/account/wishlist"
+            href="/account/wishlist/"
             onClick={onClose}
             className="flex items-center gap-3 min-h-[44px] text-sm font-sans text-[#6B5E55] hover:text-[#0A0908] transition-colors"
           >

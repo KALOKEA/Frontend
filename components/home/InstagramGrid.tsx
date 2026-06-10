@@ -13,8 +13,8 @@ const GRID_IMAGES = [
   'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=600&q=80',
 ]
 
-const InstagramIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">
+const InstagramIcon = ({ color = 'currentColor' }: { color?: string }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round">
     <rect x="2" y="2" width="20" height="20" rx="5"/>
     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
@@ -65,7 +65,7 @@ export default function InstagramGrid() {
               <div className="absolute inset-0 bg-[#7C4A2D] opacity-0 group-hover:opacity-25 transition-opacity duration-400 pointer-events-none" />
               {/* Instagram icon on hover */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <InstagramIcon />
+                <InstagramIcon color="white" />
               </div>
             </a>
           ))}

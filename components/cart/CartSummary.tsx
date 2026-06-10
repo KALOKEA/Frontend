@@ -42,18 +42,18 @@ export default function CartSummary({ couponDiscount = 0 }: { couponDiscount?: n
           <span>Total</span>
           <span>{formatPrice(total)}</span>
         </div>
-        <p className="text-[10px] font-sans text-[#6b6b6b] mt-1">Inclusive of all taxes</p>
+        <p className="text-[10px] font-sans text-[#6b6b6b] mt-1">GST and final shipping calculated at checkout</p>
       </div>
 
       <Link
-        href="/checkout"
+        href="/checkout/"
         className="block w-full bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase py-4 text-center hover:bg-[#2a2a2a] transition-colors"
       >
         Proceed to Checkout
       </Link>
 
       <Link
-        href="/shop"
+        href="/shop/"
         className="block text-center text-[10px] font-sans text-[#6b6b6b] hover:text-[#0a0a0a] mt-3 tracking-widest uppercase"
       >
         Continue Shopping

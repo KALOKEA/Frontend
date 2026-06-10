@@ -55,7 +55,7 @@ export default function EditorialBanner() {
         </p>
 
         <Link
-          href="/about"
+          href="/about/"
           className="self-start text-[9.5px] font-sans tracking-[0.28em] uppercase text-[#C4A882] border-b border-[#C4A882]/40 pb-0.5 hover:text-[#FDFAF6] hover:border-[#FDFAF6]/40 transition-colors"
         >
           Our Story →

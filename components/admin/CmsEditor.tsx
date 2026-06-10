@@ -22,12 +22,12 @@ const PAGE_LABELS: Record<string, string> = {
 }
 
 const PAGE_URLS: Record<string, string> = {
-  'about':           '/about',
-  'contact':         '/contact',
-  'privacy-policy':  '/privacy-policy',
-  'refund-policy':   '/refund-policy',
-  'shipping-policy': '/shipping-policy',
-  'terms':           '/terms',
+  'about':           '/about/',
+  'contact':         '/contact/',
+  'privacy-policy':  '/privacy-policy/',
+  'refund-policy':   '/refund-policy/',
+  'shipping-policy': '/shipping-policy/',
+  'terms':           '/terms/',
 }
 
 function Flash({ msg }: { msg: { type: 'ok' | 'err'; text: string } | null }) {

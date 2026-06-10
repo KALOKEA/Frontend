@@ -24,7 +24,7 @@ function WishlistCard({ product }: { product: Product }) {
 
   const imgUrl = getPrimaryImage(product)
   const discount = formatDiscount(product.compare_price || 0, product.base_price)
-  const inStockVariant = product.product_variants?.find((v) => v.stock > 0)
+  const inStockVariant = product.product_variants?.find((v) => v.is_active && v.stock > 0)
   const isOutOfStock = !inStockVariant
 
   function handleAddToCart() {
@@ -52,7 +52,7 @@ function WishlistCard({ product }: { product: Product }) {
   return (
     <div className="group relative bg-white border border-[#e8e4e0] overflow-hidden flex flex-col">
       {/* Image */}
-      <Link href={`/product/${product.slug}`} className="relative block aspect-[3/4] overflow-hidden bg-[#F2EAE0] flex-shrink-0">
+      <Link href={`/product/${product.slug}/`} className="relative block aspect-[3/4] overflow-hidden bg-[#F2EAE0] flex-shrink-0">
         <Image
           src={imgUrl}
           alt={product.name}
@@ -94,7 +94,7 @@ function WishlistCard({ product }: { product: Product }) {
           </p>
         )}
         <Link
-          href={`/product/${product.slug}`}
+          href={`/product/${product.slug}/`}
           className="font-serif text-[#0A0908] hover:text-[#7C4A2D] transition-colors text-[15px] leading-snug mb-2 line-clamp-2"
         >
           {product.name}
@@ -189,7 +189,7 @@ export default function WishlistPage() {
           Save the pieces you love — they&apos;ll wait right here for you.
         </p>
         <Link
-          href="/shop"
+          href="/shop/"
           className="bg-[#0A0908] text-white text-[10px] font-sans tracking-widest uppercase px-8 py-3.5 hover:bg-[#7C4A2D] transition-colors"
         >
           Browse Products
@@ -212,7 +212,7 @@ export default function WishlistPage() {
         </div>
         {!loading && products.length > 0 && (
           <Link
-            href="/shop"
+            href="/shop/"
             className="text-[10px] font-sans tracking-widest uppercase text-[#7C4A2D] hover:underline"
           >
             Continue Shopping

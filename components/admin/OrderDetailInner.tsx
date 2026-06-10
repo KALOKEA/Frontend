@@ -111,7 +111,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
   if (loading) return <div className="flex justify-center py-20"><Spinner size="lg" /></div>
   if (!order)  return (
     <div className="py-20 text-center text-[#6b6b6b]">
-      Order not found. <Link href="/admin/orders" className="underline">Back to orders</Link>
+      Order not found. <Link href="/admin/orders/" className="underline">Back to orders</Link>
     </div>
   )
 

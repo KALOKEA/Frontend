@@ -9,7 +9,7 @@ import { useToast } from '@/components/ui/Toast'
 const NAV = [
   {
     label: 'My Orders',
-    href: '/account/orders',
+    href: '/account/orders/',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
@@ -18,7 +18,7 @@ const NAV = [
   },
   {
     label: 'My Profile',
-    href: '/account/profile',
+    href: '/account/profile/',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -27,7 +27,7 @@ const NAV = [
   },
   {
     label: 'Addresses',
-    href: '/account/addresses',
+    href: '/account/addresses/',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
@@ -36,7 +36,7 @@ const NAV = [
   },
   {
     label: 'Wishlist',
-    href: '/account/wishlist',
+    href: '/account/wishlist/',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -45,7 +45,7 @@ const NAV = [
   },
   {
     label: 'My Reviews',
-    href: '/account/reviews',
+    href: '/account/reviews/',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -72,7 +72,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
-    if (hydrated && !isLoggedIn) router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
+    if (hydrated && !isLoggedIn) router.push(`/login/?redirect=${encodeURIComponent(pathname)}`)
   }, [hydrated, isLoggedIn, router])
 
   // Close mobile nav on route change
@@ -151,11 +151,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
               {/* Quick stats */}
               <div className="grid grid-cols-2 gap-2 pt-4 border-t border-[#f0ece8]">
-                <Link href="/account/orders" className="text-center p-2 rounded hover:bg-[#faf8f5] transition-colors group">
+                <Link href="/account/orders/" className="text-center p-2 rounded hover:bg-[#faf8f5] transition-colors group">
                   <p className="font-serif text-lg text-[#0a0a0a] group-hover:text-[#7C4A2D] transition-colors">Orders</p>
                   <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b]">History</p>
                 </Link>
-                <Link href="/account/wishlist" className="text-center p-2 rounded hover:bg-[#faf8f5] transition-colors group">
+                <Link href="/account/wishlist/" className="text-center p-2 rounded hover:bg-[#faf8f5] transition-colors group">
                   <p className="font-serif text-lg text-[#0a0a0a] group-hover:text-[#7C4A2D] transition-colors">Wishlist</p>
                   <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b]">Saved</p>
                 </Link>

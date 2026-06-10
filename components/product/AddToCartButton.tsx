@@ -71,7 +71,7 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
     if (!item) return
     setBuyingNow(true)
     addItem(item)
-    router.push('/checkout')
+    router.push('/checkout/')
   }
 
   const isOOS = selectedVariant?.stock === 0

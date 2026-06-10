@@ -76,9 +76,9 @@ export const HERO_DEFAULTS: HomepageContent = {
   hero_subtext:
     'Refined silhouettes, conscious fabrics, and designs that move with you — from morning coffee to midnight celebrations.',
   hero_cta1_label: 'Shop the Collection',
-  hero_cta1_link: '/shop',
+  hero_cta1_link: '/shop/',
   hero_cta2_label: 'New Arrivals',
-  hero_cta2_link: '/shop?tag=new-arrivals',
+  hero_cta2_link: '/shop/?tag=new-arrivals',
   hero_image_url:
     'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1400&q=90&fit=crop&crop=top',
   hero_video_url: '',
@@ -100,7 +100,8 @@ export const homepageContentApi = {
   /** Fetch all keys — no auth required. Falls back gracefully on network error. */
   getAll: (): Promise<HomepageContent> =>
     fetch(`${BASE_URL}/homepage-content`, { cache: 'no-store' })
-      .then((r) => (r.ok ? r.json() : HERO_DEFAULTS))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => json ? ({ ...HERO_DEFAULTS, ...(json?.data ?? json) }) : HERO_DEFAULTS)
       .catch(() => HERO_DEFAULTS),
 
   /** Admin: update a single key. */

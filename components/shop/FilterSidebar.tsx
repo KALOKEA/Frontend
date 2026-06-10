@@ -20,10 +20,10 @@ export function useFilters() {
     if (value) p.set(key, value)
     else p.delete(key)
     p.delete('page')
-    router.push(`/shop?${p.toString()}`)
+    router.push(`/shop/?${p.toString()}`)
   }, [params, router])
 
-  const clearAll = useCallback(() => router.push('/shop'), [router])
+  const clearAll = useCallback(() => router.push('/shop/'), [router])
 
   return { params, updateParam, clearAll }
 }

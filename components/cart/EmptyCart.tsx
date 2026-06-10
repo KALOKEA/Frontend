@@ -12,7 +12,7 @@ export default function EmptyCart() {
       <h2 className="font-serif text-2xl text-[#0a0a0a] mb-2">Your cart is empty</h2>
       <p className="text-sm font-sans text-[#6b6b6b] mb-8">Looks like you haven&apos;t added anything yet.</p>
       <Link
-        href="/shop"
+        href="/shop/"
         className="inline-block bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-8 py-4 hover:bg-[#2a2a2a] transition-colors"
       >
         Start Shopping

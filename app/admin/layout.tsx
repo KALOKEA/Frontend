@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (!hydrated) return
-    if (!isLoggedIn) { router.replace(`/login?redirect=${encodeURIComponent(pathname)}`); return }
+    if (!isLoggedIn) { router.replace(`/login/?redirect=${encodeURIComponent(pathname)}`); return }
     if (user?.role !== 'admin') { router.replace('/'); return }
   }, [hydrated, isLoggedIn, user, router, pathname])
 

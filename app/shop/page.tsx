@@ -25,7 +25,7 @@ function ActiveFilters() {
     const p = new URLSearchParams(params.toString())
     keys.forEach(k => p.delete(k))
     p.delete('page')
-    router.push(`/shop?${p.toString()}`)
+    router.push(`/shop/?${p.toString()}`)
   }
 
   if (search) chips.push({ label: `Search: "${search}"`, remove: () => removeParam('search') })
@@ -52,7 +52,7 @@ function ActiveFilters() {
         </button>
       ))}
       <button
-        onClick={() => router.push('/shop')}
+        onClick={() => router.push('/shop/')}
         className="text-[10px] uppercase tracking-widest text-[#7C4A2D] hover:underline ml-1"
       >
         Clear all

@@ -31,7 +31,7 @@ export default function BestSellers() {
             </h2>
           </div>
           <Link
-            href="/shop?sort=bestseller"
+            href="/shop/?sort=bestseller"
             className="hidden sm:block text-[9.5px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] border-b border-[#7C4A2D]/40 pb-0.5 hover:text-[#5C3520] transition-colors whitespace-nowrap"
           >
             See All →
@@ -74,7 +74,7 @@ export default function BestSellers() {
             {/* Mobile view all */}
             <div className="sm:hidden text-center mt-8">
               <Link
-                href="/shop?sort=bestseller"
+                href="/shop/?sort=bestseller"
                 className="text-[9.5px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] border-b border-[#7C4A2D]/40 pb-0.5"
               >
                 See All Best Sellers →

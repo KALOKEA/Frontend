@@ -72,11 +72,11 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
     brand: { '@type': 'Brand', name: 'Kalokea' },
     offers: {
       '@type': 'Offer',
-      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'}/product/${product.slug}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'}/product/${product.slug}/`,
       priceCurrency: 'INR',
       // prices in paise → convert to rupees for schema
       price: (product.base_price / 100).toFixed(2),
-      availability: (product.product_variants?.some((v) => v.stock > 0))
+      availability: (product.product_variants?.some((v) => v.is_active && v.stock > 0))
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
       seller: { '@type': 'Organization', name: 'Kalokea' },
@@ -175,11 +175,11 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
         <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#9b9b9b] mb-8 overflow-x-auto whitespace-nowrap">
           <a href="/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Home</a>
           <span className="shrink-0">/</span>
-          <a href="/shop" className="hover:text-[#0a0a0a] transition-colors shrink-0">Shop</a>
+          <a href="/shop/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Shop</a>
           {product.categories && (
             <>
               <span className="shrink-0">/</span>
-              <a href={`/shop?category=${product.categories.slug}`} className="hover:text-[#0a0a0a] transition-colors shrink-0">
+              <a href={`/shop/${product.categories.slug}/`} className="hover:text-[#0a0a0a] transition-colors shrink-0">
                 {product.categories.name}
               </a>
             </>
@@ -233,7 +233,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                 </>
               )}
             </div>
-            <p className="text-[10px] font-sans text-[#9b9b9b] tracking-wide">Inclusive of all taxes · Free shipping above ₹999</p>
+            <p className="text-[10px] font-sans text-[#9b9b9b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
 
             {product.product_variants && product.product_variants.length > 0 && (
               <div id="variant-picker">

@@ -124,7 +124,7 @@ export default function FeaturedProducts() {
             </div>
             <div className="text-center mt-12">
               <Link
-                href="/shop"
+                href="/shop/"
                 className="btn-shimmer inline-block border border-[#0A0908] text-[#0A0908] text-[9.5px] font-sans tracking-[0.22em] uppercase px-10 py-3.5 hover:bg-[#0A0908] hover:text-[#FDFAF6] transition-colors duration-300 relative overflow-hidden"
               >
                 View All Products

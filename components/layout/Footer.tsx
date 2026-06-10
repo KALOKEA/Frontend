@@ -60,7 +60,7 @@ export default function Footer({
           {/* Brand col */}
           <div className="col-span-2 sm:col-span-1">
             <div className="font-serif font-light text-[#FDFAF6] text-[1.3rem] tracking-[0.12em] mb-4 select-none">KALOKEA</div>
-            <p className="text-[12px] font-sans text-[#4A4040] leading-relaxed mb-5 max-w-[210px]">
+            <p className="text-[12px] font-sans text-[#9B8F87] leading-relaxed mb-5 max-w-[210px]">
               Premium women's fashion rooted in Indian craftsmanship and global sensibility. Dressed for every chapter of your story.
             </p>
             <div className="flex items-center gap-2.5">
@@ -109,7 +109,7 @@ export default function Footer({
           <div className="flex flex-col gap-2.5">
             <span className="text-[9px] uppercase tracking-[0.28em] text-[#7C4A2D] mb-1 font-sans">Shop</span>
             {([
-              ['New Arrivals',   '/shop/?category=new-arrivals'],
+              ['New Arrivals',   '/shop/?sort=newest'],
               ['Dresses',        '/shop/dresses/'],
               ['Tops & Blouses', '/shop/tops/'],
               ['Skirts & Pants', '/shop/bottoms/'],
@@ -120,7 +120,7 @@ export default function Footer({
               <Link
                 key={href}
                 href={href}
-                className="text-[11px] font-sans text-[#4A4040] hover:text-[#C4A882] transition-colors leading-relaxed"
+                className="text-[11px] font-sans text-[#9B8F87] hover:text-[#C4A882] transition-colors leading-relaxed"
               >{label}</Link>
             ))}
           </div>
@@ -129,14 +129,14 @@ export default function Footer({
           <div className="flex flex-col gap-2.5">
             <span className="text-[9px] uppercase tracking-[0.28em] text-[#7C4A2D] mb-1 font-sans">Help</span>
             {([
-              ['Contact Us',          '/contact'],
-              ['Size Guide',          '/size-guide'],
-              ['Track Order',         '/track-order'],
-              ['Shipping Info',       '/shipping-policy'],
-              ['Returns & Refunds',   '/refund-policy'],
-              ['My Orders',           '/account/orders'],
+              ['Contact Us',          '/contact/'],
+              ['Size Guide',          '/size-guide/'],
+              ['Track Order',         '/track-order/'],
+              ['Shipping Info',       '/shipping-policy/'],
+              ['Returns & Refunds',   '/refund-policy/'],
+              ['My Orders',           '/account/orders/'],
             ] as [string, string][]).map(([l, h]) => (
-              <Link key={h} href={h} className="text-[11px] font-sans text-[#4A4040] hover:text-[#C4A882] transition-colors leading-relaxed">{l}</Link>
+              <Link key={h} href={h} className="text-[11px] font-sans text-[#9B8F87] hover:text-[#C4A882] transition-colors leading-relaxed">{l}</Link>
             ))}
           </div>
 
@@ -144,14 +144,11 @@ export default function Footer({
           <div className="flex flex-col gap-2.5">
             <span className="text-[9px] uppercase tracking-[0.28em] text-[#7C4A2D] mb-1 font-sans">Company</span>
             {([
-              ['About Us',      '/about'],
-              ['Privacy Policy','/privacy-policy'],
-              ['Terms of Use',  '/terms'],
-              ['Careers',       '/careers'],
-              ['Sustainability','/sustainability'],
-              ['Press',         '/press'],
+              ['About Us',      '/about/'],
+              ['Privacy Policy','/privacy-policy/'],
+              ['Terms of Use',  '/terms/'],
             ] as [string, string][]).map(([l, h]) => (
-              <Link key={h} href={h} className="text-[11px] font-sans text-[#4A4040] hover:text-[#C4A882] transition-colors leading-relaxed">{l}</Link>
+              <Link key={h} href={h} className="text-[11px] font-sans text-[#9B8F87] hover:text-[#C4A882] transition-colors leading-relaxed">{l}</Link>
             ))}
           </div>
         </div>
@@ -159,7 +156,7 @@ export default function Footer({
         {/* GSTIN */}
         {gstin && (
           <div className="border-t border-[#2A2220] pt-4 pb-3">
-            <p className="text-[10px] font-sans text-[#4A4040] leading-relaxed">
+            <p className="text-[10px] font-sans text-[#9B8F87] leading-relaxed">
               <span className="text-[#6B5E55]">Kalokea Fashion Pvt. Ltd.</span>
               <span className="mx-2 text-[#2A2220]">|</span>
               GSTIN: <span className="text-[#6B5E55]">{gstin}</span>
@@ -171,7 +168,7 @@ export default function Footer({
 
         {/* Bottom bar */}
         <div className="border-t border-[#2A2220] pt-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[10px] font-sans text-[#4A4040] order-2 sm:order-1">
+          <p className="text-[10px] font-sans text-[#9B8F87] order-2 sm:order-1">
             © {new Date().getFullYear()} KALOKEA. All rights reserved.
           </p>
 

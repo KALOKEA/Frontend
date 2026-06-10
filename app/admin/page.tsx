@@ -55,7 +55,7 @@ export default function AdminDashboard() {
         <div className="lg:col-span-2 bg-white border border-[#e8e4e0]">
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0ece8]">
             <h2 className="font-serif text-lg text-[#0a0a0a]">Recent Orders</h2>
-            <Link href="/admin/orders" className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
+            <Link href="/admin/orders/" className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
               View all →
             </Link>
           </div>
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
           <div className="bg-white border border-[#e8e4e0]">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0ece8]">
               <h2 className="font-serif text-lg text-[#0a0a0a]">Low Stock</h2>
-              <Link href="/admin/inventory" className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
+              <Link href="/admin/inventory/" className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
                 Manage →
               </Link>
             </div>
@@ -120,12 +120,12 @@ export default function AdminDashboard() {
             <h2 className="font-serif text-lg text-[#0a0a0a] mb-4">Quick actions</h2>
             <div className="space-y-2">
               {[
-                { label: '+ Add new product', href: '/admin/products' },
-                { label: 'Review pending orders', href: '/admin/orders' },
-                { label: 'Moderate reviews', href: '/admin/reviews' },
-                { label: 'Manage returns', href: '/admin/returns' },
-                { label: 'View activity log', href: '/admin/activity' },
-                { label: 'GST report', href: '/admin/gst' },
+                { label: '+ Add new product', href: '/admin/products/' },
+                { label: 'Review pending orders', href: '/admin/orders/' },
+                { label: 'Moderate reviews', href: '/admin/reviews/' },
+                { label: 'Manage returns', href: '/admin/returns/' },
+                { label: 'View activity log', href: '/admin/activity/' },
+                { label: 'GST report', href: '/admin/gst/' },
               ].map(l => (
                 <Link
                   key={l.href}

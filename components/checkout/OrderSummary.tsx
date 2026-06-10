@@ -85,10 +85,7 @@ export default function OrderSummary({
         ) : totalGst > 0 ? (
           <Line label="GST" value={formatPrice(totalGst)} />
         ) : (
-          <div className="flex justify-between text-xs font-sans text-[#9b9b9b]">
-            <span>GST</span>
-            <span>Included in price</span>
-          </div>
+          <Line label="GST" value={!quote ? 'Calculating…' : '₹0'} />
         )}
 
         <Line label="Shipping" value={shipping === 0 ? 'Free' : formatPrice(shipping)} />
@@ -97,7 +94,7 @@ export default function OrderSummary({
         <div className="flex justify-between text-sm font-sans font-medium text-[#0a0a0a] pt-2 border-t border-[#e8e4e0]">
           <span>Total</span><span>{formatPrice(total)}</span>
         </div>
-        <p className="text-[10px] font-sans text-[#9b9b9b] pt-1">All prices are GST-inclusive as per Indian tax law.</p>
+        <p className="text-[10px] font-sans text-[#9b9b9b] pt-1">Final total includes all applicable GST (shown above).</p>
       </div>
     </div>
   )

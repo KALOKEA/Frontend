@@ -297,7 +297,7 @@ export default function AdminOrdersPage() {
                 Update Status
               </button>
               <Link
-                href={`/admin/order-detail?id=${detail.id}`}
+                href={`/admin/order-detail/?id=${detail.id}`}
                 className="px-4 py-2 text-sm bg-[#ff6600] text-white hover:bg-[#e55a00] transition-colors"
               >
                 Full Details / Ship ↗

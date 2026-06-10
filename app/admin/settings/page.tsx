@@ -18,6 +18,7 @@ const DEFAULT_FORM: StoreSettings = {
   live_chat_widget: '',
   low_stock_threshold: 5,
   footer_instagram_url: 'https://www.instagram.com/kalokea.in',
+  footer_whatsapp_url:  'https://wa.me/919999999999',
   footer_facebook_url:  'https://www.facebook.com/kalokea.in',
   footer_pinterest_url: 'https://www.pinterest.com/kalokea',
 }
@@ -236,6 +237,14 @@ export default function AdminSettingsPage() {
               value={form.footer_instagram_url ?? ''}
               onChange={e => set('footer_instagram_url', e.target.value)}
               placeholder="https://www.instagram.com/kalokea.in"
+              className={INP}
+            />
+          </Field>
+          <Field label="WhatsApp URL">
+            <input
+              value={form.footer_whatsapp_url ?? ''}
+              onChange={e => set('footer_whatsapp_url', e.target.value)}
+              placeholder="https://wa.me/919876543210"
               className={INP}
             />
           </Field>

@@ -6,19 +6,19 @@ const LOOKS = [
     title: 'The Golden Hour',
     tags: ['Aurelia Dress', 'Chain Bag'],
     image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=700&q=80',
-    href: '/shop',
+    href: '/shop/',
   },
   {
     title: 'Power Dressing',
     tags: ['Elara Blazer', 'Wrap Skirt'],
     image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=700&q=80',
-    href: '/shop',
+    href: '/shop/',
   },
   {
     title: 'Weekend Edit',
     tags: ['Linen Co-ord', 'Rhea Tote'],
     image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=80',
-    href: '/shop',
+    href: '/shop/',
   },
 ]
 

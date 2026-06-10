@@ -384,7 +384,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
         )
       ) : (
         <p className="text-xs text-[#6b6b6b]">
-          <Link href="/login" className="underline hover:text-[#0a0a0a]">Sign in</Link> to write a review.
+          <Link href="/login/" className="underline hover:text-[#0a0a0a]">Sign in</Link> to write a review.
         </p>
       )}
     </div>

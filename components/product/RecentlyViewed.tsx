@@ -20,7 +20,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
         {items.map((item) => (
           <Link
             key={item.id}
-            href={`/product/${item.slug}`}
+            href={`/product/${item.slug}/`}
             className="flex-shrink-0 w-36 md:w-44 snap-start group"
           >
             <div className="aspect-[3/4] bg-[#f4f2ef] overflow-hidden mb-2 relative">

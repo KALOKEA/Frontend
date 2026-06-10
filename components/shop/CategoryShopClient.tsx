@@ -62,7 +62,7 @@ export default function CategoryShopClient({ category, displayName }: Props) {
       <div className="sticky top-0 z-10 bg-white border-b border-[#f0ece8] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-12 flex items-center justify-between">
           <Link
-            href="/shop"
+            href="/shop/"
             className="text-[11px] font-sans tracking-[0.15em] uppercase text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors flex items-center gap-1.5"
           >
             <span aria-hidden="true">←</span> All Categories
@@ -100,7 +100,7 @@ export default function CategoryShopClient({ category, displayName }: Props) {
           <div className="text-center py-24">
             <p className="font-serif text-2xl text-[#0a0a0a] mb-2">No products yet</p>
             <p className="text-sm font-sans text-[#6b6b6b] mb-6">Check back soon — new styles are on their way.</p>
-            <Link href="/shop" className="text-[11px] font-sans tracking-widest uppercase underline text-[#0a0a0a] hover:text-[#7C4A2D] transition-colors">
+            <Link href="/shop/" className="text-[11px] font-sans tracking-widest uppercase underline text-[#0a0a0a] hover:text-[#7C4A2D] transition-colors">
               Browse all collections
             </Link>
           </div>
