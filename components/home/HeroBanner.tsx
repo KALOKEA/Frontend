@@ -1,8 +1,18 @@
 'use client'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
+
+// Matches reference exactly:
+// — grid 1fr 1fr (50/50), min-height:100vh
+// — hero-left: background:#1E1208, flex-col, justify-end (text anchored to bottom)
+// — hero-eyebrow: .7rem, weight:600, tracking:.25em, color:#C49070, line 32px before
+// — hero-title: serif clamp(2.8rem,5vw,5.2rem) weight:300 lineHeight:1.08
+// — hero-sub: .88rem rgba(255,255,255,.55) maxWidth:360
+// — hero-actions gap:16px; btn-outline-white + btn-brown-lt
+// — hero-right: position:relative, overflow:hidden, image fills + vignette
+// — hero-scroll indicator at bottom center of right panel
+// — NO stats strip, NO "Made in India" badge
 
 export default function HeroBanner() {
   const [c, setC] = useState<HomepageContent>(HERO_DEFAULTS)
@@ -17,92 +27,148 @@ export default function HeroBanner() {
   const imageUrl = c.hero_image_url || HERO_DEFAULTS.hero_image_url
 
   return (
-    <section className="relative flex flex-col md:flex-row overflow-hidden min-h-[calc(100vh-58px)] md:min-h-[calc(100vh-68px)]">
-
-      {/* ── Mobile media ───────────────────────────────────────────── */}
-      <div className="md:hidden relative w-full overflow-hidden" style={{ height: '58vw', minHeight: 220, maxHeight: 420 }}>
+    <section
+      className="flex flex-col md:grid"
+      style={{
+        gridTemplateColumns: '1fr 1fr',
+        minHeight: 'calc(100vh - 0px)',
+      }}
+    >
+      {/* ── Mobile image (above text on mobile) ── */}
+      <div
+        className="md:hidden relative overflow-hidden"
+        style={{ height: '56vw', minHeight: 220, maxHeight: 400 }}
+      >
         {isVideo ? (
           <video src={c.hero_video_url} autoPlay muted loop playsInline className="w-full h-full object-cover object-top" />
         ) : (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={imageUrl}
             alt="Kalokea — Women's Fashion Collection"
-            fill className="object-cover object-top" priority unoptimized
+            className="w-full h-full object-cover object-top"
+            loading="eager"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#1A1612]/40 pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }} />
       </div>
 
-      {/* ── Left: Text (43%) — dark panel matching prototype ──────── */}
+      {/* ── Left: dark text panel ── */}
       <div
-        className="flex flex-col justify-center relative"
-        style={{ width: '100%', flex: '0 0 auto', padding: 'clamp(40px, 5vw, 80px) clamp(32px, 6vw, 100px)', background: '#1A1612' }}
+        className="flex flex-col justify-end relative"
+        style={{
+          background: '#1E1208',
+          padding: 'clamp(40px, 5vw, 72px) 52px clamp(40px, 5vw, 72px) max(52px, calc((100vw - 1380px) / 2 + 52px))',
+          minHeight: 'clamp(480px, 60vh, 100vh)',
+        }}
       >
-        {/* MD+: fixed 43% width */}
-        <style>{`@media(min-width:768px){.hero-left{width:43%}}`}</style>
-        <div className="hero-left">
+        {/* Eyebrow */}
+        <div
+          className={mounted ? 'animate-fade-up anim-delay-100' : 'opacity-0'}
+          style={{
+            fontSize: '.7rem',
+            fontWeight: 600,
+            letterSpacing: '.25em',
+            textTransform: 'uppercase',
+            color: '#C49070',
+            marginBottom: 20,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <span style={{ display: 'block', width: 32, height: 1, background: '#C49070', flexShrink: 0 }} />
+          {c.hero_eyebrow}
+        </div>
 
-          {/* Eyebrow with line decoration (matches prototype) */}
-          <p className={`text-[9.5px] font-sans tracking-[0.35em] uppercase text-[#C4A882] mb-8 flex items-center gap-3 ${mounted ? 'animate-fade-up anim-delay-100' : 'opacity-0'}`}>
-            <span className="inline-block w-8 h-px bg-[#C4A882]" />
-            {c.hero_eyebrow}
-          </p>
+        {/* Title */}
+        <h1
+          className={`font-serif ${mounted ? 'animate-fade-up anim-delay-200' : 'opacity-0'}`}
+          style={{
+            fontSize: 'clamp(2.8rem, 5vw, 5.2rem)',
+            fontWeight: 300,
+            lineHeight: 1.08,
+            color: '#FFFFFF',
+            marginBottom: 24,
+          }}
+        >
+          {c.hero_headline_1}
+          <em style={{ fontStyle: 'italic', display: 'block' }}>{c.hero_headline_2}</em>
+        </h1>
 
-          {/* Headline */}
-          <h1
-            className={`font-serif font-light text-[#FDFAF6] mb-6 leading-[1.08] ${mounted ? 'animate-fade-up anim-delay-200' : 'opacity-0'}`}
-            style={{ fontSize: 'clamp(2.8rem, 5vw, 5.2rem)', letterSpacing: '-0.01em' }}
+        {/* Subtext */}
+        <p
+          className={mounted ? 'animate-fade-up anim-delay-300' : 'opacity-0'}
+          style={{
+            fontSize: '.88rem',
+            color: 'rgba(255,255,255,.55)',
+            lineHeight: 1.7,
+            maxWidth: 360,
+            marginBottom: 40,
+          }}
+        >
+          {c.hero_subtext}
+        </p>
+
+        {/* CTAs — matches .hero-actions */}
+        <div
+          className={`k-hero-actions ${mounted ? 'animate-fade-up anim-delay-400' : 'opacity-0'}`}
+        >
+          {/* btn btn-outline-white */}
+          <Link
+            href={c.hero_cta1_link || '/shop/'}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '13px 28px',
+              fontSize: '.8rem',
+              fontWeight: 600,
+              letterSpacing: '.1em',
+              textTransform: 'uppercase',
+              borderRadius: 4,
+              background: 'none',
+              border: '1.5px solid rgba(255,255,255,.5)',
+              color: '#fff',
+              transition: 'all .2s',
+              textDecoration: 'none',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'none' }}
           >
-            {c.hero_headline_1}
-            <br />
-            <em className="italic" style={{ color: '#C4A882' }}>{c.hero_headline_2}</em>
-          </h1>
-
-          {/* Subtext */}
-          <p className={`font-sans text-[14px] max-w-[360px] mb-10 leading-[1.7] ${mounted ? 'animate-fade-up anim-delay-300' : 'opacity-0'}`} style={{ color: 'rgba(255,255,255,0.55)' }}>
-            {c.hero_subtext}
-          </p>
-
-          {/* CTAs */}
-          <div className={`flex flex-col sm:flex-row flex-wrap gap-4 ${mounted ? 'animate-fade-up anim-delay-400' : 'opacity-0'}`}>
-            <Link
-              href={c.hero_cta1_link || '/shop/'}
-              className="btn-shimmer border border-white/50 text-white text-[9.5px] font-sans tracking-[0.22em] uppercase px-8 py-4 hover:bg-white/10 transition-colors duration-300 text-center relative overflow-hidden"
-            >
-              {c.hero_cta1_label}
-            </Link>
-            <Link
-              href={c.hero_cta2_link || '/shop/'}
-              className="text-[9.5px] font-sans tracking-[0.22em] uppercase px-8 py-4 text-center transition-all duration-300"
-              style={{ background: '#C4A882', color: '#1A1612' }}
-            >
-              {c.hero_cta2_label}
-            </Link>
-          </div>
-
-          {/* Stats strip */}
-          <div className={`hidden md:flex items-center gap-0 mt-14 border-t pt-6 ${mounted ? 'animate-fade-in anim-delay-500' : 'opacity-0'}`} style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-            {[
-              { num: '12K+', label: 'Women Trust Us' },
-              { num: '500+', label: 'Curated Styles' },
-              { num: '100%', label: 'Made in India' },
-            ].map((stat, i) => (
-              <div key={stat.label} className="flex items-center gap-5">
-                {i > 0 && <div className="w-px h-7 mx-5" style={{ background: 'rgba(255,255,255,0.1)' }} />}
-                <div>
-                  <div className="font-serif text-[22px] font-light text-[#FDFAF6] leading-none">{stat.num}</div>
-                  <div className="text-[9px] font-sans tracking-[0.2em] uppercase mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{stat.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+            {c.hero_cta1_label}
+          </Link>
+          {/* btn with background:var(--brown-lt);color:var(--dark) */}
+          <Link
+            href={c.hero_cta2_link || '/shop/'}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '13px 28px',
+              fontSize: '.8rem',
+              fontWeight: 600,
+              letterSpacing: '.1em',
+              textTransform: 'uppercase',
+              borderRadius: 4,
+              background: '#C49070',
+              color: '#1E1208',
+              border: 'none',
+              transition: 'all .2s',
+              textDecoration: 'none',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#b07d5e' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#C49070' }}
+          >
+            {c.hero_cta2_label}
+          </Link>
         </div>
       </div>
 
-      {/* ── Right: Image (57%) — desktop only ─────────────────────── */}
+      {/* ── Right: image panel — desktop only ── */}
       <div
         className="hidden md:block relative overflow-hidden"
-        style={{ flex: '1 1 0', position: 'relative' }}
+        style={{ minHeight: '100vh' }}
       >
         {isVideo ? (
           <video
@@ -111,29 +177,38 @@ export default function HeroBanner() {
             className="absolute inset-0 w-full h-full object-cover object-top"
           />
         ) : (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={imageUrl}
             alt="Kalokea — Women's Fashion Collection"
-            fill
-            className="object-cover object-top"
-            style={{ transition: 'transform 1.4s cubic-bezier(0.25,0.46,0.45,0.94)' }}
-            priority
-            unoptimized
+            className="absolute inset-0 w-full h-full object-cover object-top"
+            loading="eager"
           />
         )}
-        {/* Left-edge dark fade to blend with text panel */}
-        <div className="absolute inset-y-0 left-0 w-20 pointer-events-none" style={{ background: 'linear-gradient(to right, #1A1612, transparent)' }} />
-        {/* Subtle top-right vignette */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(26,22,18,0.15) 0%, transparent 60%)' }} />
-        {/* Made in India badge */}
-        <div className="absolute bottom-8 left-6 border-l-2 border-[#C4A882] pl-3 bg-[#1A1612]/80 py-1.5 pr-4">
-          <div className="text-[8px] font-sans tracking-[0.28em] uppercase text-[#C4A882]">Made in India</div>
-          <div className="text-[11px] font-sans text-white/70 mt-0.5">Proudly designed &amp; crafted</div>
-        </div>
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          <span className="text-[8px] font-sans tracking-[0.2em] uppercase">Scroll</span>
-          <span className="inline-block w-px h-8 bg-white/25" />
+        {/* Vignette overlay — matches #home .hero-right::after */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }}
+        />
+        {/* Scroll indicator — matches .hero-scroll */}
+        <div
+          className="absolute"
+          style={{
+            bottom: 32,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 8,
+            color: 'rgba(255,255,255,.4)',
+            fontSize: '.68rem',
+            letterSpacing: '.15em',
+            textTransform: 'uppercase',
+          }}
+        >
+          Scroll
+          <span style={{ display: 'block', width: 1, height: 40, background: 'rgba(255,255,255,.3)' }} />
         </div>
       </div>
     </section>

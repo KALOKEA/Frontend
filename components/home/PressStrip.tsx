@@ -1,38 +1,53 @@
-const PRESS = [
-  { name: 'Vogue India',      style: { fontStyle: 'italic', letterSpacing: '0.04em', fontSize: '1.4rem' } },
-  { name: 'Elle',             style: { fontStyle: 'normal', letterSpacing: '0.3em',  fontSize: '1.2rem' } },
-  { name: "Harper's Bazaar",  style: { fontStyle: 'normal', letterSpacing: '0.08em', fontSize: '0.95rem' } },
-  { name: 'Femina',           style: { fontStyle: 'normal', letterSpacing: '0.18em', fontSize: '1.1rem' } },
-  { name: 'Grazia',           style: { fontStyle: 'italic', letterSpacing: '0.06em', fontSize: '1.25rem' } },
-]
+// Matches reference .press exactly:
+// — padding:40px var(--gutter)=52px; border-top & border-bottom:1px solid #F0EAE1; bg:#FFFFFF
+// — press-inner: display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap; max-width:1380; margin:0 auto
+// — press-label: .68rem; weight:700; tracking:.2em; uppercase; color:#B5A89E (var(--muted-lt)); white-space:nowrap
+// — press-logos: display:flex; align-items:center; gap:40px; flex-wrap:wrap
+// — press-logo: serif 1.15rem weight:600 color:#B5A89E tracking:.06em; hover:color:#7C4A2D (var(--brown))
+// — ALL logos UNIFORM — no per-logo size/style variation
+
+const LOGOS = ['Vogue India', 'Elle', "Harper's Bazaar", 'Femina', 'Grazia']
 
 export default function PressStrip() {
   return (
-    <section
-      className="py-10 px-4 sm:px-6 overflow-hidden"
-      style={{ background: '#FFFFFF', borderTop: '1px solid #F0EAE1', borderBottom: '1px solid #F0EAE1' }}
-    >
-      <div className="max-w-5xl mx-auto flex items-center justify-between gap-8 flex-wrap">
-
-        {/* Label — left */}
-        <p className="text-[9px] font-sans tracking-[0.3em] uppercase text-[#9B8F87] shrink-0">
+    <div className="k-press-wrap">
+      <div className="k-press-inner">
+        {/* Label */}
+        <span
+          style={{
+            fontSize: '.68rem',
+            fontWeight: 700,
+            letterSpacing: '.2em',
+            textTransform: 'uppercase',
+            color: '#B5A89E',
+            whiteSpace: 'nowrap',
+          }}
+        >
           As Seen In
-        </p>
+        </span>
 
-        {/* Logos — right */}
-        <div className="flex flex-wrap items-center gap-x-10 gap-y-4 sm:gap-x-14">
-          {PRESS.map(({ name, style }) => (
+        {/* Logos */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 40, flexWrap: 'wrap' }}>
+          {LOGOS.map(name => (
             <span
               key={name}
-              className="font-serif font-light text-[#9B8F87] hover:text-[#7C4A2D] transition-colors duration-300 cursor-default select-none"
-              style={style}
-              aria-label={name}
+              className="font-serif"
+              style={{
+                fontSize: '1.15rem',
+                fontWeight: 600,
+                color: '#B5A89E',
+                letterSpacing: '.06em',
+                transition: 'color .2s',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#7C4A2D' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#B5A89E' }}
             >
               {name}
             </span>
           ))}
         </div>
       </div>
-    </section>
+    </div>
   )
 }

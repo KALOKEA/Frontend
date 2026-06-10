@@ -1,6 +1,19 @@
 'use client'
 import Link from 'next/link'
 
+// Matches reference .stl-section exactly:
+// — padding:80px 0; background:var(--ivory-2)=#F0EAE1
+// — section-head LEFT aligned (section-head: display:flex;justify-content:space-between;gap:24px;margin-bottom:40px)
+// — section-label: .72rem weight:600 tracking:.2em uppercase color:#7C4A2D
+// — section-title: serif clamp(2rem,3.5vw,3rem) weight:400 lineHeight:1.15 color:#0A0806; em:italic weight:300
+// — stl-grid: grid repeat(3,1fr) gap:24px
+// — stl-card: position:relative; overflow:hidden; border-radius:4px; cursor:pointer
+// — img: aspect-ratio:4/5 (NOT 3/4); transition:transform .5s; hover:scale(1.04)
+// — ::after gradient: linear-gradient(to top, rgba(10,8,6,.7) 0%, transparent 50%)
+// — stl-info: position:absolute bottom:0 left:0 right:0 padding:20px z-index:1
+// — stl-tag: bg:rgba(255,255,255,.15) backdrop-filter:blur(4px) padding:4px 10px border-radius:40px .7rem color:#fff weight:500
+// — NO "Shop This Look →" hover text
+
 const LOOKS = [
   {
     title: 'The Golden Hour',
@@ -24,55 +37,134 @@ const LOOKS = [
 
 export default function ShopTheLook() {
   return (
-    <section className="py-20 bg-[#F2EAE0]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section style={{ padding: '80px 0', background: '#F0EAE1' }}>
+      <div className="k-container">
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="eyebrow-center mb-4">Styled For You</div>
-          <h2 className="font-serif font-light text-[#0A0908]" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
-            Shop the <em className="italic" style={{ color: '#7C4A2D' }}>Look</em>
-          </h2>
+        {/* Section header — LEFT aligned, matches .section-head */}
+        <div
+          className="reveal"
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'space-between',
+            gap: 24,
+            marginBottom: 40,
+          }}
+        >
+          <div>
+            <span
+              style={{
+                display: 'block',
+                fontSize: '.72rem',
+                fontWeight: 600,
+                letterSpacing: '.2em',
+                textTransform: 'uppercase',
+                color: '#7C4A2D',
+                marginBottom: 10,
+              }}
+            >
+              Styled For You
+            </span>
+            <h2
+              className="font-serif"
+              style={{
+                fontSize: 'clamp(2rem, 3.5vw, 3rem)',
+                fontWeight: 400,
+                lineHeight: 1.15,
+                color: '#0A0806',
+              }}
+            >
+              Shop the{' '}
+              <em style={{ fontStyle: 'italic', fontWeight: 300 }}>Look</em>
+            </h2>
+          </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+        {/* Grid — stl-grid: repeat(3,1fr) gap:24px */}
+        <div className="k-stl-grid">
           {LOOKS.map(({ title, tags, image, href }) => (
             <Link
               key={title}
               href={href}
-              className="group relative overflow-hidden bg-[#E0D4C4] aspect-[3/4] block"
+              className="reveal group"
+              style={{
+                position: 'relative',
+                overflow: 'hidden',
+                borderRadius: 4,
+                cursor: 'pointer',
+                display: 'block',
+                textDecoration: 'none',
+              }}
             >
+              {/* Image — aspect-ratio:4/5 */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={image}
                 alt={title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                className="group-hover:scale-[1.04]"
+                style={{
+                  width: '100%',
+                  aspectRatio: '4/5',
+                  objectFit: 'cover',
+                  transition: 'transform .5s',
+                  display: 'block',
+                }}
                 loading="lazy"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
               />
 
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent group-hover:from-black/80 transition-all duration-500" />
+              {/* Gradient overlay — matches .stl-card::after */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(to top, rgba(10,8,6,.7) 0%, transparent 50%)',
+                  pointerEvents: 'none',
+                }}
+              />
 
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-end p-6">
-                <h3 className="font-serif font-light text-white text-[1.2rem] leading-snug mb-3">
+              {/* Info — stl-info */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: 20,
+                  zIndex: 1,
+                }}
+              >
+                <h3
+                  className="font-serif"
+                  style={{
+                    fontFamily: 'inherit',
+                    fontSize: '1.15rem',
+                    fontWeight: 400,
+                    color: '#fff',
+                    marginBottom: 8,
+                  }}
+                >
                   {title}
                 </h3>
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {tags.map(tag => (
                     <span
                       key={tag}
-                      className="text-[9px] font-sans tracking-widest uppercase bg-white/15 text-white/90 px-3 py-1 border border-white/20"
+                      style={{
+                        background: 'rgba(255,255,255,.15)',
+                        backdropFilter: 'blur(4px)',
+                        WebkitBackdropFilter: 'blur(4px)',
+                        padding: '4px 10px',
+                        borderRadius: 40,
+                        fontSize: '.7rem',
+                        color: '#fff',
+                        fontWeight: 500,
+                      }}
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <span className="mt-4 text-[9.5px] font-sans tracking-[0.22em] uppercase text-[#C4A882] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  Shop This Look →
-                </span>
               </div>
             </Link>
           ))}

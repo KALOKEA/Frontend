@@ -9,7 +9,6 @@ import PressStrip from '@/components/home/PressStrip'
 import ShopTheLook from '@/components/home/ShopTheLook'
 import WhyKalokea from '@/components/home/WhyKalokea'
 import Testimonials from '@/components/home/Testimonials'
-import InstagramGrid from '@/components/home/InstagramGrid'
 import NewsletterSignup from '@/components/home/NewsletterSignup'
 import type { Metadata } from 'next'
 
@@ -145,7 +144,6 @@ export default function HomePage() {
       <ShopTheLook />
       <WhyKalokea />
       <Testimonials />
-      <InstagramGrid />
       <NewsletterSignup />
     </>
   )

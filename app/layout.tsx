@@ -168,11 +168,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
-        {/* Favicon + icons -- SVG is the primary; PNG fallbacks for older browsers */}
+        {/* Favicon — KALOKEA logo PNGs from /public */}
+        <link rel="shortcut icon" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         {/* API + images */}
         <link rel="preconnect" href="https://backend-production-73aa.up.railway.app" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />
@@ -198,7 +199,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AnnouncementBar />
           <Header />
           <CartDrawer />
-          <main>
+          <main className="pt-[58px] md:pt-[68px]">
             <ErrorBoundary>
               {children}
             </ErrorBoundary>

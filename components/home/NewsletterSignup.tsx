@@ -1,4 +1,16 @@
 'use client'
+// Matches reference .newsletter exactly:
+// — section: padding:80px 0; background:var(--ivory-2)=#F0EAE1
+// — .newsletter-inner: max-width:560px; margin:0 auto; text-align:center
+// — section-label: .72rem weight:600 tracking:.2em uppercase color:#7C4A2D margin-bottom:10px
+// — h2: serif clamp(1.8rem,3vw,2.6rem) weight:400 margin-bottom:10px
+// — p: .88rem color:#7A6E68 margin-bottom:32px
+// — .nl-form: display:flex gap:8px
+// — input: flex:1 padding:14px 18px border:1.5px solid #E4DDD4 border-radius:4px .88rem bg:#fff
+//           focus: border-color:#7C4A2D
+// — button: padding:14px 24px bg:#0A0806 color:#fff border-radius:4px .78rem weight:600
+//           tracking:.1em uppercase hover:bg:#7C4A2D
+
 import { useState, useEffect } from 'react'
 import api from '@/lib/api/client'
 import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
@@ -27,42 +39,102 @@ export default function NewsletterSignup() {
   }
 
   return (
-    <section className="py-20 px-4 text-center bg-[#F0EAE1]">
-      <div className="max-w-[560px] mx-auto">
-
-        <p className="text-[10px] font-sans tracking-[0.28em] uppercase text-[#7C4A2D] mb-4">
+    <section style={{ padding: '80px 0', background: '#F0EAE1' }}>
+      <div
+        className="reveal"
+        style={{ maxWidth: 560, margin: '0 auto', textAlign: 'center', padding: '0 24px' }}
+      >
+        {/* section-label */}
+        <span
+          style={{
+            fontSize: '.72rem',
+            fontWeight: 600,
+            letterSpacing: '.2em',
+            textTransform: 'uppercase',
+            color: '#7C4A2D',
+            marginBottom: 10,
+            display: 'block',
+          }}
+        >
           Stay Connected
-        </p>
+        </span>
 
         <h2
-          className="font-serif font-light text-[#0A0908] mb-3"
-          style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}
+          className="font-serif"
+          style={{
+            fontSize: 'clamp(1.8rem, 3vw, 2.6rem)',
+            fontWeight: 400,
+            lineHeight: 1.2,
+            color: '#0A0806',
+            marginBottom: 10,
+          }}
         >
-          Join the <em className="italic" style={{ color: '#7C4A2D' }}>KALOKEA</em> Circle
+          Join the <em style={{ fontStyle: 'italic', color: '#7C4A2D' }}>KALOKEA</em> Circle
         </h2>
-        <p className="text-[14px] font-sans text-[#6B5E55] mb-8 max-w-sm mx-auto leading-relaxed">
+
+        <p
+          style={{
+            fontSize: '.88rem',
+            color: '#7A6E68',
+            marginBottom: 32,
+            lineHeight: 1.65,
+          }}
+        >
           {subtext}
         </p>
 
         {status === 'done' ? (
-          <div className="text-center">
-            <p className="font-serif text-[#7C4A2D] text-xl mb-1">Thank you!</p>
-            <p className="text-[12px] font-sans text-[#6B5E55] tracking-wide">We'll be in touch soon.</p>
+          <div style={{ textAlign: 'center' }}>
+            <p className="font-serif" style={{ color: '#7C4A2D', fontSize: '1.2rem', marginBottom: 4 }}>Thank you!</p>
+            <p style={{ fontSize: '.82rem', color: '#7A6E68' }}>We&apos;ll be in touch soon.</p>
           </div>
         ) : (
-          <form onSubmit={submit} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+          <form
+            onSubmit={submit}
+            className="k-nl-form"
+          >
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
-              className="flex-1 w-full sm:w-auto border border-[#D4C8BC] focus:border-[#7C4A2D] bg-white text-[#0A0908] text-[14px] font-sans px-5 min-h-[48px] outline-none placeholder:text-[#B5A89E] transition-colors rounded-none"
               required
+              style={{
+                flex: 1,
+                padding: '14px 18px',
+                border: '1.5px solid #E4DDD4',
+                borderRadius: 4,
+                fontSize: '.88rem',
+                background: '#FFFFFF',
+                outline: 'none',
+                fontFamily: 'inherit',
+                color: '#0A0806',
+                transition: 'border-color .2s',
+              }}
+              onFocus={e => { (e.currentTarget as HTMLInputElement).style.borderColor = '#7C4A2D' }}
+              onBlur={e => { (e.currentTarget as HTMLInputElement).style.borderColor = '#E4DDD4' }}
             />
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="w-full sm:w-auto bg-[#0A0908] hover:bg-[#7C4A2D] text-white text-[10px] font-sans tracking-widest uppercase px-8 min-h-[48px] transition-colors disabled:opacity-50 whitespace-nowrap border-none rounded-none"
+              style={{
+                padding: '14px 24px',
+                background: '#0A0806',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: 4,
+                fontSize: '.78rem',
+                fontWeight: 600,
+                letterSpacing: '.1em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                transition: 'background .2s',
+                whiteSpace: 'nowrap',
+                opacity: status === 'loading' ? 0.6 : 1,
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#7C4A2D' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#0A0806' }}
             >
               {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
             </button>
@@ -70,7 +142,9 @@ export default function NewsletterSignup() {
         )}
 
         {status === 'error' && (
-          <p className="text-red-600 text-[11px] font-sans mt-3 tracking-wide">Something went wrong. Please try again.</p>
+          <p style={{ color: '#c0392b', fontSize: '.82rem', marginTop: 12 }}>
+            Something went wrong. Please try again.
+          </p>
         )}
       </div>
     </section>

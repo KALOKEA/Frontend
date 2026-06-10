@@ -1,7 +1,16 @@
 'use client'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
+
+// Matches reference exactly:
+// — display:grid; grid-template-columns:1fr 1fr; min-height:520px
+// — editorial-img: position:relative; overflow:hidden; img fills, hover scale 8s
+// — editorial-content: background:#1E1208; padding:80px 64px; flex-col; justify-center; gap:24px
+// — section-label: .72rem; weight:600; tracking:.2em; uppercase; color:#C49070 (var(--brown-lt))
+// — h2: serif clamp(2rem,3.5vw,3rem) weight:300 white line-height:1.2; em:italic only
+// — p: rgba(255,255,255,.55); .9rem; line-height:1.7; max-width:380px
+// — CTA: btn btn-outline-white (border:1.5px solid rgba(255,255,255,.5); color:#fff)
+// — NO extra horizontal line, NO Link arrow
 
 export default function EditorialBanner() {
   const [c, setC] = useState<HomepageContent>(HERO_DEFAULTS)
@@ -13,66 +22,106 @@ export default function EditorialBanner() {
   const imageUrl = c.editorial_image_url || HERO_DEFAULTS.editorial_image_url
 
   return (
-    <section className="reveal-left flex flex-col md:flex-row overflow-hidden" style={{ minHeight: 520 }}>
-
+    <section
+      className="reveal-left group k-editorial"
+      style={{ margin: 0 }}
+    >
       {/* Left — image panel */}
-      <div className="relative overflow-hidden" style={{ flex: '1 1 0', minHeight: 320 }}>
-        {/* Use plain <img> to bypass next/image custom Cloudinary loader for external URLs */}
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={imageUrl}
           alt={c.editorial_heading || 'The Edit — Kalokea'}
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="group-hover:scale-[1.04]"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            transition: 'transform 8s ease',
+          }}
           loading="lazy"
           onError={(e) => {
             const el = e.currentTarget as HTMLImageElement
             el.src = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&fit=crop'
           }}
         />
-        {/* Sienna overlay on hover */}
-        <div
-          className="absolute inset-0 transition-opacity duration-500 opacity-0 hover:opacity-20"
-          style={{ background: '#7C4A2D' }}
-        />
-        {/* Right edge dark fade to blend with text panel */}
-        <div
-          className="absolute inset-y-0 right-0 w-16 pointer-events-none hidden md:block"
-          style={{ background: 'linear-gradient(to left, #1A1612, transparent)' }}
-        />
       </div>
 
-      {/* Right — dark text panel */}
-      <div
-        className="flex flex-col justify-center px-10 py-16 md:py-24 md:px-16 lg:px-24"
-        style={{ background: '#1A1612', flex: '0 0 50%' }}
-      >
-        {/* Sienna top line */}
-        <div className="w-10 h-px bg-[#7C4A2D] mb-8" />
-
-        <div className="eyebrow mb-5" style={{ color: '#6B5E55' }}>
-          {c.editorial_eyebrow || 'The Edit'}
-        </div>
-
-        <h2
-          className="font-serif font-light text-[#FDFAF6] leading-[1.05] mb-6"
-          style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.6rem)' }}
+      {/* Right — dark content panel */}
+      <div className="k-editorial-content">
+        {/* section-label — color:var(--brown-lt)=#C49070 */}
+        <span
+          style={{
+            fontSize: '.72rem',
+            fontWeight: 600,
+            letterSpacing: '.2em',
+            textTransform: 'uppercase',
+            color: '#C49070',
+            marginBottom: 0,
+            display: 'block',
+          }}
         >
-          {c.editorial_heading || "The Art of"}<br />
-          <em className="italic" style={{ color: '#C4A882' }}>
+          {c.editorial_eyebrow || 'The Edit'}
+        </span>
+
+        {/* h2 — white, weight:300, em:italic no extra color */}
+        <h2
+          className="font-serif"
+          style={{
+            fontSize: 'clamp(2rem, 3.5vw, 3rem)',
+            fontWeight: 300,
+            color: '#FFFFFF',
+            lineHeight: 1.2,
+            margin: 0,
+          }}
+        >
+          {c.editorial_heading || 'The Art of'}
+          <br />
+          <em style={{ fontStyle: 'italic' }}>
             {c.editorial_heading ? '' : 'Effortless Style'}
           </em>
         </h2>
 
-        <p className="font-sans text-[14px] text-[#6B5E55] leading-relaxed max-w-[340px] mb-10">
-          {c.editorial_subtext || 'Our curators hand-pick each piece for its craftsmanship, wearability, and that ineffable quality that makes you feel entirely yourself.'}
+        {/* body text */}
+        <p
+          style={{
+            color: 'rgba(255,255,255,.55)',
+            fontSize: '.9rem',
+            lineHeight: 1.7,
+            maxWidth: 380,
+            margin: 0,
+          }}
+        >
+          {c.editorial_subtext || 'Our curators hand-pick each piece for its craftsmanship, wearability, and that ineffable quality that makes you feel entirely yourself. Discover the stories behind our collections.'}
         </p>
 
-        <Link
-          href={c.editorial_cta_link || '/about/'}
-          className="self-start text-[9.5px] font-sans tracking-[0.28em] uppercase text-[#C4A882] border-b border-[#C4A882]/40 pb-0.5 hover:text-[#FDFAF6] hover:border-[#FDFAF6]/40 transition-colors"
+        {/* btn btn-outline-white — matches reference exactly */}
+        <button
+          onClick={() => window.location.href = c.editorial_cta_link || '/about/'}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '13px 28px',
+            fontSize: '.8rem',
+            fontWeight: 600,
+            letterSpacing: '.1em',
+            textTransform: 'uppercase',
+            borderRadius: 4,
+            background: 'none',
+            border: '1.5px solid rgba(255,255,255,.5)',
+            color: '#fff',
+            cursor: 'pointer',
+            transition: 'all .2s',
+            alignSelf: 'flex-start',
+            fontFamily: 'inherit',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'none' }}
         >
-          {c.editorial_cta_label || 'Our Story'} →
-        </Link>
+          {c.editorial_cta_label || 'Our Story'}
+        </button>
       </div>
     </section>
   )

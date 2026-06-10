@@ -58,8 +58,8 @@
 
 body {
   font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-  background: #FDFAF6;
-  color: #0A0908;
+  background: #F9F6F2;
+  color: #160F09;
   overflow-x: hidden;
 }
 
@@ -408,3 +408,143 @@ select.inp {
   .bg-linen         { background-color: #F2EAE0; }
   .bg-charcoal      { background-color: #1A1612; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE COMPONENT LAYOUT CLASSES
+   Mirrors reference styles.css media queries exactly.
+   Inline-style grids in components → replaced with these
+   classes so CSS media queries can override them.
+═══════════════════════════════════════════════════════════ */
+
+/* Section container — replaces inline padding:0 52px */
+.k-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 52px;
+}
+@media (max-width: 1024px) { .k-container { padding: 0 28px; } }
+@media (max-width: 480px)  { .k-container { padding: 0 20px; } }
+
+/* Editorial grid — image|content (1fr 1fr → stacked on tablet) */
+.k-editorial {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 520px;
+}
+@media (max-width: 1024px) {
+  .k-editorial { grid-template-columns: 1fr; min-height: unset; }
+}
+
+/* Editorial content padding — 80px 64px desktop → less on mobile */
+.k-editorial-content {
+  background: #1E1208;
+  padding: 80px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+@media (max-width: 1024px) { .k-editorial-content { padding: 60px 40px; } }
+@media (max-width: 480px)  { .k-editorial-content { padding: 48px 24px; } }
+
+/* Why Kalokea grid: 4 cols → 2 → 1 */
+.k-why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+@media (max-width: 1024px) { .k-why-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px)  { .k-why-grid { grid-template-columns: 1fr; } }
+
+/* Testimonials grid: 3 → 2 → 1 */
+.k-testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media (max-width: 1024px) { .k-testi-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px)  { .k-testi-grid { grid-template-columns: 1fr; } }
+
+/* Shop the Look grid: 3 → 2 → 1 */
+.k-stl-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media (max-width: 768px)  { .k-stl-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px)  { .k-stl-grid { grid-template-columns: 1fr; } }
+
+/* Footer top grid: 1.6fr 1fr 1fr 1fr → 2col → 1col */
+.k-footer-grid {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 64px 52px 48px;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+@media (max-width: 1024px) {
+  .k-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 48px 28px 40px;
+  }
+}
+@media (max-width: 768px)  { .k-footer-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px)  { .k-footer-grid { padding: 40px 20px 32px; } }
+
+/* Footer bottom bar */
+.k-footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding: 20px 52px;
+  max-width: 1380px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: .76rem;
+}
+@media (max-width: 1024px) { .k-footer-bottom { padding: 20px 28px; } }
+@media (max-width: 768px)  { .k-footer-bottom { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 480px)  { .k-footer-bottom { padding: 16px 20px; } }
+
+/* Newsletter form — row → column on small screens */
+.k-nl-form {
+  display: flex;
+  gap: 8px;
+}
+@media (max-width: 480px) { .k-nl-form { flex-direction: column; } }
+
+/* Press strip — responsive padding */
+.k-press-wrap {
+  padding: 40px 52px;
+  border-top: 1px solid #F0EAE1;
+  border-bottom: 1px solid #F0EAE1;
+  background: #FFFFFF;
+}
+@media (max-width: 1024px) { .k-press-wrap { padding: 32px 28px; } }
+@media (max-width: 480px)  { .k-press-wrap { padding: 28px 20px; } }
+
+.k-press-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  max-width: 1380px;
+  margin: 0 auto;
+}
+@media (max-width: 768px) {
+  .k-press-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+}
+
+/* Hero actions — wrap → column on very small screens */
+.k-hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+@media (max-width: 480px) { .k-hero-actions { flex-direction: column; } }

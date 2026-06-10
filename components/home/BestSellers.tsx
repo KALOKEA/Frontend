@@ -1,16 +1,25 @@
 'use client'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { productsApi, type Product } from '@/lib/api/products'
 import ProductCard from '@/components/shop/ProductCard'
 
+/*
+ * Matches reference #home .bestsellers exactly:
+ * — padding: 80px 0, background: var(--white) = #FFFFFF
+ * — .section-head: flex align-items:flex-end justify-content:space-between gap:24
+ * — .section-label "Most Loved", .section-title "Best Sellers"
+ * — .btn-ghost "See All →"
+ * — .grid-3: repeat(3,1fr) gap:28px
+ * — .bs-rank above each card: serif 3.5rem weight:300 color:var(--ivory-3)=#E4DDD4
+ * — rank displayed as "01", "02", "03"
+ */
 export default function BestSellers() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const trackRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    productsApi.getAll({ sort: 'bestseller', limit: '8' })
+    productsApi.getAll({ sort: 'bestseller', limit: '3' })
       .then((res) => setProducts(res.data || []))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false))
@@ -19,68 +28,107 @@ export default function BestSellers() {
   if (!loading && products.length === 0) return null
 
   return (
-    <section className="py-20 bg-[#F2EAE0] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section style={{ padding: '80px 0', background: '#FFFFFF' }}>
+      {/* .container */}
+      <div style={{ maxWidth: 1380, margin: '0 auto', padding: '0 max(20px, min(52px, 4vw))' }}>
 
-        {/* Header */}
-        <div className="flex items-end justify-between mb-10">
+        {/* .section-head */}
+        <div
+          className="reveal"
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'space-between',
+            gap: 24,
+            marginBottom: 40,
+          }}
+        >
           <div>
-            <div className="eyebrow mb-3">Most Loved</div>
-            <h2 className="font-serif font-light text-[#0A0908]" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)' }}>
-              Best <em className="italic" style={{ color: '#7C4A2D' }}>Sellers</em>
+            {/* .section-label */}
+            <span style={{
+              display: 'block',
+              fontSize: '.7rem',
+              fontWeight: 600,
+              letterSpacing: '.2em',
+              textTransform: 'uppercase' as const,
+              color: '#7C4A2D',
+              marginBottom: 8,
+            }}>
+              Most Loved
+            </span>
+            {/* .section-title */}
+            <h2
+              className="font-serif"
+              style={{
+                fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)',
+                fontWeight: 300,
+                lineHeight: 1.15,
+                color: '#0A0806',
+                margin: 0,
+              }}
+            >
+              Best <em style={{ fontStyle: 'italic', color: '#7C4A2D' }}>Sellers</em>
             </h2>
           </div>
+
+          {/* .btn-ghost */}
           <Link
             href="/shop/?sort=bestseller"
-            className="hidden sm:block text-[9.5px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] border-b border-[#7C4A2D]/40 pb-0.5 hover:text-[#5C3520] transition-colors whitespace-nowrap"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '.78rem',
+              fontWeight: 500,
+              letterSpacing: '.12em',
+              textTransform: 'uppercase' as const,
+              color: '#0A0806',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap' as const,
+              flexShrink: 0,
+              transition: 'color .2s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#7C4A2D' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#0A0806' }}
           >
             See All →
           </Link>
         </div>
 
+        {/* .grid-3 with .bs-rank — 3 cols desktop / 2 cols mobile */}
         {loading ? (
           /* Skeleton */
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {Array.from({ length: 4 }).map((_, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 28 }}>
+            {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-[#E0D4C4] rounded-none mb-3" />
-                <div className="h-3 bg-[#E0D4C4] rounded w-3/4 mb-2" />
-                <div className="h-3 bg-[#E0D4C4] rounded w-1/2" />
+                <div style={{ height: 32, width: 40, background: '#E4DDD4', marginBottom: 12 }} />
+                <div style={{ aspectRatio: '3/4', background: '#E4DDD4', marginBottom: 12 }} />
+                <div style={{ height: 12, background: '#E4DDD4', borderRadius: 2, width: '75%', marginBottom: 8 }} />
+                <div style={{ height: 12, background: '#E4DDD4', borderRadius: 2, width: '50%' }} />
               </div>
             ))}
           </div>
         ) : (
-          <>
-            {/* Desktop: 4-col grid */}
-            <div className="hidden md:grid grid-cols-4 gap-x-5 gap-y-10">
-              {products.slice(0, 4).map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-
-            {/* Mobile: horizontal scroll */}
-            <div
-              ref={trackRef}
-              className="md:hidden flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-none"
-              style={{ scrollbarWidth: 'none' }}
-            >
-              {products.map((p) => (
-                <div key={p.id} className="snap-start shrink-0" style={{ width: '72vw', maxWidth: 280 }}>
-                  <ProductCard product={p} />
+          <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 28 }}>
+            {products.map((p, i) => (
+              <div key={p.id} className="reveal">
+                {/* .bs-rank — "01" / "02" / "03" */}
+                <div
+                  className="font-serif"
+                  style={{
+                    fontSize: '3.5rem',
+                    fontWeight: 300,
+                    color: '#E4DDD4',
+                    lineHeight: 1,
+                    marginBottom: 12,
+                  }}
+                >
+                  {`0${i + 1}`}
                 </div>
-              ))}
-            </div>
-
-            {/* Mobile view all */}
-            <div className="sm:hidden text-center mt-8">
-              <Link
-                href="/shop/?sort=bestseller"
-                className="text-[9.5px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] border-b border-[#7C4A2D]/40 pb-0.5"
-              >
-                See All Best Sellers →
-              </Link>
-            </div>
-          </>
+                <ProductCard product={p} />
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </section>
