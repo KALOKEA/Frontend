@@ -167,12 +167,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
-        {/* Favicon — KALOKEA logo PNGs from /public */}
-        <link rel="shortcut icon" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        {/* Favicons — all KALOKEA logo files from /public */}
+        <link rel="shortcut icon"   href="/favicon.ico" />
+        <link rel="icon"            href="/favicon.ico" sizes="any" />
+        <link rel="icon"            href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon"            type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon"            type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180"   href="/apple-touch-icon.png" />
+        {/* Open Graph / PWA manifest logo */}
+        <link rel="image_src" href="/logo.png" />
         {/* API + images */}
         <link rel="preconnect" href="https://backend-production-73aa.up.railway.app" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />
