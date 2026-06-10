@@ -39,11 +39,11 @@
 /wp-login.php                   /login/               301
 /wp-admin                       /admin/               301
 /wp-admin/*                     /admin/               301
-/?s=:q                          /shop/                301
+# NOTE: /?s=:q, /?p=:id, /?page_id=:id are intentionally omitted — Cloudflare Pages
+# _redirects does NOT support query-string matching. It would strip the ?param=:val
+# and treat the source as plain "/", redirecting the entire home page to /shop/. BUG FIX.
 /feed                           /                     301
 /feed/*                         /                     301
-/?p=:id                         /shop/                301
-/?page_id=:id                   /                     301
 
 
 # NOTE: For any other old URL that still 404s, find it in Google Search Console
