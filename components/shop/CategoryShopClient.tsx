@@ -58,8 +58,8 @@ export default function CategoryShopClient({ category, displayName }: Props) {
         </div>
       </div>
 
-      {/* ── Toolbar ── */}
-      <div className="sticky top-0 z-10 bg-white border-b border-[#f0ece8] shadow-sm">
+      {/* ── Toolbar — offset matches combined fixed header height (announcement bar + nav) ── */}
+      <div className="sticky top-[94px] md:top-[104px] z-10 bg-white border-b border-[#f0ece8] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-12 flex items-center justify-between">
           <Link
             href="/shop/"

@@ -37,7 +37,7 @@ const LOOKS = [
 
 export default function ShopTheLook() {
   return (
-    <section style={{ padding: '80px 0', background: '#F0EAE1' }}>
+    <section className="k-section-py" style={{ background: '#F0EAE1' }}>
       <div className="k-container">
 
         {/* Section header — LEFT aligned, matches .section-head */}

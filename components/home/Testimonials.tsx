@@ -51,7 +51,7 @@ function StarRow({ count }: { count: number }) {
 
 export default function Testimonials() {
   return (
-    <section style={{ background: '#1E1208', padding: '80px 0' }}>
+    <section className="k-section-py" style={{ background: '#1E1208' }}>
       <div className="k-container">
 
         {/* Header — CENTERED per reference inline style */}

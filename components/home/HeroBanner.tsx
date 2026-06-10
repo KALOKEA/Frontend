@@ -61,12 +61,9 @@ export default function HeroBanner() {
 
       {/* ── Left: dark text panel ── */}
       <div
-        className="flex flex-col justify-end relative"
+        className="flex flex-col justify-end relative k-hero-left"
         style={{
           background: '#1E1208',
-          // Top padding must clear the fixed header (94px mobile / 104px desktop)
-          // so hero text is never obscured. clamp bottom padding as before.
-          padding: '104px 52px clamp(40px, 5vw, 72px) max(52px, calc((100vw - 1380px) / 2 + 52px))',
           minHeight: 'clamp(480px, 60vh, 100vh)',
         }}
       >

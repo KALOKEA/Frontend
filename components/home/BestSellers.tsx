@@ -28,7 +28,7 @@ export default function BestSellers() {
   if (!loading && products.length === 0) return null
 
   return (
-    <section style={{ padding: '80px 0', background: '#FFFFFF' }}>
+    <section className="k-section-py" style={{ background: '#FFFFFF' }}>
       {/* .container */}
       <div style={{ maxWidth: 1380, margin: '0 auto', padding: '0 max(20px, min(52px, 4vw))' }}>
 

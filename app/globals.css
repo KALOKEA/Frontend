@@ -548,3 +548,137 @@ select.inp {
   flex-wrap: wrap;
 }
 @media (max-width: 480px) { .k-hero-actions { flex-direction: column; } }
+
+
+/* ═══════════════════════════════════════════════════════════
+   FULL-SITE RESPONSIVE — all device sizes
+   Covers: sections, hero, typography, product pages,
+   checkout, cart, account, admin, inner pages.
+═══════════════════════════════════════════════════════════ */
+
+/* ── Section vertical padding: 80px desktop → 56px tablet → 40px mobile ── */
+.k-section-py { padding-top: 80px; padding-bottom: 80px; }
+@media (max-width: 1024px) { .k-section-py { padding-top: 56px; padding-bottom: 56px; } }
+@media (max-width: 640px)  { .k-section-py { padding-top: 40px; padding-bottom: 40px; } }
+
+/* Generic section inline-style override — targets sections that use padding:'80px 0' */
+@media (max-width: 640px) {
+  section[style*="padding: '80px 0'"],
+  section[style*="padding:80px 0"],
+  section[style*='padding: "80px 0"'] {
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+}
+
+/* ── Hero left panel: responsive padding clears header + gutters ── */
+.k-hero-left {
+  padding: 104px 52px clamp(40px, 5vw, 72px) max(52px, calc((100vw - 1380px) / 2 + 52px));
+}
+@media (max-width: 1024px) { .k-hero-left { padding: 104px 32px 52px 32px; } }
+@media (max-width: 640px)  { .k-hero-left { padding: 94px 20px 44px 20px; } }
+
+/* ── Prevent horizontal overflow everywhere ── */
+html, body { max-width: 100vw; overflow-x: hidden; }
+img, video  { max-width: 100%; }
+
+/* ── Section header (eyebrow + title + view-all row) responsive ── */
+.k-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .k-section-head { margin-bottom: 24px; }
+}
+
+/* ── Product grid: 4 cols → 3 → 2 → 2 (keep 2 on small phones) ── */
+.k-product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+@media (max-width: 1280px) { .k-product-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+@media (max-width: 900px)  { .k-product-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+@media (max-width: 480px)  { .k-product-grid { gap: 12px; } }
+
+/* ── Product detail: image+info side-by-side → stacked on mobile ── */
+/* Already handled via Tailwind grid-cols-1 lg:grid-cols-2 in the component */
+
+/* ── Checkout / Cart two-col → single col on tablet ── */
+/* Already handled via Tailwind lg:grid-cols-2 in the component */
+
+/* ── Page containers — override for inner pages that use max-w-* mx-auto ── */
+@media (max-width: 640px) {
+  .max-w-6xl.mx-auto,
+  .max-w-7xl.mx-auto {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* ── Typography scale: headings shrink gracefully ── */
+@media (max-width: 640px) {
+  h1.font-serif { font-size: clamp(1.8rem, 7vw, 2.8rem) !important; }
+  h2.font-serif { font-size: clamp(1.5rem, 6vw, 2.4rem) !important; }
+  h3.font-serif { font-size: clamp(1.1rem, 4vw, 1.5rem) !important; }
+}
+
+/* ── Why Kalokea cards: reduce padding on mobile ── */
+@media (max-width: 640px) {
+  .k-why-card { padding: 24px 16px !important; }
+}
+
+/* ── Testimonial / review cards ── */
+@media (max-width: 640px) {
+  .k-testi-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Press strip logos: smaller on mobile ── */
+@media (max-width: 480px) {
+  .k-press-inner { gap: 12px; }
+}
+
+/* ── Quote strip text ── */
+@media (max-width: 640px) {
+  .k-quote-text { font-size: clamp(1.4rem, 5vw, 2.2rem) !important; }
+}
+
+/* ── Cart page: quantity / price row stacks on mobile ── */
+@media (max-width: 480px) {
+  .k-cart-row { flex-direction: column; gap: 8px; }
+}
+
+/* ── Floating WhatsApp + Back-to-top: bottom clearance for mobile CTA bar ── */
+@media (max-width: 1024px) {
+  .k-fab-group { bottom: 80px !important; }
+}
+
+/* ── Instagram grid: 3 col → 2 → 1 ── */
+@media (max-width: 640px) {
+  .k-ig-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ── Shop the Look: labels readable on small phones ── */
+@media (max-width: 480px) {
+  .k-stl-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Mobile menu backdrop body-lock ── */
+body.menu-open { overflow: hidden; touch-action: none; }
+
+/* ── Sticky header offset for in-page anchors ── */
+:target { scroll-margin-top: 108px; }
+
+/* ── Safe-area insets for notched phones (iOS/Android) ── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .k-mobile-cta-bar {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  footer {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

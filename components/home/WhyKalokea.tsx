@@ -40,7 +40,7 @@ const REASONS = [
 
 export default function WhyKalokea() {
   return (
-    <section style={{ padding: '80px 0', background: '#FFFFFF' }}>
+    <section className="k-section-py" style={{ background: '#FFFFFF' }}>
       <div className="k-container">
 
         {/* Header — CENTERED matching reference inline style */}

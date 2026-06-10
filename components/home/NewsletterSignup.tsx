@@ -39,7 +39,7 @@ export default function NewsletterSignup() {
   }
 
   return (
-    <section style={{ padding: '80px 0', background: '#F0EAE1' }}>
+    <section className="k-section-py" style={{ background: '#F0EAE1' }}>
       <div
         className="reveal"
         style={{ maxWidth: 560, margin: '0 auto', textAlign: 'center', padding: '0 24px' }}
