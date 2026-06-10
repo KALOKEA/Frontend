@@ -32,28 +32,27 @@ function getCatImage(cat: Category): string {
 }
 
 /**
- * Mosaic layout — matches design reference CSS exactly:
+ * Mosaic layout — matches reference styles.css exactly:
+ *   mosaic-card:nth-child(1) { grid-column:1/5;  grid-row:1/2; aspect-ratio:3/4  }
+ *   mosaic-card:nth-child(2) { grid-column:5/9;  grid-row:1/3; aspect-ratio:auto }
+ *   mosaic-card:nth-child(3) { grid-column:9/13; grid-row:1/2; aspect-ratio:3/4  }
+ *   mosaic-card:nth-child(4) { grid-column:1/5;  grid-row:2/3; aspect-ratio:3/2  }
+ *   mosaic-card:nth-child(5) { grid-column:9/13; grid-row:2/3; aspect-ratio:3/2  }
  *
- * Desktop 12-col grid (≥768px):
- *   card[0] Dresses:     col 1/5,  row 1/2,  aspect 3/4   (left-top portrait)
- *   card[1] Tops:        col 5/9,  row 1/3,  auto height  (center tall — spans both rows)
- *   card[2] Bags:        col 9/13, row 1/2,  aspect 3/4   (right-top portrait)
- *   card[3] Bottoms:     col 1/5,  row 2/3,  aspect 3/2   (left-bottom landscape)
- *   card[4] Accessories: col 9/13, row 2/3,  aspect 3/2   (right-bottom landscape)
- *
- * Mobile 2-col grid (<768px): all cards span 1 col, aspect 3/4
+ * Container: grid-template-rows:auto auto (reference) → k-mosaic-grid class
+ * Mobile 2-col: all cards reset to span 1 col, aspect-ratio 3/4
  */
 const MOSAIC_PLACEMENT = [
-  // card[0]: left-top portrait
-  'md:col-start-1 md:col-end-5 md:row-start-1 md:row-end-2 md:aspect-[3/4]',
-  // card[1]: center tall (spans both rows — no aspect, height from combined rows)
-  'md:col-start-5 md:col-end-9 md:row-start-1 md:row-end-3 md:aspect-auto',
-  // card[2]: right-top portrait
-  'md:col-start-9 md:col-end-13 md:row-start-1 md:row-end-2 md:aspect-[3/4]',
-  // card[3]: left-bottom landscape
-  'md:col-start-1 md:col-end-5 md:row-start-2 md:row-end-3 md:aspect-[3/2]',
-  // card[4]: right-bottom landscape
-  'md:col-start-9 md:col-end-13 md:row-start-2 md:row-end-3 md:aspect-[3/2]',
+  // card[0]: Dresses — left-top portrait
+  'md:col-start-1  md:col-end-5  md:row-start-1 md:row-end-2 md:aspect-[3/4]',
+  // card[1]: Tops — center tall, spans both rows, height from row size (no aspect override)
+  'md:col-start-5  md:col-end-9  md:row-start-1 md:row-end-3 md:aspect-auto',
+  // card[2]: Bags — right-top portrait
+  'md:col-start-9  md:col-end-13 md:row-start-1 md:row-end-2 md:aspect-[3/4]',
+  // card[3]: Bottoms — left-bottom landscape
+  'md:col-start-1  md:col-end-5  md:row-start-2 md:row-end-3 md:aspect-[3/2]',
+  // card[4]: Accessories — right-bottom landscape
+  'md:col-start-9  md:col-end-13 md:row-start-2 md:row-end-3 md:aspect-[3/2]',
 ]
 
 export default function CategoryGrid() {
@@ -113,7 +112,7 @@ export default function CategoryGrid() {
       {/* Responsive gutter: px-4 mobile → px-7 sm → px-[52px] lg (matches --gutter CSS var) */}
       <div
         ref={gridRef}
-        className="grid grid-cols-2 md:grid-cols-12 gap-3 mx-auto px-4 sm:px-7 lg:px-[52px]"
+        className="grid grid-cols-2 md:grid-cols-12 k-mosaic-grid gap-3 mx-auto px-4 sm:px-7 lg:px-[52px]"
         style={{ maxWidth: 1380 }}
       >
         {cats.map((cat, i) => (
