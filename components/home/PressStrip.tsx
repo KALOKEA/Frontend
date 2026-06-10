@@ -1,3 +1,4 @@
+'use client'
 // Matches reference .press exactly:
 // — padding:40px var(--gutter)=52px; border-top & border-bottom:1px solid #F0EAE1; bg:#FFFFFF
 // — press-inner: display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap; max-width:1380; margin:0 auto

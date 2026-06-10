@@ -1,3 +1,4 @@
+'use client'
 // Matches reference .why section exactly:
 // — padding:80px 0; background:var(--white)=#FFFFFF (NOT #FDFAF6)
 // — section header CENTERED: justify-content:center;text-align:center;flex-direction:column;gap:8px
