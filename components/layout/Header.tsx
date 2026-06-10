@@ -6,6 +6,15 @@ import CartIcon from './CartIcon'
 import MobileMenu from './MobileMenu'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 
+// Announcement bar messages (moved here from AnnouncementBar.tsx — now part of the fixed header)
+const MESSAGES = [
+  'Free Shipping on Orders Above ₹999',
+  'New Arrivals Every Friday',
+  'Easy 7-Day Returns',
+  'Ethically Sourced Fabrics',
+  'COD Available Pan India',
+]
+
 // Matches design reference: Shop, Dresses, Tops, Bottoms, Bags, About
 const NAV_LINKS = [
   { label: 'Shop',    href: '/shop/' },
@@ -68,122 +77,160 @@ export default function Header() {
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 w-full z-[900] transition-all duration-300 ${
-          scrolled
-            ? 'bg-white shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
-            : isTransparent
-              ? 'bg-transparent'
-              : 'bg-white shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
-        }`}
-      >
-        {/* ── Desktop: left-logo layout matching design reference ──────────── */}
-        {/* nav-inner: display:flex; justify-content:space-between; gap:24px    */}
-        <div
-          className="hidden md:flex items-center justify-between gap-6 mx-auto"
-          style={{ maxWidth: 1380, padding: '0 52px', height: 68 }}
-        >
-          {/* Logo — left-aligned (.nav-logo) */}
-          <Link
-            href="/"
-            className={`font-serif font-semibold tracking-[0.12em] uppercase leading-none select-none shrink-0 transition-colors duration-300 ${
-              isTransparent ? 'text-white' : 'text-[#0A0806]'
-            }`}
-            style={{ fontSize: '1.7rem' }}
+      {/* ── Combined fixed header: announcement bar + nav ───────────────────
+          The announcement bar is INSIDE the fixed header so they form one
+          seamless dark block matching the reference design. The nav section
+          below it is transparent on home/top, white on scroll / inner pages. */}
+      <header className="fixed top-0 left-0 w-full z-[900]">
+
+        {/* ── Announcement bar — always #1E1208, marquee scrolling ── */}
+        <div style={{ background: '#1E1208', padding: '10px 0', overflow: 'hidden' }}>
+          <div
+            style={{
+              display: 'flex',
+              width: 'max-content',
+              animation: 'marquee 28s linear infinite',
+            }}
+            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'paused')}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'running')}
           >
-            KALOKEA
-          </Link>
-
-          {/* Nav links — center (.nav-links) */}
-          <nav className="flex items-center gap-8">
-            {NAV_LINKS.map(n => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className={`text-[0.82rem] font-medium tracking-[0.08em] uppercase transition-colors duration-200 ${linkCls}`}
+            {[...MESSAGES, ...MESSAGES].map((text, i) => (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 24,
+                  padding: '0 24px',
+                  fontSize: '.7rem',
+                  fontWeight: 600,
+                  letterSpacing: '.2em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,.7)',
+                  whiteSpace: 'nowrap',
+                }}
               >
-                {n.label}
-              </Link>
+                {text} <span style={{ color: '#C49070' }}>✦</span>
+              </div>
             ))}
-          </nav>
-
-          {/* Actions — right (.nav-actions) */}
-          <div className="flex items-center gap-5 shrink-0">
-            {/* Search */}
-            <button
-              onClick={() => setSearchOpen(true)}
-              className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${iconCls}`}
-              aria-label="Search"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-              </svg>
-            </button>
-
-            {/* Wishlist */}
-            <Link
-              href={isLoggedIn ? '/account/wishlist/' : '/login/'}
-              className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${iconCls}`}
-              aria-label="Wishlist"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-              </svg>
-            </Link>
-
-            {/* Account */}
-            <Link
-              href={isLoggedIn ? '/account/' : '/login/'}
-              className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${iconCls}`}
-              aria-label="Account"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-            </Link>
-
-            <CartIcon className={iconCls} />
           </div>
         </div>
 
-        {/* ── Mobile: hamburger-left, logo-center, cart-right ──────────────── */}
-        {/* On mobile: .nav-links hidden, .menu-btn shown (matches design CSS)   */}
-        <div className="md:hidden flex items-center justify-between px-4 h-[58px]">
-          {/* Hamburger */}
-          <button
-            className={`w-10 h-10 flex items-center justify-center -ml-1 transition-colors rounded-full ${iconCls}`}
-            onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
+        {/* ── Nav bar — transparent on home/top, white on scroll / inner pages ── */}
+        <div
+          className={`transition-all duration-300 ${
+            scrolled
+              ? 'bg-white shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
+              : isTransparent
+                ? 'bg-transparent'
+                : 'bg-white shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
+          }`}
+        >
+          {/* ── Desktop: left-logo layout matching design reference ────────── */}
+          <div
+            className="hidden md:flex items-center justify-between gap-6 mx-auto"
+            style={{ maxWidth: 1380, padding: '0 52px', height: 68 }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <line x1="3" y1="12" x2="21" y2="12"/>
-              <line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-          </button>
+            {/* Logo — left-aligned */}
+            <Link
+              href="/"
+              className={`font-serif font-semibold tracking-[0.12em] uppercase leading-none select-none shrink-0 transition-colors duration-300 ${
+                isTransparent ? 'text-white' : 'text-[#0A0806]'
+              }`}
+              style={{ fontSize: '1.7rem' }}
+            >
+              KALOKEA
+            </Link>
 
-          {/* Logo */}
-          <Link
-            href="/"
-            className={`font-serif font-semibold tracking-[0.12em] uppercase leading-none transition-colors duration-300 ${
-              isTransparent ? 'text-white' : 'text-[#0A0806]'
-            }`}
-            style={{ fontSize: '1.2rem' }}
-          >
-            KALOKEA
-          </Link>
+            {/* Nav links — center */}
+            <nav className="flex items-center gap-8">
+              {NAV_LINKS.map(n => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`text-[0.82rem] font-medium tracking-[0.08em] uppercase transition-colors duration-200 ${linkCls}`}
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </nav>
 
-          {/* Cart */}
-          <CartIcon />
+            {/* Actions — right */}
+            <div className="flex items-center gap-5 shrink-0">
+              {/* Search */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${iconCls}`}
+                aria-label="Search"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                  <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                </svg>
+              </button>
+
+              {/* Wishlist */}
+              <Link
+                href={isLoggedIn ? '/account/wishlist/' : '/login/'}
+                className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${iconCls}`}
+                aria-label="Wishlist"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                </svg>
+              </Link>
+
+              {/* Account */}
+              <Link
+                href={isLoggedIn ? '/account/' : '/login/'}
+                className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${iconCls}`}
+                aria-label="Account"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </Link>
+
+              <CartIcon className={iconCls} />
+            </div>
+          </div>
+
+          {/* ── Mobile: hamburger-left, logo-center, cart-right ── */}
+          <div className="md:hidden flex items-center justify-between px-4 h-[58px]">
+            {/* Hamburger */}
+            <button
+              className={`w-10 h-10 flex items-center justify-center -ml-1 transition-colors rounded-full ${iconCls}`}
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+
+            {/* Logo */}
+            <Link
+              href="/"
+              className={`font-serif font-semibold tracking-[0.12em] uppercase leading-none transition-colors duration-300 ${
+                isTransparent ? 'text-white' : 'text-[#0A0806]'
+              }`}
+              style={{ fontSize: '1.2rem' }}
+            >
+              KALOKEA
+            </Link>
+
+            {/* Cart */}
+            <CartIcon />
+          </div>
         </div>
       </header>
 
-      {/* ── Search overlay ────────────────────────────────────────────────── */}
+      {/* ── Search overlay ─────────────────────────────────────────────────── */}
       {searchOpen && (
         <div className="fixed inset-0 z-50 flex flex-col animate-fade-in">
           <div className="absolute inset-0 bg-[#0A0806]/95" onClick={() => setSearchOpen(false)} />
           <div className="relative flex flex-col items-center justify-start pt-[120px] px-4">
-            {/* Search box — matches #search-overlay .search-box */}
             <div className="w-full max-w-[600px] border-b border-white/30 flex items-center gap-4 pb-3">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" strokeWidth="1.6" strokeLinecap="round" className="shrink-0">
                 <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
@@ -208,8 +255,6 @@ export default function Header() {
                 </svg>
               </button>
             </div>
-
-            {/* Quick search results area */}
             <div className="w-full max-w-[600px] mt-10 flex flex-col gap-2">
               {['Dresses', 'Tops', 'Bags', 'New Arrivals', 'Sale'].map(term => (
                 <button

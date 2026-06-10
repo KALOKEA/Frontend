@@ -28,10 +28,16 @@ export default function HeroBanner() {
 
   return (
     <section
-      className="flex flex-col md:grid"
+      // Negative margin pulls the hero UP behind the combined fixed header so the
+      // dark hero-left panel shows through the transparent nav on the home page.
+      // This matches the reference design (Image 1) where announcement bar + nav
+      // appear as one seamless dark block over the hero.
+      //   mobile:  -94px  (36px announcement bar + 58px nav)
+      //   desktop: -104px (36px announcement bar + 68px nav)
+      className="flex flex-col md:grid -mt-[94px] md:-mt-[104px]"
       style={{
         gridTemplateColumns: '1fr 1fr',
-        minHeight: 'calc(100vh - 0px)',
+        minHeight: '100vh',
       }}
     >
       {/* ── Mobile image (above text on mobile) ── */}
@@ -58,7 +64,9 @@ export default function HeroBanner() {
         className="flex flex-col justify-end relative"
         style={{
           background: '#1E1208',
-          padding: 'clamp(40px, 5vw, 72px) 52px clamp(40px, 5vw, 72px) max(52px, calc((100vw - 1380px) / 2 + 52px))',
+          // Top padding must clear the fixed header (94px mobile / 104px desktop)
+          // so hero text is never obscured. clamp bottom padding as before.
+          padding: '104px 52px clamp(40px, 5vw, 72px) max(52px, calc((100vw - 1380px) / 2 + 52px))',
           minHeight: 'clamp(480px, 60vh, 100vh)',
         }}
       >
