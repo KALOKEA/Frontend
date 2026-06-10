@@ -17,7 +17,7 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
     if (!files.length) return
     setUploading(true)
     try {
-      const token = useAuthStore.getState().token
+      const token = useAuthStore.getState().accessToken
       const results = await Promise.all(files.map(async (file) => {
         const form = new FormData()
         form.append('file', file)
