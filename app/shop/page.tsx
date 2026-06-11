@@ -189,27 +189,41 @@ function ShopContent() {
   )
 }
 
+// ── Static BreadcrumbList for the /shop root ─────────────────────────────────
+
+const SHOP_BREADCRUMB = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.in/' },
+    { '@type': 'ListItem', position: 2, name: 'Shop', item: 'https://kalokea.in/shop/' },
+  ],
+})
+
 // ── Page export ─────────────────────────────────────────────────────────────
 
 export default function ShopPage() {
   return (
-    <main className="min-h-screen bg-[#FDFAF6]">
-      <Suspense fallback={
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-          <div className="h-10 w-48 bg-[#E0D4C4] animate-pulse mb-6" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-[#E0D4C4] mb-3" />
-                <div className="h-3 bg-[#E0D4C4] w-3/4 mb-2" />
-                <div className="h-3 bg-[#E0D4C4] w-1/2" />
-              </div>
-            ))}
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: SHOP_BREADCRUMB }} />
+      <main className="min-h-screen bg-[#FDFAF6]">
+        <Suspense fallback={
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+            <div className="h-10 w-48 bg-[#E0D4C4] animate-pulse mb-6" />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-[3/4] bg-[#E0D4C4] mb-3" />
+                  <div className="h-3 bg-[#E0D4C4] w-3/4 mb-2" />
+                  <div className="h-3 bg-[#E0D4C4] w-1/2" />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      }>
-        <ShopContent />
-      </Suspense>
-    </main>
+        }>
+          <ShopContent />
+        </Suspense>
+      </main>
+    </>
   )
 }

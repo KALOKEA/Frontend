@@ -77,7 +77,8 @@ export default async function ProductPage({ params }: { params: { slug: string }
   // Breadcrumb trail: Home › [Category] › Product.
   const crumbs: { name: string; item: string }[] = [{ name: 'Home', item: `${SITE_URL}/` }]
   if (product.categories) {
-    crumbs.push({ name: product.categories.name, item: `${SITE_URL}/shop/?category=${product.categories.slug}` })
+    // Use the canonical category URL (/shop/[slug]/) — NOT query-string format
+    crumbs.push({ name: product.categories.name, item: `${SITE_URL}/shop/${product.categories.slug}/` })
   }
   crumbs.push({ name: product.name, item: `${SITE_URL}/product/${product.slug}/` })
   const breadcrumbJsonLd = {

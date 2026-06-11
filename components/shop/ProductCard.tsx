@@ -162,16 +162,20 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Star ratings — gold stars + decimal rating like reference ── */}
         {reviewCount > 0 && (
-          <div className="flex items-center gap-1 mb-2">
+          <div
+            className="flex items-center gap-1 mb-2"
+            role="img"
+            aria-label={`Rated ${rating.toFixed(1)} out of 5 stars (${reviewCount} review${reviewCount !== 1 ? 's' : ''})`}
+          >
             {[1, 2, 3, 4, 5].map(i => (
-              <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="none">
+              <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="none" aria-hidden="true">
                 <StarFill index={i} rating={rating} />
               </svg>
             ))}
-            <span className="text-[11px] font-sans text-[#6B5E55] ml-0.5 font-medium">
+            <span className="text-[11px] font-sans text-[#6B5E55] ml-0.5 font-medium" aria-hidden="true">
               {rating.toFixed(1)}
             </span>
-            <span className="text-[10px] font-sans text-[#9B8F87]">
+            <span className="text-[10px] font-sans text-[#9B8F87]" aria-hidden="true">
               ({reviewCount})
             </span>
           </div>
@@ -179,10 +183,12 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Color swatches */}
         {swatches.length > 0 && (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5" role="group" aria-label="Available colours">
             {swatches.map((colour) => (
               <span
                 key={colour}
+                role="img"
+                aria-label={colour}
                 title={colour}
                 className="w-3.5 h-3.5 rounded-full border border-[#D8CFC5] hover:ring-1 hover:ring-offset-1 hover:ring-[#7C4A2D] transition-all cursor-default"
                 style={{ backgroundColor: colour.toLowerCase() }}

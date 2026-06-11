@@ -50,8 +50,8 @@ export default function BillingDetails({
   return (
     <div className="space-y-4">
       {savedAddresses.length > 0 && (
-        <div>
-          <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Use a saved address</label>
+        <label className="flex flex-col gap-1">
+          <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">Use a saved address</span>
           <select
             onChange={(e) => {
               const a = savedAddresses.find((x) => x.id === e.target.value)
@@ -65,7 +65,7 @@ export default function BillingDetails({
               <option key={a.id} value={a.id}>{a.name} — {a.line1}, {a.city}</option>
             ))}
           </select>
-        </div>
+        </label>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -126,13 +126,19 @@ export default function BillingDetails({
   )
 }
 
+// Implicit label association: <label> wraps both the label text and children,
+// so clicking the label or screen-reader focus on the input reads the label text.
+// WCAG 1.3.1 (Info and Relationships, Level A).
 function F({ label, req, children }: { label: string; req?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">
-        {label}{req && <span className="text-[#c0392b]"> *</span>}
+      <label className="flex flex-col gap-1">
+        <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">
+          {label}{req && <span className="text-[#c0392b]" aria-hidden="true"> *</span>}
+          {req && <span className="sr-only"> (required)</span>}
+        </span>
+        {children}
       </label>
-      {children}
     </div>
   )
 }

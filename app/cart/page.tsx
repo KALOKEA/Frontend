@@ -56,7 +56,14 @@ export default function CartPage() {
                 Add <span className="text-[#0a0a0a] font-medium">{formatPrice(amountToFree)}</span> more for{' '}
                 <span className="text-[#0a0a0a] font-medium">free shipping</span>
               </p>
-              <div className="h-1 bg-[#e8e4e0] rounded-full overflow-hidden">
+              <div
+                className="h-1 bg-[#e8e4e0] rounded-full overflow-hidden"
+                role="progressbar"
+                aria-valuenow={shippingProgress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`Free shipping progress: ${shippingProgress}%`}
+              >
                 <div
                   className="h-full bg-[#0a0a0a] rounded-full transition-all duration-500"
                   style={{ width: `${shippingProgress}%` }}

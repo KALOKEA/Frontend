@@ -84,8 +84,14 @@ export default function Header() {
       <header className="fixed top-0 left-0 w-full z-[900]">
 
         {/* ── Announcement bar — always #1E1208, marquee scrolling ── */}
-        <div style={{ background: '#1E1208', padding: '10px 0', overflow: 'hidden' }}>
+        {/* aria-label on outer div surfaces the messages once; aria-hidden on the
+            animated inner div prevents screen readers from reading duplicated text. */}
+        <div
+          style={{ background: '#1E1208', padding: '10px 0', overflow: 'hidden' }}
+          aria-label={MESSAGES.join(' · ')}
+        >
           <div
+            aria-hidden="true"
             style={{
               display: 'flex',
               width: 'max-content',
@@ -143,7 +149,7 @@ export default function Header() {
             </Link>
 
             {/* Nav links — center */}
-            <nav className="flex items-center gap-8">
+            <nav aria-label="Main navigation" className="flex items-center gap-8">
               {NAV_LINKS.map(n => (
                 <Link
                   key={n.href}
@@ -228,7 +234,12 @@ export default function Header() {
 
       {/* ── Search overlay ─────────────────────────────────────────────────── */}
       {searchOpen && (
-        <div className="fixed inset-0 z-[950] flex flex-col animate-fade-in">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search"
+          className="fixed inset-0 z-[950] flex flex-col animate-fade-in"
+        >
           <div className="absolute inset-0 bg-[#0A0806]/95" onClick={() => setSearchOpen(false)} />
           <div className="relative flex flex-col items-center justify-start pt-[120px] px-4">
             <div className="w-full max-w-[600px] border-b border-white/30 flex items-center gap-4 pb-3">

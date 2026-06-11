@@ -54,6 +54,9 @@ export default function HeroBanner() {
             alt="Kalokea — Women's Fashion Collection"
             className="w-full h-full object-cover object-top"
             loading="eager"
+            // fetchPriority tells the browser this is the LCP image — load it first
+            // @ts-expect-error fetchpriority is valid HTML but not yet in React types
+            fetchpriority="high"
           />
         )}
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }} />
@@ -188,6 +191,9 @@ export default function HeroBanner() {
             alt="Kalokea — Women's Fashion Collection"
             className="absolute inset-0 w-full h-full object-cover object-top"
             loading="eager"
+            // fetchPriority=high marks this as the LCP candidate — parsed before preload scanner
+            // @ts-expect-error fetchpriority is valid HTML but not yet in React types
+            fetchpriority="high"
           />
         )}
         {/* Vignette overlay — matches #home .hero-right::after */}

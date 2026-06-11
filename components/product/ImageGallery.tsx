@@ -215,6 +215,9 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
       {/* ── Zoom / Lightbox Modal ─────────────────────────────────────────── */}
       {zoomed && current.type === 'image' && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Zoomed view: ${current.alt}`}
           className="fixed inset-0 z-[9999] bg-black/92 flex items-center justify-center"
           onClick={() => setZoomed(false)}
         >

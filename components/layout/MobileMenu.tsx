@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 const NAV_LINKS = [
   { label: 'New Arrivals', href: '/shop/new-arrivals/' },
@@ -20,11 +20,26 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
     return () => { document.body.style.overflow = '' }
   }, [open])
+
+  // Move focus to close button when menu opens (WCAG 2.4.3 Focus Order)
+  useEffect(() => {
+    if (open) closeRef.current?.focus()
+  }, [open])
+
+  // Escape key closes menu (WCAG 2.1.2 No Keyboard Trap)
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [open, onClose])
 
   return (
     <>
@@ -44,6 +59,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#E0D4C4] shrink-0">
           <span className="font-serif text-[18px] tracking-[0.38em] text-[#0A0908] uppercase">KALOKEA</span>
           <button
+            ref={closeRef}
             onClick={onClose}
             className="w-11 h-11 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] transition-colors"
             aria-label="Close menu"

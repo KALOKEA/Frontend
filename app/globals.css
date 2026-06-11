@@ -56,6 +56,63 @@
 
 * { box-sizing: border-box; }
 
+/* ── Accessibility: focus-visible ring ─────────────────────────────────────
+   Removes the broken default outline and replaces it with a brand-colour
+   ring that only appears on keyboard navigation (not mouse clicks).
+   WCAG 2.4.7 (Focus Visible, Level AA). */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid #7C4A2D;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* Inputs get a border highlight instead of the ring */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: #0A0806 !important;
+  box-shadow: 0 0 0 2px rgba(124, 74, 45, 0.25);
+}
+
+/* ── Skip-to-content link ───────────────────────────────────────────────────
+   WCAG 2.4.1 (Bypass Blocks, Level A). Hidden off-screen until focused. */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  background: #0A0806;
+  color: #FDFAF6;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.8rem;
+  font-family: var(--sans, 'DM Sans', sans-serif);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0 0 6px 6px;
+  z-index: 10000;
+  transition: top 0.15s ease;
+}
+.skip-link:focus-visible {
+  top: 0;
+  outline: 2px solid #7C4A2D;
+  outline-offset: 3px;
+}
+
+/* ── Visually hidden (for screen-reader-only text) ─────────────────────────
+   Use class "sr-only" on elements that should be read but not seen. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 body {
   font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
   background: #F9F6F2;

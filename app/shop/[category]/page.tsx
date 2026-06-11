@@ -192,10 +192,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default function CategoryShopPage({ params }: Props) {
   const meta = CATEGORY_META[params.category]
+  const displayName = meta?.name || params.category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+
+  // BreadcrumbList — Home › [Category]
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: displayName, item: `${SITE_URL}/shop/${params.category}/` },
+    ],
+  }
+
   return (
-    <CategoryShopClient
-      category={params.category}
-      displayName={meta?.name || params.category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <CategoryShopClient
+        category={params.category}
+        displayName={displayName}
+      />
+    </>
   )
 }

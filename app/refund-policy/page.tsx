@@ -30,17 +30,62 @@ const SC = [
   '<p>Email <a href="mailto:support@kalokea.in">support@kalokea.in</a> — Mon to Sat, 10 AM to 6 PM IST.</p>',
 ].join('\n')
 
+const refundFaqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is Kalokea\'s return policy?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We accept returns within 7 days of delivery on eligible items. Items must be unworn, unwashed, with original tags attached and in original packaging. Sale items, intimate wear, and accessories are not eligible.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I initiate a return on Kalokea?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Log in to your account, go to My Orders, select the order, and click Request Return. For guest orders, email support@kalokea.in with your order number and reason. Requests are reviewed within 24–48 hours.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'When will I receive my refund?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Online payments are refunded to the original payment method within 5–7 business days after approval. COD orders are refunded as store credit or via bank transfer (NEFT/UPI) within 5–7 business days.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does Kalokea offer exchanges?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes — free size exchanges are available subject to stock. Select Exchange during the return request. The replacement ships once we receive the original item.',
+      },
+    },
+  ],
+}
+
 export default function Page() {
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#9b9b9b] mb-10">
-        <Link href="/" className="hover:text-[#0a0a0a]">Home</Link>
-        <span>/</span>
-        <span className="text-[#6b6b6b]">Refund &amp; Return Policy</span>
-      </nav>
-      <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Refund &amp; Return Policy</h1>
-      <p className="text-sm font-sans text-[#9b9b9b] mb-10">Last updated: June 2025</p>
-      <CmsPageContent slug="refund-policy" staticContent={SC} />
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(refundFaqJsonLd) }}
+      />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+        <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#9b9b9b] mb-10">
+          <Link href="/" className="hover:text-[#0a0a0a]">Home</Link>
+          <span>/</span>
+          <span className="text-[#6b6b6b]">Refund &amp; Return Policy</span>
+        </nav>
+        <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Refund &amp; Return Policy</h1>
+        <p className="text-sm font-sans text-[#9b9b9b] mb-10">Last updated: June 2025</p>
+        <CmsPageContent slug="refund-policy" staticContent={SC} />
+      </div>
+    </>
   )
 }

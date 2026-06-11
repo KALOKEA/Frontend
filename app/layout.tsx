@@ -35,8 +35,14 @@ const organizationJsonLd = {
   '@type': 'Organization',
   name: 'Kalokea',
   url: SITE_URL,
-  logo: `${SITE_URL}/logo.png`,
-  description: "India's curated women's fashion boutique -- dresses, tops, shoes, bags and accessories.",
+  logo: {
+    '@type': 'ImageObject',
+    url: `${SITE_URL}/logo.png`,
+    width: 200,
+    height: 60,
+  },
+  description: "India's curated women's fashion boutique — dresses, tops, shoes, bags and accessories.",
+  foundingDate: '2024',
   sameAs: [
     'https://www.instagram.com/kalokea.fashion',
     'https://www.facebook.com/kalokea.in',
@@ -46,6 +52,23 @@ const organizationJsonLd = {
     contactType: 'customer service',
     email: 'hello@kalokea.in',
     availableLanguage: ['English', 'Hindi'],
+  },
+}
+
+// WebSite schema tells Google about the site search — enables Sitelinks Searchbox
+// in search results when users search for "kalokea".
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Kalokea',
+  url: SITE_URL,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SITE_URL}/shop/?search={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
   },
 }
 
@@ -190,9 +213,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
       </head>
       <body>
+        {/* Skip-to-content — WCAG 2.4.1 (Level A). Visible only on keyboard focus. */}
+        <a href="#main-content" className="skip-link">Skip to main content</a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         <Analytics />
         <ToastProvider>
@@ -200,7 +229,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <CartDrawer />
           {/* pt accounts for fixed header: ~36px announcement bar + 58/68px nav */}
-          <main className="pt-[94px] md:pt-[104px]">
+          <main id="main-content" tabIndex={-1} className="pt-[94px] md:pt-[104px]">
             <ErrorBoundary>
               {children}
             </ErrorBoundary>

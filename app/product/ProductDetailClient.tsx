@@ -12,6 +12,39 @@ import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { trackViewItem, metaViewContent } from '@/lib/analytics'
 import { addRecentlyViewed } from '@/lib/hooks/useRecentlyViewed'
 
+// ─── Delivery ETA calculator ─────────────────────────────────────────────────
+// Returns a human-readable delivery window like "Tue, 17 Jun – Fri, 20 Jun".
+// Skips Sundays (India logistics). Orders cut-off at 18:00 IST — after that,
+// dispatch starts the next business day.
+function getDeliveryEta(): string {
+  const now = new Date()
+  const istOffset = 5.5 * 60 * 60 * 1000
+  const ist = new Date(now.getTime() + istOffset)
+  const cutoff = ist.getHours() < 18 // dispatch same day if before 6 PM IST
+
+  // Add N business days skipping Sundays
+  function addBizDays(base: Date, days: number): Date {
+    const d = new Date(base)
+    let added = 0
+    while (added < days) {
+      d.setDate(d.getDate() + 1)
+      if (d.getDay() !== 0) added++ // 0 = Sunday
+    }
+    return d
+  }
+
+  const fmt = (d: Date) =>
+    d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })
+
+  // Metro cities: 2–3 business days from dispatch; non-metro: 4–6
+  // We show the metro range (most customers) as the default.
+  const dispatchStart = cutoff ? ist : addBizDays(ist, 1)
+  const earliest = addBizDays(dispatchStart, 2)
+  const latest   = addBizDays(dispatchStart, 5)
+
+  return `${fmt(earliest)} – ${fmt(latest)}`
+}
+
 const ProductReviews = dynamic(() => import('@/components/product/ProductReviews'), { ssr: false })
 const RelatedProducts = dynamic(() => import('@/components/product/RelatedProducts'), { ssr: false })
 const RecentlyViewed = dynamic(() => import('@/components/product/RecentlyViewed'), { ssr: false })
@@ -196,6 +229,15 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             </div>
             <p className="text-[10px] font-sans text-[#9b9b9b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
 
+            {/* Delivery estimate — computed client-side from current IST date.
+                One of the highest-impact conversion elements for Indian shoppers. */}
+            <div className="flex items-center gap-2 text-[11px] font-sans text-[#0A0908]">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <span>Estimated delivery: <strong>{getDeliveryEta()}</strong></span>
+            </div>
+
             {product.product_variants && product.product_variants.length > 0 && (
               <div id="variant-picker">
                 <VariantPicker
@@ -215,10 +257,10 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             )}
 
             <div className="flex items-center gap-4">
-              <div className="flex items-center border border-[#e8e4e0]">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-11 h-11 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg">-</button>
-                <span className="w-10 text-center text-sm font-sans text-[#0a0a0a]">{quantity}</span>
-                <button onClick={() => setQuantity(Math.min(stock || 10, quantity + 1))} className="w-11 h-11 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg">+</button>
+              <div className="flex items-center border border-[#e8e4e0]" role="group" aria-label="Quantity">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-11 h-11 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg" aria-label="Decrease quantity">-</button>
+                <span className="w-10 text-center text-sm font-sans text-[#0a0a0a]" aria-live="polite" aria-label={`Quantity: ${quantity}`}>{quantity}</span>
+                <button onClick={() => setQuantity(Math.min(stock || 10, quantity + 1))} className="w-11 h-11 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg" aria-label="Increase quantity">+</button>
               </div>
               <button
                 onClick={() => toggle(product.id)}

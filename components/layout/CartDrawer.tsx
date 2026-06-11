@@ -29,7 +29,12 @@ export default function CartDrawer() {
       <div className="fixed inset-0 bg-[#0A0908]/40 z-40 transition-opacity" onClick={closeCart} />
 
       {/* Drawer */}
-      <div className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#FDFAF6] z-50 flex flex-col shadow-float">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping cart"
+        className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#FDFAF6] z-50 flex flex-col shadow-float"
+      >
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#E0D4C4]">
@@ -111,11 +116,13 @@ export default function CartDrawer() {
                         <button
                           onClick={() => updateQuantity(item.variant_id, Math.max(1, item.quantity - 1))}
                           className="w-11 h-11 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] text-sm"
+                          aria-label={`Decrease quantity of ${item.name}`}
                         >−</button>
-                        <span className="w-8 text-center text-xs text-[#0A0908]">{item.quantity}</span>
+                        <span className="w-8 text-center text-xs text-[#0A0908]" aria-live="polite" aria-label={`Quantity: ${item.quantity}`}>{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.variant_id, Math.min(item.max_stock || 99, item.quantity + 1))}
                           className="w-11 h-11 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] text-sm"
+                          aria-label={`Increase quantity of ${item.name}`}
                         >+</button>
                       </div>
                       <button

@@ -107,10 +107,11 @@ export default function Footer({
           </h4>
           <ul style={{ display: 'flex', flexDirection: 'column', gap: 10, listStyle: 'none', padding: 0, margin: 0 }}>
             {([
-              ['New Arrivals',   '/shop/?sort=newest'],
+              ['New Arrivals',   '/shop/new-arrivals/'],
               ['Dresses',        '/shop/dresses/'],
               ['Tops & Blouses', '/shop/tops/'],
               ['Skirts & Pants', '/shop/bottoms/'],
+              ['Shoes',          '/shop/shoes/'],
               ['Bags',           '/shop/bags/'],
               ['Accessories',    '/shop/accessories/'],
               ['Sale',           '/shop/sale/'],

@@ -31,17 +31,62 @@ const SC = [
   '<p>Email <a href="mailto:support@kalokea.in">support@kalokea.in</a> — Mon to Sat, 10 AM to 6 PM IST.</p>',
 ].join('\n')
 
+const shippingFaqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Is shipping free on Kalokea?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes — free shipping on all orders above ₹999 (after discounts, before taxes). Orders below ₹999 have a flat shipping fee of ₹49.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does delivery take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Metro cities (Mumbai, Delhi, Bengaluru, etc.): 2–4 business days. Tier 2 and 3 cities: 3–5 business days. Remote areas: 5–7 business days. Business days exclude Sundays and public holidays.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does Kalokea offer Cash on Delivery (COD)?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes, COD is available pan India. A handling fee of ₹49 applies to all COD orders regardless of order value.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I track my order?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Once dispatched, you receive an email and SMS with your AWB tracking number. You can track your order via the Track Order page on our website or through your Account page if logged in.',
+      },
+    },
+  ],
+}
+
 export default function Page() {
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#9b9b9b] mb-10">
-        <Link href="/" className="hover:text-[#0a0a0a]">Home</Link>
-        <span>/</span>
-        <span className="text-[#6b6b6b]">Shipping Policy</span>
-      </nav>
-      <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Shipping Policy</h1>
-      <p className="text-sm font-sans text-[#9b9b9b] mb-10">Last updated: June 2025</p>
-      <CmsPageContent slug="shipping-policy" staticContent={SC} />
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(shippingFaqJsonLd) }}
+      />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+        <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#9b9b9b] mb-10">
+          <Link href="/" className="hover:text-[#0a0a0a]">Home</Link>
+          <span>/</span>
+          <span className="text-[#6b6b6b]">Shipping Policy</span>
+        </nav>
+        <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Shipping Policy</h1>
+        <p className="text-sm font-sans text-[#9b9b9b] mb-10">Last updated: June 2025</p>
+        <CmsPageContent slug="shipping-policy" staticContent={SC} />
+      </div>
+    </>
   )
 }
