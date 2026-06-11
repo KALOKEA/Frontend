@@ -54,7 +54,9 @@ function LoginContent() {
       // Merge guest cart into user cart, then load the authoritative server cart.
       await useCartStore.getState().mergeOnLogin().catch(() => {})
       toast('Welcome back!')
-      const redirect = params.get('redirect') || '/'
+      const rawRedirect = params.get('redirect') || '/'
+      // Prevent open redirect: only allow same-origin relative paths
+      const redirect = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/'
       router.push(redirect)
     } catch (err) {
       toast((err as Error).message || 'Invalid OTP', 'error')

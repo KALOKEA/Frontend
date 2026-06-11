@@ -63,9 +63,12 @@ export default function AuthBootstrap() {
         ;(async () => {
           try {
             const user = await authApi.me()
-            const token = getAccessToken()
-            if (cancelled || !user || !token) return
+            if (cancelled || !user) return
             // Update user data in case anything changed (name, role, etc.)
+            // Use the current token — may have been refreshed already by the
+            // 401-retry chain inside authApi.me(). Fall back to empty string so
+            // setAuth() keeps the existing value rather than clearing it.
+            const token = getAccessToken() ?? ''
             useAuthStore.getState().setAuth(token, user)
             // Merge + load the server cart now that we have a fresh token.
             await useCartStore.getState().mergeOnLogin()

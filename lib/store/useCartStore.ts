@@ -23,6 +23,9 @@ interface CartStore {
   isOpen: boolean
   guestSessionId: string
 
+  /** Coupon applied in cart or checkout — persisted so it survives navigation. */
+  appliedCoupon: { code: string; discount: number } | null
+
   addItem: (item: Omit<CartItem, 'id'>) => void
   removeItem: (variant_id: string) => void
   updateQuantity: (variant_id: string, quantity: number) => void
@@ -30,6 +33,8 @@ interface CartStore {
   openCart: () => void
   closeCart: () => void
   toggleCart: () => void
+  setAppliedCoupon: (code: string, discount: number) => void
+  clearAppliedCoupon: () => void
 
   /**
    * Load the logged-in user's server cart and replace local state.
@@ -88,6 +93,7 @@ export const useCartStore = create<CartStore>()(
       items: [],
       isOpen: false,
       guestSessionId: generateId(),
+      appliedCoupon: null,
 
       // ─── Mutations ────────────────────────────────────────────────────────
 
@@ -169,7 +175,7 @@ export const useCartStore = create<CartStore>()(
       },
 
       clearCart: () => {
-        set({ items: [] })
+        set({ items: [], appliedCoupon: null })
         if (isLoggedIn()) {
           cartApi.clear().catch(() => {})
         } else {
@@ -180,6 +186,8 @@ export const useCartStore = create<CartStore>()(
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
       toggleCart: () => set((s) => ({ isOpen: !s.isOpen })),
+      setAppliedCoupon: (code, discount) => set({ appliedCoupon: { code, discount } }),
+      clearAppliedCoupon: () => set({ appliedCoupon: null }),
 
       // ─── Sync ─────────────────────────────────────────────────────────────
 
@@ -268,7 +276,11 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: 'kalokea-cart',
-      partialize: (state) => ({ items: state.items, guestSessionId: state.guestSessionId }),
+      partialize: (state) => ({
+        items: state.items,
+        guestSessionId: state.guestSessionId,
+        appliedCoupon: state.appliedCoupon,
+      }),
     }
   )
 )

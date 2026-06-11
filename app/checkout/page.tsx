@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/lib/store/useCartStore'
 import { useAuthStore } from '@/lib/store/useAuthStore'
@@ -27,31 +27,41 @@ const toGaItems = (items: { product_id: string; variant_id: string; name: string
 export default function CheckoutPage() {
   const router = useRouter()
   const { isLoggedIn, user, hydrated } = useAuthStore()
-  const { items, clearCart } = useCartStore()
+  const { items, clearCart, appliedCoupon, setAppliedCoupon, clearAppliedCoupon } = useCartStore()
   const { toast } = useToast()
 
   const [addresses, setAddresses] = useState<Address[]>([])
   const [billing, setBilling] = useState<BillingForm>(emptyBilling)
   const [saveAddress, setSaveAddress] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState('upi')
-  const [couponCode, setCouponCode] = useState<string | null>(null)
-  const [couponDiscount, setCouponDiscount] = useState(0)
+  // Initialise from store so a coupon applied in the cart carries through.
+  const [couponCode, setCouponCode] = useState<string | null>(appliedCoupon?.code ?? null)
+  const [couponDiscount, setCouponDiscount] = useState(appliedCoupon?.discount ?? 0)
   const [loading, setLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
+  // Prevents the billing form from being re-initialized if cart or user changes
+  // mid-session (e.g. item removed from another tab, background token refresh).
+  const addressLoadedRef = useRef(false)
 
+  // Redirect to cart if cart empties (separate from address-load logic).
   useEffect(() => {
-    if (!hydrated) return // wait for AuthBootstrap to restore session from refresh cookie
-    if (!items.length) { router.push('/cart/'); return }
-    // Logged-in: load saved addresses and pre-fill email.
-    // Guests: skip address load (they enter details manually).
-    if (isLoggedIn) {
-      addressesApi.getAll().then((data) => {
-        setAddresses(data)
-        const def = data.find((a) => a.is_default) || data[0]
-        setBilling((b) => def ? billingFromAddress(def, user?.email || '') : { ...b, email: user?.email || '' })
-      }).catch(() => setBilling((b) => ({ ...b, email: user?.email || '' })))
-    }
-  }, [isLoggedIn, hydrated, items.length, router, user?.email])
+    if (!hydrated) return
+    if (!items.length) router.push('/cart/')
+  }, [hydrated, items.length, router])
+
+  // Load saved addresses and pre-fill billing — runs exactly once per mount
+  // after auth hydration. Does NOT re-run on user/cart changes.
+  useEffect(() => {
+    if (!hydrated || addressLoadedRef.current) return
+    if (!isLoggedIn) return
+    addressLoadedRef.current = true
+    addressesApi.getAll().then((data) => {
+      setAddresses(data)
+      const def = data.find((a) => a.is_default) || data[0]
+      setBilling((b) => def ? billingFromAddress(def, user?.email || '') : { ...b, email: user?.email || '' })
+    }).catch(() => setBilling((b) => ({ ...b, email: user?.email || '' })))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, isLoggedIn])
 
   // Pre-load Razorpay script as soon as page mounts — avoids loading it inside
   // an async chain which some mobile browsers treat as an untrusted context.
@@ -258,8 +268,8 @@ export default function CheckoutPage() {
           <section>
             <h2 className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-4">Coupon Code</h2>
             <CouponInput
-              onApply={(d, c) => { setCouponDiscount(d); setCouponCode(c) }}
-              onRemove={() => { setCouponDiscount(0); setCouponCode(null) }}
+              onApply={(d, c) => { setCouponDiscount(d); setCouponCode(c); setAppliedCoupon(c, d) }}
+              onRemove={() => { setCouponDiscount(0); setCouponCode(null); clearAppliedCoupon() }}
               appliedCode={couponCode}
             />
           </section>

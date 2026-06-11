@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     product.product_images?.[0]?.url
   const inStock = (product.product_variants || []).some((v) => v.is_active && v.stock > 0)
 
-  // Product structured data so Google can show rich results (price, availability).
+  // Product structured data so Google can show rich results (price, availability, reviews).
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -62,6 +62,16 @@ export default async function ProductPage({ params }: { params: { slug: string }
       availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       url: `${SITE_URL}/product/${product.slug}/`,
     },
+    // Include aggregate rating if the product has reviews — enables star rich results.
+    ...((product.review_count ?? 0) > 0 ? {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: Number(product.avg_rating ?? 0).toFixed(1),
+        reviewCount: product.review_count,
+        bestRating: '5',
+        worstRating: '1',
+      },
+    } : {}),
   }
 
   // Breadcrumb trail: Home › [Category] › Product.

@@ -228,7 +228,7 @@ export default function Header() {
 
       {/* ── Search overlay ─────────────────────────────────────────────────── */}
       {searchOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col animate-fade-in">
+        <div className="fixed inset-0 z-[950] flex flex-col animate-fade-in">
           <div className="absolute inset-0 bg-[#0A0806]/95" onClick={() => setSearchOpen(false)} />
           <div className="relative flex flex-col items-center justify-start pt-[120px] px-4">
             <div className="w-full max-w-[600px] border-b border-white/30 flex items-center gap-4 pb-3">

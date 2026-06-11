@@ -1,5 +1,4 @@
 'use client'
-import { useState } from 'react'
 import Link from 'next/link'
 import { useCartStore } from '@/lib/store/useCartStore'
 import CartItem from '@/components/cart/CartItem'
@@ -11,9 +10,10 @@ import { formatPrice } from '@/lib/utils/formatPrice'
 const SHIPPING_THRESHOLD = 99900
 
 export default function CartPage() {
-  const { items } = useCartStore()
-  const [couponDiscount, setCouponDiscount] = useState(0)
-  const [appliedCode, setAppliedCode] = useState<string | null>(null)
+  const { items, appliedCoupon, setAppliedCoupon, clearAppliedCoupon } = useCartStore()
+  // Read initial coupon state from the store (persists across navigation).
+  const couponDiscount = appliedCoupon?.discount ?? 0
+  const appliedCode = appliedCoupon?.code ?? null
 
   if (!items.length) return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
@@ -77,8 +77,8 @@ export default function CartPage() {
             <div className="mt-6">
               <p className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-2">Have a coupon?</p>
               <CouponInput
-                onApply={(discount, code) => { setCouponDiscount(discount); setAppliedCode(code) }}
-                onRemove={() => { setCouponDiscount(0); setAppliedCode(null) }}
+                onApply={(discount, code) => setAppliedCoupon(code, discount)}
+                onRemove={() => clearAppliedCoupon()}
                 appliedCode={appliedCode}
               />
             </div>

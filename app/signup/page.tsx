@@ -61,7 +61,9 @@ function SignupContent() {
       setAuth(res.access_token, { ...res.user, name: name.trim() })
       await useCartStore.getState().mergeOnLogin().catch(() => {})
       toast('Welcome to Kalokea, ' + name.split(' ')[0] + '! 🎉')
-      const redirect = params.get('redirect') || '/'
+      const rawRedirect = params.get('redirect') || '/'
+      // Prevent open redirect: only allow same-origin relative paths
+      const redirect = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/'
       router.push(redirect)
     } catch (err) {
       toast((err as Error).message || 'Invalid OTP', 'error')

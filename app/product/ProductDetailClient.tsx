@@ -60,38 +60,6 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
     })
   }, [product?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // JSON-LD Product schema — injected only when product data is available.
-  // Enables Google rich results (price, availability, reviews) in search.
-  const productJsonLd = product ? {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    description: product.description || product.name,
-    image: (product.product_images || []).map((i) => i.url).filter(Boolean),
-    sku: product.id,
-    brand: { '@type': 'Brand', name: 'Kalokea' },
-    offers: {
-      '@type': 'Offer',
-      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'}/product/${product.slug}/`,
-      priceCurrency: 'INR',
-      // prices in paise → convert to rupees for schema
-      price: (product.base_price / 100).toFixed(2),
-      availability: (product.product_variants?.some((v) => v.is_active && v.stock > 0))
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
-      seller: { '@type': 'Organization', name: 'Kalokea' },
-    },
-    ...(product.review_count && product.review_count > 0 ? {
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: Number(product.avg_rating ?? 0).toFixed(1),
-        reviewCount: product.review_count,
-        bestRating: '5',
-        worstRating: '1',
-      },
-    } : {}),
-  } : null
-
   if (loading) return (
     <div className="flex justify-center items-center min-h-[60vh]">
       <Spinner size="lg" />
@@ -139,13 +107,6 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
   return (
     <>
-      {/* JSON-LD Product schema for Google rich results */}
-      {productJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-        />
-      )}
       {/* Sticky mobile Add-to-Cart bar */}
       <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white border-t border-[#e8e4e0] px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
