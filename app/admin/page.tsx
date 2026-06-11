@@ -37,7 +37,7 @@ export default function AdminDashboard() {
     <>
       <div className="flex flex-wrap justify-between items-start gap-2 mb-8">
         <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">Dashboard</h1>
-        <p className="text-xs text-[#9b9b9b]">{new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+        <p className="text-xs text-[#6b6b6b]">{new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
       </div>
 
       {/* Stats row */}
@@ -73,7 +73,7 @@ export default function AdminDashboard() {
                         {o.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-[#9b9b9b] text-xs text-right whitespace-nowrap">
+                    <td className="px-5 py-3 text-[#6b6b6b] text-xs text-right whitespace-nowrap">
                       {new Date(o.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
                     </td>
                   </tr>
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
                   <li key={v.id} className="flex items-center justify-between px-5 py-3">
                     <div>
                       <p className="text-sm text-[#0a0a0a]">{v.products?.name || '—'}</p>
-                      <p className="text-[10px] text-[#9b9b9b]">{v.sku}</p>
+                      <p className="text-[10px] text-[#6b6b6b]">{v.sku}</p>
                     </div>
                     <span className={`text-xs font-medium px-2 py-0.5 rounded ${v.stock === 0 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
                       {v.stock} left

@@ -116,7 +116,7 @@ export default function AdminOrdersPage() {
           className="w-full border border-[#e8e4e0] px-4 py-2.5 text-sm focus:border-[#0a0a0a] outline-none pr-8"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9b9b9b] hover:text-[#0a0a0a] text-xl leading-none">×</button>
+          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none">×</button>
         )}
       </div>
 
@@ -164,14 +164,14 @@ export default function AdminOrdersPage() {
                       {o.order_number}
                     </button>
                     {o.order_items && o.order_items.length > 0 && (
-                      <span className="block text-[10px] text-[#9b9b9b]">
+                      <span className="block text-[10px] text-[#6b6b6b]">
                         {o.order_items.length} item{o.order_items.length > 1 ? 's' : ''}
                       </span>
                     )}
                   </td>
                   <td className="px-4 py-3">
                     <span className="text-[#0a0a0a]">{o.users?.name || o.address_snapshot?.name || 'Guest'}</span>
-                    {o.users?.email && <span className="block text-[10px] text-[#9b9b9b]">{o.users.email}</span>}
+                    {o.users?.email && <span className="block text-[10px] text-[#6b6b6b]">{o.users.email}</span>}
                   </td>
                   <td className="px-4 py-3 font-medium">{formatPrice(o.total)}</td>
                   <td className="px-4 py-3">
@@ -239,7 +239,7 @@ export default function AdminOrdersPage() {
               <p className="text-sm font-medium">{detail.users?.name || detail.address_snapshot?.name || 'Guest'}</p>
               {detail.users?.email && <p className="text-xs text-[#6b6b6b]">{detail.users.email}</p>}
               {detail.address_snapshot && (
-                <p className="text-xs text-[#9b9b9b] mt-1">
+                <p className="text-xs text-[#6b6b6b] mt-1">
                   {[
                     detail.address_snapshot.line1,
                     detail.address_snapshot.city,
@@ -270,7 +270,7 @@ export default function AdminOrdersPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-[#9b9b9b] mb-4 italic">No line items attached to this order record.</p>
+              <p className="text-xs text-[#6b6b6b] mb-4 italic">No line items attached to this order record.</p>
             )}
 
             {/* Totals */}

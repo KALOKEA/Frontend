@@ -166,7 +166,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
       {/* Main page — pb-24 on mobile so sticky bar does not overlap */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-24 lg:pb-6">
-        <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#9b9b9b] mb-8 overflow-x-auto whitespace-nowrap">
+        <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-8 overflow-x-auto whitespace-nowrap">
           <a href="/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Home</a>
           <span className="shrink-0">/</span>
           <a href="/shop/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Shop</a>
@@ -220,14 +220,14 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               <span className="price-display text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
               {product.compare_price && product.compare_price > product.base_price && (
                 <>
-                  <span className="font-sans text-[14px] text-[#9b9b9b] line-through">{formatPrice(product.compare_price)}</span>
+                  <span className="font-sans text-[14px] text-[#6b6b6b] line-through">{formatPrice(product.compare_price)}</span>
                   <span className="bg-[#7C4A2D] text-white text-[9px] font-sans font-semibold tracking-widest uppercase px-2.5 py-1">
                     -{discount}% OFF
                   </span>
                 </>
               )}
             </div>
-            <p className="text-[10px] font-sans text-[#9b9b9b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
+            <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
 
             {/* Delivery estimate — computed client-side from current IST date.
                 One of the highest-impact conversion elements for Indian shoppers. */}
@@ -277,7 +277,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               {hasVariants && !selectionReady ? (
                 <button
                   onClick={() => document.getElementById('variant-picker')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                  className="w-full py-4 text-[11px] font-sans tracking-widest uppercase bg-[#faf8f5] text-[#9b9b9b] border border-dashed border-[#7C4A2D] hover:bg-[#f0ece8] hover:text-[#6b6b6b] transition-colors"
+                  className="w-full py-4 text-[11px] font-sans tracking-widest uppercase bg-[#faf8f5] text-[#6b6b6b] border border-dashed border-[#7C4A2D] hover:bg-[#f0ece8] hover:text-[#6b6b6b] transition-colors"
                 >
                   {selectionPrompt}
                 </button>
@@ -321,7 +321,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                 <div key={label} className="flex flex-col items-center text-center gap-1.5 py-3">
                   <div className="text-[#7C4A2D]">{icon}</div>
                   <p className="text-[10px] font-sans font-medium tracking-widest uppercase text-[#0A0908] leading-tight">{label}</p>
-                  <p className="text-[10px] font-sans text-[#9B8F87]">{sub}</p>
+                  <p className="text-[10px] font-sans text-[#6b5c55]">{sub}</p>
                 </div>
               ))}
             </div>
@@ -334,7 +334,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                     key={t}
                     onClick={() => setTab(t)}
                     className={`relative px-4 py-2.5 text-[9.5px] font-sans tracking-[0.18em] uppercase whitespace-nowrap transition-colors ${
-                      t === tab ? 'text-[#0A0908] font-medium' : 'text-[#9B8F87] hover:text-[#0A0908]'
+                      t === tab ? 'text-[#0A0908] font-medium' : 'text-[#6b5c55] hover:text-[#0A0908]'
                     }`}
                   >
                     {t.charAt(0).toUpperCase() + t.slice(1)}

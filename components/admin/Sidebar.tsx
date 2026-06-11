@@ -9,6 +9,8 @@ import { useToast } from '@/components/ui/Toast'
 const NAV = [
   { label: 'Dashboard',  href: '/admin/' },
   { label: 'Homepage',   href: '/admin/homepage/' },
+  { label: 'About',      href: '/admin/about/' },
+  { label: 'Footer',     href: '/admin/footer/' },
   { label: 'CMS Pages',  href: '/admin/cms/' },
   { label: 'Products',   href: '/admin/products/' },
   { label: 'Categories', href: '/admin/categories/' },

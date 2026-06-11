@@ -155,7 +155,7 @@ export default function AdminHomepagePage() {
                   <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">
                     {field.label}
                   </label>
-                  <p className="text-[10px] font-sans text-[#9b9b9b] mb-2">{field.hint}</p>
+                  <p className="text-[10px] font-sans text-[#6b6b6b] mb-2">{field.hint}</p>
 
                   <div className="flex gap-2 items-start">
                     {'long' in field && field.long ? (

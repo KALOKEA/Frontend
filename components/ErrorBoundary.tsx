@@ -11,9 +11,22 @@ export default class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, message: err.message || 'Something went wrong' }
   }
 
-  componentDidCatch(err: Error) {
-    // Could send to Sentry here when DSN is configured
+  componentDidCatch(err: Error, info: import('react').ErrorInfo) {
     console.error('[ErrorBoundary]', err)
+    // Sentry — activates automatically when NEXT_PUBLIC_SENTRY_DSN env var is set
+    // and @sentry/nextjs is installed (npm install @sentry/nextjs).
+    // No-ops silently if either is absent.
+    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const Sentry = require('@sentry/nextjs')
+        Sentry.captureException(err, {
+          extra: { componentStack: info?.componentStack },
+        })
+      } catch {
+        // @sentry/nextjs not installed — skip silently
+      }
+    }
   }
 
   render() {

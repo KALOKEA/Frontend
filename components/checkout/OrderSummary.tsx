@@ -94,7 +94,7 @@ export default function OrderSummary({
         <div className="flex justify-between text-sm font-sans font-medium text-[#0a0a0a] pt-2 border-t border-[#e8e4e0]">
           <span>Total</span><span>{formatPrice(total)}</span>
         </div>
-        <p className="text-[10px] font-sans text-[#9b9b9b] pt-1">Final total includes all applicable GST (shown above).</p>
+        <p className="text-[10px] font-sans text-[#6b6b6b] pt-1">Final total includes all applicable GST (shown above).</p>
       </div>
     </div>
   )

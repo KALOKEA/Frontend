@@ -2,9 +2,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
 import type { Product } from '@/lib/api/products'
+
+// Lazy-loaded so the modal bundle only loads when first triggered
+const QuickView = dynamic(() => import('./QuickView'), { ssr: false })
 
 interface ProductCardProps {
   product: Product
@@ -52,8 +56,9 @@ function StarFill({ index, rating }: { index: number; rating: number }) {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { toggle, isWishlisted } = useWishlistStore()
-  const [hovered, setHovered]   = useState(false)
+  const [hovered, setHovered]       = useState(false)
   const [wishlisting, setWishlisting] = useState(false)
+  const [quickViewOpen, setQuickViewOpen] = useState(false)
   const wishlisted   = isWishlisted(product.id)
   const discount     = formatDiscount(product.compare_price || 0, product.base_price)
   const isOutOfStock = !product.product_variants?.some((v) => v.is_active && v.stock > 0)
@@ -71,6 +76,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
+    <>
     <div className="group relative">
 
       {/* ── Image container ─────────────────────────────────────── */}
@@ -86,7 +92,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover transition-all duration-700 group-hover:scale-[1.04]"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            unoptimized
           />
         </Link>
 
@@ -125,6 +130,15 @@ export default function ProductCard({ product }: ProductCardProps) {
           </svg>
         </button>
 
+        {/* ── Quick View pill — appears on hover above the ATC bar ── */}
+        <button
+          onClick={(e) => { e.preventDefault(); setQuickViewOpen(true) }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 bg-white/95 text-[#0A0908] text-[9px] font-sans font-semibold tracking-[0.18em] uppercase px-3.5 py-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 whitespace-nowrap hover:bg-white hidden md:block"
+          aria-label={`Quick view ${product.name}`}
+        >
+          Quick View
+        </button>
+
         {/* ── Add to Bag CTA — slides up from bottom on hover ── */}
         {!isOutOfStock && (
           <Link
@@ -154,7 +168,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {formatPrice(product.base_price)}
           </span>
           {product.compare_price && product.compare_price > product.base_price && (
-            <span className="font-sans text-[12px] text-[#9B8F87] line-through">
+            <span className="font-sans text-[12px] text-[#6b5c55] line-through">
               {formatPrice(product.compare_price)}
             </span>
           )}
@@ -175,7 +189,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <span className="text-[11px] font-sans text-[#6B5E55] ml-0.5 font-medium" aria-hidden="true">
               {rating.toFixed(1)}
             </span>
-            <span className="text-[10px] font-sans text-[#9B8F87]" aria-hidden="true">
+            <span className="text-[10px] font-sans text-[#6b5c55]" aria-hidden="true">
               ({reviewCount})
             </span>
           </div>
@@ -195,7 +209,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               />
             ))}
             {(product.product_variants?.length ?? 0) > swatches.length && (
-              <span className="text-[10px] font-sans text-[#9B8F87]">
+              <span className="text-[10px] font-sans text-[#6b5c55]">
                 +{(product.product_variants?.length ?? 0) - swatches.length}
               </span>
             )}
@@ -203,5 +217,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
       </div>
     </div>
+
+    {/* Quick view modal — portal-like via fixed positioning */}
+    {quickViewOpen && (
+      <QuickView product={product} onClose={() => setQuickViewOpen(false)} />
+    )}
+    </>
   )
 }

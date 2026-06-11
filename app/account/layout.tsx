@@ -153,11 +153,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
               <div className="grid grid-cols-2 gap-2 pt-4 border-t border-[#f0ece8]">
                 <Link href="/account/orders/" className="text-center p-2 rounded hover:bg-[#faf8f5] transition-colors group">
                   <p className="font-serif text-lg text-[#0a0a0a] group-hover:text-[#7C4A2D] transition-colors">Orders</p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b]">History</p>
+                  <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b]">History</p>
                 </Link>
                 <Link href="/account/wishlist/" className="text-center p-2 rounded hover:bg-[#faf8f5] transition-colors group">
                   <p className="font-serif text-lg text-[#0a0a0a] group-hover:text-[#7C4A2D] transition-colors">Wishlist</p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b]">Saved</p>
+                  <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b]">Saved</p>
                 </Link>
               </div>
             </div>

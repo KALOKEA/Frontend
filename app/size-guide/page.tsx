@@ -70,7 +70,7 @@ const HOW_TO_MEASURE = [
 const TABS = ['Tops & Dresses', 'Bottoms', 'Shoes'] as const
 type Tab = typeof TABS[number]
 
-const thCls = 'text-left py-3 px-4 text-[10px] tracking-widest uppercase text-[#9B8F87] font-normal'
+const thCls = 'text-left py-3 px-4 text-[10px] tracking-widest uppercase text-[#6b5c55] font-normal'
 const tdCls = 'py-3 px-4 text-[#6B5E55] text-[13px]'
 const tdFirstCls = 'py-3 px-4 font-medium text-[#0A0908] text-[13px]'
 
@@ -99,7 +99,7 @@ export default function SizeGuidePage() {
               className={`px-6 py-3 text-[10px] font-sans tracking-[0.2em] uppercase whitespace-nowrap transition-all duration-200 border-b-2 -mb-px ${
                 tab === t
                   ? 'border-[#7C4A2D] text-[#7C4A2D]'
-                  : 'border-transparent text-[#9B8F87] hover:text-[#0A0908]'
+                  : 'border-transparent text-[#6b5c55] hover:text-[#0A0908]'
               }`}
             >
               {t}

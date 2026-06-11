@@ -130,7 +130,7 @@ function SignupContent() {
               Send OTP
             </Button>
 
-            <p className="text-center text-[11px] font-sans text-[#9b9b9b] pt-2">
+            <p className="text-center text-[11px] font-sans text-[#6b6b6b] pt-2">
               Already have an account?{' '}
               <Link href="/login/" className="text-[#0a0a0a] underline hover:text-[#7C4A2D]">
                 Sign in

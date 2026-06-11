@@ -1,5 +1,10 @@
 'use client'
 import Link from 'next/link'
+import type { FooterLink } from '@/lib/api/siteContent'
+import {
+  FOOTER_SHOP_DEFAULT, FOOTER_HELP_DEFAULT,
+  FOOTER_COMPANY_DEFAULT, FOOTER_LEGAL_DEFAULT,
+} from '@/lib/api/siteContent'
 
 // Matches reference footer exactly:
 // — background:#1E1208 (var(--dark)); color:rgba(255,255,255,.6)
@@ -24,6 +29,12 @@ interface FooterProps {
   facebookUrl?:  string
   pinterestUrl?: string
   gstin?:        string
+  // Column data (loaded from site_content via FooterWrapper)
+  shopCol?:     FooterLink[]
+  helpCol?:     FooterLink[]
+  companyCol?:  FooterLink[]
+  legalLinks?:  FooterLink[]
+  copyright?:   string
 }
 
 export default function Footer({
@@ -31,6 +42,11 @@ export default function Footer({
   facebookUrl  = 'https://www.facebook.com/kalokea.fashion',
   pinterestUrl = 'https://www.pinterest.com/kalokea',
   gstin        = '',
+  shopCol      = FOOTER_SHOP_DEFAULT,
+  helpCol      = FOOTER_HELP_DEFAULT,
+  companyCol   = FOOTER_COMPANY_DEFAULT,
+  legalLinks   = FOOTER_LEGAL_DEFAULT,
+  copyright    = 'KALOKEA. All rights reserved.',
 }: FooterProps) {
   const socialBtnStyle: React.CSSProperties = {
     width: 36,
@@ -43,6 +59,37 @@ export default function Footer({
     cursor: 'pointer',
     transition: 'all .2s',
     textDecoration: 'none',
+  }
+
+  const colLinkStyle: React.CSSProperties = {
+    fontSize: '.84rem',
+    color: 'rgba(255,255,255,.6)',
+    transition: 'color .2s',
+    textDecoration: 'none',
+  }
+
+  function renderCol(heading: string, links: FooterLink[]) {
+    return (
+      <div>
+        <h4 style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 20 }}>
+          {heading}
+        </h4>
+        <ul style={{ display: 'flex', flexDirection: 'column', gap: 10, listStyle: 'none', padding: 0, margin: 0 }}>
+          {links.map(({ label, href }) => (
+            <li key={`${heading}-${href}-${label}`}>
+              <Link
+                href={href}
+                style={colLinkStyle}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.6)' }}
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
   }
 
   return (
@@ -100,91 +147,9 @@ export default function Footer({
           </div>
         </div>
 
-        {/* Shop col */}
-        <div>
-          <h4 style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 20 }}>
-            Shop
-          </h4>
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: 10, listStyle: 'none', padding: 0, margin: 0 }}>
-            {([
-              ['New Arrivals',   '/shop/new-arrivals/'],
-              ['Dresses',        '/shop/dresses/'],
-              ['Tops & Blouses', '/shop/tops/'],
-              ['Skirts & Pants', '/shop/bottoms/'],
-              ['Shoes',          '/shop/shoes/'],
-              ['Bags',           '/shop/bags/'],
-              ['Accessories',    '/shop/accessories/'],
-              ['Sale',           '/shop/sale/'],
-            ] as [string, string][]).map(([label, href]) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  style={{ fontSize: '.84rem', color: 'rgba(255,255,255,.6)', transition: 'color .2s', textDecoration: 'none' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.6)' }}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Help col */}
-        <div>
-          <h4 style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 20 }}>
-            Help
-          </h4>
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: 10, listStyle: 'none', padding: 0, margin: 0 }}>
-            {([
-              ['Contact Us',        '/contact/'],
-              ['Size Guide',        '/size-guide/'],
-              ['Track Order',       '/track-order/'],
-              ['Shipping Info',     '/shipping-policy/'],
-              ['Returns & Refunds', '/refund-policy/'],
-              ['My Orders',         '/account/orders/'],
-            ] as [string, string][]).map(([label, href]) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  style={{ fontSize: '.84rem', color: 'rgba(255,255,255,.6)', transition: 'color .2s', textDecoration: 'none' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.6)' }}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Company col */}
-        <div>
-          <h4 style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 20 }}>
-            Company
-          </h4>
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: 10, listStyle: 'none', padding: 0, margin: 0 }}>
-            {([
-              ['About Us',       '/about/'],
-              ['Privacy Policy', '/privacy-policy/'],
-              ['Terms of Use',   '/terms/'],
-              ['Careers',        '/about/'],
-              ['Sustainability',  '/about/'],
-              ['Press',          '/about/'],
-            ] as [string, string][]).map(([label, href]) => (
-              <li key={label}>
-                <Link
-                  href={href}
-                  style={{ fontSize: '.84rem', color: 'rgba(255,255,255,.6)', transition: 'color .2s', textDecoration: 'none' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.6)' }}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {renderCol('Shop',    shopCol)}
+        {renderCol('Help',    helpCol)}
+        {renderCol('Company', companyCol)}
       </div>
 
       {/* GSTIN row */}
@@ -199,19 +164,14 @@ export default function Footer({
       {/* ── Footer bottom ── */}
       <div className="k-footer-bottom">
         <span style={{ color: 'rgba(255,255,255,.6)' }}>
-          &copy; {new Date().getFullYear()} KALOKEA. All rights reserved.
+          &copy; {new Date().getFullYear()} {copyright}
         </span>
 
         {/* Legal links */}
         <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-          {([
-            ['Privacy',  '/privacy-policy/'],
-            ['Terms',    '/terms/'],
-            ['Refunds',  '/refund-policy/'],
-            ['Shipping', '/shipping-policy/'],
-          ] as [string, string][]).map(([label, href]) => (
+          {legalLinks.map(({ label, href }) => (
             <Link
-              key={href}
+              key={`${href}-${label}`}
               href={href}
               style={{ color: 'rgba(255,255,255,.6)', transition: 'color .2s', textDecoration: 'none', cursor: 'pointer' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff' }}

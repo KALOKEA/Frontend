@@ -49,7 +49,7 @@ export default function ProfilePage() {
             {initials(user?.name, user?.email || user?.phone)}
           </div>
           <p className="font-serif text-lg text-[#0a0a0a] mb-1">{user?.name || 'Your Name'}</p>
-          <p className="text-[11px] text-[#9b9b9b] truncate max-w-full">
+          <p className="text-[11px] text-[#6b6b6b] truncate max-w-full">
             {user?.email || user?.phone || ''}
           </p>
           {(user as any)?.created_at && (
@@ -80,7 +80,7 @@ export default function ProfilePage() {
               <input
                 value={user?.email || ''}
                 disabled
-                className="w-full border border-[#f0ece8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#9b9b9b] cursor-not-allowed"
+                className="w-full border border-[#f0ece8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#6b6b6b] cursor-not-allowed"
               />
               <p className="text-[11px] text-[#7C4A2D] mt-1">To update your email, contact support at support@kalokea.in</p>
             </div>
@@ -91,7 +91,7 @@ export default function ProfilePage() {
                 <input
                   value={user.phone}
                   disabled
-                  className="w-full border border-[#f0ece8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#9b9b9b] cursor-not-allowed"
+                  className="w-full border border-[#f0ece8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#6b6b6b] cursor-not-allowed"
                 />
               </div>
             )}
@@ -124,7 +124,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <p className="text-sm text-[#0a0a0a] mb-1">Your account is secured with OTP authentication</p>
-            <p className="text-[11px] text-[#9b9b9b] leading-relaxed">
+            <p className="text-[11px] text-[#6b6b6b] leading-relaxed">
               Every login requires a one-time code sent to your mobile number. No password is stored. To change your registered phone number, contact support at support@kalokea.in
             </p>
           </div>

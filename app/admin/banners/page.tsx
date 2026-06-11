@@ -102,7 +102,7 @@ export default function AdminBannersPage() {
                   <p className="text-[11px] text-[#6b6b6b] truncate mb-1">{b.link_url}</p>
                 )}
                 <div className="flex justify-between items-center text-[11px] uppercase tracking-widest mt-3 pt-3 border-t border-[#f0ece8]">
-                  <button onClick={() => toggle(b)} className={`${b.is_active ? 'text-green-700' : 'text-[#9b9b9b]'} hover:underline`}>
+                  <button onClick={() => toggle(b)} className={`${b.is_active ? 'text-green-700' : 'text-[#6b6b6b]'} hover:underline`}>
                     {b.is_active ? 'Active' : 'Hidden'}
                   </button>
                   <button onClick={() => remove(b)} className="text-red-500 hover:underline">Delete</button>
@@ -144,7 +144,7 @@ export default function AdminBannersPage() {
                   ) : (
                     <>
                       <p className="text-sm text-[#6b6b6b]">Click to upload</p>
-                      <p className="text-[11px] text-[#9b9b9b] mt-1">JPEG / PNG / WebP · Recommended 1400×500 px</p>
+                      <p className="text-[11px] text-[#6b6b6b] mt-1">JPEG / PNG / WebP · Recommended 1400×500 px</p>
                     </>
                   )}
                   <input

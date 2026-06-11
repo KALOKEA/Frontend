@@ -12,6 +12,7 @@ import LiveChatWidget from '@/components/LiveChatWidget'
 import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import BackToTop from '@/components/layout/BackToTop'
 import ScrollRevealInit from '@/components/ScrollRevealInit'
+import PageTransition from '@/components/PageTransition'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -180,6 +181,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@kalokea',
+    creator: '@kalokea',
     title: "KALOKEA | Women's Fashion",
     description: "Shop the latest women's fashion at Kalokea. Free shipping above Rs.999.",
     images: ['https://kalokea.in/og-image.jpg'],
@@ -231,7 +234,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* pt accounts for fixed header: ~36px announcement bar + 58/68px nav */}
           <main id="main-content" tabIndex={-1} className="pt-[94px] md:pt-[104px]">
             <ErrorBoundary>
-              {children}
+              <PageTransition>
+                {children}
+              </PageTransition>
             </ErrorBoundary>
           </main>
           <FooterWrapper />

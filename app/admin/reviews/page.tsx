@@ -116,7 +116,7 @@ export default function AdminReviewsPage() {
         ) : (
           <div className="bg-white border border-[#e8e4e0] px-4 py-16 text-center">
             <p className="font-serif text-lg text-[#6b6b6b]">All caught up</p>
-            <p className="text-xs text-[#9b9b9b] mt-1">No reviews awaiting moderation.</p>
+            <p className="text-xs text-[#6b6b6b] mt-1">No reviews awaiting moderation.</p>
           </div>
         )
       ) : (

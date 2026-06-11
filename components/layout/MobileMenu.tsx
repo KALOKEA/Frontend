@@ -20,20 +20,29 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ open, onClose }: MobileMenuProps) {
-  const closeRef = useRef<HTMLButtonElement>(null)
+  const closeRef        = useRef<HTMLButtonElement>(null)
+  const dialogRef       = useRef<HTMLDivElement>(null)
+  const previousFocus   = useRef<HTMLElement | null>(null)
 
+  // Lock scroll when open
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  // Move focus to close button when menu opens (WCAG 2.4.3 Focus Order)
+  // Save trigger focus, move focus into drawer on open; restore on close (WCAG 2.4.3)
   useEffect(() => {
-    if (open) closeRef.current?.focus()
+    if (open) {
+      previousFocus.current = document.activeElement as HTMLElement
+      closeRef.current?.focus()
+    } else {
+      previousFocus.current?.focus()
+      previousFocus.current = null
+    }
   }, [open])
 
-  // Escape key closes menu (WCAG 2.1.2 No Keyboard Trap)
+  // Escape closes menu (WCAG 2.1.2 No Keyboard Trap)
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -41,19 +50,47 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [open, onClose])
 
+  // Tab focus trap: keep focus cycling within the dialog (WCAG 2.1.2)
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      const dialog = dialogRef.current
+      if (!dialog) return
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.hasAttribute('disabled'))
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last  = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus() }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus() }
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [open])
+
   return (
     <>
       {open && (
-        <div className="fixed inset-0 bg-[#0A0908]/40 z-40" onClick={onClose} />
+        <div className="fixed inset-0 bg-[#0A0908]/40 z-40" onClick={onClose} aria-hidden="true" />
       )}
 
       <div
+        ref={dialogRef}
         className={`fixed top-0 right-0 h-full w-[82vw] max-w-[320px] bg-[#FDFAF6] z-50 transform transition-transform duration-300 flex flex-col ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
         aria-modal="true"
         role="dialog"
         aria-label="Navigation menu"
+        // Hidden from AT when closed (prevents focus from reaching links via Tab when drawer is off-screen)
+        inert={!open ? true : undefined}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#E0D4C4] shrink-0">

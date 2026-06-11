@@ -54,7 +54,7 @@ export default function ContactPage() {
   }
 
   const inputCls =
-    'w-full border border-[#E0D4C4] bg-white px-4 py-3 text-[14px] font-sans text-[#0A0908] outline-none focus:border-[#7C4A2D] transition-colors placeholder:text-[#9B8F87]'
+    'w-full border border-[#E0D4C4] bg-white px-4 py-3 text-[14px] font-sans text-[#0A0908] outline-none focus:border-[#7C4A2D] transition-colors placeholder:text-[#6b5c55]'
   const labelCls = 'block text-[10px] uppercase tracking-[0.2em] text-[#6B5E55] font-sans mb-1.5'
 
   return (
@@ -85,7 +85,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[10px] font-sans uppercase tracking-widest text-[#9B8F87] mb-0.5">Phone / WhatsApp</p>
+                    <p className="text-[10px] font-sans uppercase tracking-widest text-[#6b5c55] mb-0.5">Phone / WhatsApp</p>
                     <p className="font-sans text-[14px] text-[#0A0908]">+91 87996 10432</p>
                     <p className="text-[11px] font-sans text-[#6B5E55]">Mon – Sat, 10 AM – 6 PM IST</p>
                   </div>
@@ -100,7 +100,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[10px] font-sans uppercase tracking-widest text-[#9B8F87] mb-0.5">Email</p>
+                    <p className="text-[10px] font-sans uppercase tracking-widest text-[#6b5c55] mb-0.5">Email</p>
                     <p className="font-sans text-[14px] text-[#0A0908]">support@kalokea.in</p>
                     <p className="text-[11px] font-sans text-[#6B5E55]">We reply within 24 hours</p>
                   </div>
@@ -115,7 +115,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[10px] font-sans uppercase tracking-widest text-[#9B8F87] mb-0.5">Address</p>
+                    <p className="text-[10px] font-sans uppercase tracking-widest text-[#6b5c55] mb-0.5">Address</p>
                     <p className="font-sans text-[14px] text-[#0A0908]">Bandra West</p>
                     <p className="text-[11px] font-sans text-[#6B5E55]">Mumbai, Maharashtra 400050</p>
                   </div>
@@ -188,7 +188,7 @@ export default function ContactPage() {
                     </select>
                   </div>
                   <div>
-                    <label className={labelCls}>Order ID <span className="normal-case text-[#9B8F87]">(optional)</span></label>
+                    <label className={labelCls}>Order ID <span className="normal-case text-[#6b5c55]">(optional)</span></label>
                     <input
                       type="text"
                       value={form.order_id}

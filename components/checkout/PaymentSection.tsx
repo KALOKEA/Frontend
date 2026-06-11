@@ -73,7 +73,7 @@ export default function PaymentSection({ selected, onSelect, codFeeRupees = 49 }
                 <span className="text-xs font-sans text-[#0a0a0a]">{m.label}</span>
               </label>
             ))}
-            <p className="text-[10px] font-sans text-[#9b9b9b] pt-1 leading-relaxed">
+            <p className="text-[10px] font-sans text-[#6b6b6b] pt-1 leading-relaxed">
               You will be taken to Razorpay&apos;s secure payment page.
               Your card or bank details are handled directly by Razorpay — Kalokea never sees them.
             </p>
@@ -95,7 +95,7 @@ export default function PaymentSection({ selected, onSelect, codFeeRupees = 49 }
         />
         <span className="text-sm">📦</span>
         <span className="text-xs font-sans text-[#0a0a0a]">Cash on Delivery</span>
-        <span className="ml-auto text-[10px] font-sans text-[#9b9b9b]">+₹{codFeeRupees} fee</span>
+        <span className="ml-auto text-[10px] font-sans text-[#6b6b6b]">+₹{codFeeRupees} fee</span>
       </label>
 
     </div>

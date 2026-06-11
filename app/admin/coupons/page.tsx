@@ -127,9 +127,9 @@ export default function AdminCouponsPage() {
                     <td className="px-4 py-3 text-[#6b6b6b]">{c.min_order_value ? formatPrice(c.min_order_value) : '—'}</td>
                     <td className="px-4 py-3 text-[#6b6b6b]">
                       {c.used_count ?? 0}
-                      {c.max_uses ? <span className="text-[#9b9b9b]"> / {c.max_uses}</span> : ''}
+                      {c.max_uses ? <span className="text-[#6b6b6b]"> / {c.max_uses}</span> : ''}
                       {c.max_per_user ? (
-                        <span className="block text-[10px] text-[#9b9b9b]">
+                        <span className="block text-[10px] text-[#6b6b6b]">
                           max {c.max_per_user}/customer
                         </span>
                       ) : null}
@@ -231,7 +231,7 @@ export default function AdminCouponsPage() {
             <div className="mb-3">
               <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
                 Max uses per customer
-                <span className="normal-case ml-1 text-[#9b9b9b]">(leave blank = unlimited)</span>
+                <span className="normal-case ml-1 text-[#6b6b6b]">(leave blank = unlimited)</span>
               </label>
               <input
                 type="number"

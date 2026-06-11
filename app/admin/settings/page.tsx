@@ -138,7 +138,7 @@ export default function AdminSettingsPage() {
             </Field>
           </div>
 
-          <p className="text-[11px] text-[#9b9b9b] mt-1">
+          <p className="text-[11px] text-[#6b6b6b] mt-1">
             Same state as buyer → CGST + SGST split. Different state → IGST.
             Confirm GST rate with your CA — individual products can override this.
           </p>
@@ -178,7 +178,7 @@ export default function AdminSettingsPage() {
               />
             </Field>
           </div>
-          <p className="text-[11px] text-[#9b9b9b] mt-1">
+          <p className="text-[11px] text-[#6b6b6b] mt-1">
             Set shipping fee to 0 for always-free shipping. Set COD fee to 0 to remove the COD surcharge.
             Free-shipping threshold is ignored when shipping fee is 0.
           </p>
@@ -197,14 +197,14 @@ export default function AdminSettingsPage() {
               placeholder="5"
             />
           </Field>
-          <p className="text-[11px] text-[#9b9b9b] mt-1">
+          <p className="text-[11px] text-[#6b6b6b] mt-1">
             Admin dashboard will flag products as "low stock" when any size variant drops below this number.
           </p>
         </Section>
 
         {/* ── Live Chat Widget ───────────────────────────────── */}
         <Section title="Live chat / WhatsApp widget">
-          <p className="text-[11px] text-[#9b9b9b] mb-3">
+          <p className="text-[11px] text-[#6b6b6b] mb-3">
             Paste your Tawk.to, Crisp, or WhatsApp embed script here. It will be injected into every
             customer-facing page automatically. Leave blank to disable.
             <br />
@@ -223,13 +223,13 @@ export default function AdminSettingsPage() {
           {form.live_chat_widget ? (
             <p className="text-[11px] text-green-700 mt-1">✓ Widget active — will appear on all customer pages.</p>
           ) : (
-            <p className="text-[11px] text-[#9b9b9b] mt-1">No widget configured — chat bubble will not appear.</p>
+            <p className="text-[11px] text-[#6b6b6b] mt-1">No widget configured — chat bubble will not appear.</p>
           )}
         </Section>
 
         {/* ── Social & Brand ─────────────────────────────────── */}
         <Section title="Social & brand links">
-          <p className="text-[11px] text-[#9b9b9b] mb-3">
+          <p className="text-[11px] text-[#6b6b6b] mb-3">
             These appear in the footer. Changes go live immediately — no redeploy needed.
           </p>
           <Field label="Instagram URL">
@@ -264,14 +264,14 @@ export default function AdminSettingsPage() {
               className={INP}
             />
           </Field>
-          <p className="text-[11px] text-[#9b9b9b] mt-1">
+          <p className="text-[11px] text-[#6b6b6b] mt-1">
             GSTIN in footer is pulled from <strong>Business name → GSTIN</strong> field above.
           </p>
         </Section>
 
         {/* ── Cloudflare Deploy Hook ─────────────────────────── */}
         <Section title="Auto-rebuild (Cloudflare deploy hook)">
-          <p className="text-[11px] text-[#9b9b9b] mb-3">
+          <p className="text-[11px] text-[#6b6b6b] mb-3">
             When set, the backend triggers a Cloudflare Pages rebuild after every product create / update / deactivate
             — so new products appear on the site without a manual redeploy.
             <br />
@@ -284,7 +284,7 @@ export default function AdminSettingsPage() {
             <input
               readOnly
               value="Set CLOUDFLARE_DEPLOY_HOOK in Railway → Variables (not stored here for security)"
-              className={`${INP} bg-[#faf8f5] text-[#9b9b9b] cursor-default`}
+              className={`${INP} bg-[#faf8f5] text-[#6b6b6b] cursor-default`}
             />
           </Field>
         </Section>

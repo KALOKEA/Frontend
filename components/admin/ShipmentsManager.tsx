@@ -667,7 +667,7 @@ export default function ShipmentsManager() {
           onClick={() => { setShowRemittance(!showRemittance); if (!showRemittance && !remittance) loadRemittance() }}
         >
           <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a]">💰 COD Remittance</p>
-          <span className="text-[#9b9b9b] text-xs">{showRemittance ? '▲ Hide' : '▼ Show'}</span>
+          <span className="text-[#6b6b6b] text-xs">{showRemittance ? '▲ Hide' : '▼ Show'}</span>
         </div>
         {showRemittance && (
           <div className="border-t border-[#e8e4e0] p-4">
@@ -715,7 +715,7 @@ export default function ShipmentsManager() {
       <div className="mt-4 border border-[#e8e4e0]">
         <div className="flex items-center justify-between p-4 cursor-pointer" onClick={() => setShowServiceability(!showServiceability)}>
           <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a]">📍 Pin Code Serviceability</p>
-          <span className="text-[#9b9b9b] text-xs">{showServiceability ? '▲ Hide' : '▼ Show'}</span>
+          <span className="text-[#6b6b6b] text-xs">{showServiceability ? '▲ Hide' : '▼ Show'}</span>
         </div>
         {showServiceability && (
           <div className="border-t border-[#e8e4e0] p-4">

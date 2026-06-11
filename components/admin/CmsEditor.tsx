@@ -77,7 +77,7 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
           placeholder="Short description for search engines (150–160 chars)"
           className="w-full border border-[#e8e4e0] px-3 py-2 text-sm outline-none focus:border-[#c8a4a5]"
         />
-        <p className="text-[10px] text-[#9b9b9b] mt-1">{meta.length}/160 characters</p>
+        <p className="text-[10px] text-[#6b6b6b] mt-1">{meta.length}/160 characters</p>
       </div>
 
       <div className="mb-4">
@@ -103,7 +103,7 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
             placeholder="Write HTML content here. Use <h2>, <p>, <strong>, <a href='...'> tags."
           />
         )}
-        <p className="text-[10px] text-[#9b9b9b] mt-1">
+        <p className="text-[10px] text-[#6b6b6b] mt-1">
           Supports HTML tags: &lt;h2&gt; &lt;h3&gt; &lt;p&gt; &lt;strong&gt; &lt;em&gt; &lt;a&gt; &lt;ul&gt; &lt;li&gt; &lt;br&gt;
         </p>
       </div>
@@ -122,7 +122,7 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
         >
           View live page ↗
         </a>
-        <span className="text-[10px] text-[#9b9b9b] sm:ml-auto w-full sm:w-auto">
+        <span className="text-[10px] text-[#6b6b6b] sm:ml-auto w-full sm:w-auto">
           Last saved: {new Date(page.updated_at).toLocaleString('en-IN')}
         </span>
       </div>
@@ -160,7 +160,7 @@ export default function CmsEditor() {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Page selector */}
           <div className="md:w-48 shrink-0">
-            <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b] mb-3 hidden md:block">Pages</p>
+            <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-3 hidden md:block">Pages</p>
             <nav className="flex md:flex-col flex-row flex-wrap gap-1 md:gap-0 md:space-y-0.5">
               {pages.map(p => (
                 <button
@@ -184,7 +184,7 @@ export default function CmsEditor() {
               <>
                 <div className="flex flex-wrap items-center gap-2 mb-4 md:mb-6 pb-4 border-b border-[#f0ece8]">
                   <h2 className="font-serif text-xl text-[#0a0a0a]">{PAGE_LABELS[activePage.slug] || activePage.title}</h2>
-                  <span className="text-[10px] text-[#9b9b9b] font-mono bg-[#faf8f5] px-2 py-0.5 border border-[#e8e4e0]">
+                  <span className="text-[10px] text-[#6b6b6b] font-mono bg-[#faf8f5] px-2 py-0.5 border border-[#e8e4e0]">
                     /{activePage.slug}
                   </span>
                 </div>

@@ -30,7 +30,7 @@ export default function MyReviewsPage() {
       ) : reviews.length === 0 ? (
         <div className="text-center py-10 border border-[#e8e4e0] bg-white">
           <p className="font-serif text-lg text-[#6b6b6b] mb-2">No reviews yet</p>
-          <p className="text-sm text-[#9b9b9b] mb-4">
+          <p className="text-sm text-[#6b6b6b] mb-4">
             After receiving your order, open the product page to leave a review.
           </p>
           <Link
@@ -61,7 +61,7 @@ export default function MyReviewsPage() {
                     ) : (
                       <p className="font-medium text-[#0a0a0a]">{productName}</p>
                     )}
-                    <p className="text-[11px] text-[#9b9b9b] mt-0.5">
+                    <p className="text-[11px] text-[#6b6b6b] mt-0.5">
                       {new Date(r.created_at).toLocaleDateString('en-IN', {
                         day: '2-digit', month: 'long', year: 'numeric',
                       })}

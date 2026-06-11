@@ -76,7 +76,7 @@ export function FilterPanel({ onApply }: { onApply?: () => void }) {
                 updateParam('max_price', null)
                 onApply?.()
               }}
-              className="text-[10px] text-[#9B8F87] hover:text-[#7C4A2D]"
+              className="text-[10px] text-[#6b5c55] hover:text-[#7C4A2D]"
             >
               Clear price
             </button>

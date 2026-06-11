@@ -186,7 +186,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
     }
   }
 
-  if (loading) return <p className="text-xs text-[#9b9b9b] py-4">Loading reviews…</p>
+  if (loading) return <p className="text-xs text-[#6b6b6b] py-4">Loading reviews…</p>
 
   const avg = reviews.length
     ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
@@ -221,7 +221,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                       {r.users?.name || 'Verified Customer'}
                     </span>
                   </div>
-                  <span className="text-[10px] text-[#9b9b9b]">
+                  <span className="text-[10px] text-[#6b6b6b]">
                     {new Date(r.created_at).toLocaleDateString('en-IN', {
                       day: '2-digit', month: 'short', year: 'numeric',
                     })}
@@ -306,7 +306,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                 maxLength={1000}
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none bg-white resize-none"
               />
-              <p className="text-[10px] text-[#9b9b9b] mt-0.5 text-right">{body.length}/1000</p>
+              <p className="text-[10px] text-[#6b6b6b] mt-0.5 text-right">{body.length}/1000</p>
             </div>
 
             {/* Media upload */}

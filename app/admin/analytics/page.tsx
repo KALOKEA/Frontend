@@ -50,7 +50,7 @@ export default function AdminAnalyticsPage() {
       <div className="bg-white border border-[#e8e4e0] p-6 mb-6">
         <div className="flex items-baseline justify-between mb-6">
           <h2 className="font-serif text-xl text-[#0a0a0a]">Revenue — Last 6 Months</h2>
-          <p className="text-xs text-[#9b9b9b]">Paid orders only</p>
+          <p className="text-xs text-[#6b6b6b]">Paid orders only</p>
         </div>
         {monthly.length > 0 ? (
           <div className="flex items-end gap-3 h-48">
@@ -113,7 +113,7 @@ export default function AdminAnalyticsPage() {
                 <li key={v.id} className="flex justify-between items-center py-3">
                   <div>
                     <p className="text-sm text-[#0a0a0a]">{v.products?.name || v.sku}</p>
-                    <p className="text-[10px] text-[#9b9b9b] font-mono">{v.sku}</p>
+                    <p className="text-[10px] text-[#6b6b6b] font-mono">{v.sku}</p>
                   </div>
                   <span className={`text-xs font-medium px-2 py-0.5 rounded ${v.stock === 0 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
                     {v.stock === 0 ? 'Out of stock' : `${v.stock} left`}
@@ -127,7 +127,7 @@ export default function AdminAnalyticsPage() {
         </div>
       </div>
 
-      <p className="text-[11px] text-[#9b9b9b] mt-6">GA4 funnel metrics (add_to_cart, begin_checkout, purchase) are tracked via the storefront and visible in your Google Analytics dashboard.</p>
+      <p className="text-[11px] text-[#6b6b6b] mt-6">GA4 funnel metrics (add_to_cart, begin_checkout, purchase) are tracked via the storefront and visible in your Google Analytics dashboard.</p>
     </>
   )
 }

@@ -108,7 +108,7 @@ export default function AdminActivityPage() {
       ) : !entries.length ? (
         <div className="bg-white border border-[#e8e4e0] px-4 py-16 text-center">
           <p className="font-serif text-lg text-[#6b6b6b] mb-1">No activity yet</p>
-          <p className="text-xs text-[#9b9b9b]">Admin actions will appear here once you start managing products, orders, and more.</p>
+          <p className="text-xs text-[#6b6b6b]">Admin actions will appear here once you start managing products, orders, and more.</p>
         </div>
       ) : (
         <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
@@ -134,11 +134,11 @@ export default function AdminActivityPage() {
                       <span className="capitalize">{e.entity_type}</span>
                     )}
                     {e.entity_id && (
-                      <span className="block text-[10px] text-[#9b9b9b] font-mono">{e.entity_id.slice(0, 8)}…</span>
+                      <span className="block text-[10px] text-[#6b6b6b] font-mono">{e.entity_id.slice(0, 8)}…</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-[#6b6b6b]">
-                    {e.users?.name || e.users?.email || <span className="text-[#9b9b9b]">—</span>}
+                    {e.users?.name || e.users?.email || <span className="text-[#6b6b6b]">—</span>}
                   </td>
                   <td className="px-4 py-3 text-[#6b6b6b] whitespace-nowrap text-xs">{fmt(e.created_at)}</td>
                 </tr>

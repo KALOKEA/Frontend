@@ -46,7 +46,7 @@ function OrderProgress({ status }: { status: string }) {
               <div className={`w-2.5 h-2.5 rounded-full border-2 transition-colors ${
                 done ? 'bg-[#7C4A2D] border-[#7C4A2D]' : 'bg-white border-[#d0ccc8]'
               }`} />
-              <span className="text-[8px] uppercase tracking-wider mt-1 text-[#9b9b9b] hidden sm:block whitespace-nowrap">
+              <span className="text-[8px] uppercase tracking-wider mt-1 text-[#6b6b6b] hidden sm:block whitespace-nowrap">
                 {step === 'processing' ? 'Packing' : step.charAt(0).toUpperCase() + step.slice(1)}
               </span>
             </div>
@@ -200,7 +200,7 @@ export default function OrdersPage() {
             <div key={b.label}>
               <div className="text-2xl mb-1">{b.icon}</div>
               <p className="text-[11px] font-medium text-[#0a0a0a]">{b.label}</p>
-              <p className="text-[10px] text-[#9b9b9b]">{b.sub}</p>
+              <p className="text-[10px] text-[#6b6b6b]">{b.sub}</p>
             </div>
           ))}
         </div>
@@ -213,7 +213,7 @@ export default function OrdersPage() {
     <div>
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-serif text-2xl text-[#0a0a0a]">My Orders</h2>
-        <span className="text-[11px] uppercase tracking-widest text-[#9b9b9b]">{orders.length} order{orders.length !== 1 ? 's' : ''}</span>
+        <span className="text-[11px] uppercase tracking-widest text-[#6b6b6b]">{orders.length} order{orders.length !== 1 ? 's' : ''}</span>
       </div>
 
       <div className="space-y-3">
@@ -237,7 +237,7 @@ export default function OrdersPage() {
                   <StatusBadge status={order.status} />
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-[#0a0a0a]">#{order.order_number}</p>
-                    <p className="text-[11px] text-[#9b9b9b] mt-0.5">
+                    <p className="text-[11px] text-[#6b6b6b] mt-0.5">
                       {new Date(order.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                       {' · '}
                       {order.order_items?.length || 0} item{(order.order_items?.length || 0) !== 1 ? 's' : ''}
@@ -252,7 +252,7 @@ export default function OrdersPage() {
                 <div className="flex items-center gap-3 shrink-0">
                   <span className="font-serif text-base text-[#0a0a0a]">{formatPrice(order.total)}</span>
                   <svg
-                    width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9b9b9b" strokeWidth="2"
+                    width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" strokeWidth="2"
                     className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
                   >
                     <polyline points="6 9 12 15 18 9"/>
@@ -271,7 +271,7 @@ export default function OrdersPage() {
                   {order.tracking_number && (
                     <div className="bg-[#faf8f5] border border-[#e8e4e0] rounded px-4 py-3 mb-4 flex items-center justify-between">
                       <div>
-                        <p className="text-[10px] uppercase tracking-widest text-[#9b9b9b] mb-0.5">Tracking</p>
+                        <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-0.5">Tracking</p>
                         <p className="text-sm font-medium text-[#0a0a0a]">{order.tracking_number}</p>
                         {order.courier_name && <p className="text-[11px] text-[#6b6b6b]">{order.courier_name}</p>}
                       </div>
@@ -294,7 +294,7 @@ export default function OrdersPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-[#0a0a0a] font-medium truncate">{item.snapshot_name}</p>
-                            <p className="text-[11px] text-[#9b9b9b]">
+                            <p className="text-[11px] text-[#6b6b6b]">
                               {[(item as any).snapshot_colour, (item as any).snapshot_size].filter(Boolean).join(' · ')}
                               {(item as any).snapshot_colour || (item as any).snapshot_size ? ' · ' : ''}
                               Qty {item.quantity}
@@ -309,7 +309,7 @@ export default function OrdersPage() {
                   {/* Delivery address */}
                   {order.address_snapshot && (
                     <div className="text-[11px] text-[#6b6b6b] mb-4 leading-relaxed">
-                      <span className="text-[10px] uppercase tracking-widest text-[#9b9b9b] block mb-1">Deliver to</span>
+                      <span className="text-[10px] uppercase tracking-widest text-[#6b6b6b] block mb-1">Deliver to</span>
                       {order.address_snapshot.name && <span>{order.address_snapshot.name}, </span>}
                       {order.address_snapshot.line1 || order.address_snapshot.street}
                       {order.address_snapshot.city && `, ${order.address_snapshot.city}`}
@@ -427,7 +427,7 @@ export default function OrdersPage() {
             <select value={reason} onChange={e => setReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
               {RETURN_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
-            <p className="text-[11px] text-[#9b9b9b] mb-5 leading-relaxed">
+            <p className="text-[11px] text-[#6b6b6b] mb-5 leading-relaxed">
               Returns are accepted within 7 days of delivery for unworn items with original tags attached.
             </p>
             <div className="flex gap-2 justify-end">
@@ -478,7 +478,7 @@ export default function OrdersPage() {
               {EXCHANGE_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
 
-            <p className="text-[11px] text-[#9b9b9b] mb-5 leading-relaxed">
+            <p className="text-[11px] text-[#6b6b6b] mb-5 leading-relaxed">
               Any price or GST difference is settled when the exchange is approved. Exchanges follow the same 7-day window as returns.
             </p>
             <div className="flex gap-2 justify-end">

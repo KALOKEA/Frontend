@@ -185,7 +185,7 @@ export default function AdminCategoriesPage() {
                 <tr>
                   <td colSpan={7} className="px-4 py-16 text-center text-[#6b6b6b]">
                     <p className="font-serif text-lg mb-1">No categories yet</p>
-                    <p className="text-xs text-[#9b9b9b]">Click "+ New category" or run the seed script to add the 9 default categories.</p>
+                    <p className="text-xs text-[#6b6b6b]">Click "+ New category" or run the seed script to add the 9 default categories.</p>
                   </td>
                 </tr>
               ) : categories.map(c => (
@@ -209,7 +209,7 @@ export default function AdminCategoriesPage() {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-[#9b9b9b] text-xs">{c.sort_order}</td>
+                  <td className="px-4 py-3 text-[#6b6b6b] text-xs">{c.sort_order}</td>
                   <td className="px-4 py-3 font-medium text-[#0a0a0a]">{c.name}</td>
                   <td className="px-4 py-3 font-mono text-xs text-[#6b6b6b]">{c.slug}</td>
                   <td className="px-4 py-3 text-[#6b6b6b] text-xs max-w-[200px] truncate hidden md:table-cell">
@@ -280,7 +280,7 @@ export default function AdminCategoriesPage() {
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none font-mono"
                 placeholder="dresses"
               />
-              <p className="text-[11px] text-[#9b9b9b] mt-1">Used in URLs and filters. Don't change once indexed.</p>
+              <p className="text-[11px] text-[#6b6b6b] mt-1">Used in URLs and filters. Don't change once indexed.</p>
             </div>
 
             <div className="mb-4">
@@ -307,7 +307,7 @@ export default function AdminCategoriesPage() {
                 </div>
               ) : (
                 <div className="w-full aspect-[3/2] bg-[#f4f2ef] flex items-center justify-center mb-2 border border-dashed border-[#d0ccc8]">
-                  <p className="text-[11px] text-[#9b9b9b] uppercase tracking-widest">No photo</p>
+                  <p className="text-[11px] text-[#6b6b6b] uppercase tracking-widest">No photo</p>
                 </div>
               )}
 
@@ -337,7 +337,7 @@ export default function AdminCategoriesPage() {
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-xs focus:border-[#0a0a0a] outline-none text-[#6b6b6b]"
                 placeholder="Or paste an image URL directly"
               />
-              <p className="text-[11px] text-[#9b9b9b] mt-1">
+              <p className="text-[11px] text-[#6b6b6b] mt-1">
                 Shown on the homepage "Shop the Look" grid. Paste a Cloudinary or Unsplash URL.
                 {form.image_url && (
                   <span> <a href={form.image_url} target="_blank" rel="noopener noreferrer" className="text-[#c8a4a5] underline">Preview ↗</a></span>

@@ -80,7 +80,7 @@ function WishlistCard({ product }: { product: Product }) {
           className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 shadow-sm flex items-center justify-center z-10 opacity-100 transition-opacity duration-200 hover:bg-red-50 md:opacity-0 md:group-hover:opacity-100"
           aria-label="Remove from wishlist"
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B8F87" strokeWidth="2" strokeLinecap="round">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6b5c55" strokeWidth="2" strokeLinecap="round">
             <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
@@ -89,7 +89,7 @@ function WishlistCard({ product }: { product: Product }) {
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
         {product.categories && (
-          <p className="text-[9px] font-sans text-[#9B8F87] tracking-[0.18em] uppercase mb-1">
+          <p className="text-[9px] font-sans text-[#6b5c55] tracking-[0.18em] uppercase mb-1">
             {product.categories.name}
           </p>
         )}
@@ -106,7 +106,7 @@ function WishlistCard({ product }: { product: Product }) {
             {formatPrice(product.base_price)}
           </span>
           {product.compare_price && product.compare_price > product.base_price && (
-            <span className="font-sans text-[12px] text-[#9B8F87] line-through">
+            <span className="font-sans text-[12px] text-[#6b5c55] line-through">
               {formatPrice(product.compare_price)}
             </span>
           )}
@@ -121,7 +121,7 @@ function WishlistCard({ product }: { product: Product }) {
               added
                 ? 'bg-green-700 text-white cursor-default'
                 : isOutOfStock
-                  ? 'bg-[#e8e4e0] text-[#9b9b9b] cursor-not-allowed'
+                  ? 'bg-[#e8e4e0] text-[#6b6b6b] cursor-not-allowed'
                   : 'bg-[#0A0908] text-white hover:bg-[#7C4A2D]'
             }`}
           >
@@ -129,7 +129,7 @@ function WishlistCard({ product }: { product: Product }) {
           </button>
           <button
             onClick={() => toggle(product.id)}
-            className="w-full py-2 text-[10px] font-sans tracking-widest uppercase text-[#9B8F87] hover:text-red-500 transition-colors border border-[#e8e4e0] hover:border-red-200"
+            className="w-full py-2 text-[10px] font-sans tracking-widest uppercase text-[#6b5c55] hover:text-red-500 transition-colors border border-[#e8e4e0] hover:border-red-200"
           >
             Remove
           </button>
@@ -205,7 +205,7 @@ export default function WishlistPage() {
         <div>
           <h2 className="font-serif text-2xl text-[#0A0908] font-light">Wishlist</h2>
           {!loading && (
-            <p className="text-[10px] font-sans text-[#9B8F87] tracking-widest uppercase mt-1">
+            <p className="text-[10px] font-sans text-[#6b5c55] tracking-widest uppercase mt-1">
               {items.length} {items.length === 1 ? 'item' : 'items'} saved
             </p>
           )}

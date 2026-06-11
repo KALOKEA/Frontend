@@ -308,6 +308,13 @@ h1, h2, h3, .font-serif {
 .animate-slide-left { animation: slideInLeft 0.65s ease both; }
 .animate-scale-in   { animation: scaleIn     0.5s  ease both; }
 
+/* Page-level route transition — applied by <PageTransition> on every navigation */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-page-enter { animation: pageEnter 0.22s ease-out both; }
+
 .anim-delay-0   { animation-delay: 0ms; }
 .anim-delay-100 { animation-delay: 100ms; }
 .anim-delay-200 { animation-delay: 200ms; }

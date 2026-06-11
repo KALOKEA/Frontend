@@ -136,7 +136,7 @@ function ShopContent() {
               ? category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
               : 'All Products'}
         </h1>
-        <p className="text-[10px] font-sans text-[#9B8F87] tracking-widest uppercase mt-1">
+        <p className="text-[10px] font-sans text-[#6b5c55] tracking-widest uppercase mt-1">
           {total} {total === 1 ? 'product' : 'products'}
         </p>
       </div>

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCartStore } from '@/lib/store/useCartStore'
 import { formatPrice } from '@/lib/utils/formatPrice'
+import CartCrossSell from '@/components/cart/CartCrossSell'
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem } = useCartStore()
@@ -76,7 +77,7 @@ export default function CartDrawer() {
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 pb-2">
               {items.map((item) => (
                 <div key={item.variant_id} className="flex gap-3">
                   {/* Image */}
@@ -140,6 +141,7 @@ export default function CartDrawer() {
                   </div>
                 </div>
               ))}
+              <CartCrossSell onNavigate={closeCart} />
             </div>
           )}
         </div>
@@ -151,7 +153,7 @@ export default function CartDrawer() {
               <span className="text-sm text-[#6B5E55]">Subtotal</span>
               <span className="font-serif text-base text-[#0A0908]">{formatPrice(total)}</span>
             </div>
-            <p className="text-[10px] text-[#9B8F87]">GST and shipping calculated at checkout</p>
+            <p className="text-[10px] text-[#6b5c55]">GST and shipping calculated at checkout</p>
 
             <Link
               href="/checkout/"

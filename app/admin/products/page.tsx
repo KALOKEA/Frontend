@@ -117,7 +117,7 @@ export default function AdminProductsPage() {
         {search && (
           <button
             onClick={() => setSearch('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9b9b9b] hover:text-[#0a0a0a] text-xl leading-none"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none"
           >×</button>
         )}
       </div>
@@ -161,7 +161,7 @@ function ProductTable({ products, onEdit, onRefresh }: {
       {!products.length ? (
         <div className="px-4 py-16 text-center">
           <p className="font-serif text-lg text-[#6b6b6b] mb-2">No products yet</p>
-          <p className="text-xs text-[#9b9b9b]">Click "+ New product" above to add your first product.</p>
+          <p className="text-xs text-[#6b6b6b]">Click "+ New product" above to add your first product.</p>
         </div>
       ) : (
         <table className="w-full min-w-[600px] text-sm font-sans">
@@ -609,7 +609,7 @@ function ProductEditor({
                 placeholder={form.name ? slugify(form.name) : 'auto-generated-from-name'}
                 className="inp"
               />
-              <p className="text-[11px] text-[#9b9b9b] mt-1">
+              <p className="text-[11px] text-[#6b6b6b] mt-1">
                 Leave blank to auto-generate. Avoid changing after Google has indexed the page.
               </p>
             </Field>
@@ -689,7 +689,7 @@ function ProductEditor({
                 className="inp"
                 placeholder="summer, floral, midi, cotton"
               />
-              <p className="text-[11px] text-[#9b9b9b] mt-1">Used for search and filtering.</p>
+              <p className="text-[11px] text-[#6b6b6b] mt-1">Used for search and filtering.</p>
             </Field>
           </Card>
 
@@ -793,7 +793,7 @@ function ProductEditor({
                       ))}
                     </tbody>
                   </table>
-                  <p className="text-[11px] text-[#9b9b9b] mt-2 flex items-center gap-1">
+                  <p className="text-[11px] text-[#6b6b6b] mt-2 flex items-center gap-1">
                     <span className="text-amber-600">●</span>
                     These will be created when you click "Create product".
                   </p>
@@ -889,7 +889,7 @@ function ProductEditor({
                     </button>
                     <button
                       onClick={() => setShowMatrix(false)}
-                      className="text-sm text-[#9b9b9b] hover:text-[#0a0a0a]"
+                      className="text-sm text-[#6b6b6b] hover:text-[#0a0a0a]"
                     >
                       Cancel
                     </button>
@@ -951,7 +951,7 @@ function ProductEditor({
                     {vSaving ? 'Adding…' : '+ Add'}
                   </button>
                 </div>
-                <p className="text-[11px] text-[#9b9b9b] mt-2">
+                <p className="text-[11px] text-[#6b6b6b] mt-2">
                   Leave colour/size blank for single-option products. Price excludes GST.
                   Press Enter to add quickly.
                 </p>
@@ -969,21 +969,21 @@ function ProductEditor({
               <label className="flex items-center justify-between gap-4 cursor-pointer">
                 <div>
                   <p className="text-sm text-[#0a0a0a]">Active</p>
-                  <p className="text-[11px] text-[#9b9b9b]">Visible on the storefront</p>
+                  <p className="text-[11px] text-[#6b6b6b]">Visible on the storefront</p>
                 </div>
                 <Toggle checked={form.is_active} onChange={v => setForm(f => ({ ...f, is_active: v }))} />
               </label>
               <label className="flex items-center justify-between gap-4 cursor-pointer">
                 <div>
                   <p className="text-sm text-[#0a0a0a]">Featured</p>
-                  <p className="text-[11px] text-[#9b9b9b]">Shown in homepage Featured tab</p>
+                  <p className="text-[11px] text-[#6b6b6b]">Shown in homepage Featured tab</p>
                 </div>
                 <Toggle checked={form.is_featured} onChange={v => setForm(f => ({ ...f, is_featured: v }))} />
               </label>
               <div className="flex items-start justify-between gap-4 pt-3 border-t border-[#f0ece8]">
                 <div>
                   <p className="text-sm text-[#0a0a0a]">Best Seller rank</p>
-                  <p className="text-[11px] text-[#9b9b9b]">Higher = appears first in Best Sellers tab. 0 = not a bestseller.</p>
+                  <p className="text-[11px] text-[#6b6b6b]">Higher = appears first in Best Sellers tab. 0 = not a bestseller.</p>
                 </div>
                 <input
                   type="number"
@@ -996,7 +996,7 @@ function ProductEditor({
               </div>
             </div>
             {isNew && (
-              <p className="text-[11px] text-[#9b9b9b] mt-4 pt-3 border-t border-[#f0ece8]">
+              <p className="text-[11px] text-[#6b6b6b] mt-4 pt-3 border-t border-[#f0ece8]">
                 Tip: keep as Draft while setting up. Activate when ready to go live.
               </p>
             )}
@@ -1006,7 +1006,7 @@ function ProductEditor({
           <Card title={`Photos${sortedImages.length > 0 ? ` (${sortedImages.length})` : ''}`}>
             {!form.id ? (
               <div className="py-3 text-center">
-                <p className="text-sm text-[#9b9b9b] mb-1">
+                <p className="text-sm text-[#6b6b6b] mb-1">
                   Photos are added after the product is created.
                 </p>
                 <p className="text-[11px] text-[#c8a4a5]">
@@ -1061,7 +1061,7 @@ function ProductEditor({
                   </div>
                 )}
                 {!sortedImages.length && (
-                  <p className="text-xs text-[#9b9b9b] mb-3">No photos yet.</p>
+                  <p className="text-xs text-[#6b6b6b] mb-3">No photos yet.</p>
                 )}
                 <label className="block w-full px-4 py-2 text-sm border border-[#0a0a0a] text-center cursor-pointer hover:bg-[#faf8f5] transition-colors">
                   {uploading ? (
@@ -1075,7 +1075,7 @@ function ProductEditor({
                     onChange={e => onUpload(e.target.files)}
                   />
                 </label>
-                <p className="text-[11px] text-[#9b9b9b] mt-2">
+                <p className="text-[11px] text-[#6b6b6b] mt-2">
                   JPEG / PNG / WebP · max 5 MB · first photo auto-sets as primary.
                 </p>
               </>
@@ -1089,7 +1089,7 @@ function ProductEditor({
               <p className="text-sm text-[#0a0a0a]">
                 {pendingVariants.length} variant{pendingVariants.length > 1 ? 's' : ''} queued
               </p>
-              <p className="text-[11px] text-[#9b9b9b] mt-1">
+              <p className="text-[11px] text-[#6b6b6b] mt-1">
                 Click "Create product" to save everything at once.
               </p>
             </div>
@@ -1169,7 +1169,7 @@ function VariantRow({ v, onSave, onDelete }: {
     <tr className="border-b border-[#f0ece8] last:border-0">
       <td className="py-2 pr-3 text-[#0a0a0a]">{v.colour || '—'}</td>
       <td className="py-2 pr-3 text-[#0a0a0a]">{v.size || '—'}</td>
-      <td className="py-2 pr-3 text-[#9b9b9b] text-xs">{v.sku || '—'}</td>
+      <td className="py-2 pr-3 text-[#6b6b6b] text-xs">{v.sku || '—'}</td>
       <td className="py-2 pr-3">
         <input type="number" value={price} onChange={e => setPrice(e.target.value)}
           className="w-20 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none" />

@@ -164,7 +164,7 @@ export default function AdminCustomersPage() {
         {search && !searching && (
           <button
             onClick={() => { setSearch(''); setSearchResults(null) }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9b9b9b] hover:text-[#0a0a0a] text-lg leading-none"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-lg leading-none"
           >
             ×
           </button>
@@ -358,7 +358,7 @@ export default function AdminCustomersPage() {
                       <div key={o.id} className="flex justify-between items-center py-2.5">
                         <div>
                           <p className="text-sm text-[#0a0a0a]">{o.order_number}</p>
-                          <p className="text-[11px] text-[#9b9b9b]">
+                          <p className="text-[11px] text-[#6b6b6b]">
                             {new Date(o.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                             {' · '}
                             <span className="capitalize">{o.status}</span>
