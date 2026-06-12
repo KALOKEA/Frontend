@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { adminApi, type AdminOrder } from '@/lib/api/admin'
 import Spinner from '@/components/ui/Spinner'
@@ -116,7 +117,7 @@ export default function AdminOrdersPage() {
           className="w-full border border-[#e8e4e0] px-4 py-2.5 text-sm focus:border-[#0a0a0a] outline-none pr-8"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none">×</button>
+          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none"><X size={16} /></button>
         )}
       </div>
 
@@ -211,9 +212,9 @@ export default function AdminOrdersPage() {
 
       {total > limit && (
         <div className="flex gap-2 mt-4 items-center text-sm">
-          <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]">← Prev</button>
+          <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]"><span className="flex items-center gap-1"><ChevronLeft size={14} />Prev</span></button>
           <span className="text-[#6b6b6b]">Page {page} of {Math.ceil(total / limit)}</span>
-          <button disabled={page >= Math.ceil(total / limit)} onClick={() => setPage(p => p + 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]">Next →</button>
+          <button disabled={page >= Math.ceil(total / limit)} onClick={() => setPage(p => p + 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]"><span className="flex items-center gap-1">Next<ChevronRight size={14} /></span></button>
         </div>
       )}
 

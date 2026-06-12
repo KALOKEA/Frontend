@@ -47,7 +47,7 @@ export default function AnnouncementBar() {
               whiteSpace: 'nowrap',
             }}
           >
-            {text} <span style={{ color: '#C49070' }}>✦</span>
+            {text} <span style={{ color: '#C49070', display: 'inline-flex', alignItems: 'center' }}><svg width='6' height='6' viewBox='0 0 6 6' fill='#C49070'><circle cx='3' cy='3' r='3'/></svg></span>
           </div>
         ))}
       </div>

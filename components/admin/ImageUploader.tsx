@@ -1,4 +1,5 @@
 'use client'
+import { X } from 'lucide-react'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { useAuthStore } from '@/lib/store/useAuthStore'
@@ -47,7 +48,7 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
             {img.is_primary && (
               <span className="absolute bottom-0 left-0 right-0 bg-[#c8a4a5] text-white text-[8px] text-center py-0.5">Primary</span>
             )}
-            <button onClick={() => remove(img.url)} className="absolute top-1 right-1 bg-white/90 w-5 h-5 flex items-center justify-center text-red-500 text-xs">×</button>
+            <button onClick={() => remove(img.url)} className="absolute top-1 right-1 bg-white/90 w-5 h-5 flex items-center justify-center text-red-500"><X size={10} /></button>
             {!img.is_primary && (
               <button onClick={() => setPrimary(img.url)} className="absolute top-1 left-1 bg-white/90 text-[8px] px-1 py-0.5">Set Primary</button>
             )}

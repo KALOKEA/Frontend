@@ -1,4 +1,5 @@
 'use client'
+import { Check, ChevronLeft } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -126,7 +127,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
     <div className="max-w-4xl">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <button onClick={() => router.back()} className="text-[#6b6b6b] hover:text-[#0a0a0a] text-sm">← Back</button>
+        <button onClick={() => router.back()} className="text-[#6b6b6b] hover:text-[#0a0a0a] text-sm flex items-center gap-1"><ChevronLeft size={14} />Back</button>
         <h1 className="font-serif text-2xl text-[#0a0a0a]">Order #{order.order_number}</h1>
         <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded ${STATUS_COLOR[order.status] || 'bg-gray-100'}`}>{order.status}</span>
         {order.shiprocket_status && (
@@ -251,7 +252,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
             )}
             {order.pickup_scheduled_at && (
               <span className="px-4 py-2 text-sm bg-green-50 border border-green-200 text-green-700">
-                ✓ Pickup scheduled {new Date(order.pickup_scheduled_at).toLocaleDateString('en-IN')}
+                <Check size={13} className="inline mr-1" />Pickup scheduled {new Date(order.pickup_scheduled_at).toLocaleDateString('en-IN')}
               </span>
             )}
             {inSR && hasAwb && (

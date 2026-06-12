@@ -1,4 +1,5 @@
 'use client'
+import { X, Star as StarIcon } from 'lucide-react'
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import DOMPurify from 'dompurify'
@@ -331,9 +332,9 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                       )}
                       <button
                         onClick={() => removeMedia(i)}
-                        className="absolute top-0 right-0 w-5 h-5 bg-black/70 text-white flex items-center justify-center text-[10px] leading-none"
+                        className="absolute top-0 right-0 w-5 h-5 bg-black/70 text-white flex items-center justify-center"
                       >
-                        ×
+                        <X size={10} />
                       </button>
                     </div>
                   ))}

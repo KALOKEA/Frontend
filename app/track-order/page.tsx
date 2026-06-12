@@ -1,4 +1,5 @@
 'use client'
+import { Check } from 'lucide-react'
 import { useState } from 'react'
 import { formatPrice } from '@/lib/utils/formatPrice'
 
@@ -152,7 +153,7 @@ export default function TrackOrderPage() {
                           <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium border-2 flex-shrink-0 ${
                             done ? 'bg-[#0a0a0a] border-[#0a0a0a] text-white' : 'bg-white border-[#d0ccc8] text-[#6b6b6b]'
                           } ${current ? 'ring-2 ring-[#7C4A2D] ring-offset-2' : ''}`}>
-                            {done && !current ? '✓' : i + 1}
+                            {done && !current ? <Check size={12} /> : i + 1}
                           </div>
                           {i < STATUS_STEPS.length - 1 && (
                             <div className={`flex-1 h-0.5 mx-1 ${i < stepIndex ? 'bg-[#0a0a0a]' : 'bg-[#e8e4e0]'}`} />

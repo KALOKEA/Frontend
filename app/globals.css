@@ -809,3 +809,320 @@ body.menu-open { overflow: hidden; touch-action: none; }
 @media (max-width: 360px) {
   .k-product-grid { gap: 8px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE BOTTOM NAVIGATION BAR
+   Shown only on screens ≤ 767px — positioned above the home indicator area
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.k-mobile-bottom-nav {
+  display: none; /* hidden on desktop */
+}
+
+@media (max-width: 767px) {
+  .k-mobile-bottom-nav {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #fff;
+    border-top: 1px solid #e8e4e0;
+    /* iOS safe-area / notch clearance */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* GPU-composite: no layout reflow on scroll */
+    will-change: transform;
+    /* Subtle elevation */
+    box-shadow: 0 -1px 12px rgba(10,9,8,.06);
+  }
+
+  .k-mobile-bottom-nav__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 4px 10px;
+    color: #9b9589;
+    text-decoration: none;
+    /* WCAG 44×44 tap target */
+    min-height: 52px;
+    position: relative;
+    /* Fast tap — no 300ms delay */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s ease;
+  }
+
+  .k-mobile-bottom-nav__item--active {
+    color: #7C4A2D;
+  }
+
+  .k-mobile-bottom-nav__icon-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .k-mobile-bottom-nav__label {
+    font-family: var(--font-dm-sans, sans-serif);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .k-mobile-bottom-nav__badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: #7C4A2D;
+    color: #fff;
+    border-radius: 100px;
+    font-size: 8px;
+    font-family: var(--font-dm-sans, sans-serif);
+    font-weight: 600;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    line-height: 1;
+  }
+
+  /* ── Body needs bottom clearance so content isn't hidden behind the nav ── */
+  body {
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Floating buttons (WhatsApp / BackToTop) stay above the nav ── */
+  .k-fab-group { bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important; }
+
+  /* ── Mobile sticky ATC bar clears the bottom nav ── */
+  .k-mobile-cta-bar {
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE TOUCH & INTERACTION IMPROVEMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  /* Minimum tap target on all interactive elements */
+  a, button, [role="button"], input[type="submit"], label[for] {
+    min-height: 44px;
+  }
+
+  /* Exception: icon-only small controls that already have explicit sizing */
+  .k-no-min-h { min-height: unset !important; }
+
+  /* Smooth momentum scrolling on iOS for all scrollable containers */
+  .overflow-x-auto, .overflow-y-auto, [class*="overflow-"] {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Remove hover flicker on touch — only apply hover on pointer devices */
+  @media (hover: none) {
+    a:hover, button:hover { opacity: 1; }
+  }
+
+  /* Larger base tap spacing for form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    min-height: 48px;
+    font-size: 16px !important; /* prevents iOS zoom on focus */
+  }
+
+  /* Product image horizontal scroll snapping (category shop, quick-view) */
+  .k-img-scroll {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .k-img-scroll > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Swipe-friendly product gallery dots indicator */
+  .k-gallery-dots {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    padding: 8px 0 0;
+  }
+  .k-gallery-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #d0ccc8;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .k-gallery-dot--active {
+    background: #7C4A2D;
+    transform: scale(1.4);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE TYPOGRAPHY SCALE
+   Fluid type so nothing feels cramped on 320-375px phones
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  /* Headings: clamp between comfortable min/max */
+  h1 { font-size: clamp(1.75rem, 7vw, 2.25rem); }
+  h2 { font-size: clamp(1.4rem,  5.5vw, 1.75rem); }
+  h3 { font-size: clamp(1.1rem,  4.5vw, 1.35rem); }
+
+  /* Product name in cards: readable on 2-col grid */
+  .k-product-name { font-size: clamp(13px, 3.5vw, 15px); }
+
+  /* Price text */
+  .k-price { font-size: clamp(12px, 3.2vw, 14px); }
+
+  /* Section eyebrows */
+  .k-eyebrow {
+    font-size: clamp(8px, 2.4vw, 10px);
+    letter-spacing: 0.14em;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PULL-TO-REFRESH FEEL — disable overscroll glow on Android Chrome
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html {
+  overscroll-behavior-y: contain;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOMENTUM SCROLL on iOS for main content areas
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@supports (-webkit-overflow-scrolling: touch) {
+  html, body {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE: prevent horizontal overflow caused by animations/absolute elements
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  body { overflow-x: hidden; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HERO 3D FLOATING ORBS — ambient depth effect on the dark panel
+   GPU-composited (transform + opacity only, no layout triggers)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.k-hero-orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.k-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.18;
+  will-change: transform, opacity;
+  animation: k-orb-float 8s ease-in-out infinite;
+}
+
+.k-hero-orb--1 {
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, #C49070 0%, transparent 70%);
+  top: 10%; left: -8%;
+  animation-duration: 9s;
+  animation-delay: 0s;
+}
+
+.k-hero-orb--2 {
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, #7C4A2D 0%, transparent 70%);
+  top: 55%; right: -5%;
+  animation-duration: 11s;
+  animation-delay: -3s;
+}
+
+.k-hero-orb--3 {
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, #C49070 0%, transparent 70%);
+  bottom: 15%; left: 30%;
+  animation-duration: 7s;
+  animation-delay: -6s;
+  opacity: 0.1;
+}
+
+@keyframes k-orb-float {
+  0%   { transform: translate3d(0, 0, 0)    scale(1);    opacity: 0.18; }
+  33%  { transform: translate3d(12px, -20px, 0) scale(1.08); opacity: 0.22; }
+  66%  { transform: translate3d(-8px, 14px, 0)  scale(0.95); opacity: 0.15; }
+  100% { transform: translate3d(0, 0, 0)    scale(1);    opacity: 0.18; }
+}
+
+/* Reduce motion — accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .k-hero-orb { animation: none !important; }
+  .group:hover .k-hero-orb { transform: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRODUCT CARD 3D TILT — hardware-accelerated, pointer devices only
+   The JS computes the inline transform; this CSS handles the
+   shine overlay that follows the tilt angle.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Ensure 3D context doesn't clip rounded corners */
+.group.relative {
+  transform-style: preserve-3d;
+}
+
+/* Subtle light-catch shimmer that moves as the card tilts */
+.group.relative::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.08) 0%,
+    transparent 50%,
+    rgba(0,0,0,0.04) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.group.relative:hover::after {
+  opacity: 1;
+}
+
+/* Touch/mobile: disable 3D tilt (keep transform: none on touch) */
+@media (hover: none) {
+  .group.relative {
+    transform: none !important;
+    transition: none !important;
+  }
+}

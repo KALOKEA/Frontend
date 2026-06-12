@@ -9,6 +9,7 @@ import AuthBootstrap from '@/components/AuthBootstrap'
 import Analytics from '@/components/Analytics'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import LiveChatWidget from '@/components/LiveChatWidget'
+import MobileBottomNav from '@/components/layout/MobileBottomNav'
 import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import BackToTop from '@/components/layout/BackToTop'
 import ScrollRevealInit from '@/components/ScrollRevealInit'
@@ -410,6 +411,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <FooterWrapper />
         </ToastProvider>
+        <MobileBottomNav />
         <LiveChatWidget />
         <WhatsAppButton />
         <BackToTop />

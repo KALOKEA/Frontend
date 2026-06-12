@@ -1,4 +1,5 @@
 'use client'
+import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { productsApi, type Product } from '@/lib/api/products'
@@ -91,7 +92,7 @@ export default function BestSellers() {
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#7C4A2D' }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#0A0806' }}
           >
-            See All →
+            See All <ArrowRight size={12} className="inline ml-1" />
           </Link>
         </div>
 

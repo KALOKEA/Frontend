@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Check } from 'lucide-react'
 import { productsApi, type Product } from '@/lib/api/products'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { useCartStore } from '@/lib/store/useCartStore'
@@ -125,7 +126,7 @@ function WishlistCard({ product }: { product: Product }) {
                   : 'bg-[#0A0908] text-white hover:bg-[#7C4A2D]'
             }`}
           >
-            {added ? '✓ Added to Cart' : adding ? 'Adding…' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+            {added ? <><Check size={11} className="inline mr-1" />Added to Cart</> : adding ? 'Adding…' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
           </button>
           <button
             onClick={() => toggle(product.id)}

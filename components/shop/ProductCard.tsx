@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
@@ -68,7 +68,23 @@ export default function ProductCard({ product }: ProductCardProps) {
   const rating       = product.avg_rating ?? 0
   const reviewCount  = product.review_count ?? 0
 
-  function handleWishlist(e: React.MouseEvent) {
+
+  // ── 3D tilt on hover (pointer devices only) ──────────────────────────────
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [tilt, setTilt] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current
+    if (!el) return
+    const { left, top, width, height } = el.getBoundingClientRect()
+    const cx = (e.clientX - left) / width  - 0.5
+    const cy = (e.clientY - top)  / height - 0.5
+    setTilt({ x: cy * -6, y: cx * 6 })
+  }, [])
+
+  const resetTilt = useCallback(() => setTilt({ x: 0, y: 0 }), [])
+
+    function handleWishlist(e: React.MouseEvent) {
     e.preventDefault()
     setWishlisting(true)
     toggle(product.id)
@@ -77,7 +93,19 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-    <div className="group relative">
+    <div
+      ref={cardRef}
+      className="group relative"
+      style={{
+        transform: `perspective(700px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: tilt.x === 0 && tilt.y === 0
+          ? 'transform 0.5s cubic-bezier(0.23,1,0.32,1)'
+          : 'transform 0.08s linear',
+        willChange: 'transform',
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={resetTilt}
+    >
 
       {/* ── Image container ─────────────────────────────────────── */}
       <div

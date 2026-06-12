@@ -101,7 +101,7 @@ export default function AdminAboutPage() {
         siteContentApi.update('about_team',   JSON.stringify(team)),
       ])
       invalidateSiteContentCache()
-      flash('Saved ✓', true)
+      flash('Saved', true)
     } catch (err: any) {
       flash(err?.message || 'Could not save', false)
     } finally {

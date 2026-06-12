@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { X } from 'lucide-react'
 import Image from 'next/image'
 import { categoriesApi, type Category } from '@/lib/api/categories'
 import { uploadImage } from '@/lib/api/upload'
@@ -65,7 +66,7 @@ export default function AdminCategoriesPage() {
     try {
       const { url } = await uploadImage(files[0], 'categories')
       setForm(f => f ? { ...f, image_url: url } : f)
-      showToast('Photo uploaded ✓')
+      showToast('Photo uploaded')
     } catch (e: any) {
       showToast(e?.message || 'Upload failed', 'err')
     } finally {
@@ -104,10 +105,10 @@ export default function AdminCategoriesPage() {
     try {
       if (form.id) {
         await categoriesApi.update(form.id, payload)
-        showToast('Category updated ✓')
+        showToast('Category updated')
       } else {
         await categoriesApi.create(payload)
-        showToast('Category created ✓')
+        showToast('Category created')
       }
       setForm(null)
       load()
@@ -299,10 +300,10 @@ export default function AdminCategoriesPage() {
                   <button
                     type="button"
                     onClick={() => setForm(f => f ? { ...f, image_url: '' } : f)}
-                    className="absolute top-2 right-2 w-7 h-7 bg-black/60 text-white text-sm flex items-center justify-center hover:bg-black/80 transition-colors"
+                    className="absolute top-2 right-2 w-7 h-7 bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
                     title="Remove photo"
                   >
-                    ×
+                    <X size={14} />
                   </button>
                 </div>
               ) : (

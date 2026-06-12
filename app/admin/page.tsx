@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { ArrowRight, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { adminApi, type DashboardStats, type AdminOrder } from '@/lib/api/admin'
 import StatsCard from '@/components/admin/StatsCard'
@@ -56,7 +57,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0ece8]">
             <h2 className="font-serif text-lg text-[#0a0a0a]">Recent Orders</h2>
             <Link href="/admin/orders/" className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
-              View all →
+              View all <ArrowRight size={11} className="inline ml-1" />
             </Link>
           </div>
           {recentOrders.length ? (
@@ -93,7 +94,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0ece8]">
               <h2 className="font-serif text-lg text-[#0a0a0a]">Low Stock</h2>
               <Link href="/admin/inventory/" className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
-                Manage →
+                Manage <ArrowRight size={11} className="inline ml-1" />
               </Link>
             </div>
             {lowStock.length ? (
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
                 ))}
               </ul>
             ) : (
-              <p className="px-5 py-6 text-sm text-[#6b6b6b] text-center">All variants are well-stocked ✓</p>
+              <p className="px-5 py-6 text-sm text-[#6b6b6b] text-center">All variants are well-stocked</p>
             )}
           </div>
 
@@ -133,7 +134,7 @@ export default function AdminDashboard() {
                   className="flex items-center justify-between text-sm text-[#0a0a0a] hover:text-[#c8a4a5] py-1.5 border-b border-[#f0ece8] last:border-0 transition-colors"
                 >
                   {l.label}
-                  <span className="text-[#d0ccc8]">→</span>
+                  <ChevronRight size={14} className="text-[#d0ccc8]" />
                 </Link>
               ))}
             </div>

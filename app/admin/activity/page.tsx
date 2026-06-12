@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { adminApi, type ActivityLogEntry } from '@/lib/api/admin'
 import Spinner from '@/components/ui/Spinner'
 

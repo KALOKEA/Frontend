@@ -1,4 +1,5 @@
 'use client'
+import { Star } from 'lucide-react'
 /**
  * QuickView modal — lightweight product preview overlay.
  *
@@ -231,7 +232,7 @@ export default function QuickView({ product, onClose }: QuickViewProps) {
               {/* Rating */}
               {(product.review_count ?? 0) > 0 && (
                 <div className="flex items-center gap-1.5 text-[12px] font-sans text-[#6B5E55]">
-                  <span>★ {(product.avg_rating ?? 0).toFixed(1)}</span>
+                  <Star size={12} fill="#C49070" stroke="none" className="inline" /> {(product.avg_rating ?? 0).toFixed(1)}
                   <span className="text-[#c8c0b8]">({product.review_count} reviews)</span>
                 </div>
               )}

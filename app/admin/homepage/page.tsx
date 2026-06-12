@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { Check } from 'lucide-react'
 import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 import CloudinaryUploadButton from '@/components/admin/CloudinaryUploadButton'
 
@@ -204,7 +205,7 @@ export default function AdminHomepagePage() {
                           : 'bg-[#0a0a0a] text-white hover:bg-[#c8a4a5]'
                       } disabled:opacity-50`}
                     >
-                      {saving === field.key ? '…' : saved === field.key ? '✓ Saved' : 'Save'}
+                      {saving === field.key ? '…' : saved === field.key ? <><Check size={10} className="inline mr-1" />Saved</> : 'Save'}
                     </button>
                   </div>
                 </div>

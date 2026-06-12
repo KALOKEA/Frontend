@@ -2,6 +2,7 @@
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { ChevronLeft } from 'lucide-react'
 import { authApi } from '@/lib/api/auth'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import { useCartStore } from '@/lib/store/useCartStore'
@@ -60,7 +61,7 @@ function SignupContent() {
       })
       setAuth(res.access_token, { ...res.user, name: name.trim() })
       await useCartStore.getState().mergeOnLogin().catch(() => {})
-      toast('Welcome to Kalokea, ' + name.split(' ')[0] + '! 🎉')
+      toast('Welcome to Kalokea, ' + name.split(' ')[0] + '!')
       const rawRedirect = params.get('redirect') || '/'
       // Prevent open redirect: only allow same-origin relative paths
       const redirect = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/'
@@ -161,7 +162,7 @@ function SignupContent() {
               onClick={() => { setStep('details'); setOtp('') }}
               className="w-full text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors"
             >
-              ← Change details
+              <ChevronLeft size={12} className="inline" /> Change details
             </button>
           </form>
         )}

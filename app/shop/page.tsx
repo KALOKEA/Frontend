@@ -1,4 +1,5 @@
 'use client'
+import { X } from 'lucide-react'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { productsApi, type Product } from '@/lib/api/products'
@@ -45,10 +46,10 @@ function ActiveFilters() {
         <button
           key={c.label}
           onClick={c.remove}
-          className="flex items-center gap-1 px-3 py-1 text-[10px] uppercase tracking-widest bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1 text-[10px] uppercase tracking-widest bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors"
         >
           {c.label}
-          <span className="ml-1 text-[#C4A882]">×</span>
+          <X size={9} className="text-[#C4A882]" />
         </button>
       ))}
       <button
@@ -78,10 +79,10 @@ function MobileFilterDrawer({ open, onClose }: { open: boolean; onClose: () => v
           <h3 className="font-serif text-lg text-[#0a0a0a]">Filter</h3>
           <button
             onClick={onClose}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#6B5E55] hover:text-[#0a0a0a] text-xl leading-none -mr-2"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#6B5E55] hover:text-[#0a0a0a] -mr-2"
             aria-label="Close filters"
           >
-            ×
+            <X size={18} />
           </button>
         </div>
         <div className="px-5 py-4">

@@ -1,4 +1,5 @@
 'use client'
+import { ChevronLeft } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { productsApi, type Product } from '@/lib/api/products'
@@ -65,7 +66,7 @@ export default function CategoryShopClient({ category, displayName }: Props) {
             href="/shop/"
             className="text-[11px] font-sans tracking-[0.15em] uppercase text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors flex items-center gap-1.5"
           >
-            <span aria-hidden="true">←</span> All Categories
+            <ChevronLeft size={14} aria-hidden="true" /> All Categories
           </Link>
           <select
             value={sort}

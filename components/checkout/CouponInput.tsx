@@ -1,4 +1,5 @@
 'use client'
+import { Check } from 'lucide-react'
 import { useState } from 'react'
 import { couponsApi } from '@/lib/api/coupons'
 import { useCartStore } from '@/lib/store/useCartStore'
@@ -38,7 +39,7 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
     return (
       <div className="flex items-center justify-between border border-[#7C4A2D] px-4 py-3">
         <p className="text-xs font-sans text-[#0a0a0a]">
-          Coupon <span className="font-medium">{appliedCode}</span> applied ✓
+          <Check size={11} className="inline mr-1 text-[#7C4A2D]" />Coupon <span className="font-medium">{appliedCode}</span> applied
         </p>
         <button onClick={onRemove} className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#0a0a0a] tracking-widest uppercase underline">Remove</button>
       </div>

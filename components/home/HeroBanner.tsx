@@ -70,6 +70,12 @@ export default function HeroBanner() {
           minHeight: 'clamp(480px, 60vh, 100vh)',
         }}
       >
+        {/* ── 3D floating orbs — ambient depth effect ── */}
+        <div className="k-hero-orbs" aria-hidden="true">
+          <span className="k-hero-orb k-hero-orb--1" />
+          <span className="k-hero-orb k-hero-orb--2" />
+          <span className="k-hero-orb k-hero-orb--3" />
+        </div>
         {/* Eyebrow */}
         <div
           className={mounted ? 'animate-fade-up anim-delay-100' : 'opacity-0'}

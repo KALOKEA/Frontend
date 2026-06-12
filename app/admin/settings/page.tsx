@@ -49,7 +49,7 @@ export default function AdminSettingsPage() {
         low_stock_threshold: Number(form.low_stock_threshold ?? 5),
       })
       setForm({ ...DEFAULT_FORM, ...updated })
-      setMsg({ text: 'Settings saved ✓', ok: true })
+      setMsg({ text: 'Settings saved', ok: true })
       setTimeout(() => setMsg(null), 4000)
     } catch (e: any) {
       setMsg({ text: e?.message || 'Could not save — check your connection', ok: false })
@@ -221,7 +221,7 @@ export default function AdminSettingsPage() {
             />
           </Field>
           {form.live_chat_widget ? (
-            <p className="text-[11px] text-green-700 mt-1">✓ Widget active — will appear on all customer pages.</p>
+            <p className="text-[11px] text-green-700 mt-1">Widget active — will appear on all customer pages.</p>
           ) : (
             <p className="text-[11px] text-[#6b6b6b] mt-1">No widget configured — chat bubble will not appear.</p>
           )}

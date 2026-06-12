@@ -1,4 +1,5 @@
 'use client'
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { adminApi, type PendingReview, type AllReview } from '@/lib/api/admin'
 import { useToast } from '@/components/ui/Toast'
@@ -6,7 +7,15 @@ import Spinner from '@/components/ui/Spinner'
 
 type Tab = 'pending' | 'all'
 
-const STARS = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n)
+function StarRow({ n }: { n: number }) {
+  return (
+    <span className="inline-flex gap-0.5">
+      {[1,2,3,4,5].map(i => (
+        <Star key={i} size={12} fill={i <= n ? '#C49070' : 'none'} stroke="#C49070" />
+      ))}
+    </span>
+  )
+}
 
 export default function AdminReviewsPage() {
   const { toast } = useToast()
@@ -221,10 +230,10 @@ export default function AdminReviewsPage() {
           {allTotal > 30 && (
             <div className="flex gap-2 mt-4 items-center text-sm">
               <button disabled={allPage <= 1} onClick={() => { setAllPage(p => p - 1); loadAll(allPage - 1) }}
-                className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]">← Prev</button>
+                className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5] flex items-center gap-1"><ChevronLeft size={14} /> Prev</button>
               <span className="text-[#6b6b6b] px-2">Page {allPage} of {Math.ceil(allTotal / 30)}</span>
               <button disabled={allPage >= Math.ceil(allTotal / 30)} onClick={() => { setAllPage(p => p + 1); loadAll(allPage + 1) }}
-                className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]">Next →</button>
+                className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5] flex items-center gap-1">Next <ChevronRight size={14} /></button>
             </div>
           )}
         </>
@@ -270,7 +279,7 @@ export default function AdminReviewsPage() {
               {flagTarget.flagged ? 'Remove Flag' : 'Flag Review'}
             </h2>
             <p className="text-xs text-[#6b6b6b] mb-4">
-              {flagTarget.products?.name} — {STARS(flagTarget.rating)} by {(flagTarget as any).users?.name || 'Customer'}
+              {flagTarget.products?.name} — <StarRow n={flagTarget.rating} /> by {(flagTarget as any).users?.name || 'Customer'}
             </p>
             {!flagTarget.flagged && (
               <>
@@ -338,7 +347,7 @@ function ReviewCard({
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-[#c8a4a5] text-sm">{STARS(rating)}</span>
+          <span className="text-[#c8a4a5] text-sm"><StarRow n={rating} /></span>
           {flagged && (
             <span className="text-[9px] uppercase tracking-widest px-1.5 py-0.5 bg-red-100 text-red-700">
               Flagged

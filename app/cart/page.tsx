@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { PackageCheck } from 'lucide-react'
 import { useCartStore } from '@/lib/store/useCartStore'
 import CartItem from '@/components/cart/CartItem'
 import CartSummary from '@/components/cart/CartSummary'
@@ -72,7 +73,7 @@ export default function CartPage() {
             </>
           ) : (
             <p className="text-[11px] font-sans text-[#0a0a0a] font-medium">
-              🎉 You&apos;ve unlocked free shipping!
+              <PackageCheck size={13} className="text-[#7C4A2D] shrink-0" /> You’ve unlocked free shipping!
             </p>
           )}
         </div>

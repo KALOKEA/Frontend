@@ -1,4 +1,5 @@
 'use client'
+import { X, Check } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import api from '@/lib/api/client'
@@ -57,7 +58,7 @@ function ProfileManager({
       <div className="bg-white w-full max-w-md border border-[#e8e4e0] p-5">
         <div className="flex items-center justify-between mb-4">
           <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a]">Packaging Profiles</p>
-          <button onClick={onClose} className="text-[#6b6b6b] hover:text-[#0a0a0a] text-lg leading-none">✕</button>
+          <button onClick={onClose} className="text-[#6b6b6b] hover:text-[#0a0a0a] flex items-center justify-center"><X size={16} /></button>
         </div>
         {/* Existing profiles */}
         {profiles.length > 0 && (
@@ -150,7 +151,7 @@ function PushForm({ orderId, profiles, onDone }: { orderId: string; profiles: an
           <select onChange={e => applyProfile(e.target.value)} className="border border-[#e8e4e0] px-2 py-1 text-[11px] bg-white outline-none">
             <option value="">— Select profile —</option>
             {profiles.map(p => (
-              <option key={p.id} value={p.id}>{p.name} ({p.weight}kg · {p.length}×{p.breadth}×{p.height}cm){p.is_default ? ' ★' : ''}</option>
+              <option key={p.id} value={p.id}>{p.name} ({p.weight}kg · {p.length}×{p.breadth}×{p.height}cm){p.is_default ? ' (Default)' : ''}</option>
             ))}
           </select>
         </div>
@@ -449,7 +450,7 @@ export default function ShipmentsManager() {
             onClick={handleBulkSync} disabled={bulkLoading}
             className="px-3 py-1 bg-white text-[#0a0a0a] text-[10px] uppercase tracking-widest hover:bg-[#f0ece8] disabled:opacity-50"
           >Sync Tracking</button>
-          <button onClick={() => setSelected(new Set())} className="ml-auto text-[10px] text-white/60 hover:text-white">✕ Clear</button>
+          <button onClick={() => setSelected(new Set())} className="ml-auto text-[10px] text-white/60 hover:text-white flex items-center gap-1"><X size={10} /> Clear</button>
         </div>
       )}
       {bulkMsg && (
@@ -749,7 +750,7 @@ export default function ShipmentsManager() {
                         <td className="py-1.5 pr-4 font-medium text-[#0a0a0a]">{c.courier_name}</td>
                         <td className="py-1.5 pr-4 text-[#6b6b6b]">{c.estimated_delivery_days ?? '—'}</td>
                         <td className="py-1.5 pr-4 text-[#6b6b6b]">₹{c.rate ?? '—'}</td>
-                        <td className="py-1.5 text-[#6b6b6b]">{c.cod === 1 ? '✓' : '✗'}</td>
+                        <td className="py-1.5 text-[#6b6b6b]">{c.cod === 1 ? <Check size={12} className="text-green-600" /> : <X size={12} className="text-red-400" />}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -1,12 +1,15 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { Star } from 'lucide-react'
 import Link from 'next/link'
 import { reviewsApi, type ReviewItem } from '@/lib/api/reviews'
 import Spinner from '@/components/ui/Spinner'
 
 const STARS = (n: number) => (
-  <span className="text-[#7C4A2D] text-sm">
-    {'★'.repeat(n)}<span className="text-[#e8e4e0]">{'★'.repeat(5 - n)}</span>
+  <span className="inline-flex gap-0.5">
+    {[1,2,3,4,5].map(i => (
+      <Star key={i} size={12} fill={i <= n ? '#7C4A2D' : '#e8e4e0'} stroke="none" />
+    ))}
   </span>
 )
 

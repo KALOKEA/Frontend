@@ -163,7 +163,7 @@ export default function AdminFooterPage() {
         siteContentApi.update('footer_copyright',   copyright),
       ])
       invalidateSiteContentCache()
-      flash('Saved ✓', true)
+      flash('Saved', true)
     } catch (err: any) {
       flash(err?.message || 'Could not save', false)
     } finally {

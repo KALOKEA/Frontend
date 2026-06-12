@@ -7,6 +7,7 @@ import { categoriesApi, type Category } from '@/lib/api/categories'
 import { uploadImage } from '@/lib/api/upload'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice } from '@/lib/utils/formatPrice'
+import { X, ChevronLeft, ChevronUp, ChevronDown } from 'lucide-react'
 
 const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -118,7 +119,7 @@ export default function AdminProductsPage() {
           <button
             onClick={() => setSearch('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none"
-          >×</button>
+          ><X size={16} /></button>
         )}
       </div>
       {search.trim() && !loading && (
@@ -327,7 +328,7 @@ function ProductEditor({
     try {
       if (form.id) {
         await productsApi.update(form.id, payload)
-        showToast('Changes saved ✓')
+        showToast('Changes saved')
       } else {
         // ── Create product (auto-retry with suffix on slug collision) ─────
         let created
@@ -371,7 +372,7 @@ function ProductEditor({
           )
         } else {
           await refreshMedia(created.id)
-          showToast('Product created ✓ — add photos and variants below.')
+          showToast('Product created — add photos and variants below.')
         }
         setTimeout(() => variantsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300)
       }
@@ -418,7 +419,7 @@ function ProductEditor({
       })
       setVDraft(emptyVariant())
       await refreshMedia(form.id)
-      showToast('Variant added ✓')
+      showToast('Variant added')
     } catch (e: any) {
       showToast(e?.message || 'Could not add variant', 'err')
     } finally {
@@ -475,7 +476,7 @@ function ProductEditor({
         await refreshMedia(form.id!)
         showToast(
           saved === newDrafts.length
-            ? `${saved} variant${saved > 1 ? 's' : ''} added ✓`
+            ? `${saved} variant${saved > 1 ? 's' : ''} added`
             : `${saved}/${newDrafts.length} variants added — retry the rest.`
         )
         setSaving(false)
@@ -484,7 +485,7 @@ function ProductEditor({
     } else {
       // Queue for creation with product
       setPendingVariants(prev => [...prev, ...newDrafts])
-      showToast(`${newDrafts.length} variants queued ✓`)
+      showToast(`${newDrafts.length} variants queued`)
       setShowMatrix(false)
     }
 
@@ -504,7 +505,7 @@ function ProductEditor({
         await productsApi.addImage(form.id, { url, public_id, sort_order: sorted.length + i })
       }
       await refreshMedia(form.id)
-      showToast(`${files.length > 1 ? `${files.length} photos` : 'Photo'} uploaded ✓`)
+      showToast(`${files.length > 1 ? `${files.length} photos` : 'Photo'} uploaded`)
     } catch (e: any) {
       showToast(e?.message || 'Upload failed — is Cloudinary configured on the server?', 'err')
     } finally {
@@ -806,7 +807,7 @@ function ProductEditor({
                   onClick={() => setShowMatrix(m => !m)}
                   className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
                 >
-                  {showMatrix ? '▲ Hide matrix generator' : '▼ Quick generate (size × colour matrix)'}
+                  {showMatrix ? '<ChevronUp size={12} className="inline" /> Hide matrix generator' : '<ChevronDown size={12} className="inline" /> Quick generate (size × colour matrix)'}
                 </button>
               </div>
 

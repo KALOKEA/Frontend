@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { adminApi } from '@/lib/api/admin'
 import { useToast } from '@/components/ui/Toast'
 import Spinner from '@/components/ui/Spinner'
@@ -192,10 +193,10 @@ export default function AdminEmailLogPage() {
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 mt-6">
           <button disabled={page === 1} onClick={() => { const p = page - 1; setPage(p); load(p) }}
-            className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]">←</button>
+            className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronLeft size={14} /></button>
           <span className="px-3 py-1 text-sm text-[#6b6b6b]">{page} / {totalPages}</span>
           <button disabled={page >= totalPages} onClick={() => { const p = page + 1; setPage(p); load(p) }}
-            className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]">→</button>
+            className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronRight size={14} /></button>
         </div>
       )}
 
@@ -219,7 +220,7 @@ export default function AdminEmailLogPage() {
                 onClick={() => setViewing(null)}
                 className="text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none ml-4 mt-0.5"
               >
-                ✕
+                <X size={18} />
               </button>
             </div>
 
