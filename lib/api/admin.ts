@@ -103,6 +103,10 @@ export interface AllReview {
   title?: string
   comment?: string
   is_approved: boolean
+  flagged?: boolean
+  flag_reason?: string
+  admin_reply?: string
+  admin_replied_at?: string
   created_at: string
   users?: { name?: string }
   products?: { name?: string; slug?: string }
@@ -205,12 +209,19 @@ export const adminApi = {
 
   // reviews
   listPendingReviews: () => api.get<PendingReview[]>('/reviews/pending'),
-  listAllReviews: (page = 1, limit = 30) =>
-    api.get<{ data: AllReview[]; meta: { total: number; page: number; limit: number; total_pages: number } }>(
-      `/reviews/admin/all?page=${page}&limit=${limit}`,
-    ),
+  listAllReviews: (page = 1, limit = 30, rating?: number, sort?: string) => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+    if (rating) params.set('rating', String(rating))
+    if (sort) params.set('sort', sort)
+    return api.get<{ data: AllReview[]; meta: { total: number; page: number; limit: number; total_pages: number } }>(
+      `/reviews/admin/all?${params}`,
+    )
+  },
   approveReview: (id: string) => api.patch(`/reviews/${id}/approve`),
   rejectReview: (id: string) => api.delete(`/reviews/${id}/reject`),
+  replyToReview: (id: string, reply: string) => api.post(`/reviews/${id}/reply`, { reply }),
+  flagReview: (id: string, flagged: boolean, flagReason?: string) =>
+    api.post(`/reviews/${id}/flag`, { flagged, flag_reason: flagReason }),
 
   // returns
   listReturns: () => api.get<ReturnRequest[]>('/returns'),
@@ -228,6 +239,13 @@ export const adminApi = {
   },
 
   // newsletter
+  getNewsletterStats: () => api.get<{ total_subscribers: number; active_subscribers: number; unsubscribed: number; total_campaigns: number }>('/newsletter/admin/stats'),
+  sendNewsletterCampaign: (subject: string, body: string, preview_text?: string) =>
+    api.post<{ sent: number; failed: number; message: string }>('/newsletter/admin/send-campaign', { subject, body, preview_text }),
+  listNewsletterCampaigns: (page = 1, limit = 20) =>
+    api.get<{ data: any[]; meta: { total: number; page: number; limit: number; total_pages: number } }>(
+      `/newsletter/admin/campaigns?page=${page}&limit=${limit}`,
+    ),
   listNewsletterSubscribers: (page = 1, limit = 50, active?: string) => {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) })
     if (active !== undefined) params.set('active', active)
@@ -262,6 +280,13 @@ export const adminApi = {
       `/admin/email-log?${params}`,
     )
   },
+  getEmailLogEntry: (id: string) => api.get<any>(`/admin/email-log/${id}`),
+  resendEmail: (id: string) => api.post<{ message: string }>(`/admin/email-log/${id}/resend`, {}),
+
+  // analytics extended
+  getClv: () => api.get<{ avg_clv: number; total_paying_customers: number; total_revenue: number }>('/admin/analytics/clv'),
+  getConversionRate: () => api.get<{ conversion_rate: number; total_users: number; unique_buyers: number }>('/admin/analytics/conversion-rate'),
+  getSalesByCategory: () => api.get<{ category: string; revenue: number; units: number }[]>('/admin/analytics/sales-by-category'),
 
   // order detail
   getOrderDetail: (id: string) =>

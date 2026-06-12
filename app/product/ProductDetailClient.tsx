@@ -5,6 +5,7 @@ import { productsApi, type Product, type ProductVariant } from '@/lib/api/produc
 import ImageGallery from '@/components/product/ImageGallery'
 import VariantPicker from '@/components/product/VariantPicker'
 import AddToCartButton from '@/components/product/AddToCartButton'
+import BackInStockNotify from '@/components/product/BackInStockNotify'
 import SizeGuidePopup from '@/components/product/SizeGuidePopup'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
@@ -281,6 +282,12 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                 >
                   {selectionPrompt}
                 </button>
+              ) : isOOS && selectedVariant ? (
+                <BackInStockNotify
+                  variantId={selectedVariant.id}
+                  productName={product.name}
+                  variantLabel={[selectedVariant.size, selectedVariant.colour].filter(Boolean).join(' / ') || 'One Size'}
+                />
               ) : (
                 <AddToCartButton product={product} selectedVariant={selectedVariant} quantity={quantity} />
               )}

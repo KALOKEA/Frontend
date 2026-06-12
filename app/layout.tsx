@@ -83,85 +83,254 @@ export const metadata: Metadata = {
   title: "KALOKEA | Women's Fashion — Dresses, Tops & More",
   description: "Shop the latest women's fashion at Kalokea — dresses, tops, co-ords, bags and accessories. Free shipping above ₹999. Easy 7-day returns. COD available pan India.",
   keywords: [
-    // Brand
+    // ── Brand ──────────────────────────────────────────────────────────────────
     'kalokea', 'kalokea fashion', 'kalokea women', 'kalokea online',
-    // Core categories
-    "women's fashion india", "women's clothing online", "ladies fashion india", "girls fashion online",
-    "women's dresses", "women's tops", "women's kurtas", "women's blouses",
-    "women's co-ords", "women's palazzo", "women's skirts", "women's pants",
-    "women's bags", "women's handbags", "women's tote bags", "women's sling bags",
-    "women's accessories", "women's jewellery", "women's earrings",
-    // Dress types
+    'kalokea dresses', 'kalokea tops', 'kalokea bags', 'kalokea co-ords',
+    'shop kalokea', 'kalokea india', 'kalokea new arrivals',
+    'kalokea store', 'kalokea collection', 'kalokea sale',
+
+    // ── Core discovery ────────────────────────────────────────────────────────
+    "women's fashion india", "women's clothing online", "ladies fashion india",
+    "girls fashion online", "women's dresses", "women's tops", "women's kurtas",
+    "women's blouses", "women's co-ords", "women's palazzo", "women's skirts",
+    "women's pants", "women's bags", "women's handbags", "women's tote bags",
+    "women's sling bags", "women's accessories", "women's jewellery", "women's earrings",
+    'women boutique online india', 'premium women fashion', 'curated women fashion',
+    'women fashion brand india', 'made in india fashion', 'indian women clothing brand',
+    'online women fashion store india', 'best women clothing brand india',
+    'top women fashion website india', 'where to buy women clothes india',
+    'best online shopping for women india', 'women fashion website india',
+
+    // ── Dress types ───────────────────────────────────────────────────────────
     'maxi dress', 'midi dress', 'mini dress', 'floral dress', 'casual dress',
     'party wear dress', 'summer dress', 'western dress', 'bodycon dress',
     'a-line dress', 'wrap dress', 'shift dress', 'shirt dress',
     'ethnic dress', 'fusion dress', 'indo-western dress',
-    // Tops
+    'jumpsuit women india', 'romper women india', 'playsuit women india',
+    'kaftan dress india', 'beach kaftan women', 'summer kaftan women',
+    'denim dress india', 'velvet dress india', 'sequin dress india',
+    'embroidered dress india', 'mirror work dress india',
+    'off shoulder dress india', 'cold shoulder dress india', 'cut out dress india',
+    'balloon sleeve dress india', 'butterfly sleeve dress india', 'fringe dress india',
+    'slip dress india', 'smocked dress india', 'tiered dress india',
+    'peasant dress india', 'sun dress india', 'tea length dress india',
+    'empire waist dress india', 'drop waist dress india',
+
+    // ── Tops ──────────────────────────────────────────────────────────────────
     'crop top', 'women top', 'flowy top', 'linen top', 'cotton top',
     'printed top', 'embroidered top', 'designer top', 'trendy top',
     'formal top women', 'casual top women', 'boho top',
-    // Bottoms
+    'oversized shirt women india', 'linen blazer women india',
+    'cold shoulder top india', 'off shoulder top india', 'halter neck top india',
+    'tube top women india', 'peplum top women india', 'balloon sleeve top india',
+    'bell sleeve top india', 'tank top women india', 'sleeveless top women india',
+    'bodysuit women india', 'shrug women india', 'cape top women india',
+    'turtleneck women india', 'corset top india', 'wrap top women india',
+    'asymmetric top india', 'bralette india', 'bustier top india',
+
+    // ── Bottoms ───────────────────────────────────────────────────────────────
     'palazzo pants', 'wide leg pants', 'straight pants', 'high waist pants',
     'flared skirt', 'pencil skirt', 'wrap skirt', 'midi skirt',
-    // Co-ords & sets
+    'flared trousers women india', 'wide leg jeans women india',
+    'cigarette pants women india', 'culottes women india', 'dhoti pants india',
+    'harem pants women india', 'leggings women india',
+    'pleated skirt india', 'mini skirt india', 'maxi skirt india',
+    'satin skirt india', 'denim skirt india', 'ruffled skirt india',
+
+    // ── Co-ords & sets ────────────────────────────────────────────────────────
     'co-ord set', 'matching set women', 'co-ord set india', 'two piece set',
     'crop top skirt set', 'loungewear set', 'linen co-ord',
-    // Ethnic & fusion
+    'blazer trouser set india', 'satin co-ord set india', 'printed co-ord india',
+    'ethnic co-ord set india', 'three piece set women india',
+    'floral co-ord india', 'monochrome co-ord india', 'knit co-ord india',
+
+    // ── Ethnic & fusion ───────────────────────────────────────────────────────
     'kurta set', 'kurti women', 'indo-western', 'ethnic wear online',
     'fusion wear india', 'desi fashion', 'indian fashion online',
-    // Bags
+    'anarkali dress', 'anarkali suit online', 'salwar kameez online',
+    'salwar suit women india', 'punjabi suit online india', 'straight kurta women',
+    'a-line kurta women', 'sharara set online', 'gharara set online',
+    'dupatta women india', 'lehenga choli online india',
+    'chikankari kurti india', 'phulkari suit india', 'ikat dress india',
+    'block print kurta india', 'ajrakh print dress india', 'kalamkari dress india',
+    'bandhani dress india', 'kantha dress india', 'lucknow chikankari',
+    'gujarati embroidery dress', 'rajasthani print women', 'kashmiri shawl women',
+    'banarasi suit online', 'chanderi suit india', 'khadi kurta india',
+
+    // ── Bags & accessories ────────────────────────────────────────────────────
     'women handbag', 'tote bag', 'shoulder bag', 'crossbody bag',
     'clutch bag', 'bucket bag', 'leather bag women', 'canvas bag women',
-    // Fashion descriptors
+    'potli bag india', 'jhola bag india', 'satchel bag women india',
+    'mini bag women india', 'top handle bag india', 'chain bag women india',
+    'woven bag india', 'jute bag women india', 'crochet bag india',
+    'beaded bag india', 'embroidered bag india', 'printed bag india',
+
+    // ── Fabrics & materials ───────────────────────────────────────────────────
+    'linen dress women', 'cotton dress women', 'georgette dress',
+    'rayon kurta', 'silk top women', 'chiffon dress',
+    'modal fabric dress india', 'tencel dress india', 'organic cotton dress india',
+    'handloom fabric dress india', 'khadi dress india', 'muslin dress india',
+    'crepe dress india', 'satin dress india', 'velvet dress women india',
+    'organza dress india', 'net fabric dress india', 'knit dress india',
+    'jersey dress india', 'chambray dress india', 'silk blend dress india',
+    'linen blend dress india',
+
+    // ── Style movements ───────────────────────────────────────────────────────
+    'boho fashion india', 'minimalist fashion', 'capsule wardrobe india',
+    'slow fashion india', 'sustainable fashion india', 'ethical fashion india',
+    'cottagecore fashion india', 'dark academia fashion india',
+    'Y2K fashion india', 'Korean fashion india', 'aesthetic fashion india',
+    'streetwear women india', 'athleisure women india', 'preppy fashion india',
+    'romantic fashion india', 'chic fashion india', 'classic fashion women india',
+    'vintage fashion india', 'retro fashion india', 'smart casual women india',
+
+    // ── Fashion descriptors ────────────────────────────────────────────────────
     'affordable fashion india', 'budget fashion india', 'stylish women india',
     'trendy clothes india', 'everyday fashion', 'office wear women',
     'party wear women', 'beach wear women', 'vacation outfits',
     'summer collection india', 'festive wear women',
-    // Style movements
-    'boho fashion india', 'minimalist fashion', 'capsule wardrobe india',
-    'slow fashion india', 'sustainable fashion india', 'ethical fashion india',
-    // Shopping terms
-    'buy dresses online india', 'buy tops online india', 'buy women clothes online',
-    'online shopping for women', 'women fashion website india',
-    'new arrivals women fashion', 'sale women clothes',
-    'discount women clothing india', 'free shipping clothes india',
-    // Fabric
-    'linen dress women', 'cotton dress women', 'georgette dress',
-    'rayon kurta', 'silk top women', 'chiffon dress',
-    // Occasions
+
+    // ── Occasions ─────────────────────────────────────────────────────────────
     'bridal wear', 'wedding guest outfit', 'reception outfit women',
     'office wear india', 'casual wear women india', 'date night outfit',
     'college girl fashion', 'work from home outfit',
-    // City-specific
-    'women fashion mumbai', 'women fashion delhi', 'women fashion bangalore',
-    'women fashion chennai', 'women fashion hyderabad', 'women fashion pune',
-    'women fashion kolkata', 'women fashion ahmedabad',
-    // Lifestyle & brand terms
-    'kalokea dresses', 'kalokea tops', 'kalokea bags', 'kalokea co-ords',
-    'shop kalokea', 'kalokea india', 'kalokea new arrivals',
-    'women boutique online india', 'premium women fashion',
-    'curated women fashion', 'women fashion brand india',
-    'made in india fashion', 'indian women clothing brand',
-    // Price & value
+    'pre-wedding shoot outfit india', 'photoshoot outfit women india',
+    'honeymoon outfit india', 'maternity fashion india',
+    'cocktail dress india', 'graduation dress india',
+    'farewell outfit women india', 'first date outfit india',
+    'anniversary outfit women india', 'birthday dress women india',
+    'new year dress india', 'brunch outfit women india',
+    'concert outfit women india', 'music festival outfit india',
+    'travel outfit women india', 'airport outfit women india',
+    'beach outfit women india', 'poolside outfit india',
+
+    // ── Festive & cultural ────────────────────────────────────────────────────
+    'mehndi outfit women', 'sangeet outfit', 'garba wear women',
+    'navratri outfit', 'diwali fashion women', 'eid outfits women',
+    'holi outfit women india', 'pongal outfit women india',
+    'onam outfit women india', 'ugadi outfit india', 'bihu dress india',
+    'durga puja outfit india', 'karwa chauth outfit india',
+    'teej outfit women india', 'navratri chaniya choli india',
+    'garba dress india', 'dandiya dress india',
+    'lohri outfit women india', 'baisakhi outfit women india',
+
+    // ── Shopping intent ───────────────────────────────────────────────────────
+    'buy dresses online india', 'buy tops online india', 'buy women clothes online',
+    'online shopping for women', 'new arrivals women fashion',
+    'sale women clothes', 'discount women clothing india',
+    'free shipping clothes india', 'women fashion free delivery india',
+    'women fashion free returns india', 'COD women clothes india',
+    'cash on delivery women fashion india', 'cod fashion india',
+    'cash on delivery clothes', '7 day return policy',
+    'easy return fashion', 'free delivery fashion india',
+    'same day delivery clothes india', 'express delivery women clothes india',
+
+    // ── Price & value ─────────────────────────────────────────────────────────
     'affordable dresses india', 'cheap women clothes india',
     'fashion under 999', 'fashion under 1999', 'best price women fashion',
     'value fashion india', 'quality women clothes',
-    // Returns & services
-    'cod fashion india', 'cash on delivery clothes', '7 day return policy',
-    'easy return fashion', 'free delivery fashion india',
-    // SEO long-tail
+    'dresses under 500 india', 'tops under 300 india',
+    'fashion under 2000 india', 'best value dresses india',
+    'cheapest dresses online india', 'premium but affordable fashion india',
+    'luxury fashion india affordable', 'budget friendly kurta india',
+    'affordable co-ord sets india',
+
+    // ── Colors ────────────────────────────────────────────────────────────────
+    'black dress india', 'white dress india', 'blue dress india',
+    'red dress india', 'green dress india', 'yellow dress india',
+    'orange dress india', 'pink dress india', 'purple dress india',
+    'beige dress india', 'nude dress india', 'brown dress india',
+    'maroon dress india', 'teal dress india', 'mustard dress india',
+    'sage green dress india', 'rust orange dress india', 'dusty pink top india',
+    'ivory dress india', 'cream kurta india', 'navy blue top india',
+    'emerald green dress india', 'cobalt blue dress india',
+
+    // ── Patterns ──────────────────────────────────────────────────────────────
+    'floral print dress india', 'geometric print top india',
+    'striped top india', 'polka dot dress india',
+    'checked shirt women india', 'abstract print dress india',
+    'animal print top india', 'leopard print dress india',
+    'tie dye dress india', 'ombre dress india', 'shibori dress india',
+    'paisley print india', 'solid color dress india', 'colorblock dress india',
+
+    // ── Silhouettes & fit ─────────────────────────────────────────────────────
+    'fitted dress india', 'loose fit dress india', 'oversized top india',
+    'flared dress india', 'straight fit kurta india',
+    'plus size dress india', 'plus size kurta india', 'plus size tops india',
+    'plus size women fashion india', 'petite fashion india',
+    'maternity dress india', 'maternity kurta india', 'maternity top india',
+    'free size dress india',
+
+    // ── Necklines & sleeves ───────────────────────────────────────────────────
+    'V neck dress india', 'round neck top india', 'sweetheart neckline india',
+    'boat neck dress india', 'square neck top india',
+    'sleeveless dress india', 'full sleeve dress india', 'half sleeve dress india',
+    '3/4 sleeve dress india', 'puff sleeve top india', 'cap sleeve top india',
+
+    // ── City-specific (tier 1 + tier 2) ──────────────────────────────────────
+    'women fashion mumbai', 'women fashion delhi', 'women fashion bangalore',
+    'women fashion chennai', 'women fashion hyderabad', 'women fashion pune',
+    'women fashion kolkata', 'women fashion ahmedabad',
+    'women fashion jaipur', 'women fashion surat', 'women fashion chandigarh',
+    'women fashion kochi', 'women fashion lucknow', 'women fashion indore',
+    'women fashion bhopal', 'women fashion nagpur', 'women fashion vadodara',
+    'women fashion coimbatore', 'women fashion visakhapatnam',
+    'women fashion patna', 'women fashion bhubaneswar', 'women fashion mysore',
+    'women fashion guwahati', 'women fashion jodhpur', 'women fashion udaipur',
+    'women fashion amritsar', 'women fashion nashik', 'women fashion agra',
+    'buy fashion online mumbai', 'buy dresses online delhi',
+    'fashion delivery bangalore', 'online shopping delhi women',
+    'online fashion store mumbai women',
+
+    // ── Seasonal collections ──────────────────────────────────────────────────
+    'winter collection 2025 women india', 'summer collection 2025 india',
+    'festive collection 2025 india', 'spring summer 2026 fashion india',
+    'monsoon fashion india', 'winter outfit women india',
+    'latest collection women india', 'new collection women india 2025',
+    'trending fashion 2025 india', 'fashion trends india 2026',
+
+    // ── Cultural & identity ───────────────────────────────────────────────────
+    'bollywood inspired fashion', 'celebrity fashion india',
+    'instagram fashion india', 'ootd india women',
+    'fashion blogger india outfit', 'influencer fashion india',
+    'homegrown fashion brand india', 'independent fashion brand india',
+    'boutique brand india', 'contemporary fashion india',
+    'modern indian woman fashion', 'fusion fashion india',
+    'desi girl fashion', 'modern desi fashion',
+
+    // ── Gift & gifting ────────────────────────────────────────────────────────
+    'gift for women india', 'birthday gift women india',
+    'anniversary gift women india', 'fashion gift india',
+    'gift dress women india', "women's clothing gift india",
+
+    // ── Lounge & activewear ────────────────────────────────────────────────────
+    'lounge wear women india', 'sleepwear women india',
+    'nightwear women india', 'pyjama set women india',
+    'yoga pants women india', 'active wear women india',
+    'gym wear women india', 'workout outfit women india',
+
+    // ── Services & trust ──────────────────────────────────────────────────────
+    'trusted fashion brand india', 'authentic women clothes india',
+    'secure payment women fashion india', 'verified fashion seller india',
+    'hassle free returns india', 'genuine fabric women india',
+
+    // ── Long-tail high intent ─────────────────────────────────────────────────
     'best women fashion brand india 2025', 'top women clothing store india',
     'women online boutique india', 'ladies suit sets online',
     'trendy kurta sets online', 'western wear for women india',
     'latest fashion for women india', 'stylish clothes for women online',
     'new fashion arrivals india every friday', 'friday fashion drop',
     'ethically sourced clothes india', 'women premium ethnic wear',
-    'indo-western fusion wear online', 'bollywood inspired fashion',
-    'celebrity fashion india', 'instagram fashion india',
-    'ootd india women', 'fashion blogger india outfit',
+    'indo-western fusion wear online',
     'women party outfits india', 'bridesmaid outfits india',
-    'mehndi outfit women', 'sangeet outfit', 'garba wear women',
-    'navratri outfit', 'diwali fashion women', 'eid outfits women',
+    'what to wear for wedding india', 'wedding season fashion india',
+    'ethnic party wear women india', 'semi formal women india',
+    'workwear women india 2025', 'smart office wear women india',
+    'versatile dress india', 'instagrammable dresses india',
+    'trending tops india 2025', 'bestselling dress india',
+    'bestselling top india', 'must have kurta india',
+    'top rated dresses india', 'highly reviewed women clothing india',
+    'most stylish women clothing brand india', 'curated fashion india women',
   ].join(', '),
   metadataBase: new URL('https://kalokea.in'),
   openGraph: {

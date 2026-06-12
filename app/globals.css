@@ -640,7 +640,9 @@ select.inp {
   padding: 104px 52px clamp(40px, 5vw, 72px) max(52px, calc((100vw - 1380px) / 2 + 52px));
 }
 @media (max-width: 1024px) { .k-hero-left { padding: 104px 32px 52px 32px; } }
-@media (max-width: 640px)  { .k-hero-left { padding: 94px 20px 44px 20px; } }
+/* On mobile the hero image sits ABOVE the text panel (flex-col layout), so the
+   top padding does NOT need to clear the fixed header a second time — 32px is enough. */
+@media (max-width: 640px)  { .k-hero-left { padding: 32px 20px 44px 20px; } }
 
 /* ── Prevent horizontal overflow everywhere ── */
 html, body { max-width: 100vw; overflow-x: hidden; }
@@ -768,4 +770,42 @@ body.menu-open { overflow: hidden; touch-action: none; }
   footer {
     padding-bottom: env(safe-area-inset-bottom);
   }
+}
+
+/* ── 320px (very small phones — Galaxy Fold closed, iPhone SE 1st gen) ── */
+@media (max-width: 360px) {
+  /* Tighter horizontal gutters */
+  .k-container { padding: 0 14px; }
+  .k-footer-grid { padding: 32px 14px 28px; }
+  .k-footer-bottom { padding: 14px 14px; }
+  .k-press-wrap { padding: 24px 14px; }
+  /* Announcement bar: don't clip text on very narrow screens */
+  .marquee-track { animation-duration: 20s; }
+}
+
+/* ── Word-break for product names & long text on small screens ── */
+@media (max-width: 480px) {
+  .product-name, h1, h2, h3 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
+/* ── Header logo: prevent tracking-widest overflow on 320px ── */
+@media (max-width: 360px) {
+  .k-header-logo {
+    letter-spacing: 0.2em !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* ── Active filter chips: wrap gracefully on small phones ── */
+@media (max-width: 480px) {
+  .k-filter-chips { gap: 6px; }
+  .k-filter-chips button { font-size: 9px !important; padding: 4px 8px; }
+}
+
+/* ── Product card info text: don't overflow on 320px ── */
+@media (max-width: 360px) {
+  .k-product-grid { gap: 8px; }
 }

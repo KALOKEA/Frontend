@@ -1,3 +1,9 @@
+// Bundle analyser: run `ANALYZE=true npm run build` to open the report.
+// Install: npm install --save-dev @next/bundle-analyzer
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
@@ -20,5 +26,25 @@ const nextConfig = {
   trailingSlash: true,
   // Strict mode catches hydration bugs early in development
   reactStrictMode: true,
+
+  // ── Compiler optimisations for production (100K user scale) ────────────────
+  compiler: {
+    // Strip console.log/debug in production builds — reduces bundle size and
+    // prevents accidental data leakage via browser console on prod
+    removeConsole: process.env.NODE_ENV === 'production'
+      ? { exclude: ['error', 'warn'] }
+      : false,
+  },
+
+  // ── Experimental perf flags ─────────────────────────────────────────────────
+  experimental: {
+    // Enables the optimised package imports transform — tree-shakes large icon
+    // and UI packages (e.g. lucide-react, @heroicons) so only used icons are
+    // bundled. Significant JS size reduction at 100K-user scale.
+    optimizePackageImports: [
+      'lucide-react',
+      '@heroicons/react',
+    ],
+  },
 }
-module.exports = nextConfig
+module.exports = withBundleAnalyzer(nextConfig)

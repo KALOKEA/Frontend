@@ -1,6 +1,14 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
+import CloudinaryUploadButton from '@/components/admin/CloudinaryUploadButton'
+
+// Keys that accept media uploads (image or video)
+const MEDIA_KEYS: Record<string, { folder: string; accept: string }> = {
+  hero_image_url:      { folder: 'homepage', accept: 'image/*' },
+  hero_video_url:      { folder: 'homepage', accept: 'video/mp4,video/webm,video/*' },
+  editorial_image_url: { folder: 'homepage', accept: 'image/*' },
+}
 
 // ─── Field definitions ────────────────────────────────────────────────────────
 
@@ -166,13 +174,25 @@ export default function AdminHomepagePage() {
                         className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a] resize-none"
                       />
                     ) : (
-                      <input
-                        type="text"
-                        value={values[field.key] ?? ''}
-                        onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSave(field.key)}
-                        className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a]"
-                      />
+                      <div className="flex-1 flex gap-1.5 items-center">
+                        <input
+                          type="text"
+                          value={values[field.key] ?? ''}
+                          onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
+                          onKeyDown={(e) => e.key === 'Enter' && handleSave(field.key)}
+                          className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a]"
+                        />
+                        {MEDIA_KEYS[field.key] && (
+                          <CloudinaryUploadButton
+                            folder={MEDIA_KEYS[field.key].folder}
+                            accept={MEDIA_KEYS[field.key].accept}
+                            label="Upload"
+                            onUploaded={(url) => {
+                              setValues((v) => ({ ...v, [field.key]: url }))
+                            }}
+                          />
+                        )}
+                      </div>
                     )}
 
                     <button
