@@ -129,10 +129,14 @@ export const adminApi = {
   getTopProducts: () => api.get<TopProduct[]>('/admin/products/top'),
 
   // orders
-  listOrders: (page = 1, limit = 20) =>
-    api.get<{ data: AdminOrder[]; meta: { total: number; page: number; limit: number } }>(
-      `/orders?page=${page}&limit=${limit}`,
-    ),
+  listOrders: (page = 1, limit = 20, status?: string, search?: string) => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+    if (status) params.set('status', status)
+    if (search) params.set('search', search)
+    return api.get<{ data: AdminOrder[]; meta: { total: number; page: number; limit: number } }>(
+      `/orders?${params.toString()}`,
+    )
+  },
   updateOrderStatus: (id: string, body: { status: string; tracking_number?: string; courier_name?: string }) =>
     api.patch(`/orders/${id}/status`, body),
 
@@ -332,4 +336,3 @@ export const adminApi = {
   setDefaultPackagingProfile: (id: string) =>
     api.patch<any>(`/shiprocket/packaging-profiles/${id}/default`, {}),
 }
-

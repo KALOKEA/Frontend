@@ -214,8 +214,8 @@ export default function ShipmentsManager() {
 
   const load = useCallback(async () => {
     try {
-      const r = await api.get<any>('/orders/admin?limit=200')
-      setOrders(r.orders || r || [])
+      const r = await api.get<any>('/orders?limit=200')
+      setOrders((r as any).data || [])
     } catch { setOrders([]) }
     finally { setLoading(false) }
   }, [])

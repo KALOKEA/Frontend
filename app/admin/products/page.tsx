@@ -21,7 +21,7 @@ const QUICK_COLOURS = ['Black', 'White', 'Ivory', 'Navy', 'Red', 'Blush', 'Sage'
 
 interface FormState {
   id?: string
-  name: string; slug: string; description: string
+  name: string; slug: string; description: string; fabric_care: string
   base_price: string; compare_price: string
   hsn_code: string; gst_rate: string
   category_id: string; tags: string
@@ -30,7 +30,7 @@ interface FormState {
 }
 
 const emptyForm = (): FormState => ({
-  name: '', slug: '', description: '',
+  name: '', slug: '', description: '', fabric_care: '',
   base_price: '', compare_price: '',
   hsn_code: '', gst_rate: '',
   category_id: '', tags: '',
@@ -42,6 +42,7 @@ function productToForm(p: Product): FormState {
   return {
     id: p.id,
     name: p.name, slug: p.slug, description: p.description || '',
+    fabric_care: (p as any).fabric_care || '',
     base_price: String(Math.round(p.base_price / 100)),
     compare_price: p.compare_price ? String(Math.round(p.compare_price / 100)) : '',
     hsn_code: p.hsn_code || '',
@@ -315,6 +316,7 @@ function ProductEditor({
       name: form.name.trim(),
       slug: form.slug.trim() || slugify(form.name),
       description: form.description || undefined,
+      fabric_care: form.fabric_care || undefined,
       category_id: form.category_id || undefined,
       base_price: Math.round(priceNum * 100),
       compare_price: form.compare_price ? Math.round(parseFloat(form.compare_price) * 100) : undefined,
@@ -620,8 +622,18 @@ function ProductEditor({
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 rows={5}
                 className="inp resize-y"
-                placeholder="Fabric, fit, care instructions, styling tips…"
+                placeholder="Product description shown on product page…"
               />
+            </Field>
+            <Field label="Fabric & Care">
+              <textarea
+                value={form.fabric_care}
+                onChange={e => setForm(f => ({ ...f, fabric_care: e.target.value }))}
+                rows={3}
+                className="inp resize-y"
+                placeholder="e.g. 100% Cotton · Machine wash cold · Do not bleach"
+              />
+              <p className="text-[11px] text-[#6b6b6b] mt-1">Shown in the Fabric &amp; Care tab on the product page.</p>
             </Field>
           </Card>
 
@@ -1183,18 +1195,16 @@ function VariantRow({ v, onSave, onDelete }: {
         <input type="number" value={stock} onChange={e => setStock(e.target.value)}
           className="w-16 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none" />
       </td>
-      <td className="py-2 text-right whitespace-nowrap">
+      <td className="py-2 pr-3 flex gap-2 items-center">
         <button
           onClick={async () => { setSaving(true); await onSave(v, stock, price); setSaving(false) }}
           disabled={saving}
-          className="text-[10px] uppercase tracking-widest text-[#c8a4a5] hover:underline mr-3 disabled:opacity-50"
-        >
-          {saving ? '…' : 'Save'}
-        </button>
-        <button onClick={() => onDelete(v.id)}
-          className="text-[10px] uppercase tracking-widest text-red-500 hover:underline">
-          Delete
-        </button>
+          className="px-3 py-1 text-xs bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50"
+        >{saving ? '…' : 'Save'}</button>
+        <button
+          onClick={() => onDelete(v.id)}
+          className="px-3 py-1 text-xs border border-red-300 text-red-600 hover:bg-red-50"
+        >Delete</button>
       </td>
     </tr>
   )

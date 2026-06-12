@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Download, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { adminApi, type AdminOrder } from '@/lib/api/admin'
@@ -30,6 +30,8 @@ export default function AdminOrdersPage() {
   const [total, setTotal] = useState(0)
   const [statusFilter, setStatusFilter] = useState('')
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [editing, setEditing] = useState<AdminOrder | null>(null)
   const [detail, setDetail] = useState<AdminOrder | null>(null)
   const [newStatus, setNewStatus] = useState('pending')
@@ -41,9 +43,9 @@ export default function AdminOrdersPage() {
 
   const limit = 20
 
-  function load(p = page) {
+  function load(p = page, sf = statusFilter, sq = search) {
     setLoading(true)
-    adminApi.listOrders(p, limit)
+    adminApi.listOrders(p, limit, sf || undefined, sq.trim() || undefined)
       .then(res => {
         setOrders((res as any).data || [])
         setTotal((res as any).meta?.total || 0)
@@ -52,7 +54,20 @@ export default function AdminOrdersPage() {
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { load(page) }, [page]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { load(page, statusFilter, debouncedSearch) }, [page]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Debounce raw search → debouncedSearch (400 ms)
+  useEffect(() => {
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => setDebouncedSearch(search), 400)
+    return () => { if (searchTimer.current) clearTimeout(searchTimer.current) }
+  }, [search])
+
+  // When filter or debounced search changes reset to page 1 and reload from server
+  useEffect(() => {
+    setPage(1)
+    load(1, statusFilter, debouncedSearch)
+  }, [statusFilter, debouncedSearch]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function openEdit(o: AdminOrder) {
     setEditing(o); setNewStatus(o.status); setTracking(''); setCourier(''); setMsg(null)
@@ -75,17 +90,8 @@ export default function AdminOrdersPage() {
     }
   }
 
-  const q = search.trim().toLowerCase()
-  const visible = orders.filter(o => {
-    const matchStatus = !statusFilter || o.status === statusFilter
-    const matchSearch = !q || (
-      o.order_number.toLowerCase().includes(q) ||
-      (o.users?.name || '').toLowerCase().includes(q) ||
-      (o.users?.email || '').toLowerCase().includes(q) ||
-      (o.address_snapshot?.name || '').toLowerCase().includes(q)
-    )
-    return matchStatus && matchSearch
-  })
+  // Filtering is now server-side — orders already filtered by status + search
+  const visible = orders
 
   return (
     <>
