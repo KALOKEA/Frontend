@@ -21,6 +21,9 @@ function LoginContent() {
   const [loading, setLoading] = useState(false)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
 
+  // Show a helpful notice if the user was redirected here because their session expired
+  const sessionExpired = params.get('session') === 'expired'
+
   const isEmail = identifier.includes('@')
 
   const sendOtp = async (e: React.FormEvent) => {
@@ -68,6 +71,11 @@ function LoginContent() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
+        {sessionExpired && (
+          <div className="mb-6 px-4 py-3 bg-amber-50 border border-amber-200 text-amber-800 text-sm text-center">
+            Your session expired. Please sign in again to continue.
+          </div>
+        )}
         <div className="text-center mb-8">
           <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Sign In</h1>
           <p className="text-sm font-sans text-[#6b6b6b]">Enter your phone or email to receive a one-time code</p>

@@ -31,7 +31,7 @@ export function invalidateCache(prefix?: string) {
 //      eTLD+1 domains).
 //   2. Opening /admin in a new tab or from a bookmark works — sessionStorage
 //      is tab-local and would be empty in a fresh tab.
-// Security note: the access token expires in 15 minutes and the long-lived
+// Security note: the access token expires in 24 hours and the long-lived
 // refresh token stays in an httpOnly cookie (never localStorage). The tradeoff
 // is acceptable for a production e-commerce store.
 const LS_KEY = '_kal_at'
@@ -92,6 +92,19 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       const retryJson = await retry.json()
       return retryJson.data !== undefined ? retryJson.data : retryJson
     }
+    // Refresh failed — session is dead. Clear everything and send user to login
+    // so they don't stay stuck seeing "Unauthorized" errors on every action.
+    setAccessToken(null)
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('_kal_ses')
+      }
+    } catch { /* ignore */ }
+    if (typeof window !== 'undefined') {
+      const loginUrl = '/login/?session=expired&redirect=' + encodeURIComponent(window.location.pathname)
+      window.location.href = loginUrl
+    }
+    throw new Error('Session expired. Please log in again.')
   }
 
   if (!res.ok) {
