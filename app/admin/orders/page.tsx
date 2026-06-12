@@ -119,7 +119,7 @@ export default function AdminOrdersPage() {
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Search by order number, customer name or email…"
+          placeholder="Search by order number or guest email…"
           className="w-full border border-[#e8e4e0] px-4 py-2.5 text-sm focus:border-[#0a0a0a] outline-none pr-8"
         />
         {search && (
