@@ -58,8 +58,12 @@ function LoginContent() {
       await useCartStore.getState().mergeOnLogin().catch(() => {})
       toast('Welcome back!')
       const rawRedirect = params.get('redirect') || '/'
-      // Prevent open redirect: only allow same-origin relative paths
-      const redirect = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/'
+      // Prevent open redirect: only allow same-origin relative paths.
+      // Also guard against /login as the redirect target — that would loop the
+      // user back to the login page immediately after a successful sign-in.
+      const safeRelative = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')
+      const notLoginPage = !rawRedirect.startsWith('/login')
+      const redirect = (safeRelative && notLoginPage) ? rawRedirect : '/'
       router.push(redirect)
     } catch (err) {
       toast((err as Error).message || 'Invalid OTP', 'error')

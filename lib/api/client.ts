@@ -101,8 +101,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       }
     } catch { /* ignore */ }
     if (typeof window !== 'undefined') {
-      const loginUrl = '/login/?session=expired&redirect=' + encodeURIComponent(window.location.pathname)
-      window.location.href = loginUrl
+      // Guard: if already on the login page, do NOT redirect again — that
+      // creates an infinite reload loop (401 on login page → redirect to
+      // /login/?redirect=/login/ → reload → 401 again → repeat forever).
+      const onLoginPage = window.location.pathname.startsWith('/login')
+      if (!onLoginPage) {
+        const loginUrl = '/login/?session=expired&redirect=' + encodeURIComponent(window.location.pathname)
+        window.location.href = loginUrl
+      }
     }
     throw new Error('Session expired. Please log in again.')
   }
