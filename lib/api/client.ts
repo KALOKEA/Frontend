@@ -100,7 +100,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   }
 
   const json = await res.json()
-  const result: T = json.data !== undefined ? json.data : json
+  // Smart unwrap: { data: X } → X  BUT  { data: [], meta: {} } → keep full object
+  // Paginated responses always include a `meta` key alongside `data`. Unwrapping
+  // those would silently discard pagination info, breaking all admin list pages.
+  const result: T = (json.data !== undefined && json.meta === undefined) ? json.data : json
 
   // Cache anonymous GET responses
   if (isGet && !accessToken) cacheSet(path, result)
