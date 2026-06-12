@@ -1,8 +1,11 @@
 // Bundle analyser: run `ANALYZE=true npm run build` to open the report.
-// Install: npm install --save-dev @next/bundle-analyzer
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+// Gracefully skipped if the package isn't installed (production builds).
+let withBundleAnalyzer = (c) => c
+try {
+  withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  })
+} catch { /* not installed — no-op */ }
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
