@@ -1,5 +1,5 @@
 'use client'
-import { X, Check } from 'lucide-react'
+import { X, Check, Package, Banknote, MapPin, ChevronUp, ChevronDown } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import api from '@/lib/api/client'
@@ -488,8 +488,9 @@ export default function ShipmentsManager() {
         ))}
         <button
           onClick={() => setShowProfileMgr(true)}
-          className="ml-auto px-3 py-1.5 text-[10px] uppercase tracking-widest border border-[#e8e4e0] text-[#6b6b6b] hover:text-[#0a0a0a]"
-        >📦 Profiles</button>
+          className="ml-auto px-3 py-1.5 text-[10px] uppercase tracking-widest border border-[#e8e4e0] text-[#6b6b6b] hover:text-[#0a0a0a] flex items-center gap-1.5"
+        >
+          <Package size={12} /> Profiles</button>
       </div>
 
       {/* ── NDR Tab ── */}
@@ -667,8 +668,8 @@ export default function ShipmentsManager() {
           className="flex items-center justify-between p-4 cursor-pointer"
           onClick={() => { setShowRemittance(!showRemittance); if (!showRemittance && !remittance) loadRemittance() }}
         >
-          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a]">💰 COD Remittance</p>
-          <span className="text-[#6b6b6b] text-xs">{showRemittance ? '▲ Hide' : '▼ Show'}</span>
+          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a] flex items-center gap-1.5"><Banknote size={13} /> COD Remittance</p>
+          <span className="text-[#6b6b6b] text-xs flex items-center gap-1">{showRemittance ? <><ChevronUp size={12} /> Hide</> : <><ChevronDown size={12} /> Show</>}</span>
         </div>
         {showRemittance && (
           <div className="border-t border-[#e8e4e0] p-4">
@@ -715,8 +716,8 @@ export default function ShipmentsManager() {
       {/* ── Serviceability Checker ── */}
       <div className="mt-4 border border-[#e8e4e0]">
         <div className="flex items-center justify-between p-4 cursor-pointer" onClick={() => setShowServiceability(!showServiceability)}>
-          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a]">📍 Pin Code Serviceability</p>
-          <span className="text-[#6b6b6b] text-xs">{showServiceability ? '▲ Hide' : '▼ Show'}</span>
+          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a] flex items-center gap-1.5"><MapPin size={13} /> Pin Code Serviceability</p>
+          <span className="text-[#6b6b6b] text-xs flex items-center gap-1">{showServiceability ? <><ChevronUp size={12} /> Hide</> : <><ChevronDown size={12} /> Show</>}</span>
         </div>
         {showServiceability && (
           <div className="border-t border-[#e8e4e0] p-4">

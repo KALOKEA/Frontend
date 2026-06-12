@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import Image from 'next/image'
+import { Package, AlertTriangle, XCircle, Tag } from 'lucide-react'
 import { productsApi } from '@/lib/api/products'
 import { adminApi } from '@/lib/api/admin'
 import Spinner from '@/components/ui/Spinner'
@@ -97,16 +98,16 @@ export default function AdminInventoryPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        {[
-          { label: 'Total Products in Stock', value: totalProducts, icon: '📦', color: 'bg-blue-50 text-blue-700' },
-          { label: 'Low Stock Alert', value: lowStock, icon: '⚠️', color: 'bg-amber-50 text-amber-700' },
-          { label: 'Out of Stock', value: outOfStock, icon: '🚫', color: 'bg-red-50 text-red-700' },
-          { label: 'Total SKUs', value: totalSKU, icon: '🏷️', color: 'bg-green-50 text-green-700' },
-        ].map(({ label, value, icon, color }) => (
+        {([
+          { label: 'Total Products in Stock', value: totalProducts, icon: <Package size={18} />, color: 'bg-blue-50 text-blue-700' },
+          { label: 'Low Stock Alert', value: lowStock, icon: <AlertTriangle size={18} />, color: 'bg-amber-50 text-amber-700' },
+          { label: 'Out of Stock', value: outOfStock, icon: <XCircle size={18} />, color: 'bg-red-50 text-red-700' },
+          { label: 'Total SKUs', value: totalSKU, icon: <Tag size={18} />, color: 'bg-green-50 text-green-700' },
+        ] as { label: string; value: number; icon: ReactNode; color: string }[]).map(({ label, value, icon, color }) => (
           <div key={label} className={`${color} rounded-lg p-4 border border-current/10`}>
             <p className="text-xs font-sans opacity-70 mb-1">{label}</p>
             <div className="flex items-center gap-2">
-              <span className="text-lg">{icon}</span>
+              {icon}
               <span className="text-2xl font-serif font-semibold">{value}</span>
             </div>
           </div>

@@ -544,9 +544,9 @@ function ProductEditor({
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={onBack}
-            className="text-[11px] uppercase tracking-widest text-[#6b6b6b] hover:text-[#0a0a0a] shrink-0"
+            className="text-[11px] uppercase tracking-widest text-[#6b6b6b] hover:text-[#0a0a0a] shrink-0 flex items-center gap-1"
           >
-            ← Products
+            <ChevronLeft size={13} /> Products
           </button>
           <span className="text-[#d0ccc8]">/</span>
           <h1 className="font-serif text-2xl text-[#0a0a0a] truncate">
@@ -807,7 +807,11 @@ function ProductEditor({
                   onClick={() => setShowMatrix(m => !m)}
                   className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
                 >
-                  {showMatrix ? '<ChevronUp size={12} className="inline" /> Hide matrix generator' : '<ChevronDown size={12} className="inline" /> Quick generate (size × colour matrix)'}
+                  {showMatrix ? (
+                    <><ChevronUp size={12} className="inline mr-1" /> Hide matrix generator</>
+                  ) : (
+                    <><ChevronDown size={12} className="inline mr-1" /> Quick generate (size × colour matrix)</>
+                  )}
                 </button>
               </div>
 
@@ -1037,10 +1041,10 @@ function ProductEditor({
                         <div className="flex flex-col gap-0.5">
                           <button onClick={() => moveImage(idx, -1)} disabled={idx === 0}
                             className="text-[12px] leading-none text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-20 px-1 py-0.5"
-                            title="Move up">↑</button>
+                            title="Move up"><ChevronUp size={12} /></button>
                           <button onClick={() => moveImage(idx, 1)} disabled={idx === sortedImages.length - 1}
                             className="text-[12px] leading-none text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-20 px-1 py-0.5"
-                            title="Move down">↓</button>
+                            title="Move down"><ChevronDown size={12} /></button>
                         </div>
                         {/* Actions */}
                         <div className="flex flex-col gap-1 items-end shrink-0">

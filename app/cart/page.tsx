@@ -30,8 +30,8 @@ export default function CartPage() {
 
   return (
     <>
-      {/* Sticky mobile checkout bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white border-t border-[#e8e4e0] px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
+      {/* Sticky mobile checkout bar — k-mobile-cta-bar lifts it above MobileBottomNav */}
+      <div className="k-mobile-cta-bar fixed bottom-0 left-0 right-0 z-[90] lg:hidden bg-white border-t border-[#e8e4e0] px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <div className="flex-1 min-w-0">
             <p className="text-[10px] font-sans text-[#6b6b6b] uppercase tracking-widest">Total</p>
@@ -73,7 +73,7 @@ export default function CartPage() {
             </>
           ) : (
             <p className="text-[11px] font-sans text-[#0a0a0a] font-medium">
-              <PackageCheck size={13} className="text-[#7C4A2D] shrink-0" /> You’ve unlocked free shipping!
+              <PackageCheck size={13} className="inline mr-1 text-[#7C4A2D]" /> You’ve unlocked free shipping!
             </p>
           )}
         </div>

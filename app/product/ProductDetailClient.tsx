@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { productsApi, type Product, type ProductVariant } from '@/lib/api/products'
 import ImageGallery from '@/components/product/ImageGallery'
@@ -141,8 +142,8 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
   return (
     <>
-      {/* Sticky mobile Add-to-Cart bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white border-t border-[#e8e4e0] px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
+      {/* Sticky mobile Add-to-Cart bar — k-mobile-cta-bar lifts it above MobileBottomNav */}
+      <div className="k-mobile-cta-bar fixed bottom-0 left-0 right-0 z-[90] lg:hidden bg-white border-t border-[#e8e4e0] px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <div className="flex-1 min-w-0">
             <p className="text-xs font-sans text-[#0a0a0a] font-medium truncate leading-tight">{product.name}</p>
@@ -168,15 +169,15 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
       {/* Main page — pb-24 on mobile so sticky bar does not overlap */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-24 lg:pb-6">
         <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-8 overflow-x-auto whitespace-nowrap">
-          <a href="/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Home</a>
+          <Link href="/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Home</Link>
           <span className="shrink-0">/</span>
-          <a href="/shop/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Shop</a>
+          <Link href="/shop/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Shop</Link>
           {product.categories && (
             <>
               <span className="shrink-0">/</span>
-              <a href={`/shop/${product.categories.slug}/`} className="hover:text-[#0a0a0a] transition-colors shrink-0">
+              <Link href={`/shop/${product.categories.slug}/`} className="hover:text-[#0a0a0a] transition-colors shrink-0">
                 {product.categories.name}
-              </a>
+              </Link>
             </>
           )}
           <span className="shrink-0">/</span>

@@ -1,5 +1,5 @@
 'use client'
-import { Check, ChevronLeft } from 'lucide-react'
+import { Check, ChevronLeft, ExternalLink, Undo2 } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -224,7 +224,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Label</p>
                 {order.label_url
-                  ? <a href={order.label_url} target="_blank" rel="noopener noreferrer" className="text-sm underline text-[#c8a4a5]">Download ↗</a>
+                  ? <a href={order.label_url} target="_blank" rel="noopener noreferrer" className="text-sm underline text-[#c8a4a5] inline-flex items-center gap-1">Download <ExternalLink size={11} /></a>
                   : <button disabled={srLoading} onClick={() => srAction(() => adminApi.generateLabel(id), 'Label generated')}
                       className="text-sm underline text-[#0a0a0a] disabled:opacity-40">Generate</button>}
               </div>
@@ -264,8 +264,8 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
             {inSR && hasAwb && (
               <button disabled={srLoading}
                 onClick={() => srAction(() => adminApi.createReturnPickup(id), 'Return pickup created — check ShipRocket for AWB')}
-                className="px-4 py-2 text-sm border border-orange-300 text-orange-700 hover:bg-orange-50 transition-colors disabled:opacity-40">
-                ↩ Create Return Pickup
+                className="px-4 py-2 text-sm border border-orange-300 text-orange-700 hover:bg-orange-50 transition-colors disabled:opacity-40 flex items-center gap-1.5">
+                <Undo2 size={13} /> Create Return Pickup
               </button>
             )}
           </div>

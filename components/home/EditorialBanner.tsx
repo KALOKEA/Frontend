@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 
 // Matches reference exactly:
@@ -76,11 +77,15 @@ export default function EditorialBanner() {
             margin: 0,
           }}
         >
-          {c.editorial_heading || 'The Art of'}
-          <br />
-          <em style={{ fontStyle: 'italic' }}>
-            {c.editorial_heading ? '' : 'Effortless Style'}
-          </em>
+          {c.editorial_heading ? (
+            c.editorial_heading
+          ) : (
+            <>
+              The Art of
+              <br />
+              <em style={{ fontStyle: 'italic' }}>Effortless Style</em>
+            </>
+          )}
         </h2>
 
         {/* body text */}
@@ -97,8 +102,8 @@ export default function EditorialBanner() {
         </p>
 
         {/* btn btn-outline-white — matches reference exactly */}
-        <button
-          onClick={() => window.location.href = c.editorial_cta_link || '/about/'}
+        <Link
+          href={c.editorial_cta_link || '/about/'}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -116,12 +121,13 @@ export default function EditorialBanner() {
             transition: 'all .2s',
             alignSelf: 'flex-start',
             fontFamily: 'inherit',
+            textDecoration: 'none',
           }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)' }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'none' }}
         >
           {c.editorial_cta_label || 'Our Story'}
-        </button>
+        </Link>
       </div>
     </section>
   )

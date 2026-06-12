@@ -129,7 +129,6 @@ export default function CategoryGrid() {
               className="object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.05]"
               sizes="(max-width: 768px) 50vw, 33vw"
               loading="lazy"
-              unoptimized
             />
             {/* Gradient overlay — matches ::after in design CSS */}
             <div

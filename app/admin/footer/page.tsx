@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
+import { ChevronUp, ChevronDown } from 'lucide-react'
 import {
   siteContentApi, invalidateSiteContentCache,
   type FooterLink,
@@ -69,7 +70,7 @@ function LinkEditor({
               className="w-6 h-5 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-30"
               aria-label="Move up"
             >
-              ▲
+              <ChevronUp size={12} />
             </button>
             <button
               type="button"
@@ -78,7 +79,7 @@ function LinkEditor({
               className="w-6 h-5 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-30"
               aria-label="Move down"
             >
-              ▼
+              <ChevronDown size={12} />
             </button>
           </div>
           {/* Label */}
@@ -178,7 +179,7 @@ export default function AdminFooterPage() {
       <div>
         <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a] mb-1">Footer</h1>
         <p className="text-sm text-[#6b6b6b] mb-6">
-          Edit footer columns and links. Use the ▲▼ arrows to reorder links. Changes take effect immediately.
+          Edit footer columns and links. Use the up/down arrows to reorder links. Changes take effect immediately.
         </p>
       </div>
 

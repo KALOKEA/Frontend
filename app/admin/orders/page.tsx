@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Download, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { adminApi, type AdminOrder } from '@/lib/api/admin'
 import Spinner from '@/components/ui/Spinner'
@@ -104,7 +104,7 @@ export default function AdminOrdersPage() {
           disabled={exporting}
           className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] disabled:opacity-50 transition-colors"
         >
-          {exporting ? 'Exporting…' : '↓ Export CSV'}
+          {exporting ? 'Exporting…' : <><Download size={13} className="inline mr-1" />Export CSV</>}
         </button>
       </div>
 
@@ -301,7 +301,7 @@ export default function AdminOrdersPage() {
                 href={`/admin/order-detail/?id=${detail.id}`}
                 className="px-4 py-2 text-sm bg-[#ff6600] text-white hover:bg-[#e55a00] transition-colors"
               >
-                Full Details / Ship ↗
+                Full Details / Ship <ExternalLink size={12} className="inline ml-1" />
               </Link>
             </div>
           </div>

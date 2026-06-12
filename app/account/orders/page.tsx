@@ -193,12 +193,21 @@ export default function OrdersPage() {
         </Link>
         <div className="mt-8 grid grid-cols-3 gap-6 text-center">
           {[
-            { icon: '🚚', label: 'Free shipping', sub: 'on orders above ₹999' },
-            { icon: '↩️', label: 'Easy returns', sub: 'within 7 days' },
-            { icon: '🔒', label: 'Secure payments', sub: 'Razorpay & COD' },
+            {
+              icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="19" r="1"/><circle cx="20" cy="19" r="1"/></svg>,
+              label: 'Free shipping', sub: 'on orders above ₹999',
+            },
+            {
+              icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.05"/></svg>,
+              label: 'Easy returns', sub: 'within 7 days',
+            },
+            {
+              icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+              label: 'Secure payments', sub: 'Razorpay & COD',
+            },
           ].map(b => (
             <div key={b.label}>
-              <div className="text-2xl mb-1">{b.icon}</div>
+              <div className="flex justify-center mb-2">{b.icon}</div>
               <p className="text-[11px] font-medium text-[#0a0a0a]">{b.label}</p>
               <p className="text-[10px] text-[#6b6b6b]">{b.sub}</p>
             </div>

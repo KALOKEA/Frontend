@@ -1,4 +1,6 @@
 'use client'
+import { type ReactNode } from 'react'
+import { Smartphone, CreditCard, Landmark, Wallet, Package } from 'lucide-react'
 
 interface PaymentSectionProps {
   selected: string
@@ -10,11 +12,11 @@ interface PaymentSectionProps {
 // UPI, Card, Net Banking and Wallet all open Razorpay's hosted checkout modal —
 // Razorpay presents the appropriate payment UI based on the method selected.
 // COD is handled entirely by Kalokea (no Razorpay involved).
-const ONLINE_METHODS = [
-  { value: 'upi', label: 'UPI / QR Code', icon: '📱' },
-  { value: 'card', label: 'Debit / Credit Card', icon: '💳' },
-  { value: 'netbanking', label: 'Net Banking', icon: '🏦' },
-  { value: 'wallet', label: 'Wallets (Paytm, PhonePe…)', icon: '👛' },
+const ONLINE_METHODS: { value: string; label: string; icon: ReactNode }[] = [
+  { value: 'upi',        label: 'UPI / QR Code',             icon: <Smartphone size={15} /> },
+  { value: 'card',       label: 'Debit / Credit Card',        icon: <CreditCard size={15} /> },
+  { value: 'netbanking', label: 'Net Banking',                icon: <Landmark size={15} /> },
+  { value: 'wallet',     label: 'Wallets (Paytm, PhonePe…)', icon: <Wallet size={15} /> },
 ]
 
 const isOnline = (v: string) => ONLINE_METHODS.some((m) => m.value === v)
@@ -93,7 +95,7 @@ export default function PaymentSection({ selected, onSelect, codFeeRupees = 49 }
           onChange={() => onSelect('cod')}
           className="accent-[#7C4A2D]"
         />
-        <span className="text-sm">📦</span>
+        <Package size={15} className="shrink-0 text-[#6b6b6b]" />
         <span className="text-xs font-sans text-[#0a0a0a]">Cash on Delivery</span>
         <span className="ml-auto text-[10px] font-sans text-[#6b6b6b]">+₹{codFeeRupees} fee</span>
       </label>

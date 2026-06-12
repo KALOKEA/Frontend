@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { X } from 'lucide-react'
+import { X, Upload, ExternalLink } from 'lucide-react'
 import Image from 'next/image'
 import { categoriesApi, type Category } from '@/lib/api/categories'
 import { uploadImage } from '@/lib/api/upload'
@@ -319,7 +319,9 @@ export default function AdminCategoriesPage() {
                     <Spinner size="sm" /> Uploading…
                   </span>
                 ) : (
-                  form.image_url ? '↑ Replace photo' : '+ Upload photo'
+                  form.image_url
+                    ? <><Upload size={13} className="inline mr-1" />Replace photo</>
+                    : <><Upload size={13} className="inline mr-1" />Upload photo</>
                 )}
                 <input
                   ref={fileRef}
@@ -341,7 +343,7 @@ export default function AdminCategoriesPage() {
               <p className="text-[11px] text-[#6b6b6b] mt-1">
                 Shown on the homepage "Shop the Look" grid. Paste a Cloudinary or Unsplash URL.
                 {form.image_url && (
-                  <span> <a href={form.image_url} target="_blank" rel="noopener noreferrer" className="text-[#c8a4a5] underline">Preview ↗</a></span>
+                  <span> <a href={form.image_url} target="_blank" rel="noopener noreferrer" className="text-[#c8a4a5] underline inline-flex items-center gap-0.5">Preview <ExternalLink size={10} /></a></span>
                 )}
               </p>
             </div>

@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
-import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react'
 import { adminApi, type AdminCustomer, type CustomerDetail } from '@/lib/api/admin'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice } from '@/lib/utils/formatPrice'
@@ -144,7 +144,7 @@ export default function AdminCustomersPage() {
             disabled={exporting}
             className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] disabled:opacity-50 transition-colors"
           >
-            {exporting ? 'Exporting…' : '↓ Export CSV'}
+            {exporting ? 'Exporting…' : <><Download size={13} className="inline mr-1" />Export CSV</>}
           </button>
         </div>
       </div>

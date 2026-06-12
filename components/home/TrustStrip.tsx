@@ -1,4 +1,5 @@
 'use client'
+import { Fragment } from 'react'
 
 // Trust strip — horizontal on all screen sizes.
 // On mobile: single row, horizontally scrollable (no wrapping).
@@ -78,9 +79,8 @@ export default function TrustStrip() {
         className="trust-strip-inner"
       >
         {ITEMS.map(({ text, svg }, i) => (
-          <>
+          <Fragment key={text}>
             <div
-              key={text}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -97,9 +97,9 @@ export default function TrustStrip() {
               {text}
             </div>
             {i < ITEMS.length - 1 && (
-              <span key={`dot-${i}`} style={{ margin: '0 14px', width: 3, height: 3, borderRadius: '50%', background: '#D4B8B0', flexShrink: 0, display: 'inline-block' }} />
+              <span style={{ margin: '0 14px', width: 3, height: 3, borderRadius: '50%', background: '#D4B8B0', flexShrink: 0, display: 'inline-block' }} />
             )}
-          </>
+          </Fragment>
         ))}
       </div>
 

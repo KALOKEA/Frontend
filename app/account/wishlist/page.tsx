@@ -60,7 +60,6 @@ function WishlistCard({ product }: { product: Product }) {
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          unoptimized
         />
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">

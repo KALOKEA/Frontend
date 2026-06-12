@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { ExternalLink } from 'lucide-react'
 import DOMPurify from 'dompurify'
 import api from '@/lib/api/client'
 import Spinner from '@/components/ui/Spinner'
@@ -118,9 +119,9 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
         <a
           href={PAGE_URLS[page.slug] || `/${page.slug}`}
           target="_blank" rel="noopener noreferrer"
-          className="text-[11px] text-[#6b6b6b] hover:text-[#0a0a0a] underline"
+          className="text-[11px] text-[#6b6b6b] hover:text-[#0a0a0a] underline flex items-center gap-1"
         >
-          View live page ↗
+          View live page <ExternalLink size={11} />
         </a>
         <span className="text-[10px] text-[#6b6b6b] sm:ml-auto w-full sm:w-auto">
           Last saved: {new Date(page.updated_at).toLocaleString('en-IN')}

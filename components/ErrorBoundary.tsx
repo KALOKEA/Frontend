@@ -19,7 +19,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
       try {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const Sentry = require('@sentry/nextjs')
+        const Sentry = require(/* webpackIgnore: true */ '@sentry/nextjs')
         Sentry.captureException(err, {
           extra: { componentStack: info?.componentStack },
         })

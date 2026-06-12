@@ -19,14 +19,12 @@ function getPrimaryImage(product: Product): string {
   return primary?.url || product.product_images?.[0]?.url || '/placeholder.jpg'
 }
 
-function getSwatches(product: Product): string[] {
-  const colours: string[] = []
+function getSwatches(product: Product): { visible: string[]; totalUnique: number } {
+  const all: string[] = []
   for (const v of product.product_variants ?? []) {
-    if (v.colour && !colours.includes(v.colour) && colours.length < 5) {
-      colours.push(v.colour)
-    }
+    if (v.colour && !all.includes(v.colour)) all.push(v.colour)
   }
-  return colours
+  return { visible: all.slice(0, 5), totalUnique: all.length }
 }
 
 // Render a half-star or full star fill for decimal ratings
@@ -64,7 +62,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const isOutOfStock = !product.product_variants?.some((v) => v.is_active && v.stock > 0)
   const imgUrl       = getPrimaryImage(product)
   const hoverImg     = product.product_images?.[1]?.url || imgUrl
-  const swatches     = getSwatches(product)
+  const { visible: swatches, totalUnique: totalColours } = getSwatches(product)
   const rating       = product.avg_rating ?? 0
   const reviewCount  = product.review_count ?? 0
 
@@ -236,9 +234,9 @@ export default function ProductCard({ product }: ProductCardProps) {
                 style={{ backgroundColor: colour.toLowerCase() }}
               />
             ))}
-            {(product.product_variants?.length ?? 0) > swatches.length && (
+            {totalColours > swatches.length && (
               <span className="text-[10px] font-sans text-[#6b5c55]">
-                +{(product.product_variants?.length ?? 0) - swatches.length}
+                +{totalColours - swatches.length}
               </span>
             )}
           </div>
