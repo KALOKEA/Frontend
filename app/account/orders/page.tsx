@@ -7,6 +7,7 @@ import { exchangesApi, EXCHANGE_REASONS, type ExchangeOptions, type ExchangeRequ
 import { formatPrice } from '@/lib/utils/formatPrice'
 import { useToast } from '@/components/ui/Toast'
 import Spinner from '@/components/ui/Spinner'
+import { paymentsApi } from '@/lib/api/payments'
 
 // ─── Status helpers ──────────────────────────────────────────────────────────
 
@@ -86,6 +87,9 @@ export default function OrdersPage() {
   const [exVariantId, setExVariantId]   = useState<string>('')
   const [exReason, setExReason]         = useState<string>(EXCHANGE_REASONS[0])
   const [exLoadingOpts, setExLoadingOpts] = useState(false)
+
+  // Retry Payment
+  const [retryingId, setRetryingId] = useState<string | null>(null)
 
   function load() {
     Promise.all([
@@ -167,6 +171,44 @@ export default function OrdersPage() {
       setCancelFor(null); load()
     } catch (e: any) { toast(e?.message || 'Could not cancel order', 'error') }
     finally { setCancelling(false) }
+  }
+
+  async function retryPayment(order: Order) {
+    setRetryingId(order.id)
+    try {
+      const [rzp, { loadRazorpay }] = await Promise.all([
+        paymentsApi.createOrder(order.id),
+        import('@/lib/utils/razorpay'),
+      ])
+      const RazorpayCtor = await loadRazorpay()
+      if (!RazorpayCtor) { toast('Could not load payment gateway. Please try again.', 'error'); return }
+      const rz = new RazorpayCtor({
+        key: rzp.key_id,
+        amount: rzp.amount,
+        currency: rzp.currency,
+        order_id: rzp.razorpay_order_id,
+        name: 'KALOKEA',
+        description: `Order ${order.order_number}`,
+        theme: { color: '#7C4A2D' },
+        handler: async (response) => {
+          try {
+            await paymentsApi.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            })
+            toast('Payment successful! Your order is confirmed.')
+            load()
+          } catch { toast('Payment verification failed. Contact support.', 'error') }
+        },
+        modal: { ondismiss: () => setRetryingId(null) },
+      })
+      rz.on('payment.failed', () => { toast('Payment failed. Please try again.', 'error'); setRetryingId(null) })
+      rz.open()
+    } catch (e: any) {
+      toast(e?.message || 'Could not initiate payment. Please try again.', 'error')
+      setRetryingId(null)
+    }
   }
 
   if (loading) return <div className="flex justify-center py-16"><Spinner size="lg" /></div>
@@ -370,6 +412,27 @@ export default function OrdersPage() {
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                         Cancel Order
+                      </button>
+                    )}
+
+                    {/* Retry Payment — shown when online payment failed */}
+                    {order.payment_status === 'failed' && order.payment_method !== 'cod' && (
+                      <button
+                        onClick={() => retryPayment(order)}
+                        disabled={retryingId === order.id}
+                        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest bg-[#7C4A2D] text-white px-3 py-1.5 hover:bg-[#6a3d25] disabled:opacity-50 transition-colors"
+                      >
+                        {retryingId === order.id ? (
+                          <>
+                            <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" strokeOpacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                            Loading…
+                          </>
+                        ) : (
+                          <>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.05"/></svg>
+                            Retry Payment
+                          </>
+                        )}
                       </button>
                     )}
 
