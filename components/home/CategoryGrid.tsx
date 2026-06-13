@@ -61,17 +61,25 @@ export default function CategoryGrid() {
   const gridRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    getHomepageData().then((d) => {
-      setCms(d.cms)
-      if (d.categories?.length) {
-        setCategories(d.categories)
-        return
-      }
-      return categoriesApi.getAll().then((data) => {
-        const filtered = data.filter((c) => c.slug !== 'new-arrivals' && c.slug !== 'everything' && c.slug !== 'sale')
-        setCategories(filtered.length ? filtered : STATIC_CATEGORIES)
+    getHomepageData()
+      .then((d) => {
+        setCms(d.cms)
+        // If CMS provides pre-loaded categories use them; else call API
+        if (d.categories?.length) {
+          setCategories(d.categories.filter((c: Category) => c.is_active !== false))
+          return
+        }
+        return categoriesApi.getAll().then((data) => {
+          const filtered = data.filter(
+            (c) => c.is_active !== false &&
+                   c.slug !== 'new-arrivals' &&
+                   c.slug !== 'everything' &&
+                   c.slug !== 'sale'
+          )
+          setCategories(filtered) // No static fallback — only real DB categories
+        })
       })
-    }).catch(() => setCategories(STATIC_CATEGORIES))
+      .catch(() => setCategories([]))  // On error show nothing, not fake data
   }, [])
 
   useEffect(() => {
@@ -85,7 +93,7 @@ export default function CategoryGrid() {
     return () => obs.disconnect()
   }, [categories])
 
-  const cats = (categories.length ? categories : STATIC_CATEGORIES).slice(0, 5)
+  const cats = categories.slice(0, 5)
 
   return (
     /* section-sm: padding 48px 0 */

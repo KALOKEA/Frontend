@@ -1,18 +1,35 @@
 'use client'
-// Matches reference .press exactly:
-// — padding:40px var(--gutter)=52px; border-top & border-bottom:1px solid #F0EAE1; bg:#FFFFFF
-// — press-inner: display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap; max-width:1380; margin:0 auto
-// — press-label: .68rem; weight:700; tracking:.2em; uppercase; color:#B5A89E (var(--muted-lt)); white-space:nowrap
-// — press-logos: display:flex; align-items:center; gap:40px; flex-wrap:wrap
-// — press-logo: serif 1.15rem weight:600 color:#B5A89E tracking:.06em; hover:color:#7C4A2D (var(--brown))
-// — ALL logos UNIFORM — no per-logo size/style variation
+import Link from 'next/link'
 
-const LOGOS = ['Vogue India', 'Elle', "Harper's Bazaar", 'Femina', 'Grazia']
+const LOGOS = [
+  { name: 'Vogue India',      url: 'https://www.vogue.in/' },
+  { name: 'Elle',             url: 'https://elle.in/' },
+  { name: "Harper's Bazaar",  url: 'https://harpersbazaar.in/' },
+  { name: 'Femina',           url: 'https://www.femina.in/' },
+  { name: 'Grazia',           url: 'https://www.grazia.co.in/' },
+]
 
 export default function PressStrip() {
   return (
-    <div className="k-press-wrap">
-      <div className="k-press-inner">
+    <div
+      style={{
+        borderTop: '1px solid #F0EAE1',
+        borderBottom: '1px solid #F0EAE1',
+        background: '#FFFFFF',
+        padding: '40px max(20px, min(52px, 4vw))',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1380,
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 32,
+          flexWrap: 'wrap',
+        }}
+      >
         {/* Label */}
         <span
           style={{
@@ -27,25 +44,29 @@ export default function PressStrip() {
           As Seen In
         </span>
 
-        {/* Logos */}
+        {/* Logos — real links to each magazine */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 40, flexWrap: 'wrap' }}>
-          {LOGOS.map(name => (
-            <span
+          {LOGOS.map(({ name, url }) => (
+            <a
               key={name}
-              className="font-serif"
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${name} — opens in new tab`}
               style={{
+                fontFamily: 'var(--font-cormorant), serif',
                 fontSize: '1.15rem',
                 fontWeight: 600,
                 color: '#B5A89E',
                 letterSpacing: '.06em',
+                textDecoration: 'none',
                 transition: 'color .2s',
-                cursor: 'pointer',
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#7C4A2D' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#B5A89E' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#7C4A2D' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#B5A89E' }}
             >
               {name}
-            </span>
+            </a>
           ))}
         </div>
       </div>
