@@ -106,7 +106,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       // /login/?redirect=/login/ → reload → 401 again → repeat forever).
       const onLoginPage = window.location.pathname.startsWith('/login')
       if (!onLoginPage) {
-        const loginUrl = '/login/?session=expired&redirect=' + encodeURIComponent(window.location.pathname)
+        const loginUrl = '/login/?session=expired&redirect=' + encodeURIComponent(window.location.pathname + window.location.search)
         window.location.href = loginUrl
       }
     }

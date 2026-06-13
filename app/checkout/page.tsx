@@ -101,8 +101,8 @@ export default function CheckoutPage() {
         return
       }
     }
-    if (billing.pincode.length !== 6) { setCheckoutError('Enter a valid 6-digit PIN code'); return }
-    if (billing.phone.length !== 10) { setCheckoutError('Enter a valid 10-digit phone number'); return }
+    if (!/^\d{6}$/.test(billing.pincode)) { setCheckoutError('Enter a valid 6-digit PIN code'); return }
+    if (!/^\d{10}$/.test(billing.phone)) { setCheckoutError('Enter a valid 10-digit phone number'); return }
     if (billing.gst_invoice && (!billing.gstin.trim() || !billing.company.trim())) {
       setCheckoutError('Company name and GSTIN are required for a GST invoice'); return
     }

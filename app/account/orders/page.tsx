@@ -139,9 +139,11 @@ export default function OrdersPage() {
   async function openInvoice(orderId: string) {
     try {
       const html = await ordersApi.getInvoice(orderId)
-      const w = window.open('', '_blank')
-      if (w) { w.document.write(html); w.document.close() }
-      else toast('Allow pop-ups to view the invoice', 'error')
+      // Use Blob URL to avoid XSS risk from document.write in the caller's origin
+      const blob = new Blob([html], { type: 'text/html' })
+      const blobUrl = URL.createObjectURL(blob)
+      const w = window.open(blobUrl, '_blank')
+      if (!w) toast('Allow pop-ups to view the invoice', 'error')
     } catch { toast('Could not open invoice', 'error') }
   }
 

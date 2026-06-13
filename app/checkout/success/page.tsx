@@ -2,10 +2,12 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useAuthStore } from '@/lib/store/useAuthStore'
 
 function SuccessContent() {
   const params = useSearchParams()
   const orderNumber = params.get('order') || ''
+  const isLoggedIn = useAuthStore(s => s.isLoggedIn)
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
@@ -23,7 +25,11 @@ function SuccessContent() {
           Thank you for shopping with Kalokea. You&apos;ll receive a confirmation email shortly.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/account/orders/" className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-6 py-3 hover:bg-[#2a2a2a] transition-colors">
+          {/* Logged-in users → My Orders. Guests → Track Order (no login required) */}
+          <Link
+            href={isLoggedIn ? '/account/orders/' : `/track-order/?order=${orderNumber}`}
+            className="bg-[#0a0a0a] text-white text-[11px] font-sans tracking-widest uppercase px-6 py-3 hover:bg-[#2a2a2a] transition-colors"
+          >
             Track Order
           </Link>
           <Link href="/shop/" className="border border-[#0a0a0a] text-[#0a0a0a] text-[11px] font-sans tracking-widest uppercase px-6 py-3 hover:bg-[#0a0a0a] hover:text-white transition-colors">

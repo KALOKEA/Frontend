@@ -102,7 +102,8 @@ function ShopContent() {
   const [loading, setLoading] = useState(true)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const page = Number(params.get('page') || 1)
+  const rawPage = Number(params.get('page'))
+  const page = rawPage >= 1 ? rawPage : 1
   const limit = 20
   const category = params.get('category')
   const searchQuery = params.get('search')
