@@ -27,7 +27,7 @@ const toGaItems = (items: { product_id: string; variant_id: string; name: string
 export default function CheckoutPage() {
   const router = useRouter()
   const { isLoggedIn, user, hydrated } = useAuthStore()
-  const { items, clearCart, appliedCoupon, setAppliedCoupon, clearAppliedCoupon } = useCartStore()
+  const { items, clearCart, appliedCoupon, setAppliedCoupon, clearAppliedCoupon, guestSessionId } = useCartStore()
   const { toast } = useToast()
 
   const [addresses, setAddresses] = useState<Address[]>([])
@@ -142,8 +142,10 @@ export default function CheckoutPage() {
         gst_invoice: billing.gst_invoice,
         company_name: billing.company || undefined,
         gstin: billing.gst_invoice ? billing.gstin : undefined,
-        // Fallback: send frontend cart items so the order can be created even
-        // when server-side cart sync failed (e.g. item was out-of-stock at add time).
+        // Pass session_id for guest users so the backend uses the server cart
+        // (which has stock validation). cart_items acts as a fallback when the
+        // server cart is missing (e.g. sync failed or very first session).
+        session_id: isLoggedIn ? undefined : guestSessionId,
         cart_items: items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity })),
       })
 

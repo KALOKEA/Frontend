@@ -9,7 +9,7 @@ export default function CartSummary({ couponDiscount = 0 }: { couponDiscount?: n
   const { items } = useCartStore()
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
   const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : 4900
-  const total = subtotal + shipping - couponDiscount
+  const total = Math.max(0, subtotal + shipping - couponDiscount)
 
   return (
     <div className="bg-[#faf8f5] p-6">

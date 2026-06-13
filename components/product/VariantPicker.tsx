@@ -131,22 +131,26 @@ export default function VariantPicker({
   onSizeChange,
 }: VariantPickerProps) {
   const colours = Array.from(
-    new Set(variants.filter((v) => v.colour).map((v) => v.colour!)),
+    new Set(variants.filter((v) => v.is_active && v.colour).map((v) => v.colour!)),
   )
   const sizes = Array.from(
     new Set(
       variants
-        .filter((v) => !selectedColour || v.colour === selectedColour)
+        .filter((v) => v.is_active && (!selectedColour || v.colour === selectedColour))
         .filter((v) => v.size)
         .map((v) => v.size!),
     ),
   )
 
+  // A size is OOS only when EVERY active variant for that size (within the
+  // selected colour, if any) has stock=0. Using .find() was wrong: it checked
+  // only the first match, so if the first colour-variant had stock=0 the size
+  // appeared disabled even when another colour still had stock.
   const isOOS = (size: string) => {
-    const v = variants.find(
-      (v) => v.size === size && (!selectedColour || v.colour === selectedColour),
+    const matching = variants.filter(
+      (v) => v.is_active && v.size === size && (!selectedColour || v.colour === selectedColour),
     )
-    return !v || v.stock === 0
+    return matching.length === 0 || matching.every((v) => v.stock === 0)
   }
 
   return (

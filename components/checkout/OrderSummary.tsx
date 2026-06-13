@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useCartStore } from '@/lib/store/useCartStore'
+import { useAuthStore } from '@/lib/store/useAuthStore'
 import { ordersApi, type OrderQuote } from '@/lib/api/orders'
 import { formatPrice } from '@/lib/utils/formatPrice'
 
@@ -18,24 +19,32 @@ export default function OrderSummary({
   paymentMethod?: string
   addressState?: string | null
 }) {
-  const { items } = useCartStore()
+  const { items, guestSessionId } = useCartStore()
+  const { isLoggedIn } = useAuthStore()
   const [quote, setQuote] = useState<OrderQuote | null>(null)
+  // Tracks whether a quote request is in-flight so we can show "Calculating..."
+  // only while loading -- not forever when the request fails.
+  const [quoteLoading, setQuoteLoading] = useState(false)
 
   // Authoritative GST + totals from the backend (matches what the customer is
   // charged). Re-quotes whenever the cart, coupon, state or payment changes.
+  // Guest users must send their session_id so the backend can load the correct
+  // server-side cart; without it loadCart() throws and the response is always null.
   useEffect(() => {
     let active = true
     if (!items.length) { setQuote(null); return }
+    setQuoteLoading(true)
     ordersApi
       .quote({
         address_snapshot: addressState ? { state: addressState } : undefined,
         coupon_code: couponCode || undefined,
         payment_method: paymentMethod || 'upi',
+        session_id: isLoggedIn ? undefined : guestSessionId,
       })
-      .then((q) => { if (active) setQuote(q) })
-      .catch(() => { if (active) setQuote(null) })
+      .then((q) => { if (active) { setQuote(q); setQuoteLoading(false) } })
+      .catch(() => { if (active) { setQuote(null); setQuoteLoading(false) } })
     return () => { active = false }
-  }, [items, couponCode, paymentMethod, addressState])
+  }, [items, couponCode, paymentMethod, addressState, isLoggedIn, guestSessionId])
 
   // Fallback (pre-tax) figures if the quote hasn't loaded yet.
   const subtotal = quote?.subtotal ?? items.reduce((s, i) => s + i.price * i.quantity, 0)
@@ -85,7 +94,7 @@ export default function OrderSummary({
         ) : totalGst > 0 ? (
           <Line label="GST" value={formatPrice(totalGst)} />
         ) : (
-          <Line label="GST" value={!quote ? 'Calculating…' : '₹0'} />
+          <Line label="GST" value={quoteLoading ? 'Calculating…' : '₹0'} />
         )}
 
         <Line label="Shipping" value={shipping === 0 ? 'Free' : formatPrice(shipping)} />

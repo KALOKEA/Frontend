@@ -39,7 +39,9 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 function getStepIndex(status: string) {
-  const idx = STATUS_STEPS.findIndex(s => s.key === status)
+  // 'processing' (packing) sits between confirmed and shipped
+  const normalised = status === 'processing' ? 'confirmed' : status
+  const idx = STATUS_STEPS.findIndex(s => s.key === normalised)
   return idx === -1 ? 0 : idx
 }
 

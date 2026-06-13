@@ -39,7 +39,7 @@ function WishlistCard({ product }: { product: Product }) {
       image_url: imgUrl,
       size: inStockVariant.size,
       colour: inStockVariant.colour,
-      price: product.base_price,
+      price: inStockVariant.price || product.base_price,
       quantity: 1,
       max_stock: inStockVariant.stock,
     })

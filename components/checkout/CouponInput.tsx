@@ -52,6 +52,7 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
         <input
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
+          onKeyDown={(e) => e.key === 'Enter' && apply()}
           placeholder="Coupon code"
           className="flex-1 border border-[#e8e4e0] border-r-0 px-4 py-3 text-base font-sans outline-none focus:border-[#0a0a0a] uppercase placeholder:normal-case placeholder:text-[#6b6b6b] min-h-[44px]"
         />

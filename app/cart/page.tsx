@@ -24,7 +24,7 @@ export default function CartPage() {
 
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
   const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : 4900
-  const total = subtotal + shipping - couponDiscount
+  const total = Math.max(0, subtotal + shipping - couponDiscount)
   const amountToFree = Math.max(0, SHIPPING_THRESHOLD - subtotal)
   const shippingProgress = Math.min(100, Math.round((subtotal / SHIPPING_THRESHOLD) * 100))
 

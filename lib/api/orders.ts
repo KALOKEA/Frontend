@@ -1,4 +1,4 @@
-﻿import api from './client'
+import api from './client'
 
 export interface Order {
   id: string
@@ -73,6 +73,7 @@ export const ordersApi = {
     company_name?: string
     gstin?: string
     cart_items?: { variant_id: string; quantity: number }[]
+    session_id?: string // guest cart session — lets backend use the server cart for stock validation
   }) => api.post<Order>('/orders', data),
 
   quote: (data: {
@@ -80,6 +81,7 @@ export const ordersApi = {
     address_snapshot?: { state?: string }
     coupon_code?: string
     payment_method: string
+    session_id?: string // guest cart session — required when user is not logged in
   }) => api.post<OrderQuote>('/orders/quote', data),
 
   getMyOrders: () => api.get<Order[]>('/orders/my'),
