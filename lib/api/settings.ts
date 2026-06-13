@@ -18,6 +18,27 @@ export interface StoreSettings {
   footer_whatsapp_url?: string
   footer_facebook_url?: string
   footer_pinterest_url?: string
+  // Flash sale (migration 025)
+  flash_sale_enabled?: boolean
+  flash_sale_end_time?: string   // ISO 8601 UTC
+  flash_sale_label?: string
+  flash_sale_discount_pct?: number
+  flash_sale_coupon?: string
+}
+
+export interface PublicSettings {
+  footer_instagram_url: string
+  footer_whatsapp_url: string
+  footer_facebook_url: string
+  footer_pinterest_url: string
+  live_chat_widget: string
+  seller_gstin: string
+  seller_name: string
+  flash_sale_enabled: boolean
+  flash_sale_end_time: string
+  flash_sale_label: string
+  flash_sale_discount_pct: number
+  flash_sale_coupon: string
 }
 
 export interface GstReport {
@@ -34,6 +55,7 @@ export interface GstReport {
 
 export const settingsApi = {
   get: () => api.get<StoreSettings>('/settings'),
+  getPublic: () => api.get<PublicSettings>('/settings/public'),
   update: (data: Partial<StoreSettings>) => api.put<StoreSettings>('/settings', data),
   gstReport: (month?: string) =>
     api.get<GstReport>(`/settings/gst-report${month ? `?month=${month}` : ''}`),

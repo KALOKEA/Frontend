@@ -14,3 +14,17 @@ export const authApi = {
 
   me: () => api.get<{ id: string; name?: string; email?: string; phone?: string; role: string }>('/auth/me'),
 }
+
+export const twoFactorApi = {
+  status: () =>
+    api.get<{ enabled: boolean }>('/auth/2fa/status'),
+
+  setup: () =>
+    api.post<{ qr_code: string; secret: string; backup_codes: string[] }>('/auth/2fa/setup', {}),
+
+  enable: (token: string) =>
+    api.post<{ message: string }>('/auth/2fa/enable', { token }),
+
+  disable: (token: string) =>
+    api.post<{ message: string }>('/auth/2fa/disable', { token }),
+}

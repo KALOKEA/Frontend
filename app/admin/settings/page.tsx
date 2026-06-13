@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { settingsApi, INDIAN_STATES, type StoreSettings } from '@/lib/api/settings'
+import { twoFactorApi } from '@/lib/api/auth'
 import Spinner from '@/components/ui/Spinner'
+import Image from 'next/image'
 
 const INP = 'w-full border border-[#e8e4e0] px-3 py-2 text-sm outline-none focus:border-[#0a0a0a] transition-colors bg-white'
 
@@ -23,6 +25,216 @@ const DEFAULT_FORM: StoreSettings = {
   footer_pinterest_url: 'https://www.pinterest.com/kalokea',
 }
 
+// ── 2FA panel ───────────────────────────────────────────────────────────────
+function TwoFactorSection() {
+  const [status, setStatus] = useState<'loading' | 'enabled' | 'disabled'>('loading')
+  const [phase, setPhase] = useState<'idle' | 'setup' | 'confirm-enable' | 'confirm-disable'>('idle')
+  const [qrCode, setQrCode] = useState('')
+  const [secret, setSecret] = useState('')
+  const [backupCodes, setBackupCodes] = useState<string[]>([])
+  const [token, setToken] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null)
+
+  useEffect(() => {
+    twoFactorApi.status()
+      .then(r => setStatus(r.enabled ? 'enabled' : 'disabled'))
+      .catch(() => setStatus('disabled'))
+  }, [])
+
+  function flash(text: string, ok: boolean) {
+    setMsg({ text, ok })
+    setTimeout(() => setMsg(null), 5000)
+  }
+
+  async function handleSetup() {
+    setBusy(true)
+    try {
+      const r = await twoFactorApi.setup()
+      setQrCode(r.qr_code)
+      setSecret(r.secret)
+      setBackupCodes(r.backup_codes)
+      setPhase('confirm-enable')
+    } catch (e: any) {
+      flash(e?.message || 'Setup failed', false)
+    } finally { setBusy(false) }
+  }
+
+  async function handleEnable() {
+    if (!token.trim()) { flash('Enter the 6-digit code from your authenticator app', false); return }
+    setBusy(true)
+    try {
+      await twoFactorApi.enable(token.trim())
+      setStatus('enabled')
+      setPhase('idle')
+      setToken('')
+      setQrCode('')
+      flash('2FA enabled — your account is now protected', true)
+    } catch (e: any) {
+      flash(e?.message || 'Invalid code — try again', false)
+    } finally { setBusy(false) }
+  }
+
+  async function handleDisable() {
+    if (!token.trim()) { flash('Enter the 6-digit code to confirm disable', false); return }
+    setBusy(true)
+    try {
+      await twoFactorApi.disable(token.trim())
+      setStatus('disabled')
+      setPhase('idle')
+      setToken('')
+      flash('2FA disabled', true)
+    } catch (e: any) {
+      flash(e?.message || 'Invalid code — 2FA not disabled', false)
+    } finally { setBusy(false) }
+  }
+
+  if (status === 'loading') {
+    return <div className="flex items-center gap-2 text-sm text-[#6b6b6b]"><Spinner size="sm" /> Loading security status…</div>
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Status badge */}
+      <div className="flex items-center gap-3">
+        <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full ${
+          status === 'enabled'
+            ? 'bg-green-50 text-green-700 border border-green-200'
+            : 'bg-amber-50 text-amber-700 border border-amber-200'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${status === 'enabled' ? 'bg-green-500' : 'bg-amber-500'}`} />
+          {status === 'enabled' ? '2FA Enabled' : '2FA Disabled'}
+        </span>
+        <p className="text-[11px] text-[#6b6b6b]">
+          {status === 'enabled'
+            ? 'Your admin account is protected with two-factor authentication.'
+            : 'Enable 2FA to protect your admin account with an authenticator app.'}
+        </p>
+      </div>
+
+      {/* Idle state */}
+      {phase === 'idle' && (
+        <div>
+          {status === 'disabled' ? (
+            <button
+              onClick={handleSetup}
+              disabled={busy}
+              className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors"
+            >
+              {busy ? 'Loading…' : 'Set up 2FA'}
+            </button>
+          ) : (
+            <button
+              onClick={() => { setPhase('confirm-disable'); setToken('') }}
+              className="px-4 py-2 text-sm border border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+            >
+              Disable 2FA
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Setup + QR code */}
+      {phase === 'confirm-enable' && qrCode && (
+        <div className="border border-[#e8e4e0] p-4 space-y-4 bg-[#faf8f5]">
+          <p className="text-sm font-medium text-[#0a0a0a]">Step 1 — Scan this QR code with Google Authenticator or Authy</p>
+          <div className="flex items-start gap-6">
+            <div className="border border-[#e8e4e0] bg-white p-2 flex-shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={qrCode} alt="2FA QR Code" width={160} height={160} />
+            </div>
+            <div className="space-y-2">
+              <p className="text-[11px] text-[#6b6b6b]">Or enter the secret manually:</p>
+              <code className="block text-xs bg-white border border-[#e8e4e0] px-3 py-2 break-all select-all">
+                {secret}
+              </code>
+              {backupCodes.length > 0 && (
+                <div>
+                  <p className="text-[11px] text-[#6b6b6b] mt-3 mb-1 font-medium">
+                    Backup codes (save these somewhere safe — each can be used once):
+                  </p>
+                  <div className="grid grid-cols-2 gap-1">
+                    {backupCodes.map(c => (
+                      <code key={c} className="text-xs bg-white border border-[#e8e4e0] px-2 py-1 text-center">{c}</code>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-[#0a0a0a] mb-2">Step 2 — Enter the 6-digit code from your app to activate</p>
+            <div className="flex gap-2 max-w-xs">
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={token}
+                onChange={e => setToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="000000"
+                className={`${INP} tracking-widest text-center font-mono`}
+              />
+              <button
+                onClick={handleEnable}
+                disabled={busy || token.length !== 6}
+                className="px-4 py-2 text-sm bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors whitespace-nowrap"
+              >
+                {busy ? 'Verifying…' : 'Activate'}
+              </button>
+            </div>
+            <button
+              onClick={() => { setPhase('idle'); setToken('') }}
+              className="text-[11px] text-[#6b6b6b] underline mt-2"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Disable confirmation */}
+      {phase === 'confirm-disable' && (
+        <div className="border border-red-200 p-4 space-y-3 bg-red-50">
+          <p className="text-sm font-medium text-red-700">Enter your current authenticator code to disable 2FA</p>
+          <div className="flex gap-2 max-w-xs">
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              value={token}
+              onChange={e => setToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              placeholder="000000"
+              className={`${INP} tracking-widest text-center font-mono`}
+            />
+            <button
+              onClick={handleDisable}
+              disabled={busy || token.length !== 6}
+              className="px-4 py-2 text-sm bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition-colors whitespace-nowrap"
+            >
+              {busy ? 'Checking…' : 'Disable'}
+            </button>
+          </div>
+          <button
+            onClick={() => { setPhase('idle'); setToken('') }}
+            className="text-[11px] text-[#6b6b6b] underline"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
+      {msg && (
+        <p className={`text-sm ${msg.ok ? 'text-green-700' : 'text-red-600'}`}>{msg.text}</p>
+      )}
+
+      <p className="text-[11px] text-[#6b6b6b]">
+        Works with Google Authenticator, Authy, Microsoft Authenticator, or any TOTP app.
+      </p>
+    </div>
+  )
+}
+
+// ── Main page ────────────────────────────────────────────────────────────────
 export default function AdminSettingsPage() {
   const [form, setForm] = useState<StoreSettings | null>(null)
   const [loading, setLoading] = useState(true)
@@ -287,6 +499,75 @@ export default function AdminSettingsPage() {
               className={`${INP} bg-[#faf8f5] text-[#6b6b6b] cursor-default`}
             />
           </Field>
+        </Section>
+
+        {/* ── Flash Sale ────────────────────────────────────────── */}
+        <Section title="Flash sale — countdown banner">
+          <p className="text-[11px] text-[#6b6b6b] mb-4">
+            When enabled, a site-wide countdown banner appears above the header. Set the end time in UTC.
+            Create a matching coupon in <strong>Coupons → Add coupon</strong> for the actual discount.
+          </p>
+          <div className="flex items-center gap-3 mb-4">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={!!form.flash_sale_enabled}
+                onChange={e => set('flash_sale_enabled', e.target.checked ? 1 : 0 as any)}
+              />
+              <div className="w-10 h-5 bg-[#e8e4e0] rounded-full peer peer-checked:bg-[#0a0a0a] transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
+            </label>
+            <span className="text-sm font-medium text-[#0a0a0a]">
+              {form.flash_sale_enabled ? 'Banner active — shoppers can see it now' : 'Banner hidden'}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field label="Sale headline">
+              <input
+                value={form.flash_sale_label ?? 'Flash Sale'}
+                onChange={e => set('flash_sale_label', e.target.value)}
+                placeholder="Flash Sale"
+                className={INP}
+              />
+            </Field>
+            <Field label="Discount % (shown in banner)">
+              <input
+                type="number"
+                min={1}
+                max={90}
+                value={form.flash_sale_discount_pct ?? 20}
+                onChange={e => set('flash_sale_discount_pct', parseInt(e.target.value || '20', 10))}
+                className={INP}
+                placeholder="20"
+              />
+            </Field>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field label="Sale ends at (UTC) — ISO 8601">
+              <input
+                type="datetime-local"
+                value={form.flash_sale_end_time ? form.flash_sale_end_time.slice(0, 16) : ''}
+                onChange={e => set('flash_sale_end_time', e.target.value ? e.target.value + ':00Z' : '')}
+                className={INP}
+              />
+            </Field>
+            <Field label="Coupon code (optional — shoppers copy this)">
+              <input
+                value={form.flash_sale_coupon ?? ''}
+                onChange={e => set('flash_sale_coupon', e.target.value.toUpperCase())}
+                placeholder="FLASH20"
+                className={`${INP} font-mono`}
+              />
+            </Field>
+          </div>
+          <p className="text-[11px] text-[#6b6b6b] mt-1">
+            The banner auto-hides when the countdown reaches zero (no deploy needed). Shoppers can also dismiss it.
+          </p>
+        </Section>
+
+        {/* ── Security / 2FA ─────────────────────────────────── */}
+        <Section title="Security — Two-factor authentication (2FA)">
+          <TwoFactorSection />
         </Section>
 
         {/* ── Save button ────────────────────────────────────── */}

@@ -13,6 +13,8 @@ import MobileBottomNav from '@/components/layout/MobileBottomNav'
 import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import BackToTop from '@/components/layout/BackToTop'
 import ScrollRevealInit from '@/components/ScrollRevealInit'
+import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
+import FlashSaleBanner from '@/components/layout/FlashSaleBanner'
 import PageTransition from '@/components/PageTransition'
 
 const cormorant = Cormorant_Garamond({
@@ -371,6 +373,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" sizes="180x180"   href="/apple-touch-icon.png" />
         {/* Open Graph / PWA manifest logo */}
         <link rel="image_src" href="/logo.png" />
+        {/* PWA */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0a0a0a" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="KALOKEA" />
         {/* API + images */}
         <link rel="preconnect" href="https://backend-production-73aa.up.railway.app" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />
@@ -399,6 +408,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <ToastProvider>
           <AuthBootstrap />
+          <FlashSaleBanner />
           <Header />
           <CartDrawer />
           {/* pt accounts for fixed header: ~36px announcement bar + 58/68px nav */}
@@ -416,6 +426,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <WhatsAppButton />
         <BackToTop />
         <ScrollRevealInit />
+        <ServiceWorkerRegister />
       </body>
     </html>
   )

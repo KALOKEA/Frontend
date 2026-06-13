@@ -1,0 +1,66 @@
+{
+  "name": "KALOKEA — Women's Fashion",
+  "short_name": "KALOKEA",
+  "description": "Shop the latest women's fashion — dresses, tops, bags & accessories. Free shipping above ₹999.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf8f5",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-IN",
+  "categories": ["shopping", "fashion", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "label": "KALOKEA Homepage"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Arrivals",
+      "short_name": "New In",
+      "description": "Shop the latest new arrivals",
+      "url": "/shop/?sort=newest",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "My Orders",
+      "short_name": "Orders",
+      "description": "Track your orders",
+      "url": "/account/orders/",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    }
+  ]
+}
