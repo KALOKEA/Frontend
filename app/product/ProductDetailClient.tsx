@@ -14,6 +14,90 @@ import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { trackViewItem, metaViewContent } from '@/lib/analytics'
 import { addRecentlyViewed } from '@/lib/hooks/useRecentlyViewed'
 
+// ─── Description renderer ────────────────────────────────────────────────────
+// Parses product descriptions that contain inline section headers + • bullets.
+// Format: "Intro prose. Section Title • item1 • item2 Next Section • item1"
+const SECTION_HEADERS = [
+  'Fit & Style', 'Fit and Style',
+  'Ideal For', 'Ideal for',
+  'Wash & Care Instructions', 'Wash and Care Instructions',
+  'Care Instructions', 'Key Features', 'Features',
+  'How to Wear', 'Styling Tips', 'Occasion', 'Occasions',
+]
+
+function DescriptionRenderer({ text }: { text: string }) {
+  if (!text) return <p>A beautifully crafted piece made with care and attention to detail.</p>
+
+  const cleaned = text.replace(/^Product\s*Description\s*/i, '').trim()
+  if (!cleaned.includes('•')) return <p className="leading-relaxed">{cleaned}</p>
+
+  type Section = { title: string; items: string[] }
+  let intro = ''
+  const sections: Section[] = []
+  let cur: Section | null = null
+
+  const tokens = cleaned.split('•').map(t => t.trim()).filter(Boolean)
+
+  for (const token of tokens) {
+    // Check if this token ends with a known section header
+    const hdr = SECTION_HEADERS.find(h => {
+      const idx = token.lastIndexOf(h)
+      if (idx === -1) return false
+      return token.slice(idx + h.length).trim() === ''
+    })
+
+    if (hdr) {
+      const before = token.slice(0, token.lastIndexOf(hdr)).trim()
+      if (before) cur ? cur.items.push(before) : (intro = (intro + ' ' + before).trim())
+      cur = { title: hdr, items: [] }
+      sections.push(cur)
+    } else {
+      cur ? cur.items.push(token) : (intro = (intro + ' ' + token).trim())
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      {intro && <p className="leading-relaxed">{intro.trim()}</p>}
+      {sections.map((s, i) => (
+        <div key={i} className="space-y-1.5">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-[#0A0908] font-semibold">{s.title}</p>
+          <ul className="space-y-1">
+            {s.items.map((item, j) => (
+              <li key={j} className="flex items-start gap-2.5">
+                <span className="text-[#7C4A2D] shrink-0 mt-[1px]">—</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ─── Fabric & Care renderer ───────────────────────────────────────────────────
+// Splits on • · or newlines and renders a clean bullet list.
+function FabricRenderer({ text }: { text: string }) {
+  const DEFAULT = ['Premium quality fabric', 'Gentle machine wash or dry clean', 'Do not bleach', 'Do not tumble dry']
+  const lines = text
+    ? text.split(/[•·\n]+/).map(l => l.trim()).filter(Boolean)
+    : DEFAULT
+
+  if (lines.length <= 1 && text) return <p className="leading-relaxed">{text}</p>
+
+  return (
+    <ul className="space-y-1.5">
+      {lines.map((line, i) => (
+        <li key={i} className="flex items-start gap-2.5">
+          <span className="text-[#7C4A2D] shrink-0 mt-[1px]">—</span>
+          <span>{line}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 // ─── Delivery ETA calculator ─────────────────────────────────────────────────
 // Returns a human-readable delivery window like "Tue, 17 Jun – Fri, 20 Jun".
 // Skips Sundays (India logistics). Orders cut-off at 18:00 IST — after that,
@@ -67,6 +151,15 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
       .catch(() => setProduct(null))
       .finally(() => setLoading(false))
   }, [slug, initialProduct])
+
+  // Background refresh — picks up admin changes (fabric_care, description, etc.)
+  // without requiring a full redeploy of the statically-exported pages.
+  useEffect(() => {
+    if (!initialProduct || !slug) return
+    productsApi.getBySlug(slug)
+      .then(fresh => { if (fresh) setProduct(fresh) })
+      .catch(() => {}) // fail silently — initialProduct is already displayed
+  }, [slug]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!product) return
@@ -353,10 +446,10 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
               <div className="pt-5 text-[13px] font-sans text-[#6B5E55] leading-relaxed">
                 {tab === 'description' && (
-                  <p>{product.description || 'A beautifully crafted piece made with care and attention to detail.'}</p>
+                  <DescriptionRenderer text={product.description || ''} />
                 )}
                 {tab === 'fabric' && (
-                  <p>{product.fabric_care || 'Premium quality fabric. Care instructions: Gentle machine wash or dry clean. Do not bleach. Do not tumble dry.'}</p>
+                  <FabricRenderer text={product.fabric_care || ''} />
                 )}
                 {tab === 'shipping' && (
                   <div className="space-y-2">
