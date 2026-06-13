@@ -3,37 +3,35 @@ import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { productsApi, type Product } from '@/lib/api/products'
+import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 import ProductCard from '@/components/shop/ProductCard'
 
 /*
- * Matches reference #home .bestsellers exactly:
- * — padding: 80px 0, background: var(--white) = #FFFFFF
- * — .section-head: flex align-items:flex-end justify-content:space-between gap:24
- * — .section-label "Most Loved", .section-title "Best Sellers"
- * — .btn-ghost "See All →"
- * — .grid-3: repeat(3,1fr) gap:28px
- * — .bs-rank above each card: serif 3.5rem weight:300 color:var(--ivory-3)=#E4DDD4
- * — rank displayed as "01", "02", "03"
+ * Matches reference #home .bestsellers exactly.
+ * CMS keys: bestseller_heading, bestseller_eyebrow
  */
 export default function BestSellers() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
 
   useEffect(() => {
     productsApi.getAll({ sort: 'bestseller', limit: '3' })
       .then((res) => setProducts(res.data || []))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false))
+    getHomepageData().then(d => setCms(d.cms)).catch(() => {})
   }, [])
 
   if (!loading && products.length === 0) return null
 
+  const eyebrow = cms.bestseller_eyebrow || 'Most Loved'
+  const heading = cms.bestseller_heading || 'Best Sellers'
+
   return (
     <section className="k-section-py" style={{ background: '#FFFFFF' }}>
-      {/* .container */}
       <div style={{ maxWidth: 1380, margin: '0 auto', padding: '0 max(20px, min(52px, 4vw))' }}>
 
-        {/* .section-head */}
         <div
           className="reveal"
           style={{
@@ -45,7 +43,6 @@ export default function BestSellers() {
           }}
         >
           <div>
-            {/* .section-label */}
             <span style={{
               display: 'block',
               fontSize: '.7rem',
@@ -55,9 +52,8 @@ export default function BestSellers() {
               color: '#7C4A2D',
               marginBottom: 8,
             }}>
-              Most Loved
+              {eyebrow}
             </span>
-            {/* .section-title */}
             <h2
               className="font-serif"
               style={{
@@ -68,11 +64,10 @@ export default function BestSellers() {
                 margin: 0,
               }}
             >
-              Best <em style={{ fontStyle: 'italic', color: '#7C4A2D' }}>Sellers</em>
+              {heading}
             </h2>
           </div>
 
-          {/* .btn-ghost */}
           <Link
             href="/shop/?sort=bestseller"
             style={{
@@ -96,9 +91,7 @@ export default function BestSellers() {
           </Link>
         </div>
 
-        {/* .grid-3 with .bs-rank — 3 cols desktop / 2 cols mobile */}
         {loading ? (
-          /* Skeleton */
           <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 28 }}>
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="animate-pulse">
@@ -113,7 +106,6 @@ export default function BestSellers() {
           <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 28 }}>
             {products.map((p, i) => (
               <div key={p.id} className="reveal">
-                {/* .bs-rank — "01" / "02" / "03" */}
                 <div
                   className="font-serif"
                   style={{
@@ -124,7 +116,7 @@ export default function BestSellers() {
                     marginBottom: 12,
                   }}
                 >
-                  {`0${i + 1}`}
+                  {String(i + 1).padStart(2, '0')}
                 </div>
                 <ProductCard product={p} />
               </div>

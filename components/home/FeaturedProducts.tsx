@@ -3,37 +3,35 @@ import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { productsApi, type Product } from '@/lib/api/products'
+import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 import ProductCard from '@/components/shop/ProductCard'
 import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 
 /*
- * Matches reference #home .new-arrivals exactly:
- * — padding: 80px 0, default ivory bg (var(--ivory))
- * — .section-head: flex, align-items:flex-end, justify-content:space-between
- * — .section-label: .7rem, weight:600, tracking:.2em, color:var(--brown)
- * — .section-title: serif clamp(1.8rem,3.5vw,2.8rem) weight:300 color:var(--ink)
- * — .btn-ghost: .78rem weight:500 tracking:.12em uppercase, ::after content:'→'
- * — .grid-4: repeat(4,1fr) gap:24px
+ * Matches reference #home .new-arrivals exactly.
+ * CMS key: featured_section_heading
  */
 export default function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
 
   useEffect(() => {
     productsApi.getAll({ sort: 'newest', limit: '8' })
       .then((res) => setProducts(res.data || []))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false))
+    getHomepageData().then(d => setCms(d.cms)).catch(() => {})
   }, [])
 
   if (!loading && products.length === 0) return null
 
+  const heading = cms.featured_section_heading || 'Featured Pieces'
+
   return (
     <section className="k-section-py">
-      {/* .container */}
       <div style={{ maxWidth: 1380, margin: '0 auto', padding: '0 max(20px, min(52px, 4vw))' }}>
 
-        {/* .section-head */}
         <div
           className="reveal"
           style={{
@@ -45,7 +43,6 @@ export default function FeaturedProducts() {
           }}
         >
           <div>
-            {/* .section-label */}
             <span style={{
               display: 'block',
               fontSize: '.7rem',
@@ -57,7 +54,6 @@ export default function FeaturedProducts() {
             }}>
               Just In
             </span>
-            {/* .section-title */}
             <h2
               className="font-serif"
               style={{
@@ -68,11 +64,10 @@ export default function FeaturedProducts() {
                 margin: 0,
               }}
             >
-              New <em style={{ fontStyle: 'italic', color: '#7C4A2D' }}>Arrivals</em>
+              {heading}
             </h2>
           </div>
 
-          {/* .btn-ghost — arrow via inline since no global CSS ::after here */}
           <Link
             href="/shop/"
             style={{
@@ -96,7 +91,6 @@ export default function FeaturedProducts() {
           </Link>
         </div>
 
-        {/* .grid-4 — 4 cols desktop / 2 cols mobile */}
         {loading ? (
           <ProductGridSkeleton count={4} />
         ) : (

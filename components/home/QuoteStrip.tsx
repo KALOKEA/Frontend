@@ -1,10 +1,16 @@
-// Matches reference .tagline-section exactly:
-// — padding:80px var(--gutter)=52px; text-align:center; background:var(--ivory)=#F9F6F2
-// — .tagline: serif clamp(1.6rem,3vw,2.8rem) weight:300 lineHeight:1.4 color:#0A0806 maxWidth:780 centered
-// — em: color:var(--brown)=#7C4A2D; font-style:italic
-// — NO ornament, NO author attribution — static hardcoded text matching reference HTML exactly
+'use client'
+import { useEffect, useState } from 'react'
+import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
+
+// Quote strip — CMS keys: quote_text, quote_author
 
 export default function QuoteStrip() {
+  const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
+
+  useEffect(() => {
+    getHomepageData().then(d => setCms(d.cms)).catch(() => {})
+  }, [])
+
   return (
     <div
       className="reveal"
@@ -25,9 +31,22 @@ export default function QuoteStrip() {
           margin: '0 auto',
         }}
       >
-        &ldquo;Fashion is the armor to survive the reality of everyday life &mdash;{' '}
-        <em style={{ color: '#7C4A2D', fontStyle: 'italic' }}>make it yours.</em>&rdquo;
+        <em style={{ color: '#7C4A2D', fontStyle: 'italic' }}>{cms.quote_text}</em>
       </p>
+      {cms.quote_author && (
+        <p
+          style={{
+            marginTop: 20,
+            fontSize: '.8rem',
+            fontWeight: 500,
+            letterSpacing: '.12em',
+            textTransform: 'uppercase',
+            color: '#7A6E68',
+          }}
+        >
+          {cms.quote_author}
+        </p>
+      )}
     </div>
   )
 }

@@ -1,16 +1,9 @@
-// Matches reference .testimonials exactly:
-// — background:#1E1208 (var(--dark)); padding:80px 0
-// — section header CENTERED: justify-content:center;text-align:center;flex-direction:column;gap:8px
-// — section-label: color:#C49070 (var(--brown-lt)) — inline style overrides
-// — section-title: color:#FFFFFF — inline style overrides
-// — testi-grid: repeat(3,1fr) gap:24px
-// — testi-card: background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
-//               border-radius:6px; padding:32px 28px
-// — testi-stars: display:flex; gap:3px; margin-bottom:16px
-//               svg: 13px×13px; fill:#C49070; stroke:none
-// — testi-text: serif 1rem weight:300 color:rgba(255,255,255,.75) lineHeight:1.7 italic margin-bottom:20px
-// — testi-author: .78rem weight:600 tracking:.08em uppercase color:#C49070
-// — testi-location: .72rem color:rgba(255,255,255,.3) margin-top:2px
+'use client'
+import { useEffect, useState } from 'react'
+import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
+
+// CMS keys: testimonials_heading, testimonials_eyebrow
+// Individual testimonials remain hardcoded (not admin-managed in the current CMS)
 
 const TESTIMONIALS = [
   {
@@ -50,11 +43,19 @@ function StarRow({ count }: { count: number }) {
 }
 
 export default function Testimonials() {
+  const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
+
+  useEffect(() => {
+    getHomepageData().then(d => setCms(d.cms)).catch(() => {})
+  }, [])
+
+  const eyebrow = cms.testimonials_eyebrow || 'Reviews'
+  const heading = cms.testimonials_heading || 'What Our Customers Say'
+
   return (
     <section className="k-section-py" style={{ background: '#1E1208' }}>
       <div className="k-container">
 
-        {/* Header — CENTERED per reference inline style */}
         <div
           className="reveal"
           style={{
@@ -77,7 +78,7 @@ export default function Testimonials() {
               display: 'block',
             }}
           >
-            Real Stories
+            {eyebrow}
           </span>
           <h2
             className="font-serif"
@@ -88,11 +89,10 @@ export default function Testimonials() {
               color: '#FFFFFF',
             }}
           >
-            What She <em style={{ fontStyle: 'italic', fontWeight: 300 }}>Says</em>
+            {heading}
           </h2>
         </div>
 
-        {/* Cards — testi-grid: repeat(3,1fr) gap:24px */}
         <div className="k-testi-grid">
           {TESTIMONIALS.map(({ text, author, location, rating }) => (
             <div
