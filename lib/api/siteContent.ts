@@ -117,6 +117,7 @@ function safeJson<T>(raw: string | undefined | null, fallback: T): T {
 
 let _siteContentPromise: Promise<Record<string, string>> | null = null
 let _siteContentTs = 0
+let _siteContentBust = false
 const SITE_TTL = 120_000
 
 function fetchAllRaw(): Promise<Record<string, string>> {
@@ -124,7 +125,16 @@ function fetchAllRaw(): Promise<Record<string, string>> {
     return _siteContentPromise
   }
   _siteContentTs = Date.now()
-  _siteContentPromise = fetch(`${BASE_URL}/site-content`, { cache: 'default' })
+  // When the cache was explicitly invalidated (e.g. after an admin save),
+  // append a timestamp query param to bypass the browser's HTTP cache.
+  // The server sends `max-age=120` which would otherwise return stale data
+  // for up to 2 minutes, making admin changes appear not to persist.
+  const bust = _siteContentBust
+  _siteContentBust = false
+  const url = bust
+    ? `${BASE_URL}/site-content?t=${_siteContentTs}`
+    : `${BASE_URL}/site-content`
+  _siteContentPromise = fetch(url, { cache: bust ? 'no-cache' : 'default' })
     .then((r) => (r.ok ? r.json() : null))
     .then((json) => (json?.data ?? json ?? {}) as Record<string, string>)
     .catch(() => ({} as Record<string, string>))
@@ -134,6 +144,7 @@ function fetchAllRaw(): Promise<Record<string, string>> {
 export function invalidateSiteContentCache() {
   _siteContentPromise = null
   _siteContentTs = 0
+  _siteContentBust = true
 }
 
 export const siteContentApi = {
