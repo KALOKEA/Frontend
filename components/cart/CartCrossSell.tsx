@@ -32,7 +32,7 @@ export default function CartCrossSell({ onNavigate }: CartCrossSellProps) {
     productsApi
       .getAll({ is_featured: 'true', limit: '8' })
       .then((res) => {
-        const pool = (res as any)?.data ?? (Array.isArray(res) ? res : [])
+        const pool = res.data ?? []
         const filtered: Product[] = pool
           .filter((p: Product) => !cartProductIds.has(p.id) && p.is_active)
           .slice(0, 3)

@@ -31,7 +31,6 @@ function TwoFactorSection() {
   const [phase, setPhase] = useState<'idle' | 'setup' | 'confirm-enable' | 'confirm-disable'>('idle')
   const [qrCode, setQrCode] = useState('')
   const [secret, setSecret] = useState('')
-  const [backupCodes, setBackupCodes] = useState<string[]>([])
   const [token, setToken] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null)
@@ -53,7 +52,6 @@ function TwoFactorSection() {
       const r = await twoFactorApi.setup()
       setQrCode(r.qr_code)
       setSecret(r.secret)
-      setBackupCodes(r.backup_codes)
       setPhase('confirm-enable')
     } catch (e: any) {
       flash(e?.message || 'Setup failed', false)
@@ -148,18 +146,6 @@ function TwoFactorSection() {
               <code className="block text-xs bg-white border border-[#e8e4e0] px-3 py-2 break-all select-all">
                 {secret}
               </code>
-              {backupCodes.length > 0 && (
-                <div>
-                  <p className="text-[11px] text-[#6b6b6b] mt-3 mb-1 font-medium">
-                    Backup codes (save these somewhere safe — each can be used once):
-                  </p>
-                  <div className="grid grid-cols-2 gap-1">
-                    {backupCodes.map(c => (
-                      <code key={c} className="text-xs bg-white border border-[#e8e4e0] px-2 py-1 text-center">{c}</code>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
           <div>

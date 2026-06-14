@@ -1,5 +1,5 @@
 'use client'
-import { X, Star as StarIcon } from 'lucide-react'
+import { X } from 'lucide-react'
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import DOMPurify from 'dompurify'
