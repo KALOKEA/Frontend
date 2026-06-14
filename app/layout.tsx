@@ -334,6 +334,213 @@ export const metadata: Metadata = {
     'bestselling top india', 'must have kurta india',
     'top rated dresses india', 'highly reviewed women clothing india',
     'most stylish women clothing brand india', 'curated fashion india women',
+
+    // ── Jewellery & accessories deep ──────────────────────────────────────
+    'oxidised earrings india', 'jhumka earrings india', 'statement earrings india',
+    'chandelier earrings india', 'stud earrings women india', 'hoop earrings india',
+    'layered necklace india', 'choker necklace india', 'pearl necklace india',
+    'boho necklace india', 'mangalsutra style necklace india',
+    'bangles women india', 'kada bangle india', 'stack bracelets women india',
+    'anklet women india', 'hair accessories india', 'scrunchie india',
+    'hair clip india', 'head band women india', 'belt women india',
+    'fabric belt india', 'waist belt dress india', 'sunglasses women india',
+    'cat eye sunglasses india', 'oversized sunglasses india', 'scarf women india',
+    'stole women india', 'dupatta online india', 'socks women india',
+    'printed socks india', 'hair pin india',
+
+    // ── Footwear categories ───────────────────────────────────────────────
+    'women shoes india', 'heels india', 'block heels india', 'stiletto heels india',
+    'wedge heels india', 'kitten heels india', 'mule sandals india',
+    'flat sandals women india', 'kolhapuri sandals india', 'juttis women india',
+    'mojaris women india', 'espadrilles women india', 'loafers women india',
+    'sneakers women india', 'white sneakers women india', 'canvas shoes women india',
+    'boots women india', 'ankle boots india', 'knee high boots india',
+    'chelsea boots women india', 'platform shoes women india',
+
+    // ── Ethnic wear deeper keywords ───────────────────────────────────────
+    'cotton anarkali online india', 'heavy anarkali suit india', 'printed anarkali india',
+    'embroidered kurta india', 'mirror work kurta india', 'gota patti kurta india',
+    'kalamkari kurta india', 'lucknow chikankari kurta india', 'hand block print kurta india',
+    'mulmul kurta india', 'cotton silk kurta india', 'rayon kurta india',
+    'kurti with pant india', 'kurti with palazzo india', 'kurti with jeans india',
+    'short kurti india', 'long kurti india', 'asymmetric kurti india',
+    'A-line kurti online india', 'straight kurti online india',
+    'chanderi kurta india', 'silk kurta women india', 'banarasi kurta india',
+    'ikkat kurta india', 'kantha stitch kurta india', 'shibori kurta india',
+    'tie dye kurta india', 'batik print kurta india', 'ajrakh kurta india',
+    'dabu print dress india', 'banjara embroidery india', 'kutch embroidery dress india',
+    'sindhi embroidery blouse india', 'phulkari dupatta india', 'kashmiri embroidery dress india',
+
+    // ── Occasion wear deeper ──────────────────────────────────────────────
+    'lehenga blouse only india', 'bridal lehenga saree look india',
+    'half saree women india', 'pattu pavadai india', 'silk pavadai india',
+    'navratri special dress india', 'navratri chaniya choli buy online',
+    'garba costume india', 'onam settu mundu india', 'kasavu saree india',
+    'puja dress women india', 'temple jewellery india',
+    'sangeet lehenga india', 'mehndi outfit yellow india', 'haldi outfit yellow india',
+    'engagement dress india', 'ring ceremony dress india', 'nikah outfit india',
+    'eid special dress india', 'christmas party dress india', 'new year party dress india',
+    'valentine day dress india', 'karwa chauth saree india', 'baby shower outfit india',
+    'babyshower sari india', 'godh bharai outfit india', 'mundan ceremony outfit india',
+
+    // ── Workwear & professional ───────────────────────────────────────────
+    'office wear kurta india', 'formal dress women india', 'business casual women india',
+    'interview outfit women india', 'blazer women india', 'power suit women india',
+    'shirt women formal india', 'tailored trousers women india',
+    'formal pencil skirt india', 'work blouse women india', 'corporate dress india',
+    'work from home outfit women india', 'zoom call outfit women india',
+    'conference outfit women india', 'smart formal women india',
+
+    // ── Maternity & nursing ───────────────────────────────────────────────
+    'maternity wear india', 'pregnancy dress india', 'nursing dress india',
+    'maternity salwar suit india', 'post partum dress india',
+    'baby bump fashion india', 'maternity photoshoot dress india',
+    'comfortable pregnancy clothes india', 'maternity kurti india',
+    'breastfeeding friendly dress india', 'nursing top india',
+
+    // ── Plus size & inclusive fashion ─────────────────────────────────────
+    'plus size fashion india', 'XL XXL women clothes india',
+    'plus size kurta india', 'plus size dress india', 'plus size co-ord india',
+    'plus size saree blouse india', 'curvy women fashion india',
+    'body positive fashion india', 'size inclusive fashion india',
+    'plus size western wear india', 'large size women clothes india',
+    'free size dress india', 'stretchable fabric dress india',
+    '2XL women clothes india', '3XL women clothes india',
+
+    // ── Sustainable & conscious fashion ──────────────────────────────────
+    'sustainable fashion india', 'eco friendly clothing india',
+    'organic cotton dress india', 'natural dye clothes india',
+    'handwoven fabric india', 'handloom saree india', 'handloom kurta india',
+    'ethical fashion brand india', 'slow fashion india', 'fair trade fashion india',
+    'zero waste fashion india', 'upcycled fashion india', 'recycled fabric dress india',
+    'artisan made clothes india', 'women artisan fashion india',
+    'craft revival fashion india', 'khadi fashion india',
+    'tribal weaves india', 'handmade clothes india',
+
+    // ── Teen & college fashion ────────────────────────────────────────────
+    'college girl fashion india', 'teen fashion india', 'girls fashion 18-25 india',
+    'gen z fashion india', 'y2k fashion india', 'trendy college outfits india',
+    'casual chic girl india', 'aesthetic outfits india', 'pastel fashion india',
+    'ootd college india', 'campus fashion india', 'graduation outfit india',
+    'farewell dress college india', 'college fest outfit india',
+    'culturals day dress india', 'annual day outfit india',
+
+    // ── Travel & honeymoon fashion ────────────────────────────────────────
+    'honeymoon outfits women india', 'beach vacation outfit india',
+    'goa trip outfit india', 'kerala trip dress india', 'manali trip outfit india',
+    'europe trip outfit india', 'dubai trip outfit india', 'bali trip outfit india',
+    'travel dress women india', 'packing light dress india',
+    'wrinkle free travel dress india', 'resort wear india',
+    'pool party outfit india', 'cruise outfit women india',
+
+    // ── Social media & celebrity-inspired ────────────────────────────────
+    'reels outfit india', 'instagram reel dress india', 'trending reel look india',
+    'bollywood dance outfit india', 'reel viral dress india',
+    'celebrity inspired dress india', 'tv actress outfit india',
+    'deepika padukone style india', 'alia bhatt fashion india',
+    'kriti sanon style india', 'rashmika mandanna fashion india',
+    'janhvi kapoor dress india', 'sara ali khan fashion india',
+    'influencer style india', 'fashion blogger india outfit',
+    'micro trend india', 'dopamine dressing india',
+
+    // ── Gifting & occasions ───────────────────────────────────────────────
+    'fashion subscription box india', 'gift card women fashion india',
+    'gift voucher fashion india', 'birthday gift dress india',
+    'gift wrapped clothing india', 'corporate gift fashion india',
+    'festival hamper women india', 'rakhi gift women india',
+    'diwali gift women clothes india', 'anniversary gift set women india',
+
+    // ── Regional/transliterated keywords ─────────────────────────────────
+    'mahila kurta online', 'ladkiyon ke kapde', 'salwar suit kharidna',
+    'anarkali kharidna online', 'dress kharidna', 'kurti online mangana',
+    'kurta set online kharidna', 'lehenga online india', 'saree blouse online',
+    'churidar suit india', 'plazo suit india', 'straight suit online india',
+
+    // ── Styling & how-to search intent ────────────────────────────────────
+    'how to style kurta india', 'how to wear co-ord set india',
+    'best dresses for short women india', 'best dresses for tall women india',
+    'what to wear to a indian wedding', 'what to wear in summer india',
+    'what to wear in monsoon india', 'what to wear in winter india',
+    'how to dress up casually india', 'how to look stylish india',
+    'minimalist wardrobe india', 'capsule wardrobe india women',
+    'wardrobe basics women india', 'essential clothes women india',
+    '10 must have clothes women india', 'basic wardrobe pieces india',
+
+    // ── Trust, delivery & policy signals ─────────────────────────────────
+    'fast delivery clothes india', '1 day delivery dress india',
+    'next day delivery fashion india', 'free delivery women clothes',
+    'free shipping women clothing india', 'free returns women fashion india',
+    'easy exchange clothes india', '7 day return clothes india',
+    'hassle free return india', 'genuine quality women clothes india',
+    'authentic fabric india', 'no fake products india', 'original brand india women',
+    'safe payment women fashion india', 'UPI payment clothes india',
+    'razorpay secured checkout india', 'safe shopping india women',
+    'cash on delivery available india', 'COD fashion brand india',
+
+    // ── Seasonal 2025-2026 ─────────────────────────────────────────────────
+    'summer 2026 fashion india', 'monsoon fashion 2026 india',
+    'winter collection 2026 india', 'festive collection 2026 india',
+    'spring fashion 2026 india', 'new year fashion 2026',
+    'christmas fashion 2025 india', 'diwali fashion 2025',
+    'eid fashion 2025', 'navratri fashion 2025',
+    'trending clothes 2026 india', 'fashion must haves 2026',
+    'top fashion trends 2026 india', 'fashion forecast 2026 india',
+    'best fashion brand 2026 india', 'new collection 2026 india',
+
+    // ── Specific product combinations ─────────────────────────────────────
+    'floral maxi dress india', 'white linen dress india', 'black bodycon india',
+    'floral co-ord set india', 'beige linen co-ord india', 'rust orange kurta india',
+    'mustard yellow kurta india', 'sage green dress india', 'teal blue co-ord india',
+    'dusty pink top india', 'ivory satin dress india', 'emerald green kurta india',
+    'navy blue palazzo set india', 'charcoal grey blazer women india',
+    'maroon velvet dress india', 'printed georgette kurta india',
+    'cotton printed co-ord india', 'linen blend palazzo india',
+    'block print floral dress india', 'mirror work skirt india',
+    'gota border kurta india', 'zari work dress india',
+
+    // ── Body type & fit keywords ───────────────────────────────────────────
+    'dresses for apple body shape india', 'dresses for pear body shape india',
+    'dresses for hourglass figure india', 'clothes for rectangle body india',
+    'dresses that hide tummy india', 'clothes that make you look slim india',
+    'tall women fashion india', 'petite women fashion india',
+    'broad shoulder dress india', 'big bust dress india',
+    'empire waist dress india', 'a-line dress india',
+    'wrap dress for all body types india', 'flowy dress all body types india',
+
+    // ── Age group targeting ────────────────────────────────────────────────
+    'fashion for women in 20s india', 'fashion for women in 30s india',
+    'fashion for women in 40s india', 'fashion for women over 50 india',
+    'young women fashion india', 'mature women fashion india',
+    'sophisticated women fashion india', 'classic women fashion india',
+    'youthful women fashion india', 'age appropriate fashion india',
+
+    // ── Style tribe deep ──────────────────────────────────────────────────
+    'cottagecore dress india', 'dark academia fashion india', 'light academia fashion india',
+    'coastal grandmother style india', 'quiet luxury fashion india',
+    'old money fashion india', 'barbiecore fashion india', 'coquette fashion india',
+    'clean girl aesthetic india', 'mob wife aesthetic india', 'balletcore india',
+    'gorpcore women india', 'indie aesthetic fashion india', 'grunge fashion india',
+    'soft girl aesthetic india', 'e-girl fashion india', 'granola girl fashion india',
+    'bookish girl fashion india', 'dark feminine fashion india',
+    'feminine fashion india', 'girly fashion india',
+
+    // ── B2B & reseller ────────────────────────────────────────────────────
+    'bulk buy women clothes india', 'wholesale kurta india',
+    'reseller women fashion india', 'boutique owner buy stock india',
+    'bulk ethnic wear india', 'fashion reseller india', 'boutique stock india',
+
+    // ── City fashion & local SEO ──────────────────────────────────────────
+    'women fashion tiruppur', 'women fashion surat textile', 'women fashion ludhiana',
+    'women fashion rajkot', 'women fashion kanpur', 'women fashion varanasi',
+    'women fashion madurai', 'women fashion vijayawada', 'women fashion ranchi',
+    'women fashion gurgaon', 'women fashion noida', 'women fashion thane',
+    'women fashion navi mumbai', 'women fashion pimpri chinchwad',
+    'women fashion hubli', 'women fashion mangalore', 'women fashion calicut',
+    'women fashion trichy', 'women fashion salem', 'women fashion vellore',
+    'buy fashion online jaipur', 'buy dresses online hyderabad',
+    'fashion delivery chennai', 'online shopping bangalore women',
+    'online fashion store kolkata women', 'fashion delivery ahmedabad',
+    'online shopping pune women', 'buy kurta online surat',
   ].join(', '),
   metadataBase: new URL('https://kalokea.in'),
   openGraph: {

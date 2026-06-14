@@ -30,9 +30,13 @@ interface GAItemInput {
 
 function toGaItem(it: GAItemInput) {
   return {
-    item_id: it.product_id || it.variant_id,
+    // Always use product_id as the canonical item_id for consistent funnel
+    // analysis across view/add/purchase events. variant_id is surfaced as
+    // item_variant_id so GA4 can still distinguish SKUs.
+    item_id: it.product_id ?? it.variant_id,
     item_name: it.name,
     item_variant: [it.colour, it.size].filter(Boolean).join(' / ') || undefined,
+    item_variant_id: it.variant_id,
     item_category: it.category,
     price: toRupees(it.price),
     quantity: it.quantity ?? 1,
