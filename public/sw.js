@@ -4,6 +4,7 @@ const CACHE_NAME = 'kalokea-v1'
 const STATIC_ASSETS = [
   '/',
   '/shop/',
+  '/offline.html',
   '/manifest.json',
   '/favicon.ico',
   '/logo.png',
@@ -70,7 +71,7 @@ self.addEventListener('fetch', event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, clone))
         return response
       })
-      .catch(() => caches.match(request))
+      .catch(() => caches.match(request) || caches.match('/offline.html'))
   )
 })
 
