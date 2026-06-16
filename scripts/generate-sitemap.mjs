@@ -7,12 +7,10 @@
  *
  * Usage:  node scripts/generate-sitemap.mjs
  *
- * Env vars required:
- *   NEXT_PUBLIC_SUPABASE_URL   — https://xxx.supabase.co
- *   SUPABASE_SERVICE_ROLE_KEY  — service_role key (server-side only, not anon)
- *
- * If env vars are missing the script skips product URLs and writes only
- * the static sitemap (so the build still succeeds in CI without secrets).
+ * Env vars used:
+ *   NEXT_PUBLIC_API_URL — Railway backend URL (already set in Cloudflare Pages)
+ *   Falls back to hardcoded Railway URL if not set.
+ *   No Supabase keys needed — products are fetched via the public /products API.
  */
 
 import { writeFileSync } from 'fs';
@@ -49,58 +47,48 @@ const STATIC_URLS = [
   { loc: '/terms/',             changefreq: 'yearly',  priority: '0.3', lastmod: TODAY },
 ];
 
-// ── Fetch product slugs from Supabase ─────────────────────────────────────────
+// ── Fetch product slugs from Railway backend API ──────────────────────────────
+// Uses NEXT_PUBLIC_API_URL (already set in Cloudflare) — no Supabase keys needed.
 async function fetchProductSlugs() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey  = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app';
 
-  if (!supabaseUrl || !serviceKey) {
-    console.warn('[sitemap] NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set — skipping product URLs');
+  const slugs = [];
+  let page    = 1;
+  const limit = 100;
+
+  try {
+    while (true) {
+      const url = `${apiUrl}/products?limit=${limit}&page=${page}&is_active=true`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+
+      if (!res.ok) {
+        console.error(`[sitemap] API fetch failed: ${res.status} ${res.statusText}`);
+        break;
+      }
+
+      const json = await res.json();
+      // Backend TransformInterceptor wraps as { data: { data: [], total, ... } }
+      const rows = json?.data?.data ?? json?.data ?? [];
+      if (!Array.isArray(rows) || rows.length === 0) break;
+
+      for (const row of rows) {
+        if (row.slug) {
+          slugs.push({
+            slug:       row.slug,
+            updated_at: row.updated_at ? row.updated_at.split('T')[0] : TODAY,
+          });
+        }
+      }
+
+      if (rows.length < limit) break;
+      page++;
+    }
+  } catch (err) {
+    console.warn(`[sitemap] Could not fetch product slugs from API: ${err.message} — skipping product URLs`);
     return [];
   }
 
-  const slugs = [];
-  let page    = 0;
-  const limit = 1000;
-
-  while (true) {
-    const url = `${supabaseUrl}/rest/v1/products`
-      + `?select=slug,updated_at`
-      + `&is_active=eq.true`
-      + `&order=updated_at.desc`
-      + `&offset=${page * limit}`
-      + `&limit=${limit}`;
-
-    const res = await fetch(url, {
-      headers: {
-        apikey:        serviceKey,
-        Authorization: `Bearer ${serviceKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!res.ok) {
-      console.error(`[sitemap] Supabase fetch failed: ${res.status} ${res.statusText}`);
-      break;
-    }
-
-    const rows = await res.json();
-    if (!Array.isArray(rows) || rows.length === 0) break;
-
-    for (const row of rows) {
-      if (row.slug) {
-        slugs.push({
-          slug:       row.slug,
-          updated_at: row.updated_at ? row.updated_at.split('T')[0] : TODAY,
-        });
-      }
-    }
-
-    if (rows.length < limit) break;
-    page++;
-  }
-
-  console.log(`[sitemap] Fetched ${slugs.length} product slug(s) from Supabase`);
+  console.log(`[sitemap] Fetched ${slugs.length} product slug(s) from Railway API`);
   return slugs;
 }
 
