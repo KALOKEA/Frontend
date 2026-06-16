@@ -158,14 +158,20 @@ const CATEGORY_META: Record<string, {
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
 export async function generateStaticParams() {
+  // Always build pages for every slug defined in CATEGORY_META — these are the
+  // slugs used by hardcoded nav links (bottoms, bags, shoes, etc.). If they are
+  // absent from the DB at build time the pages 404 and Next.js emits RSC errors.
+  const fallback = Object.keys(CATEGORY_META)
   try {
     const res = await fetch(`${BACKEND_URL}/categories`, { next: { revalidate: 3600 } })
-    if (!res.ok) return Object.keys(CATEGORY_META).map(category => ({ category }))
+    if (!res.ok) return fallback.map(category => ({ category }))
     const json = await res.json()
-    const slugs: string[] = (json?.data || []).map((c: { slug: string }) => c.slug)
-    return slugs.length ? slugs.map(category => ({ category })) : Object.keys(CATEGORY_META).map(category => ({ category }))
+    const dbSlugs: string[] = (json?.data || []).map((c: { slug: string }) => c.slug)
+    // Merge: DB categories first, then any CATEGORY_META slugs not yet in DB.
+    const merged = Array.from(new Set([...dbSlugs, ...fallback]))
+    return merged.map(category => ({ category }))
   } catch {
-    return Object.keys(CATEGORY_META).map(category => ({ category }))
+    return fallback.map(category => ({ category }))
   }
 }
 

@@ -1,3 +1,6 @@
+# Browser requests /favicon.ico by default; redirect to the PNG version.
+/favicon.ico  /favicon-32x32.png  301
+
 # ── Canonical URL consolidation ──────────────────────────────────────────────
 # These duplicate pages were removed; Google canonical is the -policy variant.
 /privacy          /privacy-policy/    301
