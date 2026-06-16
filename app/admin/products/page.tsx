@@ -669,14 +669,16 @@ function ProductEditor({
                 />
               </Field>
               <Field label="GST rate %">
-                <input
-                  type="number"
-                  step="0.5"
+                <select
                   value={form.gst_rate}
                   onChange={e => setForm(f => ({ ...f, gst_rate: e.target.value }))}
                   className="inp"
-                  placeholder="5 / 12 / 18  (blank = store default)"
-                />
+                >
+                  <option value="">Auto-slab (5% under Rs999 / 12% at Rs1000+)</option>
+                  <option value="5">5% — Garments under Rs 999</option>
+                  <option value="12">12% — Garments Rs 1,000 and above</option>
+                  <option value="18">18% — Bags, synthetic fabric, accessories</option>
+                </select>
               </Field>
             </div>
           </Card>

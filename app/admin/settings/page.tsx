@@ -337,8 +337,9 @@ export default function AdminSettingsPage() {
           </div>
 
           <p className="text-[11px] text-[#6b6b6b] mt-1">
-            Same state as buyer → CGST + SGST split. Different state → IGST.
-            Confirm GST rate with your CA — individual products can override this.
+            GST is auto-calculated by price slab: ≤ ₹999/pc → 5%, ≥ ₹1,000/pc → 12% (Notification 01/2017-CT Rate).
+            Same state as buyer → CGST + SGST split; different state → IGST.
+            Per-product HSN rate (if set on the product) overrides the slab. Confirm with your CA.
           </p>
         </Section>
 
