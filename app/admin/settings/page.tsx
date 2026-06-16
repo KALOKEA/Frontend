@@ -321,7 +321,7 @@ export default function AdminSettingsPage() {
                 min={0}
                 max={28}
                 value={form.gst_rate}
-                onChange={e => set('gst_rate', e.target.value)}
+                onChange={e => set('gst_rate', parseFloat(e.target.value) || DEFAULT_FORM.gst_rate)}
                 className={INP}
               />
             </Field>
