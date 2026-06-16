@@ -22,6 +22,7 @@ const QUICK_COLOURS = ['Black', 'White', 'Ivory', 'Navy', 'Red', 'Blush', 'Sage'
 interface FormState {
   id?: string
   name: string; slug: string; description: string; fabric_care: string
+  youtube_url: string
   base_price: string; compare_price: string
   hsn_code: string; gst_rate: string
   category_id: string; tags: string
@@ -31,6 +32,7 @@ interface FormState {
 
 const emptyForm = (): FormState => ({
   name: '', slug: '', description: '', fabric_care: '',
+  youtube_url: '',
   base_price: '', compare_price: '',
   hsn_code: '', gst_rate: '',
   category_id: '', tags: '',
@@ -43,6 +45,7 @@ function productToForm(p: Product): FormState {
     id: p.id,
     name: p.name, slug: p.slug, description: p.description || '',
     fabric_care: (p as any).fabric_care || '',
+    youtube_url: p.youtube_url || '',
     base_price: String(Math.round(p.base_price / 100)),
     compare_price: p.compare_price ? String(Math.round(p.compare_price / 100)) : '',
     hsn_code: p.hsn_code || '',
@@ -317,6 +320,7 @@ function ProductEditor({
       slug: form.slug.trim() || slugify(form.name),
       description: form.description || undefined,
       fabric_care: form.fabric_care || undefined,
+      youtube_url: form.youtube_url || undefined,
       category_id: form.category_id || undefined,
       base_price: Math.round(priceNum * 100),
       compare_price: form.compare_price ? Math.round(parseFloat(form.compare_price) * 100) : undefined,
@@ -634,6 +638,15 @@ function ProductEditor({
                 placeholder="e.g. 100% Cotton · Machine wash cold · Do not bleach"
               />
               <p className="text-[11px] text-[#6b6b6b] mt-1">Shown in the Fabric &amp; Care tab on the product page.</p>
+            </Field>
+            <Field label="YouTube Video URL">
+              <input
+                value={form.youtube_url}
+                onChange={e => setForm(f => ({ ...f, youtube_url: e.target.value }))}
+                className="inp"
+                placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+              />
+              <p className="text-[11px] text-[#6b6b6b] mt-1">Optional — shown as an embedded video below the product description tabs.</p>
             </Field>
           </Card>
 

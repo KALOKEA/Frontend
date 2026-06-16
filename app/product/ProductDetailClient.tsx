@@ -473,6 +473,46 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
           </div>
         </div>
 
+        {/* YouTube Video Embed */}
+        {(() => {
+          const ytUrl = product.youtube_url
+          if (!ytUrl) return null
+          // Extract YouTube video ID from various URL formats
+          const match = ytUrl.match(
+            /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
+          )
+          const videoId = match?.[1]
+          if (!videoId) return null
+          return (
+            <div className="mt-12 pt-10 border-t border-[#E0D4C4]">
+              <h2 className="font-serif text-xl text-[#0a0a0a] mb-4">Watch the Video</h2>
+              <div
+                style={{
+                  position: 'relative',
+                  paddingBottom: '56.25%', // 16:9
+                  height: 0,
+                  overflow: 'hidden',
+                  borderRadius: 4,
+                  background: '#0a0a0a',
+                }}
+              >
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+                  title={`${product.name} — video`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{
+                    position: 'absolute',
+                    top: 0, left: 0,
+                    width: '100%', height: '100%',
+                    border: 0,
+                  }}
+                />
+              </div>
+            </div>
+          )
+        })()}
+
         {/* Related Products */}
         <div className="mt-16 pt-10 border-t border-[#E0D4C4]">
           <RelatedProducts exclude_id={product.id} category_id={product.categories?.id} />
