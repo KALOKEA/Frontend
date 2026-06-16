@@ -42,11 +42,15 @@ export default function CheckoutPage() {
   // Prevents the billing form from being re-initialized if cart or user changes
   // mid-session (e.g. item removed from another tab, background token refresh).
   const addressLoadedRef = useRef(false)
+  // Prevents "cart is empty → redirect to /cart/" from firing while a
+  // payment is being processed (ordersApi.create clears the server cart,
+  // and a background hydrate() can race and set items=[] before Razorpay opens).
+  const processingPayment = useRef(false)
 
-  // Redirect to cart if cart empties (separate from address-load logic).
+  // Redirect to cart if cart empties — but never during an active checkout.
   useEffect(() => {
     if (!hydrated) return
-    if (!items.length) router.push('/cart/')
+    if (!items.length && !processingPayment.current) router.push('/cart/')
   }, [hydrated, items.length, router])
 
   // Load saved addresses and pre-fill billing — runs exactly once per mount
@@ -79,11 +83,8 @@ export default function CheckoutPage() {
   }, [])
 
   const placeOrder = async () => {
+    processingPayment.current = true
     setCheckoutError(null)
-
-    // Force-sync any local cart items that didn't reach the server yet
-    // (e.g. items added while offline, or when the initial sync was rejected).
-    await useCartStore.getState().mergeOnLogin().catch(() => {})
 
     // Validate billing details (matches the backend's required fields).
     const required: [keyof BillingForm, string][] = [
@@ -162,11 +163,12 @@ export default function CheckoutPage() {
         ])
         const RazorpayCtor = await loadRazorpay()
         if (!RazorpayCtor) {
+          processingPayment.current = false
           setCheckoutError('Payment gateway failed to load. Please check your internet connection and try again.')
           return
         }
         const rzp = await paymentsApi.createOrder(order.id)
-        setLoading(false) // release loading state before opening modal
+        // Keep loading=true until razorpay.open() — finally block will clear it.
 
         const razorpay = new RazorpayCtor({
           key: rzp.key_id,
@@ -189,11 +191,13 @@ export default function CheckoutPage() {
                 razorpay_signature: response.razorpay_signature,
               })
             } catch {
+              processingPayment.current = false
               setCheckoutError('Payment verification failed. Please check My Orders or contact support.')
               return
             }
             trackPurchase(order.order_number, order.total, toGaItems(items))
             metaPurchase(order.order_number, order.total)
+            // processingPayment stays true — we're immediately navigating away.
             clearCart()
             router.push(`/checkout/success/?order=${order.order_number}`)
           },
@@ -206,17 +210,21 @@ export default function CheckoutPage() {
           theme: { color: '#0a0a0a' },
           modal: {
             ondismiss: () => {
+              // User dismissed without paying — unlock the cart-empty redirect guard.
+              processingPayment.current = false
               toast('Payment cancelled. You can retry from My Orders.', 'info')
             },
           },
         })
         razorpay.on('payment.failed', () => {
+          processingPayment.current = false
           setCheckoutError('Payment failed. Please try again or choose a different method.')
         })
         razorpay.open()
-        return // prevent finally from running setLoading(false) again
+        return // trigger finally (setLoading) without going to catch
       }
     } catch (err) {
+      processingPayment.current = false
       const msg = (err as Error).message || 'Failed to place order'
       setCheckoutError(msg)
       // Intentionally not logging here — error is surfaced to the user via setCheckoutError.
