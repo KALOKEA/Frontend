@@ -14,6 +14,14 @@ import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/
 // — hero-scroll indicator at bottom center of right panel
 // — NO stats strip, NO "Made in India" badge
 
+// Sanitize CTA links coming from the DB — trims whitespace and falls back to
+// /shop/ if the value is empty or not a valid path (e.g. admin typed "Shop Now"
+// instead of "/shop/", which would produce a space-encoded 404 on prefetch).
+function safeLink(link: string | null | undefined, fallback = '/shop/'): string {
+  const l = (link || '').trim()
+  return l.startsWith('/') ? l : fallback
+}
+
 export default function HeroBanner() {
   const [c, setC] = useState<HomepageContent>(HERO_DEFAULTS)
   const [mounted, setMounted] = useState(false)
@@ -130,7 +138,7 @@ export default function HeroBanner() {
         >
           {/* btn btn-outline-white */}
           <Link
-            href={c.hero_cta1_link || '/shop/'}
+            href={safeLink(c.hero_cta1_link)}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -154,7 +162,7 @@ export default function HeroBanner() {
           </Link>
           {/* btn with background:var(--brown-lt);color:var(--dark) */}
           <Link
-            href={c.hero_cta2_link || '/shop/'}
+            href={safeLink(c.hero_cta2_link)}
             style={{
               display: 'inline-flex',
               alignItems: 'center',

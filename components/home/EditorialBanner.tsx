@@ -13,6 +13,11 @@ import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/
 // — CTA: btn btn-outline-white (border:1.5px solid rgba(255,255,255,.5); color:#fff)
 // — NO extra horizontal line, NO Link arrow
 
+function safeLink(link: string | null | undefined, fallback = '/about/'): string {
+  const l = (link || '').trim()
+  return l.startsWith('/') ? l : fallback
+}
+
 export default function EditorialBanner() {
   const [c, setC] = useState<HomepageContent>(HERO_DEFAULTS)
 
@@ -103,7 +108,7 @@ export default function EditorialBanner() {
 
         {/* btn btn-outline-white — matches reference exactly */}
         <Link
-          href={c.editorial_cta_link || '/about/'}
+          href={safeLink(c.editorial_cta_link)}
           style={{
             display: 'inline-flex',
             alignItems: 'center',

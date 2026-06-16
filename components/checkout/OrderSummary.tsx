@@ -40,6 +40,10 @@ export default function OrderSummary({
         coupon_code: couponCode || undefined,
         payment_method: paymentMethod || 'upi',
         session_id: isLoggedIn ? undefined : guestSessionId,
+        // Fallback: if server cart is empty (add race, cold-start, etc.)
+        // the backend can still compute GST from the client-side cart items.
+        // Prices are always re-fetched from DB on the backend — client only sends IDs.
+        cart_items: items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity })),
       })
       .then((q) => { if (active) { setQuote(q); setQuoteLoading(false) } })
       .catch(() => { if (active) { setQuote(null); setQuoteLoading(false) } })
@@ -108,6 +112,7 @@ export default function OrderSummary({
     </div>
   )
 }
+
 
 function Line({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (

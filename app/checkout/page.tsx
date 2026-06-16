@@ -27,7 +27,7 @@ const toGaItems = (items: { product_id: string; variant_id: string; name: string
 export default function CheckoutPage() {
   const router = useRouter()
   const { isLoggedIn, user, hydrated } = useAuthStore()
-  const { items, clearCart, appliedCoupon, setAppliedCoupon, clearAppliedCoupon, guestSessionId } = useCartStore()
+  const { items, clearCart, appliedCoupon, setAppliedCoupon, clearAppliedCoupon, guestSessionId, _hasHydrated: cartHydrated } = useCartStore()
   const { toast } = useToast()
 
   const [addresses, setAddresses] = useState<Address[]>([])
@@ -48,10 +48,15 @@ export default function CheckoutPage() {
   const processingPayment = useRef(false)
 
   // Redirect to cart if cart empties — but never during an active checkout.
+  // Also wait for cartHydrated: Zustand rehydrates from localStorage AFTER the
+  // first render, so items starts as [] momentarily on a hard refresh. Without
+  // this guard the redirect fires before items load and the user is bounced to
+  // /cart/ even though they have items.
   useEffect(() => {
     if (!hydrated) return
+    if (!cartHydrated) return
     if (!items.length && !processingPayment.current) router.push('/cart/')
-  }, [hydrated, items.length, router])
+  }, [hydrated, cartHydrated, items.length, router])
 
   // Load saved addresses and pre-fill billing — runs exactly once per mount
   // after auth hydration. Does NOT re-run on user/cart changes.

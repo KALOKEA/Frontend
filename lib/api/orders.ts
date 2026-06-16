@@ -82,6 +82,7 @@ export const ordersApi = {
     coupon_code?: string
     payment_method: string
     session_id?: string // guest cart session — required when user is not logged in
+    cart_items?: { variant_id: string; quantity: number }[] // fallback if server cart is empty
   }) => api.post<OrderQuote>('/orders/quote', data),
 
   getMyOrders: () => api.get<Order[]>('/orders/my'),

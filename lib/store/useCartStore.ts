@@ -26,6 +26,15 @@ interface CartStore {
   /** Coupon applied in cart or checkout — persisted so it survives navigation. */
   appliedCoupon: { code: string; discount: number } | null
 
+  /**
+   * True once Zustand has finished reading items from localStorage.
+   * Use this to guard redirects that depend on the cart being empty — without
+   * it, the checkout page would redirect to /cart/ on every hard refresh
+   * because items start as [] before persist rehydrates.
+   */
+  _hasHydrated: boolean
+  setHasHydrated: (val: boolean) => void
+
   addItem: (item: Omit<CartItem, 'id'>) => void
   removeItem: (variant_id: string) => void
   updateQuantity: (variant_id: string, quantity: number) => void
@@ -94,6 +103,8 @@ export const useCartStore = create<CartStore>()(
       isOpen: false,
       guestSessionId: generateId(),
       appliedCoupon: null,
+      _hasHydrated: false,
+      setHasHydrated: (val) => set({ _hasHydrated: val }),
 
       // ─── Mutations ────────────────────────────────────────────────────────
 
@@ -264,7 +275,7 @@ export const useCartStore = create<CartStore>()(
         set({ guestSessionId: generateId() })
       },
 
-      // ─── Derived ──────────────────────────────────────────────────────────
+      // ─── Derived ───────────────────────────────────────────────────�────────────────────────────────────
 
       get itemCount() {
         return get().items.reduce((sum, i) => sum + i.quantity, 0)
@@ -281,6 +292,11 @@ export const useCartStore = create<CartStore>()(
         guestSessionId: state.guestSessionId,
         appliedCoupon: state.appliedCoupon,
       }),
+      onRehydrateStorage: () => (state) => {
+        // Called after localStorage is read and state is updated.
+        // Signals that items are now reliably available.
+        state?.setHasHydrated(true)
+      },
     }
   )
 )
