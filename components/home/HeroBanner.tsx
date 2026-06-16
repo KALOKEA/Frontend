@@ -19,7 +19,10 @@ import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/
 // instead of "/shop/", which would produce a space-encoded 404 on prefetch).
 function safeLink(link: string | null | undefined, fallback = '/shop/'): string {
   const l = (link || '').trim()
-  return l.startsWith('/') ? l : fallback
+  // Reject if empty, doesn't start with '/', or contains spaces
+  // (admin may save label text like "Shop Now" instead of a real path)
+  if (!l || !l.startsWith('/') || l.includes(' ')) return fallback
+  return l
 }
 
 export default function HeroBanner() {

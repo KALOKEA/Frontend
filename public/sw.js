@@ -1,6 +1,8 @@
-// KALOKEA Service Worker v1
+// KALOKEA Service Worker v2
 // Strategy: cache-first for static shells, network-first for API & pages
-const CACHE_NAME = 'kalokea-v1'
+// v2: skip cross-origin fetches entirely -- browser native cache handles them,
+// and intercepting them causes CSP connect-src violations for Cloudinary/Unsplash.
+const CACHE_NAME = 'kalokea-v2'
 const STATIC_ASSETS = [
   '/',
   '/shop/',
@@ -35,19 +37,21 @@ self.addEventListener('fetch', event => {
   const { request } = event
   const url = new URL(request.url)
 
-  // Skip non-GET, cross-origin non-image, chrome-extension etc.
+  // Skip non-GET and non-http(s)
   if (request.method !== 'GET') return
   if (url.protocol !== 'https:' && url.protocol !== 'http:') return
 
-  // API calls → network only (never serve stale API data)
-  if (url.hostname.includes('railway.app') || url.pathname.startsWith('/api/')) return
+  // Skip ALL cross-origin requests -- let the browser handle them with its
+  // native HTTP cache. Intercepting cross-origin fetches (Cloudinary, Unsplash,
+  // Google Fonts, etc.) routes them through connect-src instead of img-src /
+  // font-src, causing CSP violations. The browser's native cache is sufficient.
+  if (url.hostname !== self.location.hostname) return
 
-  // Static assets (JS, CSS, fonts, images) → cache-first with network fallback
-  if (
-    url.pathname.match(/\.(js|css|woff2?|png|jpg|jpeg|svg|ico|webp|avif)$/) ||
-    url.hostname.includes('cloudinary.com') ||
-    url.hostname.includes('fonts.gstatic.com')
-  ) {
+  // API calls → network only (never serve stale data)
+  if (url.pathname.startsWith('/api/')) return
+
+  // Same-origin static assets (JS, CSS, fonts, images) → cache-first
+  if (url.pathname.match(/\.(js|css|woff2?|png|jpg|jpeg|svg|ico|webp|avif)$/)) {
     event.respondWith(
       caches.match(request).then(cached => {
         if (cached) return cached

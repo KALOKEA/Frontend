@@ -15,7 +15,8 @@ import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/
 
 function safeLink(link: string | null | undefined, fallback = '/about/'): string {
   const l = (link || '').trim()
-  return l.startsWith('/') ? l : fallback
+  if (!l || !l.startsWith('/') || l.includes(' ')) return fallback
+  return l
 }
 
 export default function EditorialBanner() {
