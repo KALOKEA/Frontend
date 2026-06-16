@@ -23,12 +23,12 @@ interface CartStore {
   isOpen: boolean
   guestSessionId: string
 
-  /** Coupon applied in cart or checkout — persisted so it survives navigation. */
+  /** Coupon applied in cart or checkout -- persisted so it survives navigation. */
   appliedCoupon: { code: string; discount: number } | null
 
   /**
    * True once Zustand has finished reading items from localStorage.
-   * Use this to guard redirects that depend on the cart being empty — without
+   * Use this to guard redirects that depend on the cart being empty -- without
    * it, the checkout page would redirect to /cart/ on every hard refresh
    * because items start as [] before persist rehydrates.
    */
@@ -106,7 +106,7 @@ export const useCartStore = create<CartStore>()(
       _hasHydrated: false,
       setHasHydrated: (val) => set({ _hasHydrated: val }),
 
-      // ─── Mutations ────────────────────────────────────────────────────────
+      // --- Mutations --------------------------------------------------------
 
       addItem: (newItem) => {
         // 1. Optimistic local update first (instant UI feedback).
@@ -124,7 +124,7 @@ export const useCartStore = create<CartStore>()(
           return { items: [...state.items, { ...newItem, id: newItem.variant_id }] }
         })
 
-        // 2. Mirror to server — use the response to update item IDs.
+        // 2. Mirror to server -- use the response to update item IDs.
         //    NEVER call hydrate() here: if the server returns empty (schema issue,
         //    stock error, etc.) it would wipe the optimistic local state.
         if (isLoggedIn()) {
@@ -132,7 +132,7 @@ export const useCartStore = create<CartStore>()(
             .add(newItem.variant_id, newItem.quantity)
             .then((res) => {
               if (res?.items?.length) set({ items: res.items.map(mapServerItem) })
-              // If server returned empty, keep optimistic state — don't wipe it.
+              // If server returned empty, keep optimistic state -- don't wipe it.
             })
             .catch(() => {}) // keep optimistic state on any error
         } else {
@@ -200,7 +200,7 @@ export const useCartStore = create<CartStore>()(
       setAppliedCoupon: (code, discount) => set({ appliedCoupon: { code, discount } }),
       clearAppliedCoupon: () => set({ appliedCoupon: null }),
 
-      // ─── Sync ─────────────────────────────────────────────────────────────
+      // --- Sync -------------------------------------------------------------
 
       hydrate: async () => {
         if (!isLoggedIn()) return
@@ -249,7 +249,7 @@ export const useCartStore = create<CartStore>()(
         await cartApi.merge(sid).catch(() => {})
 
         // Step 2: Push any localStorage-only items that were never synced to the
-        // server (id === variant_id — assigned optimistically before the first server
+        // server (id === variant_id -- assigned optimistically before the first server
         // response). This covers items added before login while the add was in-flight.
         const localOnlyItems = localItemsSnapshot.filter((i) => i.id === i.variant_id)
         for (const it of localOnlyItems) {
@@ -259,7 +259,7 @@ export const useCartStore = create<CartStore>()(
         // Step 3: Load the authoritative merged server cart.
         await get().hydrate()
 
-        // Step 4: Safety net — if server returned empty but we had local items,
+        // Step 4: Safety net -- if server returned empty but we had local items,
         // the merge may have silently failed or there was a race condition (e.g.
         // the guest add was still in-flight when merge ran). Push all snapshot
         // items to the user cart and re-sync. Server handles duplicate quantities
@@ -275,7 +275,7 @@ export const useCartStore = create<CartStore>()(
         set({ guestSessionId: generateId() })
       },
 
-      // ─── Derived ───────────────────────────────────────────────────�────────────────────────────────────
+      // --- Derived ---------------------------------------------------------------------------------------
 
       get itemCount() {
         return get().items.reduce((sum, i) => sum + i.quantity, 0)
