@@ -500,7 +500,7 @@ export default function AdminSettingsPage() {
                 type="checkbox"
                 className="sr-only peer"
                 checked={!!form.flash_sale_enabled}
-                onChange={e => set('flash_sale_enabled', e.target.checked ? 1 : 0 as any)}
+                onChange={e => setForm(f => ({ ...DEFAULT_FORM, ...f, flash_sale_enabled: e.target.checked }))}
               />
               <div className="w-10 h-5 bg-[#e8e4e0] rounded-full peer peer-checked:bg-[#0a0a0a] transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
             </label>
