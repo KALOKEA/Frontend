@@ -27,32 +27,51 @@ export default function EditorialBanner() {
   }, [])
 
   const imageUrl = c.editorial_image_url || HERO_DEFAULTS.editorial_image_url
+  const videoUrl = c.editorial_video_url || ''
+  const isVideo  = c.editorial_mode === 'video' && !!videoUrl
 
   return (
     <section
       className="reveal-left group k-editorial"
       style={{ margin: 0 }}
     >
-      {/* Left — image panel */}
+      {/* Left — image or video panel */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={imageUrl}
-          alt={c.editorial_heading || 'The Edit — Kalokea'}
-          className="group-hover:scale-[1.04]"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center',
-            transition: 'transform 8s ease',
-          }}
-          loading="lazy"
-          onError={(e) => {
-            const el = e.currentTarget as HTMLImageElement
-            el.src = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&fit=crop'
-          }}
-        />
+        {isVideo ? (
+          <video
+            src={videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              display: 'block',
+            }}
+          />
+        ) : (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={imageUrl}
+            alt={c.editorial_heading || 'The Edit — Kalokea'}
+            className="group-hover:scale-[1.04]"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              transition: 'transform 8s ease',
+            }}
+            loading="lazy"
+            onError={(e) => {
+              const el = e.currentTarget as HTMLImageElement
+              el.src = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&fit=crop'
+            }}
+          />
+        )}
       </div>
 
       {/* Right — dark content panel */}

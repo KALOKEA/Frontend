@@ -79,12 +79,18 @@ export interface HomepageContent {
   editorial_cta_label: string
   editorial_cta_link: string
   editorial_image_url: string
+  editorial_video_url: string
+  editorial_mode: 'image' | 'video'
+  // Shop the Look — JSON array of looks
+  stl_looks: string
   // Best sellers
   bestseller_heading: string
   bestseller_eyebrow: string
   // Testimonials
   testimonials_heading: string
   testimonials_eyebrow: string
+  // Press / As Seen In — JSON array of {name, url}
+  press_logos: string
   [key: string]: string
 }
 
@@ -123,10 +129,24 @@ export const HERO_DEFAULTS: HomepageContent = {
   editorial_cta_label: 'Explore the Edit',
   editorial_cta_link: '/shop/?tag=editorial',
   editorial_image_url: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&fit=crop',
+  editorial_video_url: '',
+  editorial_mode: 'image',
+  stl_looks: JSON.stringify([
+    { title: 'The Golden Hour', tags: ['Aurelia Dress', 'Chain Bag'], image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=700&q=80', href: '/shop/' },
+    { title: 'Power Dressing',  tags: ['Elara Blazer', 'Wrap Skirt'], image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=700&q=80', href: '/shop/' },
+    { title: 'Weekend Edit',    tags: ['Linen Co-ord', 'Rhea Tote'],  image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=80', href: '/shop/' },
+  ]),
   bestseller_heading: 'Best Sellers',
   bestseller_eyebrow: 'Most Loved',
   testimonials_heading: 'What Our Customers Say',
   testimonials_eyebrow: 'Reviews',
+  press_logos: JSON.stringify([
+    { name: 'Vogue India',     url: 'https://www.vogue.in/' },
+    { name: 'Elle',            url: 'https://elle.in/' },
+    { name: "Harper's Bazaar", url: 'https://harpersbazaar.in/' },
+    { name: 'Femina',          url: 'https://www.femina.in/' },
+    { name: 'Grazia',          url: 'https://www.grazia.co.in/' },
+  ]),
 }
 
 export const homepageContentApi = {

@@ -22,6 +22,21 @@ export async function uploadImage(file: File, folder = 'products'): Promise<Uplo
   return json.data !== undefined ? json.data : json
 }
 
+/** Admin: upload image OR video for homepage/editorial/hero (uses /upload/admin-media endpoint). */
+export async function uploadAdminMedia(file: File, folder = 'homepage'): Promise<UploadResult> {
+  const form = new FormData()
+  form.append('file', file)
+  const res = await fetch(`${BASE_URL}/upload/admin-media?folder=${encodeURIComponent(folder)}`, {
+    method: 'POST',
+    headers: getAccessToken() ? { Authorization: `Bearer ${getAccessToken()}` } : {},
+    credentials: 'include',
+    body: form,
+  })
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(json.message || 'Upload failed')
+  return json.data !== undefined ? json.data : json
+}
+
 /** Upload a photo or short video for a customer review (authenticated, not admin-only). */
 export async function uploadReviewMedia(file: File): Promise<UploadResult> {
   const form = new FormData()

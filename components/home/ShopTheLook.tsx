@@ -1,46 +1,36 @@
 'use client'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 
-// Matches reference .stl-section exactly:
-// — padding:80px 0; background:var(--ivory-2)=#F0EAE1
-// — section-head LEFT aligned (section-head: display:flex;justify-content:space-between;gap:24px;margin-bottom:40px)
-// — section-label: .72rem weight:600 tracking:.2em uppercase color:#7C4A2D
-// — section-title: serif clamp(2rem,3.5vw,3rem) weight:400 lineHeight:1.15 color:#0A0806; em:italic weight:300
-// — stl-grid: grid repeat(3,1fr) gap:24px
-// — stl-card: position:relative; overflow:hidden; border-radius:4px; cursor:pointer
-// — img: aspect-ratio:4/5 (NOT 3/4); transition:transform .5s; hover:scale(1.04)
-// — ::after gradient: linear-gradient(to top, rgba(10,8,6,.7) 0%, transparent 50%)
-// — stl-info: position:absolute bottom:0 left:0 right:0 padding:20px z-index:1
-// — stl-tag: bg:rgba(255,255,255,.15) backdrop-filter:blur(4px) padding:4px 10px border-radius:40px .7rem color:#fff weight:500
-// — NO "Shop This Look →" hover text
+interface Look {
+  title: string
+  tags: string[]
+  image: string
+  href: string
+}
 
-const LOOKS = [
-  {
-    title: 'The Golden Hour',
-    tags: ['Aurelia Dress', 'Chain Bag'],
-    image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=700&q=80',
-    href: '/shop/',
-  },
-  {
-    title: 'Power Dressing',
-    tags: ['Elara Blazer', 'Wrap Skirt'],
-    image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=700&q=80',
-    href: '/shop/',
-  },
-  {
-    title: 'Weekend Edit',
-    tags: ['Linen Co-ord', 'Rhea Tote'],
-    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=80',
-    href: '/shop/',
-  },
-]
+const DEFAULT_LOOKS: Look[] = JSON.parse(HERO_DEFAULTS.stl_looks)
 
 export default function ShopTheLook() {
+  const [looks, setLooks] = useState<Look[]>(DEFAULT_LOOKS)
+
+  useEffect(() => {
+    getHomepageData()
+      .then(d => {
+        try {
+          const parsed = JSON.parse(d.cms.stl_looks || '')
+          if (Array.isArray(parsed) && parsed.length > 0) setLooks(parsed)
+        } catch { /* keep defaults */ }
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <section className="k-section-py" style={{ background: '#F0EAE1' }}>
       <div className="k-container">
 
-        {/* Section header — LEFT aligned, matches .section-head */}
+        {/* Section header — LEFT aligned */}
         <div
           className="reveal"
           style={{
@@ -80,12 +70,12 @@ export default function ShopTheLook() {
           </div>
         </div>
 
-        {/* Grid — stl-grid: repeat(3,1fr) gap:24px */}
+        {/* Grid on desktop / horizontal scroll carousel on mobile */}
         <div className="k-stl-grid">
-          {LOOKS.map(({ title, tags, image, href }) => (
+          {looks.map(({ title, tags, image, href }, i) => (
             <Link
-              key={title}
-              href={href}
+              key={`${i}-${title}`}
+              href={href || '/shop/'}
               className="reveal group"
               style={{
                 position: 'relative',
@@ -113,7 +103,7 @@ export default function ShopTheLook() {
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
               />
 
-              {/* Gradient overlay — matches .stl-card::after */}
+              {/* Gradient overlay */}
               <div
                 style={{
                   position: 'absolute',
@@ -123,7 +113,7 @@ export default function ShopTheLook() {
                 }}
               />
 
-              {/* Info — stl-info */}
+              {/* Info */}
               <div
                 style={{
                   position: 'absolute',

@@ -7,7 +7,7 @@ import { Paperclip } from 'lucide-react'
  *   <CloudinaryUploadButton folder="banners" onUploaded={(url) => setValue(url)} />
  */
 import { useRef, useState } from 'react'
-import { uploadImage } from '@/lib/api/upload'
+import { uploadImage, uploadAdminMedia } from '@/lib/api/upload'
 
 interface Props {
   folder?: string
@@ -15,6 +15,8 @@ interface Props {
   accept?: string
   label?: string
   className?: string
+  /** Use the admin-media endpoint (supports videos). Default: false (image only). */
+  mediaUpload?: boolean
 }
 
 export default function CloudinaryUploadButton({
@@ -23,6 +25,7 @@ export default function CloudinaryUploadButton({
   accept = 'image/*,video/*',
   label = 'Upload',
   className = '',
+  mediaUpload = false,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
@@ -34,7 +37,9 @@ export default function CloudinaryUploadButton({
     setUploading(true)
     setError(null)
     try {
-      const { url } = await uploadImage(file, folder)
+      const { url } = mediaUpload
+        ? await uploadAdminMedia(file, folder)
+        : await uploadImage(file, folder)
       onUploaded(url)
     } catch (err: any) {
       setError(err?.message || 'Upload failed')

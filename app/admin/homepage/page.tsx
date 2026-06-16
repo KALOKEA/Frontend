@@ -1,14 +1,78 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { Check } from 'lucide-react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import { Check, Plus, Trash2 } from 'lucide-react'
 import { homepageContentApi, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 import CloudinaryUploadButton from '@/components/admin/CloudinaryUploadButton'
 
 // Keys that accept media uploads (image or video)
-const MEDIA_KEYS: Record<string, { folder: string; accept: string }> = {
-  hero_image_url:      { folder: 'homepage', accept: 'image/*' },
-  hero_video_url:      { folder: 'homepage', accept: 'video/mp4,video/webm,video/*' },
-  editorial_image_url: { folder: 'homepage', accept: 'image/*' },
+const MEDIA_KEYS: Record<string, { folder: string; accept: string; mediaUpload?: boolean }> = {
+  hero_image_url:         { folder: 'homepage', accept: 'image/*' },
+  hero_video_url:         { folder: 'homepage', accept: 'video/mp4,video/webm,video/*', mediaUpload: true },
+  editorial_image_url:    { folder: 'editorial', accept: 'image/*' },
+  editorial_video_url:    { folder: 'editorial', accept: 'video/mp4,video/webm,video/*', mediaUpload: true },
+}
+
+// ─── Look type ────────────────────────────────────────────────────────────────
+interface Look {
+  _key: string   // stable client-side key — never persisted
+  title: string
+  tags: string[]
+  image: string
+  href: string
+}
+
+// ─── Press logo type ─────────────────────────────────────────────────────────
+interface PressLogo {
+  name: string
+  url: string
+}
+
+function mkLook(partial: Omit<Look, '_key'>): Look {
+  return { _key: `${Date.now()}-${Math.random()}`, ...partial }
+}
+
+// ─── Mode toggle (outside component to avoid remount on every parent render) ──
+function ModeToggle({
+  modeKey,
+  values,
+  saving,
+  saved,
+  setValues,
+  onSave,
+}: {
+  modeKey: string
+  values: Record<string, string>
+  saving: string | null
+  saved: string | null
+  setValues: Dispatch<SetStateAction<Record<string, string>>>
+  onSave: (key: string) => void
+}) {
+  const current = values[modeKey] || 'image'
+  return (
+    <div className="flex gap-1.5 items-center">
+      {(['image', 'video'] as const).map(opt => (
+        <button
+          key={opt}
+          type="button"
+          onClick={() => setValues(v => ({ ...v, [modeKey]: opt }))}
+          className={`px-3 py-1.5 text-[10px] font-sans tracking-widest uppercase transition-colors ${
+            current === opt ? 'bg-[#0a0a0a] text-white' : 'bg-white border border-[#e8e4e0] text-[#6b6b6b] hover:bg-[#faf8f5]'
+          }`}
+        >
+          {opt}
+        </button>
+      ))}
+      <button
+        onClick={() => onSave(modeKey)}
+        disabled={saving === modeKey}
+        className={`px-4 py-1.5 text-[10px] font-sans tracking-widest uppercase transition-colors ${
+          saved === modeKey ? 'bg-green-600 text-white' : 'bg-[#0a0a0a] text-white hover:bg-[#c8a4a5]'
+        } disabled:opacity-50`}
+      >
+        {saving === modeKey ? '…' : saved === modeKey ? <><Check size={10} className="inline mr-1" />Saved</> : 'Save'}
+      </button>
+    </div>
+  )
 }
 
 // ─── Field definitions ────────────────────────────────────────────────────────
@@ -26,8 +90,7 @@ const SECTIONS = [
       { key: 'hero_cta2_label', label: 'Button 2 label',       hint: 'e.g. New Arrivals' },
       { key: 'hero_cta2_link',  label: 'Button 2 link',        hint: 'e.g. /shop?tag=new-arrivals' },
       { key: 'hero_image_url',  label: 'Hero image URL',       hint: 'Direct image URL for the hero panel' },
-      { key: 'hero_video_url',  label: 'Hero video URL (mp4)', hint: 'Leave empty to use image instead' },
-      { key: 'hero_mode',       label: 'Hero mode',            hint: '"image" or "video"' },
+      { key: 'hero_video_url',  label: 'Hero video (upload or URL)',  hint: 'mp4/webm — leave empty to use image instead' },
     ],
   },
   {
@@ -66,12 +129,13 @@ const SECTIONS = [
   {
     title: 'Editorial Banner',
     fields: [
-      { key: 'editorial_eyebrow',   label: 'Eyebrow text',      hint: 'e.g. The Edit' },
-      { key: 'editorial_heading',   label: 'Heading',           hint: 'e.g. Season\'s New Chapter' },
-      { key: 'editorial_subtext',   label: 'Subtext',           hint: 'Short tagline', long: true },
-      { key: 'editorial_cta_label', label: 'Button label',      hint: 'e.g. Explore the Edit' },
-      { key: 'editorial_cta_link',  label: 'Button link',       hint: 'e.g. /shop/?tag=editorial' },
-      { key: 'editorial_image_url', label: 'Background image',  hint: 'Direct image URL' },
+      { key: 'editorial_eyebrow',   label: 'Eyebrow text',              hint: 'e.g. The Edit' },
+      { key: 'editorial_heading',   label: 'Heading',                   hint: "e.g. Season's New Chapter" },
+      { key: 'editorial_subtext',   label: 'Subtext',                   hint: 'Short tagline', long: true },
+      { key: 'editorial_cta_label', label: 'Button label',              hint: 'e.g. Explore the Edit' },
+      { key: 'editorial_cta_link',  label: 'Button link',               hint: 'e.g. /shop/?tag=editorial' },
+      { key: 'editorial_image_url', label: 'Background image',          hint: 'Upload or paste image URL' },
+      { key: 'editorial_video_url', label: 'Background video (optional)', hint: 'Upload mp4/webm — overrides image when mode = video' },
     ],
   },
   {
@@ -106,9 +170,26 @@ export default function AdminHomepagePage() {
   const [error, setError]   = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Shop the Look state
+  const [looks, setLooks] = useState<Look[]>([])
+  const [looksSaving, setLooksSaving] = useState(false)
+  const [looksSaved, setLooksSaved] = useState(false)
+
+  // Press logos state
+  const [logos, setLogos] = useState<PressLogo[]>([])
+  const [logosSaving, setLogosSaving] = useState(false)
+  const [logosSaved, setLogosSaved] = useState(false)
+
   useEffect(() => {
     homepageContentApi.getAll()
-      .then((data) => setValues({ ...HERO_DEFAULTS, ...data }))
+      .then((data) => {
+        setValues({ ...HERO_DEFAULTS, ...data })
+        try {
+          const raw: Omit<Look, '_key'>[] = JSON.parse(data.stl_looks || HERO_DEFAULTS.stl_looks)
+          setLooks(raw.map(mkLook))
+        } catch { setLooks([]) }
+        try { setLogos(JSON.parse(data.press_logos || HERO_DEFAULTS.press_logos)) } catch { setLogos([]) }
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
@@ -124,6 +205,35 @@ export default function AdminHomepagePage() {
       setError(e?.message || 'Save failed')
     } finally {
       setSaving(null)
+    }
+  }
+
+  const saveLooks = async () => {
+    setLooksSaving(true)
+    try {
+      // Strip internal `_key` — only persist user data
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const toSave = looks.map(({ _key, ...rest }) => rest)
+      await homepageContentApi.update('stl_looks', JSON.stringify(toSave))
+      setLooksSaved(true)
+      setTimeout(() => setLooksSaved(false), 2500)
+    } catch (e: any) {
+      setError(e?.message || 'Save failed')
+    } finally {
+      setLooksSaving(false)
+    }
+  }
+
+  const saveLogos = async () => {
+    setLogosSaving(true)
+    try {
+      await homepageContentApi.update('press_logos', JSON.stringify(logos))
+      setLogosSaved(true)
+      setTimeout(() => setLogosSaved(false), 2500)
+    } catch (e: any) {
+      setError(e?.message || 'Save failed')
+    } finally {
+      setLogosSaving(false)
     }
   }
 
@@ -175,18 +285,19 @@ export default function AdminHomepagePage() {
                         className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a] resize-none"
                       />
                     ) : (
-                      <div className="flex-1 flex gap-1.5 items-center">
+                      <div className="flex-1 flex gap-1.5 items-center flex-wrap">
                         <input
                           type="text"
                           value={values[field.key] ?? ''}
                           onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
                           onKeyDown={(e) => e.key === 'Enter' && handleSave(field.key)}
-                          className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a]"
+                          className="flex-1 min-w-0 border border-[#e8e4e0] px-3 py-2 text-sm font-sans text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a]"
                         />
                         {MEDIA_KEYS[field.key] && (
                           <CloudinaryUploadButton
                             folder={MEDIA_KEYS[field.key].folder}
                             accept={MEDIA_KEYS[field.key].accept}
+                            mediaUpload={MEDIA_KEYS[field.key].mediaUpload}
                             label="Upload"
                             onUploaded={(url) => {
                               setValues((v) => ({ ...v, [field.key]: url }))
@@ -210,17 +321,143 @@ export default function AdminHomepagePage() {
                   </div>
                 </div>
               ))}
+
+              {/* Hero mode toggle — injected after Hero Banner section */}
+              {section.title === 'Hero Banner' && (
+                <div className="bg-white border border-[#e8e4e0] p-4">
+                  <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Hero mode</label>
+                  <p className="text-[10px] font-sans text-[#6b6b6b] mb-3">Switch between image and looping video background.</p>
+                  <ModeToggle modeKey="hero_mode" values={values} saving={saving} saved={saved} setValues={setValues} onSave={handleSave} />
+                </div>
+              )}
+
+              {/* Editorial mode toggle — injected after Editorial Banner section */}
+              {section.title === 'Editorial Banner' && (
+                <div className="bg-white border border-[#e8e4e0] p-4">
+                  <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">Editorial mode</label>
+                  <p className="text-[10px] font-sans text-[#6b6b6b] mb-3">Show image or looping video on the left panel.</p>
+                  <ModeToggle modeKey="editorial_mode" values={values} saving={saving} saved={saved} setValues={setValues} onSave={handleSave} />
+                </div>
+              )}
             </div>
           </div>
         ))}
-      </div>
 
-      {/* Preview hint */}
-      <div className="mt-8 p-4 bg-[#faf8f5] border border-[#e8e4e0] text-[11px] font-sans text-[#6b6b6b]">
-        <strong className="text-[#0a0a0a]">Tip:</strong> Set <code className="bg-[#e8e4e0] px-1">hero_mode</code> to{' '}
-        <code className="bg-[#e8e4e0] px-1">video</code> and paste an mp4 URL into{' '}
-        <code className="bg-[#e8e4e0] px-1">hero_video_url</code> to show a looping video in the hero.
-        Set to <code className="bg-[#e8e4e0] px-1">image</code> to use the image URL instead.
+        {/* ── Shop the Look editor ──────────────────────────────────────────── */}
+        <div>
+          <h2 className="font-sans text-[10px] tracking-widest uppercase text-[#6b6b6b] mb-3 pb-2 border-b border-[#e8e4e0]">
+            Shop the Look
+          </h2>
+          <div className="space-y-3">
+            {looks.map((look, i) => (
+              <div key={look._key} className="bg-white border border-[#e8e4e0] p-4 space-y-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">Look {i + 1}</span>
+                  <button onClick={() => setLooks(l => l.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700">
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+                <input
+                  value={look.title}
+                  onChange={e => setLooks(l => l.map((x, j) => j === i ? { ...x, title: e.target.value } : x))}
+                  placeholder="Look title"
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
+                />
+                <input
+                  value={look.tags.join(', ')}
+                  onChange={e => setLooks(l => l.map((x, j) => j === i ? { ...x, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) } : x))}
+                  placeholder="Tags (comma-separated): e.g. Aurelia Dress, Chain Bag"
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
+                />
+                <div className="flex gap-1.5 items-center">
+                  <input
+                    value={look.image}
+                    onChange={e => setLooks(l => l.map((x, j) => j === i ? { ...x, image: e.target.value } : x))}
+                    placeholder="Image URL"
+                    className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
+                  />
+                  <CloudinaryUploadButton
+                    folder="looks"
+                    accept="image/*"
+                    label="Upload"
+                    onUploaded={(url) => setLooks(l => l.map((x, j) => j === i ? { ...x, image: url } : x))}
+                  />
+                </div>
+                <input
+                  value={look.href}
+                  onChange={e => setLooks(l => l.map((x, j) => j === i ? { ...x, href: e.target.value } : x))}
+                  placeholder="Link URL e.g. /shop/"
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
+                />
+              </div>
+            ))}
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setLooks(l => [...l, mkLook({ title: '', tags: [], image: '', href: '/shop/' })])}
+                className="flex items-center gap-1 px-3 py-2 text-[10px] font-sans tracking-widest uppercase border border-dashed border-[#e8e4e0] text-[#6b6b6b] hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition-colors"
+              >
+                <Plus size={11} /> Add Look
+              </button>
+              <button
+                onClick={saveLooks}
+                disabled={looksSaving}
+                className={`px-5 py-2 text-[10px] font-sans tracking-widest uppercase transition-colors disabled:opacity-50 ${
+                  looksSaved ? 'bg-green-600 text-white' : 'bg-[#0a0a0a] text-white hover:bg-[#c8a4a5]'
+                }`}
+              >
+                {looksSaving ? '…' : looksSaved ? <><Check size={10} className="inline mr-1" />Saved</> : 'Save All Looks'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── As Seen In / Press Logos editor ──────────────────────────────── */}
+        <div>
+          <h2 className="font-sans text-[10px] tracking-widest uppercase text-[#6b6b6b] mb-3 pb-2 border-b border-[#e8e4e0]">
+            As Seen In (Press Logos)
+          </h2>
+          <div className="space-y-3">
+            {logos.map((logo, i) => (
+              <div key={i} className="bg-white border border-[#e8e4e0] p-3 flex gap-2 items-center">
+                <input
+                  value={logo.name}
+                  onChange={e => setLogos(l => l.map((x, j) => j === i ? { ...x, name: e.target.value } : x))}
+                  placeholder="Brand name"
+                  className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
+                />
+                <input
+                  value={logo.url}
+                  onChange={e => setLogos(l => l.map((x, j) => j === i ? { ...x, url: e.target.value } : x))}
+                  placeholder="https://..."
+                  className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
+                />
+                <button onClick={() => setLogos(l => l.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700 shrink-0">
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            ))}
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setLogos(l => [...l, { name: '', url: '' }])}
+                className="flex items-center gap-1 px-3 py-2 text-[10px] font-sans tracking-widest uppercase border border-dashed border-[#e8e4e0] text-[#6b6b6b] hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition-colors"
+              >
+                <Plus size={11} /> Add Brand
+              </button>
+              <button
+                onClick={saveLogos}
+                disabled={logosSaving}
+                className={`px-5 py-2 text-[10px] font-sans tracking-widest uppercase transition-colors disabled:opacity-50 ${
+                  logosSaved ? 'bg-green-600 text-white' : 'bg-[#0a0a0a] text-white hover:bg-[#c8a4a5]'
+                }`}
+              >
+                {logosSaving ? '…' : logosSaved ? <><Check size={10} className="inline mr-1" />Saved</> : 'Save Logos'}
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   )

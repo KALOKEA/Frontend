@@ -1,15 +1,28 @@
 'use client'
-import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 
-const LOGOS = [
-  { name: 'Vogue India',      url: 'https://www.vogue.in/' },
-  { name: 'Elle',             url: 'https://elle.in/' },
-  { name: "Harper's Bazaar",  url: 'https://harpersbazaar.in/' },
-  { name: 'Femina',           url: 'https://www.femina.in/' },
-  { name: 'Grazia',           url: 'https://www.grazia.co.in/' },
-]
+interface PressLogo {
+  name: string
+  url: string
+}
+
+const DEFAULT_LOGOS: PressLogo[] = JSON.parse(HERO_DEFAULTS.press_logos)
 
 export default function PressStrip() {
+  const [logos, setLogos] = useState<PressLogo[]>(DEFAULT_LOGOS)
+
+  useEffect(() => {
+    getHomepageData()
+      .then(d => {
+        try {
+          const parsed = JSON.parse(d.cms.press_logos || '')
+          if (Array.isArray(parsed) && parsed.length > 0) setLogos(parsed)
+        } catch { /* keep defaults */ }
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <div
       style={{
@@ -44,15 +57,15 @@ export default function PressStrip() {
           As Seen In
         </span>
 
-        {/* Logos — real links to each magazine */}
+        {/* Logos */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 40, flexWrap: 'wrap' }}>
-          {LOGOS.map(({ name, url }) => (
+          {logos.filter(l => l.name).map(({ name, url }, i) => (
             <a
-              key={name}
-              href={url}
-              target="_blank"
+              key={`${i}-${name}`}
+              href={url || '#'}
+              target={url ? '_blank' : undefined}
               rel="noopener noreferrer"
-              aria-label={`${name} — opens in new tab`}
+              aria-label={`${name}${url ? ' — opens in new tab' : ''}`}
               style={{
                 fontFamily: 'var(--font-cormorant), serif',
                 fontSize: '1.15rem',

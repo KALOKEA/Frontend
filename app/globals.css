@@ -530,14 +530,30 @@ select.inp {
 @media (max-width: 1024px) { .k-testi-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 768px)  { .k-testi-grid { grid-template-columns: 1fr; } }
 
-/* Shop the Look grid: 3 → 2 → 1 */
+/* Shop the Look grid: 3-col desktop → horizontal scroll carousel on mobile */
 .k-stl-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
-@media (max-width: 768px)  { .k-stl-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px)  { .k-stl-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) {
+  .k-stl-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px;
+    padding-bottom: 8px;
+    scrollbar-width: none; /* Firefox */
+  }
+  .k-stl-grid::-webkit-scrollbar { display: none; }
+  .k-stl-grid > * {
+    flex: 0 0 72vw;
+    max-width: 300px;
+    scroll-snap-align: start;
+  }
+}
 
 /* Footer top grid: 1.6fr 1fr 1fr 1fr → 2col → 1col */
 .k-footer-grid {
@@ -555,7 +571,7 @@ select.inp {
     padding: 48px 28px 40px;
   }
 }
-@media (max-width: 768px)  { .k-footer-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px)  { .k-footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; } }
 @media (max-width: 480px)  { .k-footer-grid { padding: 40px 20px 32px; } }
 
 /* Footer bottom bar */
@@ -728,9 +744,9 @@ img, video  { max-width: 100%; }
   .k-ig-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
-/* ── Shop the Look: labels readable on small phones ── */
+/* ── Shop the Look: carousel card min-width on very small phones ── */
 @media (max-width: 480px) {
-  .k-stl-grid { grid-template-columns: 1fr !important; }
+  .k-stl-grid > * { flex: 0 0 80vw !important; }
 }
 
 /* ── Mobile menu backdrop body-lock ── */
