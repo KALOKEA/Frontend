@@ -6,10 +6,18 @@ import { useCartStore } from '@/lib/store/useCartStore'
 import { formatPrice } from '@/lib/utils/formatPrice'
 import CartCrossSell from '@/components/cart/CartCrossSell'
 
+// Free shipping threshold in paise — matches backend default (₹999)
+const FREE_SHIPPING_THRESHOLD = 99900
+
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem } = useCartStore()
   const total = items.reduce((s, i) => s + i.price * i.quantity, 0)
   const count = items.reduce((s, i) => s + i.quantity, 0)
+
+  // Free shipping progress
+  const freeShippingPct = Math.min(100, Math.round((total / FREE_SHIPPING_THRESHOLD) * 100))
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total)
+  const freeShippingUnlocked = total >= FREE_SHIPPING_THRESHOLD
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
@@ -149,6 +157,26 @@ export default function CartDrawer() {
         {/* Footer */}
         {items.length > 0 && (
           <div className="border-t border-[#E0D4C4] px-5 py-4 space-y-3 bg-[#FDFAF6]">
+
+            {/* Free shipping progress bar */}
+            <div className="pb-1">
+              {freeShippingUnlocked ? (
+                <p className="text-[10px] font-sans text-green-700 font-semibold tracking-wide text-center">
+                  🎉 You&apos;ve unlocked free shipping!
+                </p>
+              ) : (
+                <p className="text-[10px] font-sans text-[#6b5e55] tracking-wide">
+                  Add <span className="font-semibold text-[#0a0908]">{formatPrice(remaining)}</span> more for free shipping
+                </p>
+              )}
+              <div className="mt-1.5 h-1 bg-[#e8e4e0] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#7C4A2D] rounded-full transition-all duration-500"
+                  style={{ width: `${freeShippingPct}%` }}
+                />
+              </div>
+            </div>
+
             <div className="flex justify-between items-center">
               <span className="text-sm text-[#6B5E55]">Subtotal</span>
               <span className="font-serif text-base text-[#0A0908]">{formatPrice(total)}</span>

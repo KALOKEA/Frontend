@@ -58,7 +58,10 @@ async function fetchProductSlugs() {
 
   try {
     while (true) {
-      const url = `${apiUrl}/products?limit=${limit}&page=${page}&is_active=true`;
+      // Note: no is_active filter — the public products endpoint already returns
+      // only active products by default. Adding unknown query params causes 400
+      // when the backend runs ValidationPipe with forbidNonWhitelisted:true.
+      const url = `${apiUrl}/products?limit=${limit}&page=${page}`;
       const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
 
       if (!res.ok) {

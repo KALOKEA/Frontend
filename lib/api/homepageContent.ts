@@ -91,6 +91,12 @@ export interface HomepageContent {
   testimonials_eyebrow: string
   // Press / As Seen In — JSON array of {name, url}
   press_logos: string
+  // Announcement bar — JSON array of strings
+  announcement_items: string
+  // Hero carousel — JSON array of {image, video, mode}
+  hero_slides: string
+  // Editorial carousel — JSON array of {image, video, mode}
+  editorial_slides: string
   [key: string]: string
 }
 
@@ -147,6 +153,15 @@ export const HERO_DEFAULTS: HomepageContent = {
     { name: 'Femina',          url: 'https://www.femina.in/' },
     { name: 'Grazia',          url: 'https://www.grazia.co.in/' },
   ]),
+  announcement_items: JSON.stringify([
+    'Free Shipping on Orders Above ₹999',
+    'New Arrivals Every Friday',
+    'Easy 7-Day Returns',
+    'Ethically Sourced Fabrics',
+    'COD Available Pan India',
+  ]),
+  hero_slides: JSON.stringify([]),
+  editorial_slides: JSON.stringify([]),
 }
 
 export const homepageContentApi = {

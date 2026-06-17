@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { productsApi, type Product, type ProductVariant } from '@/lib/api/products'
@@ -144,6 +144,21 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
   const [tab, setTab] = useState('description')
   const { toggle, isWishlisted } = useWishlistStore()
 
+  // Sticky ATC bar: show only when main ATC button has scrolled out of view
+  const [showStickyBar, setShowStickyBar] = useState(false)
+  const atcBtnRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = atcBtnRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyBar(!entry.isIntersecting),
+      { threshold: 0.1 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [product])
+
   useEffect(() => {
     if (initialProduct) return
     productsApi.getBySlug(slug)
@@ -235,8 +250,12 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
   return (
     <>
-      {/* Sticky mobile Add-to-Cart bar — k-mobile-cta-bar lifts it above MobileBottomNav */}
-      <div className="k-mobile-cta-bar fixed bottom-0 left-0 right-0 z-[90] lg:hidden bg-white border-t border-[#e8e4e0] px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
+      {/* Sticky mobile Add-to-Cart bar — slides up when main ATC scrolls out of view */}
+      <div
+        className={`k-mobile-cta-bar fixed bottom-0 left-0 right-0 z-[90] lg:hidden bg-white border-t border-[#e8e4e0] px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] transition-transform duration-300 ${
+          showStickyBar ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <div className="flex-1 min-w-0">
             <p className="text-xs font-sans text-[#0a0a0a] font-medium truncate leading-tight">{product.name}</p>
@@ -368,7 +387,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               </button>
             </div>
 
-            <div id="add-to-cart-btn">
+            <div id="add-to-cart-btn" ref={atcBtnRef}>
               {hasVariants && !selectionReady ? (
                 <button
                   onClick={() => document.getElementById('variant-picker')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}

@@ -1,105 +1,131 @@
 'use client'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 
-// Matches reference exactly:
-// — grid 1fr 1fr (50/50), min-height:100vh
-// — hero-left: background:#1E1208, flex-col, justify-end (text anchored to bottom)
-// — hero-eyebrow: .7rem, weight:600, tracking:.25em, color:#C49070, line 32px before
-// — hero-title: serif clamp(2.8rem,5vw,5.2rem) weight:300 lineHeight:1.08
-// — hero-sub: .88rem rgba(255,255,255,.55) maxWidth:360
-// — hero-actions gap:16px; btn-outline-white + btn-brown-lt
-// — hero-right: position:relative, overflow:hidden, image fills + vignette
-// — hero-scroll indicator at bottom center of right panel
-// — NO stats strip, NO "Made in India" badge
+interface HeroSlide {
+  image: string
+  video: string
+  mode: 'image' | 'video'
+}
 
-// Sanitize CTA links coming from the DB — trims whitespace and falls back to
-// /shop/ if the value is empty or not a valid path (e.g. admin typed "Shop Now"
-// instead of "/shop/", which would produce a space-encoded 404 on prefetch).
+// Sanitize CTA links — reject empty, non-path, or space-containing values
 function safeLink(link: string | null | undefined, fallback = '/shop/'): string {
   const l = (link || '').trim()
-  // Reject if empty, doesn't start with '/', or contains spaces
-  // (admin may save label text like "Shop Now" instead of a real path)
   if (!l || !l.startsWith('/') || l.includes(' ')) return fallback
   return l
+}
+
+// Parse hero_slides JSON; fall back to single slide from legacy fields
+function parseSlides(c: HomepageContent): HeroSlide[] {
+  try {
+    const parsed: HeroSlide[] = JSON.parse(c.hero_slides || '[]')
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed
+  } catch {}
+  return [{
+    image: c.hero_image_url || HERO_DEFAULTS.hero_image_url,
+    video: c.hero_video_url || '',
+    mode: (c.hero_mode as 'image' | 'video') || 'image',
+  }]
 }
 
 export default function HeroBanner() {
   const [c, setC] = useState<HomepageContent>(HERO_DEFAULTS)
   const [mounted, setMounted] = useState(false)
+  const [slideIdx, setSlideIdx] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     setMounted(true)
     getHomepageData().then((d) => setC(d.cms)).catch(() => {})
   }, [])
 
-  const isVideo = c.hero_mode === 'video' && !!c.hero_video_url
-  const imageUrl = c.hero_image_url || HERO_DEFAULTS.hero_image_url
+  const slides = parseSlides(c)
+
+  // Auto-advance every 5 s — only when >1 slide
+  useEffect(() => {
+    if (slides.length <= 1) return
+    timerRef.current = setTimeout(() => {
+      setSlideIdx(i => (i + 1) % slides.length)
+    }, 5000)
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+  }, [slideIdx, slides.length])
+
+  const current = slides[Math.min(slideIdx, slides.length - 1)]
+  const isVideo = current.mode === 'video' && !!current.video
+
+  const goTo = (i: number) => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    setSlideIdx(i)
+  }
 
   return (
     <section
-      // Negative margin pulls the hero UP behind the combined fixed header so the
-      // dark hero-left panel shows through the transparent nav on the home page.
-      // This matches the reference design (Image 1) where announcement bar + nav
-      // appear as one seamless dark block over the hero.
-      //   mobile:  -94px  (36px announcement bar + 58px nav)
-      //   desktop: -104px (36px announcement bar + 68px nav)
       className="flex flex-col md:grid -mt-[94px] md:-mt-[104px]"
-      style={{
-        gridTemplateColumns: '1fr 1fr',
-        minHeight: '100vh',
-      }}
+      style={{ gridTemplateColumns: '1fr 1fr', minHeight: '100vh' }}
     >
-      {/* ── Mobile image (above text on mobile) ── */}
+      {/* ── Mobile image (above text on small screens) ── */}
       <div
         className="md:hidden relative overflow-hidden"
         style={{ height: '56vw', minHeight: 220, maxHeight: 400 }}
       >
         {isVideo ? (
-          <video src={c.hero_video_url} autoPlay muted loop playsInline className="w-full h-full object-cover object-top" />
+          <video
+            key={current.video}
+            src={current.video}
+            autoPlay muted loop playsInline
+            className="w-full h-full object-cover object-top"
+          />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={imageUrl}
+            key={current.image}
+            src={current.image}
             alt="Kalokea — Women's Fashion Collection"
             className="w-full h-full object-cover object-top"
             loading="eager"
-            // fetchPriority tells the browser this is the LCP image — load it first
             // @ts-expect-error fetchpriority is valid HTML but not yet in React types
             fetchpriority="high"
           />
         )}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }} />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }}
+        />
+        {/* Mobile slide dots */}
+        {slides.length > 1 && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i)}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === slideIdx ? 'bg-white scale-125' : 'bg-white/40'}`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Left: dark text panel ── */}
       <div
         className="flex flex-col justify-end relative k-hero-left"
-        style={{
-          background: '#1E1208',
-          minHeight: 'clamp(480px, 60vh, 100vh)',
-        }}
+        style={{ background: '#1E1208', minHeight: 'clamp(480px, 60vh, 100vh)' }}
       >
-        {/* ── 3D floating orbs — ambient depth effect ── */}
+        {/* Ambient depth orbs */}
         <div className="k-hero-orbs" aria-hidden="true">
           <span className="k-hero-orb k-hero-orb--1" />
           <span className="k-hero-orb k-hero-orb--2" />
           <span className="k-hero-orb k-hero-orb--3" />
         </div>
+
         {/* Eyebrow */}
         <div
           className={mounted ? 'animate-fade-up anim-delay-100' : 'opacity-0'}
           style={{
-            fontSize: '.7rem',
-            fontWeight: 600,
-            letterSpacing: '.25em',
-            textTransform: 'uppercase',
-            color: '#C49070',
-            marginBottom: 20,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
+            fontSize: '.7rem', fontWeight: 600, letterSpacing: '.25em',
+            textTransform: 'uppercase', color: '#C49070', marginBottom: 20,
+            display: 'flex', alignItems: 'center', gap: 12,
           }}
         >
           <span style={{ display: 'block', width: 32, height: 1, background: '#C49070', flexShrink: 0 }} />
@@ -110,11 +136,8 @@ export default function HeroBanner() {
         <h1
           className={`font-serif ${mounted ? 'animate-fade-up anim-delay-200' : 'opacity-0'}`}
           style={{
-            fontSize: 'clamp(2.8rem, 5vw, 5.2rem)',
-            fontWeight: 300,
-            lineHeight: 1.08,
-            color: '#FFFFFF',
-            marginBottom: 24,
+            fontSize: 'clamp(2.8rem, 5vw, 5.2rem)', fontWeight: 300,
+            lineHeight: 1.08, color: '#FFFFFF', marginBottom: 24,
           }}
         >
           {c.hero_headline_1}
@@ -125,62 +148,36 @@ export default function HeroBanner() {
         <p
           className={mounted ? 'animate-fade-up anim-delay-300' : 'opacity-0'}
           style={{
-            fontSize: '.88rem',
-            color: 'rgba(255,255,255,.55)',
-            lineHeight: 1.7,
-            maxWidth: 360,
-            marginBottom: 40,
+            fontSize: '.88rem', color: 'rgba(255,255,255,.55)',
+            lineHeight: 1.7, maxWidth: 360, marginBottom: 40,
           }}
         >
           {c.hero_subtext}
         </p>
 
-        {/* CTAs — matches .hero-actions */}
-        <div
-          className={`k-hero-actions ${mounted ? 'animate-fade-up anim-delay-400' : 'opacity-0'}`}
-        >
-          {/* btn btn-outline-white */}
+        {/* CTAs */}
+        <div className={`k-hero-actions ${mounted ? 'animate-fade-up anim-delay-400' : 'opacity-0'}`}>
           <Link
             href={safeLink(c.hero_cta1_link)}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '13px 28px',
-              fontSize: '.8rem',
-              fontWeight: 600,
-              letterSpacing: '.1em',
-              textTransform: 'uppercase',
-              borderRadius: 4,
-              background: 'none',
-              border: '1.5px solid rgba(255,255,255,.5)',
-              color: '#fff',
-              transition: 'all .2s',
-              textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              padding: '13px 28px', fontSize: '.8rem', fontWeight: 600, letterSpacing: '.1em',
+              textTransform: 'uppercase', borderRadius: 4, background: 'none',
+              border: '1.5px solid rgba(255,255,255,.5)', color: '#fff',
+              transition: 'all .2s', textDecoration: 'none',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'none' }}
           >
             {c.hero_cta1_label}
           </Link>
-          {/* btn with background:var(--brown-lt);color:var(--dark) */}
           <Link
             href={safeLink(c.hero_cta2_link)}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '13px 28px',
-              fontSize: '.8rem',
-              fontWeight: 600,
-              letterSpacing: '.1em',
-              textTransform: 'uppercase',
-              borderRadius: 4,
-              background: '#C49070',
-              color: '#1E1208',
-              border: 'none',
-              transition: 'all .2s',
-              textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              padding: '13px 28px', fontSize: '.8rem', fontWeight: 600, letterSpacing: '.1em',
+              textTransform: 'uppercase', borderRadius: 4, background: '#C49070',
+              color: '#1E1208', border: 'none', transition: 'all .2s', textDecoration: 'none',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#b07d5e' }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#C49070' }}
@@ -190,54 +187,65 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* ── Right: image panel — desktop only ── */}
-      <div
-        className="hidden md:block relative overflow-hidden"
-        style={{ minHeight: '100vh' }}
-      >
+      {/* ── Right: image / carousel panel — desktop only ── */}
+      <div className="hidden md:block relative overflow-hidden" style={{ minHeight: '100vh' }}>
         {isVideo ? (
           <video
-            src={c.hero_video_url}
+            key={current.video}
+            src={current.video}
             autoPlay muted loop playsInline
             className="absolute inset-0 w-full h-full object-cover object-top"
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={imageUrl}
+            key={current.image}
+            src={current.image}
             alt="Kalokea — Women's Fashion Collection"
-            className="absolute inset-0 w-full h-full object-cover object-top"
+            className="absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-700"
             loading="eager"
-            // fetchPriority=high marks this as the LCP candidate — parsed before preload scanner
             // @ts-expect-error fetchpriority is valid HTML but not yet in React types
             fetchpriority="high"
           />
         )}
-        {/* Vignette overlay — matches #home .hero-right::after */}
+
+        {/* Vignette */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }}
         />
-        {/* Scroll indicator — matches .hero-scroll */}
-        <div
-          className="absolute"
-          style={{
-            bottom: 32,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 8,
-            color: 'rgba(255,255,255,.4)',
-            fontSize: '.68rem',
-            letterSpacing: '.15em',
-            textTransform: 'uppercase',
-          }}
-        >
-          Scroll
-          <span style={{ display: 'block', width: 1, height: 40, background: 'rgba(255,255,255,.3)' }} />
-        </div>
+
+        {/* Slide dots — shown only when multiple slides */}
+        {slides.length > 1 && (
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  i === slideIdx ? 'bg-white scale-110' : 'bg-white/40 hover:bg-white/70'
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Scroll indicator — only when single slide */}
+        {slides.length <= 1 && (
+          <div
+            className="absolute"
+            style={{
+              bottom: 32, left: '50%', transform: 'translateX(-50%)',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+              color: 'rgba(255,255,255,.4)', fontSize: '.68rem',
+              letterSpacing: '.15em', textTransform: 'uppercase',
+            }}
+          >
+            Scroll
+            <span style={{ display: 'block', width: 1, height: 40, background: 'rgba(255,255,255,.3)' }} />
+          </div>
+        )}
       </div>
     </section>
   )

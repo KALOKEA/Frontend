@@ -16,6 +16,7 @@ import ScrollRevealInit from '@/components/ScrollRevealInit'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
 import FlashSaleBanner from '@/components/layout/FlashSaleBanner'
 import PageTransition from '@/components/PageTransition'
+import ExitIntentPopup from '@/components/layout/ExitIntentPopup'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -634,6 +635,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <BackToTop />
         <ScrollRevealInit />
         <ServiceWorkerRegister />
+        <ExitIntentPopup />
       </body>
     </html>
   )
