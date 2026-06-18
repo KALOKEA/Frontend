@@ -49,7 +49,8 @@ export default function EditorialBanner() {
   }, [slideIdx, slides.length])
 
   const current = slides[Math.min(slideIdx, slides.length - 1)]
-  const isVideo = current.mode === 'video' && !!current.video
+  // Video plays whenever a video URL is present — pasting a link is enough.
+  const isVideo = !!current.video
 
   const goTo = (i: number) => {
     if (timerRef.current) clearTimeout(timerRef.current)

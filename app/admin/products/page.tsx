@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { productsApi, type Product, type ProductImageRow, type ProductVariant } from '@/lib/api/products'
 import { variantsApi } from '@/lib/api/variants'
 import { categoriesApi, type Category } from '@/lib/api/categories'
-import { uploadImage } from '@/lib/api/upload'
+import { uploadImage, uploadAdminMedia } from '@/lib/api/upload'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice } from '@/lib/utils/formatPrice'
 import { X, ChevronLeft, ChevronUp, ChevronDown } from 'lucide-react'
@@ -23,6 +23,7 @@ interface FormState {
   id?: string
   name: string; slug: string; description: string; fabric_care: string
   youtube_url: string
+  video_url: string
   base_price: string; compare_price: string
   hsn_code: string; gst_rate: string
   category_id: string; tags: string
@@ -33,6 +34,7 @@ interface FormState {
 const emptyForm = (): FormState => ({
   name: '', slug: '', description: '', fabric_care: '',
   youtube_url: '',
+  video_url: '',
   base_price: '', compare_price: '',
   hsn_code: '', gst_rate: '',
   category_id: '', tags: '',
@@ -46,6 +48,7 @@ function productToForm(p: Product): FormState {
     name: p.name, slug: p.slug, description: p.description || '',
     fabric_care: (p as any).fabric_care || '',
     youtube_url: p.youtube_url || '',
+    video_url: (p as any).video_url || '',
     base_price: String(Math.round(p.base_price / 100)),
     compare_price: p.compare_price ? String(Math.round(p.compare_price / 100)) : '',
     hsn_code: p.hsn_code || '',
@@ -263,6 +266,7 @@ function ProductEditor({
   const [categories, setCategories] = useState<Category[]>([])
   const [saving, setSaving]       = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [videoUploading, setVideoUploading] = useState(false)
   const [toast, setToast]         = useState<{ msg: string; type: 'ok' | 'err' } | null>(null)
   const [slugManual, setSlugManual] = useState(!!initial)
 
@@ -322,6 +326,7 @@ function ProductEditor({
       description: form.description || undefined,
       fabric_care: form.fabric_care || undefined,
       youtube_url: form.youtube_url || undefined,
+      video_url: form.video_url || undefined,
       category_id: form.category_id || undefined,
       base_price: Math.round(priceNum * 100),
       compare_price: form.compare_price ? Math.round(parseFloat(form.compare_price) * 100) : undefined,
@@ -502,6 +507,20 @@ function ProductEditor({
 
   // ── Photos helpers ────────────────────────────────────────────────────────
 
+  async function onUploadVideo(file: File | null | undefined) {
+    if (!file) return
+    setVideoUploading(true)
+    try {
+      const { url } = await uploadAdminMedia(file, 'products/video')
+      setForm(f => ({ ...f, video_url: url }))
+      showToast('Video uploaded')
+    } catch (e: any) {
+      showToast(e?.message || 'Video upload failed — is Cloudinary configured?', 'err')
+    } finally {
+      setVideoUploading(false)
+    }
+  }
+
   async function onUpload(files: FileList | null) {
     if (!files || !form.id) return
     setUploading(true)
@@ -640,14 +659,29 @@ function ProductEditor({
               />
               <p className="text-[11px] text-[#6b6b6b] mt-1">Shown in the Fabric &amp; Care tab on the product page.</p>
             </Field>
-            <Field label="YouTube Video URL">
+            <Field label="Product Video (paste link or upload)">
               <input
                 value={form.youtube_url}
                 onChange={e => setForm(f => ({ ...f, youtube_url: e.target.value }))}
                 className="inp"
-                placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                placeholder="YouTube link — watch, youtu.be, or Shorts"
               />
-              <p className="text-[11px] text-[#6b6b6b] mt-1">Optional — shown as an embedded video below the product description tabs.</p>
+              <div className="flex items-center gap-3 mt-2">
+                <label className="inline-flex items-center px-3 py-2 text-[10px] uppercase tracking-widest bg-[#faf8f5] border border-[#e8e4e0] cursor-pointer hover:bg-[#0a0a0a] hover:text-white transition-colors">
+                  {videoUploading ? 'Uploading…' : '+ Upload video file'}
+                  <input
+                    type="file" accept="video/mp4,video/webm,video/*" hidden disabled={videoUploading}
+                    onChange={e => onUploadVideo(e.target.files?.[0])}
+                  />
+                </label>
+                {form.video_url && (
+                  <span className="text-[11px] text-[#2e7d32] flex items-center gap-2">
+                    Video uploaded ✓
+                    <button type="button" onClick={() => setForm(f => ({ ...f, video_url: '' }))} className="text-red-500 underline">remove</button>
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-[#6b6b6b] mt-1">Paste any YouTube link (watch, youtu.be, Shorts) OR upload an .mp4/.webm file. Shows as a video below the description.</p>
             </Field>
           </Card>
 

@@ -6,6 +6,7 @@ import CartIcon from './CartIcon'
 import MobileMenu from './MobileMenu'
 import AnnouncementBar from './AnnouncementBar'
 import { useAuthStore } from '@/lib/store/useAuthStore'
+import { categoriesApi, type Category } from '@/lib/api/categories'
 
 // Matches design reference: Shop, Dresses, Tops, Bottoms, Bags, About
 const NAV_LINKS = [
@@ -26,6 +27,17 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
   const { isLoggedIn } = useAuthStore()
+  const [cats, setCats] = useState<Category[]>([])
+
+  // Load real categories for the search "browse categories" grid.
+  useEffect(() => {
+    categoriesApi.getAll()
+      .then(d => {
+        const list = Array.isArray(d) ? d : ((d as any)?.data || [])
+        setCats(list.filter((c: Category) => c.is_active))
+      })
+      .catch(() => {})
+  }, [])
 
   // Transparent nav: only on home page when not scrolled (matches design reference)
   const isHome = pathname === '/'
@@ -230,19 +242,42 @@ export default function Header() {
                 </svg>
               </button>
             </div>
-            <div className="w-full max-w-[600px] mt-10 flex flex-col gap-2">
-              {['Dresses', 'Tops', 'Bags', 'New Arrivals', 'Sale'].map(term => (
-                <button
-                  key={term}
-                  onClick={() => {
-                    setSearchOpen(false)
-                    router.push(`/shop/${term.toLowerCase().replace(/ /g, '-')}/`)
-                  }}
-                  className="text-left py-3 border-b border-white/10 text-white/70 hover:text-white font-sans text-[0.84rem] tracking-[0.12em] uppercase transition-colors duration-200"
-                >
-                  {term}
-                </button>
-              ))}
+            <div className="w-full max-w-[600px] mt-10">
+              {/* Quick links */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {[{ label: 'Shop All', slug: '' }, { label: 'New Arrivals', slug: 'new-arrivals' }, { label: 'Sale', slug: 'sale' }].map(q => (
+                  <button
+                    key={q.label}
+                    onClick={() => { setSearchOpen(false); router.push(`/shop/${q.slug ? q.slug + '/' : ''}`) }}
+                    className="px-4 py-2 rounded-full border border-white/25 text-white/80 hover:bg-white hover:text-[#0A0806] font-sans text-[0.7rem] tracking-[0.18em] uppercase transition-colors"
+                  >
+                    {q.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Category browser — real categories with images */}
+              {cats.length > 0 && (
+                <>
+                  <p className="text-[10px] tracking-[0.28em] uppercase text-white/40 mb-3">Browse Categories</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[48vh] overflow-y-auto pb-4">
+                    {cats.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => { setSearchOpen(false); router.push(`/shop/${c.slug}/`) }}
+                        className="group relative overflow-hidden rounded aspect-[4/3] bg-[#1a1208]"
+                        aria-label={c.name}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        {c.image_url && (
+                          <img src={c.image_url} alt="" className="absolute inset-0 w-full h-full object-cover opacity-55 group-hover:opacity-75 group-hover:scale-105 transition-all duration-300" />
+                        )}
+                        <span className="absolute inset-0 flex items-center justify-center text-white font-serif text-[1.05rem] tracking-wide text-center px-2">{c.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

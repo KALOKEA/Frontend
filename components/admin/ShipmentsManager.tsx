@@ -626,7 +626,7 @@ export default function ShipmentsManager() {
                           >Cancel</button>
                         </>
                       )}
-                      <Link href={`/admin/orders/${order.id}/`}
+                      <Link href={`/admin/order-detail/?id=${order.id}`}
                         className="px-3 py-1.5 text-[10px] uppercase tracking-widest border border-[#e8e4e0] text-[#6b6b6b] hover:text-[#0a0a0a] hover:border-[#0a0a0a]"
                       >View</Link>
                     </div>

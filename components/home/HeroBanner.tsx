@@ -30,8 +30,10 @@ function parseSlides(c: HomepageContent): HeroSlide[] {
   }]
 }
 
-export default function HeroBanner() {
-  const [c, setC] = useState<HomepageContent>(HERO_DEFAULTS)
+export default function HeroBanner({ initialCms }: { initialCms?: Record<string, string> | null }) {
+  const [c, setC] = useState<HomepageContent>(
+    initialCms ? ({ ...HERO_DEFAULTS, ...initialCms } as HomepageContent) : HERO_DEFAULTS,
+  )
   const [mounted, setMounted] = useState(false)
   const [slideIdx, setSlideIdx] = useState(0)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -53,7 +55,9 @@ export default function HeroBanner() {
   }, [slideIdx, slides.length])
 
   const current = slides[Math.min(slideIdx, slides.length - 1)]
-  const isVideo = current.mode === 'video' && !!current.video
+  // Video plays whenever a video URL is present — pasting a link is enough, no
+  // separate "mode" toggle needed. To show the image instead, clear the URL.
+  const isVideo = !!current.video
 
   const goTo = (i: number) => {
     if (timerRef.current) clearTimeout(timerRef.current)
