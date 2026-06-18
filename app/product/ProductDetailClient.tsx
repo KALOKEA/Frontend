@@ -11,6 +11,7 @@ import SizeGuidePopup from '@/components/product/SizeGuidePopup'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
 import CouponOfferBadge from '@/components/product/CouponOfferBadge'
+import { youTubeId, youTubeEmbed } from '@/lib/utils/youtube'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { trackViewItem, metaViewContent } from '@/lib/analytics'
 import { addRecentlyViewed } from '@/lib/hooks/useRecentlyViewed'
@@ -505,14 +506,12 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
         {/* YouTube Video Embed */}
         {(() => {
-          const ytUrl = product.youtube_url
-          if (!ytUrl) return null
-          // Extract YouTube video ID from various URL formats
-          const match = ytUrl.match(
-            /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
-          )
-          const videoId = match?.[1]
-          if (!videoId) return null
+          // Show a product video from EITHER a YouTube link (any format incl.
+          // Shorts) OR a directly-uploaded .mp4/.webm. Robust parser is shared
+          // with the homepage hero/editorial so behaviour is identical everywhere.
+          const ytId = youTubeId(product.youtube_url)
+          const mp4 = product.video_url
+          if (!ytId && !mp4) return null
           return (
             <div className="mt-12 pt-10 border-t border-[#E0D4C4]">
               <h2 className="font-serif text-xl text-[#0a0a0a] mb-4">Watch the Video</h2>
@@ -526,18 +525,22 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                   background: '#0a0a0a',
                 }}
               >
-                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
-                  title={`${product.name} — video`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  style={{
-                    position: 'absolute',
-                    top: 0, left: 0,
-                    width: '100%', height: '100%',
-                    border: 0,
-                  }}
-                />
+                {ytId ? (
+                  <iframe
+                    src={youTubeEmbed(ytId)}
+                    title={`${product.name} — video`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                  />
+                ) : (
+                  <video
+                    src={mp4}
+                    controls
+                    playsInline
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, objectFit: 'cover' }}
+                  />
+                )}
               </div>
             </div>
           )

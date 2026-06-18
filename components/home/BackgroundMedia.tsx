@@ -1,4 +1,5 @@
 'use client'
+import { youTubeId, youTubeBackgroundEmbed } from '@/lib/utils/youtube'
 
 // Shared hero/editorial background media renderer.
 // Fixes two issues:
@@ -8,14 +9,8 @@
 //      (rendered as a muted, autoplay, looping background iframe) AND a directly
 //      uploaded .mp4/.webm file (rendered with a native <video> element).
 
-/** Extract an 11-char YouTube id from watch / shorts / youtu.be / embed URLs. */
-export function youTubeId(url: string): string | null {
-  if (!url) return null
-  const m = url.match(
-    /(?:youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/|v\/|live\/)|youtu\.be\/)([\w-]{11})/,
-  )
-  return m ? m[1] : null
-}
+// Re-exported so any existing `import { youTubeId } from './BackgroundMedia'` keeps working.
+export { youTubeId }
 
 interface Props {
   image: string
@@ -51,7 +46,7 @@ export default function BackgroundMedia({
         // fill the panel (min-width/height + aspect-ratio) gives an object-cover
         // effect that no plain iframe otherwise has.
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&fs=0&iv_load_policy=3`}
+          src={youTubeBackgroundEmbed(ytId)}
           title="Background video"
           aria-hidden="true"
           tabIndex={-1}
