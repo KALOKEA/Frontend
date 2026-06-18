@@ -58,6 +58,10 @@ export default function BackgroundMedia({
         <video
           key={video}
           src={video}
+          // Poster = the hero image, shown instantly while the mp4 buffers so the
+          // panel is never a blank dark box on first load (the video equivalent of
+          // the image-flash fix). Falls back to a Cloudinary first-frame .jpg.
+          poster={image || (video ? video.replace(/\.(mp4|webm|mov|m4v)(\?.*)?$/i, '.jpg') : undefined)}
           autoPlay
           muted
           loop
