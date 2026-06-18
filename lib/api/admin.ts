@@ -67,6 +67,7 @@ export interface PendingReview {
   comment?: string
   created_at: string
   users?: { name?: string }
+  guest_name?: string
   products?: { name?: string }
 }
 
@@ -109,6 +110,7 @@ export interface AllReview {
   admin_replied_at?: string
   created_at: string
   users?: { name?: string }
+  guest_name?: string
   products?: { name?: string; slug?: string }
 }
 
@@ -226,6 +228,8 @@ export const adminApi = {
   replyToReview: (id: string, reply: string) => api.post(`/reviews/${id}/reply`, { reply }),
   flagReview: (id: string, flagged: boolean, flagReason?: string) =>
     api.post(`/reviews/${id}/flag`, { flagged, flag_reason: flagReason }),
+  createReview: (data: { product_id: string; rating: number; guest_name: string; title?: string; body?: string; created_at?: string }) =>
+    api.post('/reviews/admin/create', data),
 
   // returns
   listReturns: () => api.get<ReturnRequest[]>('/returns'),

@@ -12,6 +12,8 @@ export interface ReviewItem {
   created_at: string
   media_urls?: string[]
   users?: { name?: string }
+  /** Display name for admin-seeded reviews (no linked user). */
+  guest_name?: string
   /** Backend may join products data on getMyReviews */
   products?: { name?: string; slug?: string }
 }

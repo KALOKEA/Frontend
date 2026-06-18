@@ -270,7 +270,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                   <div className="flex items-center gap-2">
                     <Stars rating={r.rating} label={`Rated ${r.rating} out of 5 stars`} />
                     <span className="text-xs font-sans font-medium text-[#0a0a0a]">
-                      {r.users?.name || 'Verified Customer'}
+                      {r.users?.name || r.guest_name || 'Verified Customer'}
                     </span>
                   </div>
                   <span className="text-[10px] text-[#6b6b6b]">

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { adminApi, type PendingReview, type AllReview } from '@/lib/api/admin'
 import { useToast } from '@/components/ui/Toast'
 import Spinner from '@/components/ui/Spinner'
+import AddReviewForm from '@/components/admin/AddReviewForm'
 
 type Tab = 'pending' | 'all'
 
@@ -138,6 +139,8 @@ export default function AdminReviewsPage() {
           )}
         </div>
       </div>
+
+      <AddReviewForm onCreated={() => { loadPending(); if (tab === 'all') loadAll(allPage) }} />
 
       {/* Tabs */}
       <div className="flex gap-0 mb-6 border-b border-[#e8e4e0]">
