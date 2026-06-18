@@ -90,7 +90,7 @@ const SECTIONS = [
       { key: 'hero_cta2_label', label: 'Button 2 label',       hint: 'e.g. New Arrivals' },
       { key: 'hero_cta2_link',  label: 'Button 2 link',        hint: 'e.g. /shop?tag=new-arrivals' },
       { key: 'hero_image_url',  label: 'Hero image URL',       hint: 'Direct image URL for the hero panel' },
-      { key: 'hero_video_url',  label: 'Hero video (upload or URL)', hint: 'mp4/webm — leave empty to use image instead' },
+      { key: 'hero_video_url',  label: 'Hero video (upload or URL)', hint: 'Paste a YouTube link or upload .mp4/.webm — leave empty to use the image' },
     ],
   },
   {
@@ -135,7 +135,7 @@ const SECTIONS = [
       { key: 'editorial_cta_label', label: 'Button label',               hint: 'e.g. Explore the Edit' },
       { key: 'editorial_cta_link',  label: 'Button link',                hint: 'e.g. /shop/?tag=editorial' },
       { key: 'editorial_image_url', label: 'Background image',           hint: 'Upload or paste image URL' },
-      { key: 'editorial_video_url', label: 'Background video (optional)', hint: 'Upload mp4/webm — overrides image when mode = video' },
+      { key: 'editorial_video_url', label: 'Background video (optional)', hint: 'Paste a YouTube link or upload .mp4/.webm — overrides image when mode = video' },
     ],
   },
   {
@@ -157,6 +157,33 @@ const SECTIONS = [
     fields: [
       { key: 'newsletter_heading', label: 'Newsletter heading', hint: 'e.g. Join the Kalokea Circle' },
       { key: 'newsletter_subtext', label: 'Newsletter subtext', hint: 'Short description below heading', long: true },
+    ],
+  },
+  {
+    title: 'As Seen In',
+    fields: [
+      { key: 'press_heading', label: 'Section label', hint: 'e.g. As Seen In' },
+    ],
+  },
+  {
+    title: 'Shop the Look',
+    fields: [
+      { key: 'stl_eyebrow', label: 'Eyebrow label',  hint: 'e.g. Styled For You' },
+      { key: 'stl_heading', label: 'Section heading', hint: 'e.g. Shop the Look' },
+    ],
+  },
+  {
+    title: 'Why Kalokea',
+    fields: [
+      { key: 'why_eyebrow', label: 'Eyebrow label',  hint: 'e.g. Our Promise' },
+      { key: 'why_heading', label: 'Section heading', hint: 'e.g. Why KALOKEA' },
+    ],
+  },
+  {
+    title: 'Instagram Section',
+    fields: [
+      { key: 'instagram_eyebrow', label: 'Eyebrow label', hint: 'e.g. Follow Along' },
+      { key: 'instagram_subtext', label: 'Subtext',       hint: 'e.g. on Instagram' },
     ],
   },
 ] satisfies { title: string; fields: { key: string; label: string; hint: string; long?: boolean }[] }[]

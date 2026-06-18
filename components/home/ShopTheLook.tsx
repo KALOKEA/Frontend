@@ -14,10 +14,14 @@ const DEFAULT_LOOKS: Look[] = JSON.parse(HERO_DEFAULTS.stl_looks)
 
 export default function ShopTheLook() {
   const [looks, setLooks] = useState<Look[]>(DEFAULT_LOOKS)
+  const [eyebrow, setEyebrow] = useState<string>(HERO_DEFAULTS.stl_eyebrow)
+  const [heading, setHeading] = useState<string>(HERO_DEFAULTS.stl_heading)
 
   useEffect(() => {
     getHomepageData()
       .then(d => {
+        if (d.cms.stl_eyebrow) setEyebrow(d.cms.stl_eyebrow)
+        if (d.cms.stl_heading) setHeading(d.cms.stl_heading)
         try {
           const parsed = JSON.parse(d.cms.stl_looks || '')
           if (Array.isArray(parsed) && parsed.length > 0) setLooks(parsed)
@@ -53,7 +57,7 @@ export default function ShopTheLook() {
                 marginBottom: 10,
               }}
             >
-              Styled For You
+              {eyebrow}
             </span>
             <h2
               className="font-serif"
@@ -64,8 +68,7 @@ export default function ShopTheLook() {
                 color: '#0A0806',
               }}
             >
-              Shop the{' '}
-              <em style={{ fontStyle: 'italic', fontWeight: 300 }}>Look</em>
+              {heading}
             </h2>
           </div>
         </div>

@@ -179,6 +179,14 @@ export const HERO_DEFAULTS: HomepageContent = {
   bestseller_eyebrow: 'Most Loved',
   testimonials_heading: 'What Our Customers Say',
   testimonials_eyebrow: 'Reviews',
+  // Section headings/eyebrows that were previously hardcoded — now editable.
+  press_heading: 'As Seen In',
+  stl_eyebrow: 'Styled For You',
+  stl_heading: 'Shop the Look',
+  why_eyebrow: 'Our Promise',
+  why_heading: 'Why KALOKEA',
+  instagram_eyebrow: 'Follow Along',
+  instagram_subtext: 'on Instagram',
   press_logos: JSON.stringify([
     { name: 'Vogue India',     url: 'https://www.vogue.in/' },
     { name: 'Elle',            url: 'https://elle.in/' },

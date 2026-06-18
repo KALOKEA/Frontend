@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
+import BackgroundMedia from './BackgroundMedia'
 
 interface EditorialSlide {
   image: string
@@ -62,34 +63,16 @@ export default function EditorialBanner() {
       style={{ margin: 0 }}
     >
       {/* Left — image / carousel panel */}
-      <div style={{ position: 'relative', overflow: 'hidden' }}>
-        {isVideo ? (
-          <video
-            key={current.video}
-            src={current.video}
-            autoPlay muted loop playsInline
-            aria-hidden="true"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
-          />
-        ) : (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            key={current.image}
-            src={current.image}
-            alt={c.editorial_heading || 'The Edit — Kalokea'}
-            className="group-hover:scale-[1.04]"
-            style={{
-              width: '100%', height: '100%',
-              objectFit: 'cover', objectPosition: 'center',
-              transition: 'transform 8s ease',
-            }}
-            loading="lazy"
-            onError={(e) => {
-              const el = e.currentTarget as HTMLImageElement
-              el.src = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&fit=crop'
-            }}
-          />
-        )}
+      <div className="k-editorial-media">
+        <BackgroundMedia
+          image={current.image}
+          video={current.video}
+          isVideo={isVideo}
+          alt={c.editorial_heading || 'The Edit — Kalokea'}
+          objectPosition="center"
+          mediaClassName="group-hover:scale-[1.04] transition-transform duration-[8000ms] ease-out"
+          fallbackSrc="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85&fit=crop"
+        />
 
         {/* Slide dots — visible when multiple slides */}
         {slides.length > 1 && (

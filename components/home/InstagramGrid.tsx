@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 
 const INSTAGRAM_HANDLE = 'kalokea.fashion'
 const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}`
@@ -34,6 +35,17 @@ const InstagramIcon = () => (
 export default function InstagramGrid() {
   const [posts, setPosts] = useState<IgPost[] | null>(null)
   const [loading, setLoading] = useState(true)
+  const [eyebrow, setEyebrow] = useState<string>(HERO_DEFAULTS.instagram_eyebrow)
+  const [subtext, setSubtext] = useState<string>(HERO_DEFAULTS.instagram_subtext)
+
+  useEffect(() => {
+    getHomepageData()
+      .then(d => {
+        if (d.cms.instagram_eyebrow) setEyebrow(d.cms.instagram_eyebrow)
+        if (d.cms.instagram_subtext) setSubtext(d.cms.instagram_subtext)
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     const BASE = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
@@ -63,7 +75,7 @@ export default function InstagramGrid() {
 
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="eyebrow-center mb-4">Follow Along</div>
+          <div className="eyebrow-center mb-4">{eyebrow}</div>
           <h2 className="font-serif font-light text-[#0A0908]" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)' }}>
             <a
               href={INSTAGRAM_URL}
@@ -74,7 +86,7 @@ export default function InstagramGrid() {
               @{INSTAGRAM_HANDLE}
             </a>
           </h2>
-          <p className="text-[12px] font-sans text-[#6B5E55] mt-2">on Instagram</p>
+          <p className="text-[12px] font-sans text-[#6B5E55] mt-2">{subtext}</p>
         </div>
 
         {/* 3×2 grid */}

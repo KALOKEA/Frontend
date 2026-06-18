@@ -1,4 +1,6 @@
 'use client'
+import { useEffect, useState } from 'react'
+import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
 // Matches reference .why section exactly:
 // — padding:80px 0; background:var(--white)=#FFFFFF (NOT #FDFAF6)
 // — section header CENTERED: justify-content:center;text-align:center;flex-direction:column;gap:8px
@@ -39,6 +41,18 @@ const REASONS = [
 ]
 
 export default function WhyKalokea() {
+  const [eyebrow, setEyebrow] = useState<string>(HERO_DEFAULTS.why_eyebrow)
+  const [heading, setHeading] = useState<string>(HERO_DEFAULTS.why_heading)
+
+  useEffect(() => {
+    getHomepageData()
+      .then(d => {
+        if (d.cms.why_eyebrow) setEyebrow(d.cms.why_eyebrow)
+        if (d.cms.why_heading) setHeading(d.cms.why_heading)
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <section className="k-section-py" style={{ background: '#FFFFFF' }}>
       <div className="k-container">
@@ -66,7 +80,7 @@ export default function WhyKalokea() {
               display: 'block',
             }}
           >
-            Our Promise
+            {eyebrow}
           </span>
           <h2
             className="font-serif"
@@ -77,7 +91,7 @@ export default function WhyKalokea() {
               color: '#0A0806',
             }}
           >
-            Why <em style={{ fontStyle: 'italic', fontWeight: 300 }}>KALOKEA</em>
+            {heading}
           </h2>
         </div>
 

@@ -11,10 +11,12 @@ const DEFAULT_LOGOS: PressLogo[] = JSON.parse(HERO_DEFAULTS.press_logos)
 
 export default function PressStrip() {
   const [logos, setLogos] = useState<PressLogo[]>(DEFAULT_LOGOS)
+  const [heading, setHeading] = useState<string>(HERO_DEFAULTS.press_heading)
 
   useEffect(() => {
     getHomepageData()
       .then(d => {
+        if (d.cms.press_heading) setHeading(d.cms.press_heading)
         try {
           const parsed = JSON.parse(d.cms.press_logos || '')
           if (Array.isArray(parsed) && parsed.length > 0) setLogos(parsed)
@@ -54,7 +56,7 @@ export default function PressStrip() {
             whiteSpace: 'nowrap',
           }}
         >
-          As Seen In
+          {heading}
         </span>
 
         {/* Logos */}

@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
+import BackgroundMedia from './BackgroundMedia'
 
 interface HeroSlide {
   image: string
@@ -70,26 +71,13 @@ export default function HeroBanner() {
         className="md:hidden relative overflow-hidden"
         style={{ height: '56vw', minHeight: 220, maxHeight: 400 }}
       >
-        {isVideo ? (
-          <video
-            key={current.video}
-            src={current.video}
-            autoPlay muted loop playsInline
-            aria-hidden="true"
-            className="w-full h-full object-cover object-top"
-          />
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={current.image}
-            src={current.image}
-            alt="Kalokea — Women's Fashion Collection"
-            className="w-full h-full object-cover object-top"
-            loading="eager"
-            // @ts-expect-error fetchpriority is valid HTML but not yet in React types
-            fetchpriority="high"
-          />
-        )}
+        <BackgroundMedia
+          image={current.image}
+          video={current.video}
+          isVideo={isVideo}
+          alt="Kalokea — Women's Fashion Collection"
+          priority
+        />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }}
@@ -194,26 +182,14 @@ export default function HeroBanner() {
 
       {/* ── Right: image / carousel panel — desktop only ── */}
       <div className="hidden md:block relative overflow-hidden" style={{ minHeight: '100vh' }}>
-        {isVideo ? (
-          <video
-            key={current.video}
-            src={current.video}
-            autoPlay muted loop playsInline
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover object-top"
-          />
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={current.image}
-            src={current.image}
-            alt="Kalokea — Women's Fashion Collection"
-            className="absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-700"
-            loading="eager"
-            // @ts-expect-error fetchpriority is valid HTML but not yet in React types
-            fetchpriority="high"
-          />
-        )}
+        <BackgroundMedia
+          image={current.image}
+          video={current.video}
+          isVideo={isVideo}
+          alt="Kalokea — Women's Fashion Collection"
+          priority
+          mediaClassName="transition-opacity duration-700"
+        />
 
         {/* Vignette */}
         <div
