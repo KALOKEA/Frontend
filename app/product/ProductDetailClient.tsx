@@ -10,6 +10,7 @@ import BackInStockNotify from '@/components/product/BackInStockNotify'
 import SizeGuidePopup from '@/components/product/SizeGuidePopup'
 import Spinner from '@/components/ui/Spinner'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
+import CouponOfferBadge from '@/components/product/CouponOfferBadge'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { trackViewItem, metaViewContent } from '@/lib/analytics'
 import { addRecentlyViewed } from '@/lib/hooks/useRecentlyViewed'
@@ -341,6 +342,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                 </>
               )}
             </div>
+            <CouponOfferBadge price={product.base_price} />
             <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
 
             {/* Delivery estimate — computed client-side from current IST date.

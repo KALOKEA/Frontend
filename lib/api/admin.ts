@@ -43,6 +43,7 @@ export interface Coupon {
   used_count?: number
   valid_until?: string
   is_active: boolean
+  is_featured?: boolean
 }
 
 export interface AdminCustomer {

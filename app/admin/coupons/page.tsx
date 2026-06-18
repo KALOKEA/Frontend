@@ -14,11 +14,12 @@ interface FormState {
   max_per_user: string
   valid_until: string
   is_active: boolean
+  is_featured: boolean
 }
 
 const emptyForm = (): FormState => ({
   code: '', type: 'percent', value: '', min_order_value: '',
-  max_uses: '', max_per_user: '', valid_until: '', is_active: true,
+  max_uses: '', max_per_user: '', valid_until: '', is_active: true, is_featured: false,
 })
 
 function couponToForm(c: Coupon): FormState {
@@ -32,6 +33,7 @@ function couponToForm(c: Coupon): FormState {
     max_per_user: c.max_per_user ? String(c.max_per_user) : '',
     valid_until: c.valid_until ? c.valid_until.slice(0, 10) : '',
     is_active: c.is_active,
+    is_featured: c.is_featured ?? false,
   }
 }
 
@@ -70,6 +72,7 @@ export default function AdminCouponsPage() {
       max_per_user: form.max_per_user ? parseInt(form.max_per_user, 10) : undefined,
       valid_until: form.valid_until || undefined,
       is_active: form.is_active,
+      is_featured: form.is_featured,
     }
     try {
       if (form.id) {
@@ -262,6 +265,16 @@ export default function AdminCouponsPage() {
                 className="w-4 h-4"
               />
               Active (customers can use this coupon)
+            </label>
+
+            <label className="flex items-center gap-2 text-sm text-[#0a0a0a] mb-5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.is_featured}
+                onChange={e => setForm(f => f ? { ...f, is_featured: e.target.checked } : f)}
+                className="w-4 h-4"
+              />
+              Feature on product pages (shows &ldquo;Get it at &#8377;X&rdquo;)
             </label>
 
             {msg && <p className="text-sm text-red-600 mb-3">{msg}</p>}
