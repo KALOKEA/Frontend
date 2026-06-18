@@ -3,10 +3,11 @@ import api from './client'
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 // ─── Aggregated homepage data ────────────────────────────────────────────────
-// Stale-while-revalidate singleton:
-//  - Cold load  : fires 3 sub-requests in parallel, caches result
+// Stale-while-revalidate singleton backed by ONE aggregated endpoint (/homepage
+// returns cms + categories + featured + bestsellers server-side, in parallel):
+//  - Cold load  : single request → cached result
 //  - Warm load  : returns stale data instantly, revalidates in background
-//  - Every component calls getHomepageData() — one network burst per TTL window
+//  - Every component calls getHomepageData() — one network request per TTL window
 // TTL: 5 min (CMS content rarely changes; products update on publish)
 
 export interface HomepageData {
@@ -39,17 +40,15 @@ function parallelFetch(url: string): Promise<any> {
 }
 
 function _doFetch(): Promise<HomepageData> {
-  return Promise.all([
-    parallelFetch(`${BASE_URL}/homepage`),
-    parallelFetch(`${BASE_URL}/products?sort=newest&limit=8&is_active=true`),
-    parallelFetch(`${BASE_URL}/products?sort=bestseller&limit=3&is_active=true`),
-  ]).then(([homepageJson, newestJson, bestsellerJson]) => {
+  // Single aggregated request — /homepage returns cms + categories + featured +
+  // bestsellers in one round-trip (previously 3 separate calls).
+  return parallelFetch(`${BASE_URL}/homepage`).then((homepageJson) => {
     const raw = homepageJson?.data ?? homepageJson
     const result: HomepageData = {
       cms: { ...HERO_DEFAULTS, ...(raw?.cms ?? {}) } as HomepageContent,
       categories: raw?.categories ?? [],
-      featured_products: newestJson?.data ?? raw?.featured_products ?? [],
-      bestsellers: bestsellerJson?.data ?? [],
+      featured_products: raw?.featured_products ?? [],
+      bestsellers: raw?.bestsellers ?? [],
     }
     _homepageStale = result
     return result
