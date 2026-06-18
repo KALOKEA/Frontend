@@ -2,25 +2,20 @@
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { productsApi, type Product } from '@/lib/api/products'
+import { type Product } from '@/lib/api/products'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 import ProductCard from '@/components/shop/ProductCard'
 
-/*
- * Matches reference #home .bestsellers exactly.
- * CMS keys: bestseller_heading, bestseller_eyebrow
- */
 export default function BestSellers() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
 
   useEffect(() => {
-    productsApi.getAll({ sort: 'bestseller', limit: '3' })
-      .then((res) => setProducts(res.data || []))
-      .catch(() => setProducts([]))
+    getHomepageData()
+      .then(d => { setProducts(d.bestsellers); setCms(d.cms) })
+      .catch(() => {})
       .finally(() => setLoading(false))
-    getHomepageData().then(d => setCms(d.cms)).catch(() => {})
   }, [])
 
   if (!loading && products.length === 0) return null
@@ -87,7 +82,7 @@ export default function BestSellers() {
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#7C4A2D' }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#0A0806' }}
           >
-            See All <ArrowRight size={12} className="inline ml-1" />
+            See All <ArrowRight size={12} className="inline ml-1" aria-hidden={true} />
           </Link>
         </div>
 
@@ -107,6 +102,7 @@ export default function BestSellers() {
             {products.map((p, i) => (
               <div key={p.id} className="reveal">
                 <div
+                  aria-hidden="true"
                   className="font-serif"
                   style={{
                     fontSize: '3.5rem',

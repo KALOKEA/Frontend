@@ -27,7 +27,7 @@ function StatusBadge({ status }: { status: string }) {
   const m = STATUS_META[status] || { label: status, bg: 'bg-gray-100', text: 'text-gray-600', dot: 'bg-gray-400' }
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] uppercase tracking-widest font-medium rounded-full ${m.bg} ${m.text}`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${m.dot}`} />
+      <span aria-hidden="true" className={`w-1.5 h-1.5 rounded-full ${m.dot}`} />
       {m.label}
     </span>
   )
@@ -37,7 +37,7 @@ function OrderProgress({ status }: { status: string }) {
   const idx = STATUS_STEPS.indexOf(status)
   if (idx === -1) return null
   return (
-    <div className="flex items-center gap-0 mb-4">
+    <div aria-hidden="true" className="flex items-center gap-0 mb-4">
       {STATUS_STEPS.map((step, i) => {
         const done = i <= idx
         const last = i === STATUS_STEPS.length - 1
@@ -90,6 +90,20 @@ export default function OrdersPage() {
 
   // Retry Payment
   const [retryingId, setRetryingId] = useState<string | null>(null)
+
+  // Escape key to close any open modal
+  useEffect(() => {
+    const anyOpen = !!cancelFor || !!returnFor || !!exchangeFor
+    if (!anyOpen) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      if (cancelFor) setCancelFor(null)
+      else if (returnFor) setReturnFor(null)
+      else if (exchangeFor) setExchangeFor(null)
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [cancelFor, returnFor, exchangeFor])
 
   function load() {
     Promise.all([
@@ -220,8 +234,8 @@ export default function OrdersPage() {
         <h2 className="font-serif text-2xl text-[#0a0a0a]">My Orders</h2>
       </div>
       <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-[#faf8f5] border border-[#e8e4e0] flex items-center justify-center mb-5">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <div aria-hidden="true" className="w-16 h-16 rounded-full bg-[#faf8f5] border border-[#e8e4e0] flex items-center justify-center mb-5">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
           </svg>
         </div>
@@ -251,7 +265,7 @@ export default function OrdersPage() {
             },
           ].map(b => (
             <div key={b.label}>
-              <div className="flex justify-center mb-2">{b.icon}</div>
+              <div aria-hidden="true" className="flex justify-center mb-2">{b.icon}</div>
               <p className="text-[11px] font-medium text-[#0a0a0a]">{b.label}</p>
               <p className="text-[10px] text-[#6b6b6b]">{b.sub}</p>
             </div>
@@ -284,6 +298,8 @@ export default function OrdersPage() {
               {/* Order header — always visible */}
               <button
                 onClick={() => setExpanded(isOpen ? null : order.id)}
+                aria-expanded={isOpen}
+                aria-label={`Order #${order.order_number} — ${isOpen ? 'collapse' : 'expand'} details`}
                 className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 hover:bg-[#faf8f5] transition-colors"
               >
                 <div className="flex items-center gap-4 min-w-0">
@@ -306,6 +322,7 @@ export default function OrdersPage() {
                   <span className="font-serif text-base text-[#0a0a0a]">{formatPrice(order.total)}</span>
                   <svg
                     width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" strokeWidth="2"
+                    aria-hidden="true"
                     className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
                   >
                     <polyline points="6 9 12 15 18 9"/>
@@ -328,7 +345,7 @@ export default function OrdersPage() {
                         <p className="text-sm font-medium text-[#0a0a0a]">{order.tracking_number}</p>
                         {order.courier_name && <p className="text-[11px] text-[#6b6b6b]">{order.courier_name}</p>}
                       </div>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </div>
                   )}
 
@@ -401,7 +418,7 @@ export default function OrdersPage() {
                       onClick={() => openInvoice(order.id)}
                       className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors"
                     >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                       Invoice
                     </button>
 
@@ -410,7 +427,7 @@ export default function OrdersPage() {
                         onClick={() => setCancelFor(order)}
                         className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-red-500 hover:text-red-700 hover:underline transition-colors"
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                         Cancel Order
                       </button>
                     )}
@@ -424,12 +441,12 @@ export default function OrdersPage() {
                       >
                         {retryingId === order.id ? (
                           <>
-                            <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" strokeOpacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                            <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="10" strokeOpacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
                             Loading…
                           </>
                         ) : (
                           <>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.05"/></svg>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.05"/></svg>
                             Retry Payment
                           </>
                         )}
@@ -441,7 +458,7 @@ export default function OrdersPage() {
                         onClick={() => { setReturnFor(order); setReason(RETURN_REASONS[0]) }}
                         className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#7C4A2D] hover:underline"
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.05"/></svg>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.05"/></svg>
                         Return
                       </button>
                     )}
@@ -450,7 +467,7 @@ export default function OrdersPage() {
                         onClick={() => openExchange(order)}
                         className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-[#7C4A2D] hover:underline"
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
                         Exchange
                       </button>
                     )}
@@ -464,8 +481,9 @@ export default function OrdersPage() {
 
       {/* ── Cancel confirmation modal ──────────────────────────────────────────── */}
       {cancelFor && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCancelFor(null)}>
-          <div className="bg-white w-full max-w-sm p-6 shadow-xl" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/50" onClick={() => setCancelFor(null)} />
+          <div role="dialog" aria-modal="true" aria-label="Cancel order confirmation" className="relative bg-white w-full max-w-sm p-6 shadow-xl" onClick={e => e.stopPropagation()}>
             <h3 className="font-serif text-xl text-[#0a0a0a] mb-1">Cancel this order?</h3>
             <p className="text-xs text-[#6b6b6b] mb-4">Order #{cancelFor.order_number}</p>
             <p className="text-sm text-[#3a3a3a] mb-6 leading-relaxed">
@@ -493,12 +511,13 @@ export default function OrdersPage() {
 
       {/* ── Return modal ──────────────────────────────────────────────────────── */}
       {returnFor && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setReturnFor(null)}>
-          <div className="bg-white w-full max-w-md p-6 shadow-xl" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/50" onClick={() => setReturnFor(null)} />
+          <div role="dialog" aria-modal="true" aria-label="Request a return" className="relative bg-white w-full max-w-md p-6 shadow-xl" onClick={e => e.stopPropagation()}>
             <h3 className="font-serif text-xl text-[#0a0a0a] mb-1">Request a return</h3>
             <p className="text-xs text-[#6b6b6b] mb-5">Order #{returnFor.order_number}</p>
-            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Reason</label>
-            <select value={reason} onChange={e => setReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
+            <label htmlFor="return-reason" className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Reason</label>
+            <select id="return-reason" value={reason} onChange={e => setReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
               {RETURN_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
             <p className="text-[11px] text-[#6b6b6b] mb-5 leading-relaxed">
@@ -516,13 +535,14 @@ export default function OrdersPage() {
 
       {/* ── Exchange modal ────────────────────────────────────────────────────── */}
       {exchangeFor && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setExchangeFor(null)}>
-          <div className="bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/50" onClick={() => setExchangeFor(null)} />
+          <div role="dialog" aria-modal="true" aria-label="Request an exchange" className="relative bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
             <h3 className="font-serif text-xl text-[#0a0a0a] mb-1">Request an exchange</h3>
             <p className="text-xs text-[#6b6b6b] mb-5">Order #{exchangeFor.order_number}</p>
 
-            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Item to exchange</label>
-            <select value={exItemId} onChange={e => loadOptions(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
+            <label htmlFor="ex-item" className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Item to exchange</label>
+            <select id="ex-item" value={exItemId} onChange={e => loadOptions(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
               {(exchangeFor.order_items || []).map(it => (
                 <option key={it.id} value={it.id}>
                   {it.snapshot_name}{[(it as any).snapshot_colour, (it as any).snapshot_size].filter(Boolean).length
@@ -531,11 +551,11 @@ export default function OrdersPage() {
               ))}
             </select>
 
-            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Exchange for</label>
+            <label htmlFor="ex-variant" className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Exchange for</label>
             {exLoadingOpts ? (
               <div className="py-4"><Spinner /></div>
             ) : exOptions && exOptions.variants.length ? (
-              <select value={exVariantId} onChange={e => setExVariantId(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
+              <select id="ex-variant" value={exVariantId} onChange={e => setExVariantId(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
                 <option value="">Select a variant</option>
                 {exOptions.variants.map(v => (
                   <option key={v.id} value={v.id}>
@@ -547,8 +567,8 @@ export default function OrdersPage() {
               <p className="text-xs text-[#6b6b6b] mb-4 py-2">No other variants are currently in stock for this item.</p>
             )}
 
-            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Reason</label>
-            <select value={exReason} onChange={e => setExReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
+            <label htmlFor="ex-reason" className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Reason</label>
+            <select id="ex-reason" value={exReason} onChange={e => setExReason(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
               {EXCHANGE_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
 

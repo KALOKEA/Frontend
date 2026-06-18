@@ -1,6 +1,6 @@
 'use client'
 import { X } from 'lucide-react'
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useRef, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { productsApi, type Product } from '@/lib/api/products'
 import ProductGrid from '@/components/shop/ProductGrid'
@@ -46,10 +46,11 @@ function ActiveFilters() {
         <button
           key={c.label}
           onClick={c.remove}
+          aria-label={`Remove ${c.label} filter`}
           className="flex items-center gap-1.5 px-3 py-1 text-[10px] uppercase tracking-widest bg-[#0a0a0a] text-white hover:bg-[#333] transition-colors"
         >
           {c.label}
-          <X size={9} className="text-[#C4A882]" />
+          <X size={9} className="text-[#C4A882]" aria-hidden={true} />
         </button>
       ))}
       <button
@@ -65,6 +66,24 @@ function ActiveFilters() {
 // ── Mobile filter drawer ────────────────────────────────────────────────────
 
 function MobileFilterDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+
+  // Escape key closes drawer
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [open, onClose])
+
+  // Move focus into drawer when opened; body scroll lock
+  useEffect(() => {
+    if (!open) return
+    document.body.style.overflow = 'hidden'
+    setTimeout(() => closeRef.current?.focus(), 30)
+    return () => { document.body.style.overflow = '' }
+  }, [open])
+
   if (!open) return null
   return (
     <>
@@ -72,17 +91,24 @@ function MobileFilterDrawer({ open, onClose }: { open: boolean; onClose: () => v
       <div
         className="fixed inset-0 bg-black/50 z-40 lg:hidden"
         onClick={onClose}
+        aria-hidden="true"
       />
       {/* Drawer */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl max-h-[85vh] overflow-y-auto lg:hidden">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Product filters"
+        className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl max-h-[85vh] overflow-y-auto lg:hidden"
+      >
         <div className="sticky top-0 bg-white px-5 pt-5 pb-3 border-b border-[#E0D4C4] flex items-center justify-between">
           <h3 className="font-serif text-lg text-[#0a0a0a]">Filter</h3>
           <button
+            ref={closeRef}
             onClick={onClose}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#6B5E55] hover:text-[#0a0a0a] -mr-2"
             aria-label="Close filters"
           >
-            <X size={18} />
+            <X size={18} aria-hidden={true} />
           </button>
         </div>
         <div className="px-5 py-4">
@@ -159,8 +185,10 @@ function ShopContent() {
             <button
               onClick={() => setDrawerOpen(true)}
               className="lg:hidden flex items-center gap-2 px-4 min-h-[44px] border border-[#E0D4C4] text-[11px] uppercase tracking-widest text-[#0A0908] hover:bg-[#F2EAE0] transition-colors"
+              aria-expanded={drawerOpen}
+              aria-controls="mobile-filter-drawer"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
                 <line x1="4" y1="6" x2="20" y2="6" />
                 <line x1="8" y1="12" x2="20" y2="12" />
                 <line x1="12" y1="18" x2="20" y2="18" />
@@ -208,7 +236,7 @@ export default function ShopPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: SHOP_BREADCRUMB }} />
-      <main className="min-h-screen bg-[#FDFAF6]">
+      <div className="min-h-screen bg-[#FDFAF6]">
         <Suspense fallback={
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
             <div className="h-10 w-48 bg-[#E0D4C4] animate-pulse mb-6" />
@@ -225,7 +253,7 @@ export default function ShopPage() {
         }>
           <ShopContent />
         </Suspense>
-      </main>
+      </div>
     </>
   )
 }

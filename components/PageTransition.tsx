@@ -14,7 +14,7 @@ import type { ReactNode } from 'react'
 export default function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   return (
-    <div key={pathname} className="animate-page-enter">
+    <div key={pathname} className="animate-page-enter motion-reduce:animate-none motion-reduce:opacity-100">
       {children}
     </div>
   )

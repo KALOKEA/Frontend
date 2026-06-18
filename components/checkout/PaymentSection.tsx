@@ -33,6 +33,7 @@ export default function PaymentSection({ selected, onSelect, codFeeRupees = 49 }
         <button
           type="button"
           onClick={() => { if (!onlineSelected) onSelect('upi') }}
+          aria-pressed={onlineSelected}
           className="w-full flex items-center gap-3 px-4 py-3 text-left"
         >
           <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
@@ -71,7 +72,7 @@ export default function PaymentSection({ selected, onSelect, codFeeRupees = 49 }
                   onChange={() => onSelect(m.value)}
                   className="accent-[#7C4A2D]"
                 />
-                <span className="text-sm">{m.icon}</span>
+                <span className="text-sm" aria-hidden="true">{m.icon}</span>
                 <span className="text-xs font-sans text-[#0a0a0a]">{m.label}</span>
               </label>
             ))}
@@ -95,7 +96,7 @@ export default function PaymentSection({ selected, onSelect, codFeeRupees = 49 }
           onChange={() => onSelect('cod')}
           className="accent-[#7C4A2D]"
         />
-        <Package size={15} className="shrink-0 text-[#6b6b6b]" />
+        <Package size={15} className="shrink-0 text-[#6b6b6b]" aria-hidden={true} />
         <span className="text-xs font-sans text-[#0a0a0a]">Cash on Delivery</span>
         <span className="ml-auto text-[10px] font-sans text-[#6b6b6b]">+₹{codFeeRupees} fee</span>
       </label>

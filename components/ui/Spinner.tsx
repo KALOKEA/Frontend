@@ -1,6 +1,10 @@
 export default function Spinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const s = { sm: 'w-4 h-4', md: 'w-6 h-6', lg: 'w-8 h-8' }[size]
   return (
-    <div className={`${s} border-2 border-[#e8e4e0] border-t-[#7C4A2D] rounded-full animate-spin`} />
+    <div
+      role="status"
+      aria-label="Loading"
+      className={`${s} border-2 border-[#e8e4e0] border-t-[#7C4A2D] rounded-full animate-spin`}
+    />
   )
 }

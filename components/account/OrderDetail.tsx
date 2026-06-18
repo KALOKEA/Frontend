@@ -4,11 +4,11 @@ import { formatPrice } from '@/lib/utils/formatPrice'
 export default function OrderDetail({ order }: { order: Order }) {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4 text-xs font-sans">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans">
         <div>
           <p className="text-[#6b6b6b] mb-1">Delivery Address</p>
-          <p className="text-[#0a0a0a]">{order.address_snapshot.name}</p>
-          <p className="text-[#6b6b6b]">{order.address_snapshot.line1}, {order.address_snapshot.city}</p>
+          <p className="text-[#0a0a0a]">{order.address_snapshot?.name ?? '—'}</p>
+          <p className="text-[#6b6b6b]">{[order.address_snapshot?.line1, order.address_snapshot?.city].filter(Boolean).join(', ') || '—'}</p>
         </div>
         <div>
           <p className="text-[#6b6b6b] mb-1">Payment</p>

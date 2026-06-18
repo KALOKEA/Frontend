@@ -73,7 +73,7 @@ export default function CartPage() {
             </>
           ) : (
             <p className="text-[11px] font-sans text-[#0a0a0a] font-medium">
-              <PackageCheck size={13} className="inline mr-1 text-[#7C4A2D]" /> You’ve unlocked free shipping!
+              <PackageCheck size={13} className="inline mr-1 text-[#7C4A2D]" aria-hidden={true} /> You’ve unlocked free shipping!
             </p>
           )}
         </div>

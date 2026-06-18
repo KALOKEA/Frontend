@@ -193,21 +193,24 @@ export default function AdminEmailLogPage() {
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 mt-6">
           <button disabled={page === 1} onClick={() => { const p = page - 1; setPage(p); load(p) }}
-            className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronLeft size={14} /></button>
+            aria-label="Previous page"
+            className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronLeft size={14} aria-hidden="true" /></button>
           <span className="px-3 py-1 text-sm text-[#6b6b6b]">{page} / {totalPages}</span>
           <button disabled={page >= totalPages} onClick={() => { const p = page + 1; setPage(p); load(p) }}
-            className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronRight size={14} /></button>
+            aria-label="Next page"
+            className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronRight size={14} aria-hidden="true" /></button>
         </div>
       )}
 
       {/* View/Details Modal */}
       {viewing && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
-          onClick={() => setViewing(null)}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setViewing(null)} />
           <div
-            className="bg-white w-full max-w-lg max-h-[85vh] overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Email detail"
+            className="relative bg-white w-full max-w-lg max-h-[85vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
@@ -218,9 +221,10 @@ export default function AdminEmailLogPage() {
               </div>
               <button
                 onClick={() => setViewing(null)}
+                aria-label="Close"
                 className="text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none ml-4 mt-0.5"
               >
-                <X size={18} />
+                <X size={18} aria-hidden="true" />
               </button>
             </div>
 

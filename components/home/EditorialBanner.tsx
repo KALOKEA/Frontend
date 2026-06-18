@@ -57,6 +57,7 @@ export default function EditorialBanner() {
 
   return (
     <section
+      aria-label="Editorial"
       className="reveal-left group k-editorial"
       style={{ margin: 0 }}
     >
@@ -67,6 +68,7 @@ export default function EditorialBanner() {
             key={current.video}
             src={current.video}
             autoPlay muted loop playsInline
+            aria-hidden="true"
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
           />
         ) : (
@@ -92,17 +94,22 @@ export default function EditorialBanner() {
         {/* Slide dots — visible when multiple slides */}
         {slides.length > 1 && (
           <div
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10"
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-0.5 z-10"
+            role="tablist"
+            aria-label="Editorial slides"
           >
             {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                  i === slideIdx ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'
-                }`}
+                className="p-2 flex items-center justify-center"
                 aria-label={`Go to editorial slide ${i + 1}`}
-              />
+                aria-current={i === slideIdx ? true : undefined}
+              >
+                <span className={`block w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  i === slideIdx ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'
+                }`} />
+              </button>
             ))}
           </div>
         )}

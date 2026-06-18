@@ -19,12 +19,12 @@ export default function AddressCard({ address, onDelete, onSetDefault }: {
       </p>
       <div className="flex gap-3 mt-3">
         {!address.is_default && onSetDefault && (
-          <button onClick={onSetDefault} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] underline">
+          <button onClick={onSetDefault} aria-label={`Set ${address.name}'s address as default`} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] underline py-1 inline-block">
             Set Default
           </button>
         )}
         {onDelete && (
-          <button onClick={onDelete} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-red-500 underline">
+          <button onClick={onDelete} aria-label={`Delete address for ${address.name}`} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-red-500 underline py-1 inline-block">
             Delete
           </button>
         )}

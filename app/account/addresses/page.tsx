@@ -59,11 +59,19 @@ export default function AddressesPage() {
             </p>
             <div className="flex gap-3 mt-3">
               {!addr.is_default && (
-                <button onClick={() => addressesApi.setDefault(addr.id).then(() => setAddresses((prev) => prev.map((a) => ({ ...a, is_default: a.id === addr.id })))).catch(() => toast('Failed to set default', 'error'))} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] underline">
+                <button
+                  onClick={() => addressesApi.setDefault(addr.id).then(() => setAddresses((prev) => prev.map((a) => ({ ...a, is_default: a.id === addr.id })))).catch(() => toast('Failed to set default', 'error'))}
+                  aria-label={`Set ${addr.name}'s address as default`}
+                  className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] underline py-1 inline-block"
+                >
                   Set Default
                 </button>
               )}
-              <button onClick={() => remove(addr.id)} className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-red-500 underline">
+              <button
+                onClick={() => remove(addr.id)}
+                aria-label={`Delete address for ${addr.name}`}
+                className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-red-500 underline py-1 inline-block"
+              >
                 Delete
               </button>
             </div>

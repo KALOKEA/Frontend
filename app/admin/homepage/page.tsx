@@ -71,7 +71,7 @@ function ModeToggle({
           saved === modeKey ? 'bg-green-600 text-white' : 'bg-[#0a0a0a] text-white hover:bg-[#c8a4a5]'
         } disabled:opacity-50`}
       >
-        {saving === modeKey ? '…' : saved === modeKey ? <><Check size={10} className="inline mr-1" />Saved</> : 'Save'}
+        {saving === modeKey ? '…' : saved === modeKey ? <><Check size={10} className="inline mr-1" aria-hidden="true" />Saved</> : 'Save'}
       </button>
     </div>
   )
@@ -319,13 +319,14 @@ export default function AdminHomepagePage() {
             <div className="space-y-4">
               {section.fields.map((field) => (
                 <div key={field.key} className="bg-white border border-[#e8e4e0] p-4">
-                  <label className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">
+                  <label htmlFor={field.key} className="block text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-1">
                     {field.label}
                   </label>
                   <p className="text-[10px] font-sans text-[#6b6b6b] mb-2">{field.hint}</p>
                   <div className="flex gap-2 items-start">
                     {'long' in field && field.long ? (
                       <textarea
+                        id={field.key}
                         rows={3}
                         value={values[field.key] ?? ''}
                         onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
@@ -334,6 +335,7 @@ export default function AdminHomepagePage() {
                     ) : (
                       <div className="flex-1 flex gap-1.5 items-center flex-wrap">
                         <input
+                          id={field.key}
                           type="text"
                           value={values[field.key] ?? ''}
                           onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
@@ -400,8 +402,8 @@ export default function AdminHomepagePage() {
                   placeholder="e.g. Free Shipping on Orders Above ₹999"
                   className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
                 />
-                <button onClick={() => setAnnouncements(a => a.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700">
-                  <Trash2 size={13} />
+                <button onClick={() => setAnnouncements(a => a.filter((_, j) => j !== i))} aria-label="Remove message" className="text-red-500 hover:text-red-700">
+                  <Trash2 size={13} aria-hidden="true" />
                 </button>
               </div>
             ))}
@@ -410,7 +412,7 @@ export default function AdminHomepagePage() {
                 onClick={() => setAnnouncements(a => [...a, ''])}
                 className="flex items-center gap-1 px-3 py-2 text-[10px] font-sans tracking-widest uppercase border border-dashed border-[#e8e4e0] text-[#6b6b6b] hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition-colors"
               >
-                <Plus size={11} /> Add Message
+                <Plus size={11} aria-hidden="true" /> Add Message
               </button>
               <button
                 onClick={saveAnnouncements}
@@ -438,8 +440,8 @@ export default function AdminHomepagePage() {
               <div key={slide._key} className="bg-white border border-[#e8e4e0] p-4 space-y-2">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">Slide {i + 1}</span>
-                  <button onClick={() => setHeroSlides(s => s.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700">
-                    <Trash2 size={13} />
+                  <button onClick={() => setHeroSlides(s => s.filter((_, j) => j !== i))} aria-label="Remove slide" className="text-red-500 hover:text-red-700">
+                    <Trash2 size={13} aria-hidden="true" />
                   </button>
                 </div>
                 <div className="flex gap-1.5 items-center">
@@ -477,7 +479,7 @@ export default function AdminHomepagePage() {
             <div className="flex gap-2">
               <button onClick={() => setHeroSlides(s => [...s, mkSlide({ image: '', video: '', mode: 'image' })])}
                 className="flex items-center gap-1 px-3 py-2 text-[10px] font-sans tracking-widest uppercase border border-dashed border-[#e8e4e0] text-[#6b6b6b] hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition-colors">
-                <Plus size={11} /> Add Slide
+                <Plus size={11} aria-hidden="true" /> Add Slide
               </button>
               <button onClick={saveHeroSlides} disabled={heroSlidesSaving}
                 className={`px-5 py-2 text-[10px] font-sans tracking-widest uppercase transition-colors disabled:opacity-50 ${
@@ -502,8 +504,8 @@ export default function AdminHomepagePage() {
               <div key={slide._key} className="bg-white border border-[#e8e4e0] p-4 space-y-2">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">Slide {i + 1}</span>
-                  <button onClick={() => setEditSlides(s => s.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700">
-                    <Trash2 size={13} />
+                  <button onClick={() => setEditSlides(s => s.filter((_, j) => j !== i))} aria-label="Remove slide" className="text-red-500 hover:text-red-700">
+                    <Trash2 size={13} aria-hidden="true" />
                   </button>
                 </div>
                 <div className="flex gap-1.5 items-center">
@@ -537,7 +539,7 @@ export default function AdminHomepagePage() {
             <div className="flex gap-2">
               <button onClick={() => setEditSlides(s => [...s, mkSlide({ image: '', video: '', mode: 'image' })])}
                 className="flex items-center gap-1 px-3 py-2 text-[10px] font-sans tracking-widest uppercase border border-dashed border-[#e8e4e0] text-[#6b6b6b] hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition-colors">
-                <Plus size={11} /> Add Slide
+                <Plus size={11} aria-hidden="true" /> Add Slide
               </button>
               <button onClick={saveEditSlides} disabled={editSlidesSaving}
                 className={`px-5 py-2 text-[10px] font-sans tracking-widest uppercase transition-colors disabled:opacity-50 ${
@@ -559,8 +561,8 @@ export default function AdminHomepagePage() {
               <div key={look._key} className="bg-white border border-[#e8e4e0] p-4 space-y-2">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b]">Look {i + 1}</span>
-                  <button onClick={() => setLooks(l => l.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700">
-                    <Trash2 size={13} />
+                  <button onClick={() => setLooks(l => l.filter((_, j) => j !== i))} aria-label="Remove look" className="text-red-500 hover:text-red-700">
+                    <Trash2 size={13} aria-hidden="true" />
                   </button>
                 </div>
                 <input value={look.title}
@@ -589,7 +591,7 @@ export default function AdminHomepagePage() {
             <div className="flex gap-2">
               <button onClick={() => setLooks(l => [...l, mkLook({ title: '', tags: [], image: '', href: '/shop/' })])}
                 className="flex items-center gap-1 px-3 py-2 text-[10px] font-sans tracking-widest uppercase border border-dashed border-[#e8e4e0] text-[#6b6b6b] hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition-colors">
-                <Plus size={11} /> Add Look
+                <Plus size={11} aria-hidden="true" /> Add Look
               </button>
               <button onClick={saveLooks} disabled={looksSaving}
                 className={`px-5 py-2 text-[10px] font-sans tracking-widest uppercase transition-colors disabled:opacity-50 ${
@@ -617,15 +619,15 @@ export default function AdminHomepagePage() {
                   onChange={e => setLogos(l => l.map((x, j) => j === i ? { ...x, url: e.target.value } : x))}
                   placeholder="https://..."
                   className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
-                <button onClick={() => setLogos(l => l.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700 shrink-0">
-                  <Trash2 size={13} />
+                <button onClick={() => setLogos(l => l.filter((_, j) => j !== i))} aria-label="Remove logo" className="text-red-500 hover:text-red-700 shrink-0">
+                  <Trash2 size={13} aria-hidden="true" />
                 </button>
               </div>
             ))}
             <div className="flex gap-2">
               <button onClick={() => setLogos(l => [...l, { name: '', url: '' }])}
                 className="flex items-center gap-1 px-3 py-2 text-[10px] font-sans tracking-widest uppercase border border-dashed border-[#e8e4e0] text-[#6b6b6b] hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition-colors">
-                <Plus size={11} /> Add Brand
+                <Plus size={11} aria-hidden="true" /> Add Brand
               </button>
               <button onClick={saveLogos} disabled={logosSaving}
                 className={`px-5 py-2 text-[10px] font-sans tracking-widest uppercase transition-colors disabled:opacity-50 ${

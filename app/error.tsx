@@ -16,7 +16,7 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center text-center px-4">
+    <div role="alert" className="min-h-[70vh] flex items-center justify-center text-center px-4">
       <div>
         <p className="font-serif text-8xl text-[#e8e4e0] mb-4">!</p>
         <h1 className="font-serif text-3xl text-[#0a0a0a] mb-2">Something went wrong</h1>

@@ -156,7 +156,7 @@ export default function AdminActivityPage() {
             onClick={() => changePage(page - 1)}
             className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5] flex items-center gap-1"
           >
-            <ChevronLeft size={14} /> Prev
+            <ChevronLeft size={14} aria-hidden="true" /> Prev
           </button>
           <span className="text-[#6b6b6b] px-2">Page {page} of {totalPages}</span>
           <button
@@ -164,7 +164,7 @@ export default function AdminActivityPage() {
             onClick={() => changePage(page + 1)}
             className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5] flex items-center gap-1"
           >
-            Next <ChevronRight size={14} />
+            Next <ChevronRight size={14} aria-hidden="true" />
           </button>
         </div>
       )}

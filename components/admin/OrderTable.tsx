@@ -13,7 +13,7 @@ interface OrderRow {
 export default function OrderTable({ orders }: { orders: OrderRow[] }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-xs font-sans">
+      <table className="w-full text-xs font-sans" aria-label="Orders">
         <thead>
           <tr className="border-b border-[#e8e4e0]">
             {['Order', 'Customer', 'Status', 'Amount', 'Date'].map((h) => (

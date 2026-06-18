@@ -27,7 +27,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return this.props.fallback ?? (
-        <div className="min-h-[50vh] flex flex-col items-center justify-center px-4 text-center">
+        <div role="alert" className="min-h-[50vh] flex flex-col items-center justify-center px-4 text-center">
           <h2 className="font-serif text-2xl text-[#0a0a0a] mb-3">Something went wrong</h2>
           <p className="text-sm text-[#6b6b6b] mb-6 max-w-sm">{this.state.message}</p>
           <button

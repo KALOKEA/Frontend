@@ -61,7 +61,8 @@ export default function HeroBanner() {
 
   return (
     <section
-      className="flex flex-col md:grid -mt-[94px] md:-mt-[104px]"
+      aria-label="Hero"
+      className="flex flex-col md:grid -mt-[94px] lg:-mt-[108px]"
       style={{ gridTemplateColumns: '1fr 1fr', minHeight: '100vh' }}
     >
       {/* ── Mobile image (above text on small screens) ── */}
@@ -74,6 +75,7 @@ export default function HeroBanner() {
             key={current.video}
             src={current.video}
             autoPlay muted loop playsInline
+            aria-hidden="true"
             className="w-full h-full object-cover object-top"
           />
         ) : (
@@ -94,14 +96,17 @@ export default function HeroBanner() {
         />
         {/* Mobile slide dots */}
         {slides.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-0.5" role="tablist" aria-label="Slides">
             {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === slideIdx ? 'bg-white scale-125' : 'bg-white/40'}`}
+                className="p-2 flex items-center justify-center"
                 aria-label={`Go to slide ${i + 1}`}
-              />
+                aria-current={i === slideIdx ? true : undefined}
+              >
+                <span className={`block w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === slideIdx ? 'bg-white scale-125' : 'bg-white/40'}`} />
+              </button>
             ))}
           </div>
         )}
@@ -194,6 +199,7 @@ export default function HeroBanner() {
             key={current.video}
             src={current.video}
             autoPlay muted loop playsInline
+            aria-hidden="true"
             className="absolute inset-0 w-full h-full object-cover object-top"
           />
         ) : (
@@ -217,16 +223,19 @@ export default function HeroBanner() {
 
         {/* Slide dots — shown only when multiple slides */}
         {slides.length > 1 && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-0.5 z-10" role="tablist" aria-label="Slides">
             {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  i === slideIdx ? 'bg-white scale-110' : 'bg-white/40 hover:bg-white/70'
-                }`}
+                className="p-2 flex items-center justify-center"
                 aria-label={`Go to slide ${i + 1}`}
-              />
+                aria-current={i === slideIdx ? true : undefined}
+              >
+                <span className={`block w-2 h-2 rounded-full transition-all duration-300 ${
+                  i === slideIdx ? 'bg-white scale-110' : 'bg-white/40 hover:bg-white/70'
+                }`} />
+              </button>
             ))}
           </div>
         )}
@@ -234,6 +243,7 @@ export default function HeroBanner() {
         {/* Scroll indicator — only when single slide */}
         {slides.length <= 1 && (
           <div
+            aria-hidden="true"
             className="absolute"
             style={{
               bottom: 32, left: '50%', transform: 'translateX(-50%)',

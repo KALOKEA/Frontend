@@ -110,7 +110,7 @@ export default function AdminOrdersPage() {
           disabled={exporting}
           className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] disabled:opacity-50 transition-colors"
         >
-          {exporting ? 'Exporting…' : <><Download size={13} className="inline mr-1" />Export CSV</>}
+          {exporting ? 'Exporting…' : <><Download size={13} className="inline mr-1" aria-hidden="true" />Export CSV</>}
         </button>
       </div>
 
@@ -123,7 +123,7 @@ export default function AdminOrdersPage() {
           className="w-full border border-[#e8e4e0] px-4 py-2.5 text-sm focus:border-[#0a0a0a] outline-none pr-8"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none"><X size={16} /></button>
+          <button onClick={() => setSearch('')} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none"><X size={16} aria-hidden="true" /></button>
         )}
       </div>
 
@@ -218,16 +218,17 @@ export default function AdminOrdersPage() {
 
       {total > limit && (
         <div className="flex gap-2 mt-4 items-center text-sm">
-          <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]"><span className="flex items-center gap-1"><ChevronLeft size={14} />Prev</span></button>
+          <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]"><span className="flex items-center gap-1"><ChevronLeft size={14} aria-hidden="true" />Prev</span></button>
           <span className="text-[#6b6b6b]">Page {page} of {Math.ceil(total / limit)}</span>
-          <button disabled={page >= Math.ceil(total / limit)} onClick={() => setPage(p => p + 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]"><span className="flex items-center gap-1">Next<ChevronRight size={14} /></span></button>
+          <button disabled={page >= Math.ceil(total / limit)} onClick={() => setPage(p => p + 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]"><span className="flex items-center gap-1">Next<ChevronRight size={14} aria-hidden="true" /></span></button>
         </div>
       )}
 
       {/* ── Order detail modal ─────────────────────────────────────── */}
       {detail && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setDetail(null)}>
-          <div className="bg-white w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setDetail(null)} />
+          <div className="relative bg-white w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-label="Order detail" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h2 className="font-serif text-xl text-[#0a0a0a]">{detail.order_number}</h2>
@@ -307,7 +308,7 @@ export default function AdminOrdersPage() {
                 href={`/admin/order-detail/?id=${detail.id}`}
                 className="px-4 py-2 text-sm bg-[#ff6600] text-white hover:bg-[#e55a00] transition-colors"
               >
-                Full Details / Ship <ExternalLink size={12} className="inline ml-1" />
+                Full Details / Ship <ExternalLink size={12} className="inline ml-1" aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -316,8 +317,9 @@ export default function AdminOrdersPage() {
 
       {/* ── Update status modal ─────────────────────────────────────── */}
       {editing && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setEditing(null)}>
-          <div className="bg-white w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setEditing(null)} />
+          <div className="relative bg-white w-full max-w-md p-6" role="dialog" aria-modal="true" aria-label="Update order status" onClick={e => e.stopPropagation()}>
             <h2 className="font-serif text-xl mb-1 text-[#0a0a0a]">Update {editing.order_number}</h2>
             <p className="text-xs text-[#6b6b6b] mb-4">
               Current:{' '}

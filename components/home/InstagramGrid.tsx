@@ -107,8 +107,8 @@ export default function InstagramGrid() {
                 />
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-[#7C4A2D] opacity-0 group-hover:opacity-25 transition-opacity duration-300 pointer-events-none" />
-                {/* Instagram icon on hover */}
-                <div className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {/* Instagram icon on hover — decorative, link already has aria-label */}
+                <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <InstagramIcon />
                 </div>
               </a>
@@ -124,7 +124,7 @@ export default function InstagramGrid() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[9.5px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] border border-[#7C4A2D] px-6 py-2.5 hover:bg-[#7C4A2D] hover:text-white transition-colors duration-300"
           >
-            <InstagramIcon />
+            <span aria-hidden="true"><InstagramIcon /></span>
             Follow @{INSTAGRAM_HANDLE}
           </a>
         </div>

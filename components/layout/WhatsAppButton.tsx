@@ -17,7 +17,7 @@ export default function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className="fixed bottom-8 right-8 z-50 w-[52px] h-[52px] rounded-full flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-110 focus:outline-none"
+      className="fixed bottom-24 right-5 lg:bottom-8 lg:right-8 z-50 w-[52px] h-[52px] rounded-full flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-110 focus:outline-none"
       style={{ background: '#25D366' }}
     >
       {/* WhatsApp icon */}

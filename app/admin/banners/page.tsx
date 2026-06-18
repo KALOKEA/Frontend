@@ -117,13 +117,14 @@ export default function AdminBannersPage() {
       )}
 
       {form && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setForm(null)}>
-          <div className="bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setForm(null)} />
+          <div role="dialog" aria-modal="true" aria-label="New banner" className="relative bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <h2 className="font-serif text-xl mb-5 text-[#0a0a0a]">New banner</h2>
 
             {/* Image upload */}
             <div className="mb-4">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-2">Banner image *</label>
+              <p className="text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-2">Banner image *</p>
               {form.image_url ? (
                 <div className="relative">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -158,29 +159,29 @@ export default function AdminBannersPage() {
               )}
             </div>
 
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Title *</label>
+            <label className="block mb-3">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Title *</span>
               <input
                 value={form.title}
                 onChange={e => setForm(f => f ? { ...f, title: e.target.value } : f)}
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
                 placeholder="Summer Sale"
               />
-            </div>
+            </label>
 
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Link URL (optional)</label>
+            <label className="block mb-3">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Link URL (optional)</span>
               <input
                 value={form.link_url}
                 onChange={e => setForm(f => f ? { ...f, link_url: e.target.value } : f)}
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
                 placeholder="/category/sale"
               />
-            </div>
+            </label>
 
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Position</label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Position</span>
                 <select
                   value={form.position}
                   onChange={e => setForm(f => f ? { ...f, position: e.target.value as FormState['position'] } : f)}
@@ -190,16 +191,16 @@ export default function AdminBannersPage() {
                   <option value="mid">Mid-page</option>
                   <option value="footer">Footer</option>
                 </select>
-              </div>
-              <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Sort order</label>
+              </label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Sort order</span>
                 <input
                   type="number"
                   value={form.sort_order}
                   onChange={e => setForm(f => f ? { ...f, sort_order: e.target.value } : f)}
                   className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
                 />
-              </div>
+              </label>
             </div>
 
             {msg && <p className="text-sm text-red-600 mb-3">{msg}</p>}

@@ -57,7 +57,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0ece8]">
             <h2 className="font-serif text-lg text-[#0a0a0a]">Recent Orders</h2>
             <Link href="/admin/orders/" className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
-              View all <ArrowRight size={11} className="inline ml-1" />
+              View all <ArrowRight size={11} className="inline ml-1" aria-hidden="true" />
             </Link>
           </div>
           {recentOrders.length ? (
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0ece8]">
               <h2 className="font-serif text-lg text-[#0a0a0a]">Low Stock</h2>
               <Link href="/admin/inventory/" className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
-                Manage <ArrowRight size={11} className="inline ml-1" />
+                Manage <ArrowRight size={11} className="inline ml-1" aria-hidden="true" />
               </Link>
             </div>
             {lowStock.length ? (
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
                   className="flex items-center justify-between text-sm text-[#0a0a0a] hover:text-[#c8a4a5] py-1.5 border-b border-[#f0ece8] last:border-0 transition-colors"
                 >
                   {l.label}
-                  <ChevronRight size={14} className="text-[#d0ccc8]" />
+                  <ChevronRight size={14} className="text-[#d0ccc8]" aria-hidden="true" />
                 </Link>
               ))}
             </div>

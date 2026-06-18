@@ -80,7 +80,7 @@ function WishlistCard({ product }: { product: Product }) {
           className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 shadow-sm flex items-center justify-center z-10 opacity-100 transition-opacity duration-200 hover:bg-red-50 md:opacity-0 md:group-hover:opacity-100"
           aria-label="Remove from wishlist"
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6b5c55" strokeWidth="2" strokeLinecap="round">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6b5c55" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
@@ -125,7 +125,7 @@ function WishlistCard({ product }: { product: Product }) {
                   : 'bg-[#0A0908] text-white hover:bg-[#7C4A2D]'
             }`}
           >
-            {added ? <><Check size={11} className="inline mr-1" />Added to Cart</> : adding ? 'Adding…' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+            {added ? <><Check size={11} className="inline mr-1" aria-hidden={true} />Added to Cart</> : adding ? 'Adding…' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
           </button>
           <button
             onClick={() => toggle(product.id)}
@@ -179,8 +179,8 @@ export default function WishlistPage() {
   if (!loading && !items.length) {
     return (
       <div className="py-20 flex flex-col items-center text-center">
-        <div className="w-16 h-16 rounded-full bg-[#F2EAE0] flex items-center justify-center mb-6">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.3">
+        <div aria-hidden="true" className="w-16 h-16 rounded-full bg-[#F2EAE0] flex items-center justify-center mb-6">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.3" aria-hidden="true">
             <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
           </svg>
         </div>

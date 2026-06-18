@@ -54,11 +54,12 @@ function ProfileManager({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-md border border-[#e8e4e0] p-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div aria-hidden="true" className="absolute inset-0 bg-black/40" />
+      <div role="dialog" aria-modal="true" aria-label="Packaging Profiles" className="relative bg-white w-full max-w-md border border-[#e8e4e0] p-5">
         <div className="flex items-center justify-between mb-4">
           <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a]">Packaging Profiles</p>
-          <button onClick={onClose} className="text-[#6b6b6b] hover:text-[#0a0a0a] flex items-center justify-center"><X size={16} /></button>
+          <button onClick={onClose} aria-label="Close packaging profiles" className="text-[#6b6b6b] hover:text-[#0a0a0a] flex items-center justify-center"><X size={16} aria-hidden={true} /></button>
         </div>
         {/* Existing profiles */}
         {profiles.length > 0 && (
@@ -89,8 +90,9 @@ function ProfileManager({
         <div className="grid grid-cols-4 gap-1.5 mb-2">
           {(['weight', 'length', 'breadth', 'height'] as const).map(k => (
             <div key={k}>
-              <label className="block text-[9px] uppercase tracking-widest text-[#6b6b6b] mb-0.5">{k}</label>
+              <label htmlFor={`profile-${k}`} className="block text-[9px] uppercase tracking-widest text-[#6b6b6b] mb-0.5">{k}</label>
               <input
+                id={`profile-${k}`}
                 type="number" step="0.1" value={(form as any)[k]}
                 onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))}
                 className="w-full border border-[#e8e4e0] px-1.5 py-1 text-[11px] outline-none focus:border-[#c8a4a5]"
@@ -102,7 +104,7 @@ function ProfileManager({
           <input type="checkbox" checked={form.is_default} onChange={e => setForm(f => ({ ...f, is_default: e.target.checked }))} />
           Set as default
         </label>
-        {err && <p className="text-red-600 text-[11px] mb-2">{err}</p>}
+        {err && <p role="alert" className="text-red-600 text-[11px] mb-2">{err}</p>}
         <button
           onClick={create} disabled={saving}
           className="w-full py-2 bg-[#0a0a0a] text-white text-[10px] uppercase tracking-widest hover:bg-[#2a2a2a] disabled:opacity-50"
@@ -171,7 +173,7 @@ function PushForm({ orderId, profiles, onDone }: { orderId: string; profiles: an
           </div>
         ))}
       </div>
-      {err && <p className="text-red-600 mb-2">{err}</p>}
+      {err && <p role="alert" className="text-red-600 mb-2">{err}</p>}
       <div className="flex gap-2">
         <button onClick={submit} disabled={loading}
           className="px-4 py-1.5 bg-[#0a0a0a] text-white text-[10px] uppercase tracking-widest hover:bg-[#2a2a2a] disabled:opacity-50">
@@ -280,7 +282,7 @@ export default function ShipmentsManager() {
     try {
       const res = await adminApi.generateLabel(orderId)
       const url = (res as any)?.data?.label_url || (res as any)?.label_url
-      if (url) window.open(url, '_blank')
+      if (url) window.open(url, '_blank', 'noopener,noreferrer')
       else setMsg({ id: orderId, type: 'err', text: 'Label URL not returned by ShipRocket' })
       await load()
     } catch (e: any) {
@@ -331,7 +333,7 @@ export default function ShipmentsManager() {
     try {
       const res = await adminApi.generateManifest(shipIds)
       const url = (res as any)?.manifest_url
-      if (url) window.open(url, '_blank')
+      if (url) window.open(url, '_blank', 'noopener,noreferrer')
       setBulkMsg({ type: 'ok', text: 'Manifest generated' })
     } catch (e: any) { setBulkMsg({ type: 'err', text: e?.message || 'Manifest failed' }) }
     finally { setBulkLoading(false) }
@@ -450,7 +452,7 @@ export default function ShipmentsManager() {
             onClick={handleBulkSync} disabled={bulkLoading}
             className="px-3 py-1 bg-white text-[#0a0a0a] text-[10px] uppercase tracking-widest hover:bg-[#f0ece8] disabled:opacity-50"
           >Sync Tracking</button>
-          <button onClick={() => setSelected(new Set())} className="ml-auto text-[10px] text-white/60 hover:text-white flex items-center gap-1"><X size={10} /> Clear</button>
+          <button onClick={() => setSelected(new Set())} className="ml-auto text-[10px] text-white/60 hover:text-white flex items-center gap-1"><X size={10} aria-hidden="true" /> Clear</button>
         </div>
       )}
       {bulkMsg && (
@@ -474,6 +476,7 @@ export default function ShipmentsManager() {
           <button
             key={t.key}
             onClick={() => { setFilter(t.key); if (t.key === 'ndr') loadNdrs() }}
+            aria-pressed={filter === t.key}
             className={`px-3 py-1.5 text-[10px] uppercase tracking-widest border transition-colors ${
               filter === t.key
                 ? 'bg-[#0a0a0a] text-white border-[#0a0a0a]'
@@ -490,7 +493,7 @@ export default function ShipmentsManager() {
           onClick={() => setShowProfileMgr(true)}
           className="ml-auto px-3 py-1.5 text-[10px] uppercase tracking-widest border border-[#e8e4e0] text-[#6b6b6b] hover:text-[#0a0a0a] flex items-center gap-1.5"
         >
-          <Package size={12} /> Profiles</button>
+          <Package size={12} aria-hidden="true" /> Profiles</button>
       </div>
 
       {/* ── NDR Tab ── */}
@@ -569,6 +572,7 @@ export default function ShipmentsManager() {
                         type="checkbox"
                         checked={isSel}
                         onChange={() => toggleSelect(order.id)}
+                        aria-label={`Select order #${order.order_number}`}
                         className="mt-0.5 w-3.5 h-3.5 shrink-0"
                       />
                       <div className="min-w-0">
@@ -664,13 +668,15 @@ export default function ShipmentsManager() {
 
       {/* ── COD Remittance ── */}
       <div className="mt-8 border border-[#e8e4e0]">
-        <div
-          className="flex items-center justify-between p-4 cursor-pointer"
+        <button
+          type="button"
+          className="flex items-center justify-between w-full p-4 text-left"
           onClick={() => { setShowRemittance(!showRemittance); if (!showRemittance && !remittance) loadRemittance() }}
+          aria-expanded={showRemittance}
         >
-          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a] flex items-center gap-1.5"><Banknote size={13} /> COD Remittance</p>
-          <span className="text-[#6b6b6b] text-xs flex items-center gap-1">{showRemittance ? <><ChevronUp size={12} /> Hide</> : <><ChevronDown size={12} /> Show</>}</span>
-        </div>
+          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a] flex items-center gap-1.5"><Banknote size={13} aria-hidden={true} /> COD Remittance</p>
+          <span className="text-[#6b6b6b] text-xs flex items-center gap-1">{showRemittance ? <><ChevronUp size={12} aria-hidden="true" /> Hide</> : <><ChevronDown size={12} aria-hidden="true" /> Show</>}</span>
+        </button>
         {showRemittance && (
           <div className="border-t border-[#e8e4e0] p-4">
             {remLoading && <div className="flex justify-center py-6"><Spinner size="sm" /></div>}
@@ -715,10 +721,10 @@ export default function ShipmentsManager() {
 
       {/* ── Serviceability Checker ── */}
       <div className="mt-4 border border-[#e8e4e0]">
-        <div className="flex items-center justify-between p-4 cursor-pointer" onClick={() => setShowServiceability(!showServiceability)}>
-          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a] flex items-center gap-1.5"><MapPin size={13} /> Pin Code Serviceability</p>
-          <span className="text-[#6b6b6b] text-xs flex items-center gap-1">{showServiceability ? <><ChevronUp size={12} /> Hide</> : <><ChevronDown size={12} /> Show</>}</span>
-        </div>
+        <button type="button" className="flex items-center justify-between w-full p-4 text-left" onClick={() => setShowServiceability(!showServiceability)} aria-expanded={showServiceability}>
+          <p className="text-[11px] uppercase tracking-widest font-medium text-[#0a0a0a] flex items-center gap-1.5"><MapPin size={13} aria-hidden={true} /> Pin Code Serviceability</p>
+          <span className="text-[#6b6b6b] text-xs flex items-center gap-1">{showServiceability ? <><ChevronUp size={12} aria-hidden="true" /> Hide</> : <><ChevronDown size={12} aria-hidden="true" /> Show</>}</span>
+        </button>
         {showServiceability && (
           <div className="border-t border-[#e8e4e0] p-4">
             <div className="flex flex-col sm:flex-row gap-2 mb-3">
@@ -751,7 +757,12 @@ export default function ShipmentsManager() {
                         <td className="py-1.5 pr-4 font-medium text-[#0a0a0a]">{c.courier_name}</td>
                         <td className="py-1.5 pr-4 text-[#6b6b6b]">{c.estimated_delivery_days ?? '—'}</td>
                         <td className="py-1.5 pr-4 text-[#6b6b6b]">₹{c.rate ?? '—'}</td>
-                        <td className="py-1.5 text-[#6b6b6b]">{c.cod === 1 ? <Check size={12} className="text-green-600" /> : <X size={12} className="text-red-400" />}</td>
+                        <td className="py-1.5 text-[#6b6b6b]">
+                          {c.cod === 1
+                            ? <span className="text-green-600 flex items-center gap-0.5"><Check size={12} aria-hidden={true} /> Yes</span>
+                            : <span className="text-red-400 flex items-center gap-0.5"><X size={12} aria-hidden={true} /> No</span>
+                          }
+                        </td>
                       </tr>
                     ))}
                   </tbody>

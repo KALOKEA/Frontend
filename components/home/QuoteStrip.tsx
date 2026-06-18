@@ -15,7 +15,7 @@ export default function QuoteStrip() {
     <div
       className="reveal"
       style={{
-        padding: '80px 52px',
+        padding: 'clamp(40px, 8vw, 80px) clamp(20px, 4vw, 52px)',
         textAlign: 'center',
         background: '#F9F6F2',
       }}

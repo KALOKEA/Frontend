@@ -1,12 +1,6 @@
 'use client'
-import { Paperclip } from 'lucide-react'
-/**
- * Inline Cloudinary upload button — shows next to a URL input.
- * When a file is picked, uploads to Cloudinary and calls onUploaded(url).
- * Usage:
- *   <CloudinaryUploadButton folder="banners" onUploaded={(url) => setValue(url)} />
- */
 import { useRef, useState } from 'react'
+import { Paperclip } from 'lucide-react'
 import { uploadImage, uploadAdminMedia } from '@/lib/api/upload'
 
 interface Props {
@@ -57,14 +51,15 @@ export default function CloudinaryUploadButton({
         disabled={uploading}
         className="shrink-0 px-3 py-2 text-[10px] font-sans tracking-widest uppercase bg-[#faf8f5] border border-[#e8e4e0] text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white transition-colors disabled:opacity-50 whitespace-nowrap"
       >
-        {uploading ? '…' : <><Paperclip size={11} className="inline mr-1" />{label}</>}
+        {uploading ? '…' : <><Paperclip size={11} className="inline mr-1" aria-hidden={true} />{label}</>}
       </button>
-      {error && <span className="text-[10px] text-red-600 mt-0.5">{error}</span>}
+      {error && <span role="alert" className="text-[10px] text-red-600 mt-0.5">{error}</span>}
       <input
         ref={inputRef}
         type="file"
         accept={accept}
         onChange={handleChange}
+        aria-label={label}
         className="hidden"
       />
     </span>

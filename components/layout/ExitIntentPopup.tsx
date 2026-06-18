@@ -134,7 +134,7 @@ export default function ExitIntentPopup() {
             className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center text-[#6b5c55] hover:text-[#0a0a0a] transition-colors"
             aria-label="Close"
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
@@ -153,8 +153,8 @@ export default function ExitIntentPopup() {
           {/* Body */}
           <div className="px-8 py-7">
             {status === 'success' ? (
-              <div className="text-center py-2 space-y-2">
-                <div className="text-3xl">🎉</div>
+              <div className="text-center py-2 space-y-2" role="status" aria-live="polite">
+                <div className="text-3xl" aria-hidden="true">🎉</div>
                 <p className="font-serif text-lg text-[#0a0a0a]">You&apos;re on the list!</p>
                 <p className="text-[13px] text-[#6b5c55] leading-relaxed">
                   Use code{' '}
@@ -169,18 +169,21 @@ export default function ExitIntentPopup() {
                 </p>
 
                 <form onSubmit={handleSubmit} noValidate className="space-y-3">
+                  <label htmlFor="exit-popup-email" className="sr-only">Email address</label>
                   <input
                     ref={inputRef}
+                    id="exit-popup-email"
                     type="email"
                     required
                     value={email}
                     onChange={e => { setEmail(e.target.value); if (status === 'error') setStatus('idle') }}
                     placeholder="Your email address"
+                    aria-describedby={status === 'error' ? 'exit-popup-error' : undefined}
                     className="w-full border border-[#e8e4e0] px-4 py-3 text-sm font-sans text-[#0a0a0a] placeholder:text-[#bdb0a4] focus:outline-none focus:border-[#0a0a0a] transition-colors"
                   />
-                  {status === 'error' && (
-                    <p className="text-[11px] font-sans text-red-500">{errMsg}</p>
-                  )}
+                  <p id="exit-popup-error" role="alert" className="text-[11px] font-sans text-red-500" aria-live="polite">
+                    {status === 'error' ? errMsg : ''}
+                  </p>
                   <button
                     type="submit"
                     disabled={status === 'loading'}

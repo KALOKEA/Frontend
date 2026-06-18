@@ -98,6 +98,7 @@ export default function NewsletterSignup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
+              aria-label="Email address"
               required
               style={{
                 flex: 1,
@@ -142,7 +143,7 @@ export default function NewsletterSignup() {
         )}
 
         {status === 'error' && (
-          <p style={{ color: '#c0392b', fontSize: '.82rem', marginTop: 12 }}>
+          <p role="alert" style={{ color: '#c0392b', fontSize: '.82rem', marginTop: 12 }}>
             Something went wrong. Please try again.
           </p>
         )}

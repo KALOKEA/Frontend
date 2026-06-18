@@ -165,23 +165,24 @@ export default function AdminCouponsPage() {
       )}
 
       {form && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setForm(null)}>
-          <div className="bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setForm(null)} />
+          <div className="relative bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-label="Coupon form" onClick={e => e.stopPropagation()}>
             <h2 className="font-serif text-xl mb-5 text-[#0a0a0a]">{form.id ? 'Edit coupon' : 'New coupon'}</h2>
 
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Code *</label>
+            <label className="block mb-3">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Code *</span>
               <input
                 value={form.code}
                 onChange={e => setForm(f => f ? { ...f, code: e.target.value.toUpperCase() } : f)}
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm font-mono focus:border-[#0a0a0a] outline-none uppercase"
                 placeholder="SUMMER20"
               />
-            </div>
+            </label>
 
             <div className="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Type</label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Type</span>
                 <select
                   value={form.type}
                   onChange={e => setForm(f => f ? { ...f, type: e.target.value as 'percent' | 'fixed' } : f)}
@@ -190,11 +191,11 @@ export default function AdminCouponsPage() {
                   <option value="percent">Percent (%)</option>
                   <option value="fixed">Fixed amount (₹)</option>
                 </select>
-              </div>
-              <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
+              </label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
                   {form.type === 'percent' ? 'Discount %' : 'Amount ₹'}
-                </label>
+                </span>
                 <input
                   type="number"
                   value={form.value}
@@ -202,12 +203,12 @@ export default function AdminCouponsPage() {
                   className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
                   placeholder={form.type === 'percent' ? '20' : '200'}
                 />
-              </div>
+              </label>
             </div>
 
             <div className="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Min order ₹</label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Min order ₹</span>
                 <input
                   type="number"
                   value={form.min_order_value}
@@ -215,9 +216,9 @@ export default function AdminCouponsPage() {
                   className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
                   placeholder="999"
                 />
-              </div>
-              <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Max uses (global)</label>
+              </label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Max uses (global)</span>
                 <input
                   type="number"
                   value={form.max_uses}
@@ -225,14 +226,14 @@ export default function AdminCouponsPage() {
                   className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
                   placeholder="Unlimited"
                 />
-              </div>
+              </label>
             </div>
 
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
+            <label className="block mb-3">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
                 Max uses per customer
                 <span className="normal-case ml-1 text-[#6b6b6b]">(leave blank = unlimited)</span>
-              </label>
+              </span>
               <input
                 type="number"
                 min="1"
@@ -241,17 +242,17 @@ export default function AdminCouponsPage() {
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
                 placeholder="e.g. 1 (one-time use per customer)"
               />
-            </div>
+            </label>
 
-            <div className="mb-4">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Valid until</label>
+            <label className="block mb-4">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Valid until</span>
               <input
                 type="date"
                 value={form.valid_until}
                 onChange={e => setForm(f => f ? { ...f, valid_until: e.target.value } : f)}
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
               />
-            </div>
+            </label>
 
             <label className="flex items-center gap-2 text-sm text-[#0a0a0a] mb-5 cursor-pointer">
               <input

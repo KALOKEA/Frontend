@@ -49,7 +49,7 @@ export default function AddressSelector({ addresses, selected, onSelect, onNewAd
       ) : (
         <button
           onClick={() => setAddingNew(true)}
-          className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] underline hover:text-[#7C4A2D]"
+          className="text-[10px] font-sans tracking-widest uppercase text-[#0a0a0a] underline hover:text-[#7C4A2D] py-3 inline-block"
         >
           + Add New Address
         </button>

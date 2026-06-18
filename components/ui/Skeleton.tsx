@@ -10,6 +10,7 @@ interface SkeletonProps {
 export default function Skeleton({ className = '', height = 'h-4', width = 'w-full' }: SkeletonProps) {
   return (
     <div
+      aria-hidden="true"
       className={`${height} ${width} bg-[#e8e4e0] rounded animate-pulse overflow-hidden relative ${className}`}
     >
       <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/40 to-transparent" />

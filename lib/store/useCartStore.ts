@@ -67,8 +67,6 @@ interface CartStore {
    */
   mergeOnLogin: () => Promise<void>
 
-  itemCount: number
-  subtotal: number
 }
 
 const generateId = () => Math.random().toString(36).slice(2)
@@ -275,15 +273,6 @@ export const useCartStore = create<CartStore>()(
         set({ guestSessionId: generateId() })
       },
 
-      // --- Derived ---------------------------------------------------------------------------------------
-
-      get itemCount() {
-        return get().items.reduce((sum, i) => sum + i.quantity, 0)
-      },
-
-      get subtotal() {
-        return get().items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-      },
     }),
     {
       name: 'kalokea-cart',

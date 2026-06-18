@@ -2,26 +2,21 @@
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { productsApi, type Product } from '@/lib/api/products'
+import { type Product } from '@/lib/api/products'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
 import ProductCard from '@/components/shop/ProductCard'
 import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 
-/*
- * Matches reference #home .new-arrivals exactly.
- * CMS key: featured_section_heading
- */
 export default function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
 
   useEffect(() => {
-    productsApi.getAll({ sort: 'newest', limit: '8' })
-      .then((res) => setProducts(res.data || []))
-      .catch(() => setProducts([]))
+    getHomepageData()
+      .then(d => { setProducts(d.featured_products); setCms(d.cms) })
+      .catch(() => {})
       .finally(() => setLoading(false))
-    getHomepageData().then(d => setCms(d.cms)).catch(() => {})
   }, [])
 
   if (!loading && products.length === 0) return null
@@ -87,7 +82,7 @@ export default function FeaturedProducts() {
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#7C4A2D' }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#0A0806' }}
           >
-            View All <ArrowRight size={12} className="inline ml-1" />
+            View All <ArrowRight size={12} className="inline ml-1" aria-hidden={true} />
           </Link>
         </div>
 

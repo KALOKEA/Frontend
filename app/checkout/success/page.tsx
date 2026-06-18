@@ -12,8 +12,8 @@ function SuccessContent() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
       <div className="text-center max-w-md">
-        <div className="w-16 h-16 border-2 border-[#7C4A2D] flex items-center justify-center mx-auto mb-6">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5">
+        <div className="w-16 h-16 border-2 border-[#7C4A2D] flex items-center justify-center mx-auto mb-6" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" aria-hidden="true">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
         </div>

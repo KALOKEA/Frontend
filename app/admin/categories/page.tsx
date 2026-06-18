@@ -203,7 +203,7 @@ export default function AdminCategoriesPage() {
                         <Image src={c.image_url} alt={c.name} fill className="object-cover" sizes="48px" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0ccc8" strokeWidth="1.5">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0ccc8" strokeWidth="1.5" aria-hidden="true">
                             <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
                           </svg>
                         </div>
@@ -250,20 +250,21 @@ export default function AdminCategoriesPage() {
 
       {/* ── Create / Edit modal ────────────────────────────────────────── */}
       {form && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-start sm:items-center justify-center z-50 p-4 overflow-y-auto"
-          onClick={() => setForm(null)}
-        >
+        <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto">
+          <div aria-hidden="true" className="fixed inset-0 bg-black/40" onClick={() => setForm(null)} />
           <div
-            className="bg-white w-full max-w-md p-6 my-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label={form.id ? 'Edit category' : 'New category'}
+            className="relative bg-white w-full max-w-md p-6 my-4"
             onClick={e => e.stopPropagation()}
           >
             <h2 className="font-serif text-xl mb-5 text-[#0a0a0a]">
               {form.id ? 'Edit category' : 'New category'}
             </h2>
 
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Name *</label>
+            <label className="block mb-3">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Name *</span>
               <input
                 value={form.name}
                 onChange={e => setName(e.target.value)}
@@ -271,21 +272,21 @@ export default function AdminCategoriesPage() {
                 placeholder="e.g. Dresses"
                 autoFocus
               />
-            </div>
+            </label>
 
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Slug (URL) *</label>
+            <label className="block mb-3">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Slug (URL) *</span>
               <input
                 value={form.slug}
                 onChange={e => { setSlugManual(true); setForm(f => f ? { ...f, slug: e.target.value } : f) }}
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none font-mono"
                 placeholder="dresses"
               />
-              <p className="text-[11px] text-[#6b6b6b] mt-1">Used in URLs and filters. Don't change once indexed.</p>
-            </div>
+              <span className="block text-[11px] text-[#6b6b6b] mt-1">Used in URLs and filters. Don't change once indexed.</span>
+            </label>
 
             <div className="mb-4">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-2">Category Photo</label>
+              <p className="text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-2">Category Photo</p>
 
               {/* Preview */}
               {form.image_url ? (
@@ -301,9 +302,9 @@ export default function AdminCategoriesPage() {
                     type="button"
                     onClick={() => setForm(f => f ? { ...f, image_url: '' } : f)}
                     className="absolute top-2 right-2 w-7 h-7 bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
-                    title="Remove photo"
+                    aria-label="Remove photo"
                   >
-                    <X size={14} />
+                    <X size={14} aria-hidden="true" />
                   </button>
                 </div>
               ) : (
@@ -320,8 +321,8 @@ export default function AdminCategoriesPage() {
                   </span>
                 ) : (
                   form.image_url
-                    ? <><Upload size={13} className="inline mr-1" />Replace photo</>
-                    : <><Upload size={13} className="inline mr-1" />Upload photo</>
+                    ? <><Upload size={13} className="inline mr-1" aria-hidden="true" />Replace photo</>
+                    : <><Upload size={13} className="inline mr-1" aria-hidden="true" />Upload photo</>
                 )}
                 <input
                   ref={fileRef}
@@ -343,13 +344,13 @@ export default function AdminCategoriesPage() {
               <p className="text-[11px] text-[#6b6b6b] mt-1">
                 Shown on the homepage "Shop the Look" grid. Paste a Cloudinary or Unsplash URL.
                 {form.image_url && (
-                  <span> <a href={form.image_url} target="_blank" rel="noopener noreferrer" className="text-[#c8a4a5] underline inline-flex items-center gap-0.5">Preview <ExternalLink size={10} /></a></span>
+                  <span> <a href={form.image_url} target="_blank" rel="noopener noreferrer" className="text-[#c8a4a5] underline inline-flex items-center gap-0.5">Preview <ExternalLink size={10} aria-hidden="true" /></a></span>
                 )}
               </p>
             </div>
 
-            <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Description</label>
+            <label className="block mb-3">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Description</span>
               <textarea
                 value={form.description}
                 onChange={e => setForm(f => f ? { ...f, description: e.target.value } : f)}
@@ -357,11 +358,11 @@ export default function AdminCategoriesPage() {
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none resize-none"
                 placeholder="Short description for SEO and category pages"
               />
-            </div>
+            </label>
 
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Sort order</label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Sort order</span>
                 <input
                   type="number"
                   value={form.sort_order}
@@ -369,9 +370,9 @@ export default function AdminCategoriesPage() {
                   className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
                   placeholder="1–99"
                 />
-              </div>
-              <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Status</label>
+              </label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Status</span>
                 <select
                   value={form.is_active ? 'active' : 'inactive'}
                   onChange={e => setForm(f => f ? { ...f, is_active: e.target.value === 'active' } : f)}
@@ -380,7 +381,7 @@ export default function AdminCategoriesPage() {
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>
-              </div>
+              </label>
             </div>
 
             <div className="flex gap-2 justify-end">

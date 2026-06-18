@@ -99,10 +99,10 @@ export default function AdminInventoryPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {([
-          { label: 'Total Products in Stock', value: totalProducts, icon: <Package size={18} />, color: 'bg-blue-50 text-blue-700' },
-          { label: 'Low Stock Alert', value: lowStock, icon: <AlertTriangle size={18} />, color: 'bg-amber-50 text-amber-700' },
-          { label: 'Out of Stock', value: outOfStock, icon: <XCircle size={18} />, color: 'bg-red-50 text-red-700' },
-          { label: 'Total SKUs', value: totalSKU, icon: <Tag size={18} />, color: 'bg-green-50 text-green-700' },
+          { label: 'Total Products in Stock', value: totalProducts, icon: <Package size={18} aria-hidden="true" />, color: 'bg-blue-50 text-blue-700' },
+          { label: 'Low Stock Alert', value: lowStock, icon: <AlertTriangle size={18} aria-hidden="true" />, color: 'bg-amber-50 text-amber-700' },
+          { label: 'Out of Stock', value: outOfStock, icon: <XCircle size={18} aria-hidden="true" />, color: 'bg-red-50 text-red-700' },
+          { label: 'Total SKUs', value: totalSKU, icon: <Tag size={18} aria-hidden="true" />, color: 'bg-green-50 text-green-700' },
         ] as { label: string; value: number; icon: ReactNode; color: string }[]).map(({ label, value, icon, color }) => (
           <div key={label} className={`${color} rounded-lg p-4 border border-current/10`}>
             <p className="text-xs font-sans opacity-70 mb-1">{label}</p>
@@ -165,7 +165,7 @@ export default function AdminInventoryPage() {
                         </div>
                       ) : (
                         <div className="w-12 h-12 bg-[#f0ece8] rounded flex items-center justify-center text-[#9a9a9a] text-xs">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
                             <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
                             <polyline points="21 15 16 10 5 21"/>
                           </svg>

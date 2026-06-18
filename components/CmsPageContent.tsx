@@ -27,7 +27,7 @@ export default function CmsPageContent({ slug, staticContent }: Props) {
   }, [slug, staticContent])
 
   if (loading && !staticContent) {
-    return <div className="py-8 text-center text-[#6b6b6b] text-sm animate-pulse">Loading…</div>
+    return <div role="status" aria-live="polite" className="py-8 text-center text-[#6b6b6b] text-sm animate-pulse">Loading…</div>
   }
 
   const raw = html ?? staticContent ?? ''

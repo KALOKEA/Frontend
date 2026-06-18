@@ -9,9 +9,9 @@ type Tab = 'pending' | 'all'
 
 function StarRow({ n }: { n: number }) {
   return (
-    <span className="inline-flex gap-0.5">
+    <span className="inline-flex gap-0.5" role="img" aria-label={`${n} out of 5 stars`}>
       {[1,2,3,4,5].map(i => (
-        <Star key={i} size={12} fill={i <= n ? '#C49070' : 'none'} stroke="#C49070" />
+        <Star key={i} size={12} fill={i <= n ? '#C49070' : 'none'} stroke="#C49070" aria-hidden="true" />
       ))}
     </span>
   )
@@ -230,10 +230,10 @@ export default function AdminReviewsPage() {
           {allTotal > 30 && (
             <div className="flex gap-2 mt-4 items-center text-sm">
               <button disabled={allPage <= 1} onClick={() => { setAllPage(p => p - 1); loadAll(allPage - 1) }}
-                className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5] flex items-center gap-1"><ChevronLeft size={14} /> Prev</button>
+                className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5] flex items-center gap-1"><ChevronLeft size={14} aria-hidden="true" /> Prev</button>
               <span className="text-[#6b6b6b] px-2">Page {allPage} of {Math.ceil(allTotal / 30)}</span>
               <button disabled={allPage >= Math.ceil(allTotal / 30)} onClick={() => { setAllPage(p => p + 1); loadAll(allPage + 1) }}
-                className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5] flex items-center gap-1">Next <ChevronRight size={14} /></button>
+                className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5] flex items-center gap-1">Next <ChevronRight size={14} aria-hidden="true" /></button>
             </div>
           )}
         </>
@@ -241,8 +241,9 @@ export default function AdminReviewsPage() {
 
       {/* Reply Modal */}
       {replyTarget && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setReplyTarget(null)}>
-          <div className="bg-white w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setReplyTarget(null)} />
+          <div className="relative bg-white w-full max-w-md p-6" role="dialog" aria-modal="true" aria-label="Reply to review" onClick={e => e.stopPropagation()}>
             <h2 className="font-serif text-xl mb-1">Reply to Review</h2>
             <p className="text-xs text-[#6b6b6b] mb-1">
               {replyTarget.products?.name} — by {(replyTarget as any).users?.name || 'Customer'}
@@ -273,8 +274,9 @@ export default function AdminReviewsPage() {
 
       {/* Flag Modal */}
       {flagTarget && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setFlagTarget(null)}>
-          <div className="bg-white w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setFlagTarget(null)} />
+          <div className="relative bg-white w-full max-w-md p-6" role="dialog" aria-modal="true" aria-label="Flag review" onClick={e => e.stopPropagation()}>
             <h2 className="font-serif text-xl mb-1">
               {flagTarget.flagged ? 'Remove Flag' : 'Flag Review'}
             </h2>

@@ -92,6 +92,7 @@ export const FOOTER_HELP_DEFAULT: FooterLink[] = [
 
 export const FOOTER_COMPANY_DEFAULT: FooterLink[] = [
   { label: 'About Us',       href: '/about/' },
+  { label: 'Journal',        href: '/blog/' },
   { label: 'Privacy Policy', href: '/privacy-policy/' },
   { label: 'Terms of Use',   href: '/terms/' },
   { label: 'Careers',        href: '/about/' },

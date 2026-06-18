@@ -6,9 +6,9 @@ import { reviewsApi, type ReviewItem } from '@/lib/api/reviews'
 import Spinner from '@/components/ui/Spinner'
 
 const STARS = (n: number) => (
-  <span className="inline-flex gap-0.5">
+  <span role="img" className="inline-flex gap-0.5" aria-label={`${n} out of 5 stars`}>
     {[1,2,3,4,5].map(i => (
-      <Star key={i} size={12} fill={i <= n ? '#7C4A2D' : '#e8e4e0'} stroke="none" />
+      <Star key={i} size={12} fill={i <= n ? '#7C4A2D' : '#e8e4e0'} stroke="none" aria-hidden="true" />
     ))}
   </span>
 )

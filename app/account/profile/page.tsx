@@ -66,8 +66,9 @@ export default function ProfilePage() {
           </h3>
           <form onSubmit={save} className="space-y-4">
             <div>
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Full name</label>
+              <label htmlFor="profile-name" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Full name</label>
               <input
+                id="profile-name"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="Enter your name"
@@ -76,8 +77,9 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Email address</label>
+              <label htmlFor="profile-email" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Email address</label>
               <input
+                id="profile-email"
                 value={user?.email || ''}
                 disabled
                 className="w-full border border-[#f0ece8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#6b6b6b] cursor-not-allowed"
@@ -87,8 +89,9 @@ export default function ProfilePage() {
 
             {user?.phone && (
               <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Phone</label>
+                <label htmlFor="profile-phone" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Phone</label>
                 <input
+                  id="profile-phone"
                   value={user.phone}
                   disabled
                   className="w-full border border-[#f0ece8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#6b6b6b] cursor-not-allowed"
@@ -104,12 +107,14 @@ export default function ProfilePage() {
               >
                 {loading ? 'Saving…' : 'Save changes'}
               </button>
-              {saved && (
-                <span className="flex items-center gap-1.5 text-sm text-green-600">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
-                  Saved
-                </span>
-              )}
+              <span role="status" aria-live="polite" className="flex items-center gap-1.5 text-sm text-green-600" aria-atomic="true">
+                {saved && (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Saved
+                  </>
+                )}
+              </span>
             </div>
           </form>
         </div>
@@ -120,7 +125,7 @@ export default function ProfilePage() {
         <h3 className="text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-3">Security</h3>
         <div className="flex items-start gap-3">
           <div className="shrink-0 mt-0.5">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
           <div>
             <p className="text-sm text-[#0a0a0a] mb-1">Your account is secured with OTP authentication</p>

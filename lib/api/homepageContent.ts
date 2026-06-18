@@ -2,42 +2,89 @@ import api from './client'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
-// ─── Aggregated homepage data ───────────────────────────────────────────────
-// Singleton promise — all homepage components (HeroBanner, TrustStrip,
-// FeaturedProducts, CategoryGrid, Newsletter) share one fetch per page load.
-// TTL: 60 s, then a fresh fetch on next access.
+// ─── Aggregated homepage data ────────────────────────────────────────────────
+// Stale-while-revalidate singleton:
+//  - Cold load  : fires 3 sub-requests in parallel, caches result
+//  - Warm load  : returns stale data instantly, revalidates in background
+//  - Every component calls getHomepageData() — one network burst per TTL window
+// TTL: 5 min (CMS content rarely changes; products update on publish)
 
 export interface HomepageData {
   cms: HomepageContent
   categories: any[]
-  featured_products: any[]
+  featured_products: any[]  // newest products (Featured section)
+  bestsellers: any[]        // bestseller-tagged products
 }
+
+const HOMEPAGE_TTL = 5 * 60_000  // 5 minutes
 
 let _homepagePromise: Promise<HomepageData> | null = null
 let _homepageTs = 0
-const HOMEPAGE_TTL = 60_000
+let _homepageStale: HomepageData | null = null  // last resolved value
+
+// Track in-flight fetches to deduplicate concurrent callers
+const _inFlight = new Map<string, Promise<any>>()
+
+function parallelFetch(url: string): Promise<any> {
+  if (_inFlight.has(url)) return _inFlight.get(url)!
+  const p = fetch(url, {
+    cache: 'default',
+    // Hint: honour server-sent Cache-Control (CDN/browser) but fall back to our TTL
+  })
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null)
+    .finally(() => _inFlight.delete(url))
+  _inFlight.set(url, p)
+  return p
+}
+
+function _doFetch(): Promise<HomepageData> {
+  return Promise.all([
+    parallelFetch(`${BASE_URL}/homepage`),
+    parallelFetch(`${BASE_URL}/products?sort=newest&limit=8&is_active=true`),
+    parallelFetch(`${BASE_URL}/products?sort=bestseller&limit=3&is_active=true`),
+  ]).then(([homepageJson, newestJson, bestsellerJson]) => {
+    const raw = homepageJson?.data ?? homepageJson
+    const result: HomepageData = {
+      cms: { ...HERO_DEFAULTS, ...(raw?.cms ?? {}) } as HomepageContent,
+      categories: raw?.categories ?? [],
+      featured_products: newestJson?.data ?? raw?.featured_products ?? [],
+      bestsellers: bestsellerJson?.data ?? [],
+    }
+    _homepageStale = result
+    return result
+  }).catch(() => {
+    // On network error return stale if available, otherwise empty defaults
+    if (_homepageStale) return _homepageStale
+    return { cms: HERO_DEFAULTS, categories: [], featured_products: [], bestsellers: [] }
+  })
+}
 
 export function getHomepageData(): Promise<HomepageData> {
-  if (_homepagePromise && Date.now() - _homepageTs < HOMEPAGE_TTL) {
+  const now = Date.now()
+
+  // Fresh cache — return same promise (may still be in-flight on very first call)
+  if (_homepagePromise && now - _homepageTs < HOMEPAGE_TTL) {
     return _homepagePromise
   }
-  _homepageTs = Date.now()
-  _homepagePromise = fetch(`${BASE_URL}/homepage`, { cache: 'default' })
-    .then((r) => r.ok ? r.json() : null)
-    .then((json) => {
-      const raw = json?.data ?? json
-      return {
-        cms: { ...HERO_DEFAULTS, ...(raw?.cms ?? {}) } as HomepageContent,
-        categories: raw?.categories ?? [],
-        featured_products: raw?.featured_products ?? [],
-      }
-    })
-    .catch(() => ({
-      cms: HERO_DEFAULTS,
-      categories: [],
-      featured_products: [],
-    }))
+
+  // Stale-while-revalidate: we have old data → return it instantly, refresh in background
+  if (_homepageStale) {
+    _homepageTs = now
+    _homepagePromise = _doFetch()  // background revalidation (no await)
+    return Promise.resolve(_homepageStale)  // immediate response
+  }
+
+  // Cold load — no data yet, must wait for network
+  _homepageTs = now
+  _homepagePromise = _doFetch()
   return _homepagePromise
+}
+
+// Pre-warm: kick off the fetch as soon as this module is imported in the browser.
+// By the time React renders, data is already in-flight (or resolved from SW cache).
+if (typeof window !== 'undefined') {
+  getHomepageData()
 }
 
 export interface HomepageContent {
@@ -52,7 +99,6 @@ export interface HomepageContent {
   hero_image_url: string
   hero_video_url: string
   hero_mode: 'image' | 'video'
-  // Trust strip
   trust_1_title: string
   trust_1_sub: string
   trust_2_title: string
@@ -61,18 +107,13 @@ export interface HomepageContent {
   trust_3_sub: string
   trust_4_title: string
   trust_4_sub: string
-  // Newsletter
   newsletter_heading: string
   newsletter_subtext: string
-  // Featured section
   featured_section_heading: string
-  // Category grid
   category_heading: string
   category_eyebrow: string
-  // Quote strip
   quote_text: string
   quote_author: string
-  // Editorial banner
   editorial_eyebrow: string
   editorial_heading: string
   editorial_subtext: string
@@ -81,21 +122,14 @@ export interface HomepageContent {
   editorial_image_url: string
   editorial_video_url: string
   editorial_mode: 'image' | 'video'
-  // Shop the Look — JSON array of looks
   stl_looks: string
-  // Best sellers
   bestseller_heading: string
   bestseller_eyebrow: string
-  // Testimonials
   testimonials_heading: string
   testimonials_eyebrow: string
-  // Press / As Seen In — JSON array of {name, url}
   press_logos: string
-  // Announcement bar — JSON array of strings
   announcement_items: string
-  // Hero carousel — JSON array of {image, video, mode}
   hero_slides: string
-  // Editorial carousel — JSON array of {image, video, mode}
   editorial_slides: string
   [key: string]: string
 }
@@ -127,7 +161,7 @@ export const HERO_DEFAULTS: HomepageContent = {
   featured_section_heading: 'Featured Pieces',
   category_heading: 'Find Your Signature',
   category_eyebrow: 'Shop by Category',
-  quote_text: '"Wear what makes you feel alive."',
+  quote_text: '“Wear what makes you feel alive.”',
   quote_author: '— KALOKEA',
   editorial_eyebrow: 'The Edit',
   editorial_heading: "Season's New Chapter",

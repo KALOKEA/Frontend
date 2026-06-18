@@ -81,7 +81,7 @@ export default function BillingDetails({
 
       <F label="Street address" req>
         <input value={value.line1} onChange={(e) => set('line1', e.target.value)} placeholder="House number and street name" className="inp mb-2" />
-        <input value={value.line2} onChange={(e) => set('line2', e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="inp" />
+        <input value={value.line2} onChange={(e) => set('line2', e.target.value)} placeholder="Apartment, suite, etc. (optional)" aria-label="Apartment, suite, unit, etc. (optional)" className="inp" />
       </F>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -59,12 +59,12 @@ export default function OrderSummary({
   const total = quote?.total ?? Math.max(0, subtotal - discount) + shipping + codFee
 
   return (
-    <div className="bg-[#faf8f5] p-6 lg:sticky lg:top-24">
+    <div className="bg-[#faf8f5] p-6 lg:sticky lg:top-[110px]">
       <h3 className="font-serif text-lg text-[#0a0a0a] mb-5">Order Summary</h3>
 
-      <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
+      <div className="space-y-4 mb-6 max-h-64 overflow-y-auto" aria-label="Cart items" role="list">
         {items.map((item) => (
-          <div key={item.variant_id} className="flex gap-3">
+          <div key={item.variant_id} className="flex gap-3" role="listitem">
             <div className="relative w-14 h-20 shrink-0 bg-[#e8e4e0] overflow-hidden">
               {item.image_url && (
                 <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="56px" />
@@ -82,7 +82,7 @@ export default function OrderSummary({
         ))}
       </div>
 
-      <div className="border-t border-[#e8e4e0] pt-4 space-y-2">
+      <div className="border-t border-[#e8e4e0] pt-4 space-y-2" aria-live="polite" aria-atomic="true">
         <Line label="Subtotal" value={formatPrice(subtotal)} />
         {discount > 0 && <Line label="Discount" value={`-${formatPrice(discount)}`} accent />}
 

@@ -12,6 +12,7 @@ export default function LiveChatWidget() {
         const payload = settings?.data ?? settings
         const script = payload?.live_chat_widget?.trim()
         if (!script) return
+        if (document.getElementById('kalokea-chat-widget')) return
         const container = document.createElement('div')
         container.id = 'kalokea-chat-widget'
         container.innerHTML = script

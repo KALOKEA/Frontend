@@ -1,12 +1,12 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCartStore } from '@/lib/store/useCartStore'
 import { formatPrice } from '@/lib/utils/formatPrice'
 import CartCrossSell from '@/components/cart/CartCrossSell'
 
-// Free shipping threshold in paise — matches backend default (₹999)
+// Free shipping threshold in paise — ₹999. Synced with backend default.
 const FREE_SHIPPING_THRESHOLD = 99900
 
 export default function CartDrawer() {
@@ -19,34 +19,86 @@ export default function CartDrawer() {
   const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total)
   const freeShippingUnlocked = total >= FREE_SHIPPING_THRESHOLD
 
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const drawerRef = useRef<HTMLDivElement>(null)
+  const previousFocus = useRef<HTMLElement | null>(null)
+
+  // Body scroll lock
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
+  // Focus management: save trigger, move into drawer on open; restore on close
   useEffect(() => {
+    if (isOpen) {
+      previousFocus.current = document.activeElement as HTMLElement
+      // Small delay so the drawer has rendered
+      setTimeout(() => closeRef.current?.focus(), 30)
+    } else {
+      previousFocus.current?.focus()
+      previousFocus.current = null
+    }
+  }, [isOpen])
+
+  // Escape closes drawer
+  useEffect(() => {
+    if (!isOpen) return
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') closeCart() }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [closeCart])
+  }, [isOpen, closeCart])
 
-  if (!isOpen) return null
+  // Focus trap: cycle Tab within drawer
+  useEffect(() => {
+    if (!isOpen) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      const drawer = drawerRef.current
+      if (!drawer) return
+      const focusable = Array.from(
+        drawer.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter(el => !el.hasAttribute('disabled'))
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus() }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus() }
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [isOpen])
 
   return (
     <>
-      {/* Overlay */}
-      <div className="fixed inset-0 bg-[#0A0908]/40 z-40 transition-opacity" onClick={closeCart} />
-
-      {/* Drawer */}
+      {/* Overlay — fades in/out */}
       <div
+        className={`fixed inset-0 bg-[#0A0908]/40 z-40 transition-opacity duration-300 ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={closeCart}
+        aria-hidden="true"
+      />
+
+      {/* Drawer — slides in from the right */}
+      <div
+        ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-label="Shopping cart"
-        className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#FDFAF6] z-50 flex flex-col shadow-float"
+        className={`fixed top-0 right-0 h-full w-full max-w-sm bg-[#FDFAF6] z-50 flex flex-col shadow-float
+          transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        // Prevent focus reaching hidden drawer via keyboard when closed
+        inert={!isOpen ? true : undefined}
       >
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E0D4C4]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E0D4C4] shrink-0">
           <div>
             <h2 className="font-serif text-lg text-[#0A0908]">Your Cart</h2>
             {count > 0 && (
@@ -54,6 +106,7 @@ export default function CartDrawer() {
             )}
           </div>
           <button
+            ref={closeRef}
             onClick={closeCart}
             className="w-11 h-11 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] transition-colors -mr-2"
             aria-label="Close cart"
@@ -156,7 +209,7 @@ export default function CartDrawer() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-[#E0D4C4] px-5 py-4 space-y-3 bg-[#FDFAF6]">
+          <div className="border-t border-[#E0D4C4] px-5 py-4 space-y-3 bg-[#FDFAF6] shrink-0">
 
             {/* Free shipping progress bar */}
             <div className="pb-1">
@@ -169,7 +222,14 @@ export default function CartDrawer() {
                   Add <span className="font-semibold text-[#0a0908]">{formatPrice(remaining)}</span> more for free shipping
                 </p>
               )}
-              <div className="mt-1.5 h-1 bg-[#e8e4e0] rounded-full overflow-hidden">
+              <div
+                className="mt-1.5 h-1 bg-[#e8e4e0] rounded-full overflow-hidden"
+                role="progressbar"
+                aria-valuenow={freeShippingPct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`Free shipping progress: ${freeShippingPct}%`}
+              >
                 <div
                   className="h-full bg-[#7C4A2D] rounded-full transition-all duration-500"
                   style={{ width: `${freeShippingPct}%` }}

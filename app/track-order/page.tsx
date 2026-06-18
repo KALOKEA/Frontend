@@ -87,8 +87,9 @@ export default function TrackOrderPage() {
         <form onSubmit={handleSubmit} className="bg-white border border-[#e8e4e0] p-6 mb-8">
           <div className="grid gap-4">
             <div>
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Order Number</label>
+              <label htmlFor="track-order-number" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Order Number</label>
               <input
+                id="track-order-number"
                 type="text"
                 value={orderNumber}
                 onChange={e => setOrderNumber(e.target.value)}
@@ -98,8 +99,9 @@ export default function TrackOrderPage() {
               />
             </div>
             <div>
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Email Address</label>
+              <label htmlFor="track-email" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Email Address</label>
               <input
+                id="track-email"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -116,7 +118,7 @@ export default function TrackOrderPage() {
         </form>
 
         {error && (
-          <div className="bg-[#fdecea] border border-[#ef9a9a] px-5 py-4 text-sm text-[#c62828] mb-6">
+          <div role="alert" className="bg-[#fdecea] border border-[#ef9a9a] px-5 py-4 text-sm text-[#c62828] mb-6">
             {error}
           </div>
         )}
@@ -155,10 +157,10 @@ export default function TrackOrderPage() {
                           <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium border-2 flex-shrink-0 ${
                             done ? 'bg-[#0a0a0a] border-[#0a0a0a] text-white' : 'bg-white border-[#d0ccc8] text-[#6b6b6b]'
                           } ${current ? 'ring-2 ring-[#7C4A2D] ring-offset-2' : ''}`}>
-                            {done && !current ? <Check size={12} /> : i + 1}
+                            {done && !current ? <Check size={12} aria-hidden={true} /> : i + 1}
                           </div>
                           {i < STATUS_STEPS.length - 1 && (
-                            <div className={`flex-1 h-0.5 mx-1 ${i < stepIndex ? 'bg-[#0a0a0a]' : 'bg-[#e8e4e0]'}`} />
+                            <div aria-hidden="true" className={`flex-1 h-0.5 mx-1 ${i < stepIndex ? 'bg-[#0a0a0a]' : 'bg-[#e8e4e0]'}`} />
                           )}
                         </div>
                         <p className={`text-[10px] mt-2 text-center ${done ? 'text-[#0a0a0a] font-medium' : 'text-[#6b6b6b]'}`}>

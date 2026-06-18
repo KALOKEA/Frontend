@@ -58,7 +58,7 @@ export default function ContactPage() {
   const labelCls = 'block text-[10px] uppercase tracking-[0.2em] text-[#6B5E55] font-sans mb-1.5'
 
   return (
-    <main className="bg-[#FDFAF6]">
+    <div className="bg-[#FDFAF6]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
 
         {/* Page header */}
@@ -79,7 +79,7 @@ export default function ContactPage() {
 
                 {/* Phone */}
                 <div className="flex items-start gap-4">
-                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D]">
+                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D]" aria-hidden="true">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                       <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.02 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/>
                     </svg>
@@ -93,7 +93,7 @@ export default function ContactPage() {
 
                 {/* Email */}
                 <div className="flex items-start gap-4">
-                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D]">
+                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D]" aria-hidden="true">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                       <polyline points="22,6 12,13 2,6"/>
@@ -108,7 +108,7 @@ export default function ContactPage() {
 
                 {/* Address */}
                 <div className="flex items-start gap-4">
-                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D]">
+                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D]" aria-hidden="true">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
                       <circle cx="12" cy="10" r="3"/>
@@ -136,8 +136,8 @@ export default function ContactPage() {
           {/* ── Right: form ──────────────────────────────────────────────── */}
           <div className="lg:col-span-3">
             {sent ? (
-              <div className="border border-[#7C4A2D] p-10 text-center">
-                <div className="w-12 h-12 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D] mx-auto mb-5">
+              <div role="status" aria-live="polite" className="border border-[#7C4A2D] p-10 text-center">
+                <div className="w-12 h-12 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D] mx-auto mb-5" aria-hidden="true">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
@@ -149,8 +149,9 @@ export default function ContactPage() {
               <form onSubmit={submit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={labelCls}>Your Name</label>
+                    <label htmlFor="contact-name" className={labelCls}>Your Name</label>
                     <input
+                      id="contact-name"
                       type="text"
                       value={form.name}
                       onChange={set('name')}
@@ -160,8 +161,9 @@ export default function ContactPage() {
                     />
                   </div>
                   <div>
-                    <label className={labelCls}>Email Address</label>
+                    <label htmlFor="contact-email" className={labelCls}>Email Address</label>
                     <input
+                      id="contact-email"
                       type="email"
                       value={form.email}
                       onChange={set('email')}
@@ -174,8 +176,9 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={labelCls}>Subject</label>
+                    <label htmlFor="contact-subject" className={labelCls}>Subject</label>
                     <select
+                      id="contact-subject"
                       value={form.subject}
                       onChange={set('subject')}
                       required
@@ -188,8 +191,9 @@ export default function ContactPage() {
                     </select>
                   </div>
                   <div>
-                    <label className={labelCls}>Order ID <span className="normal-case text-[#6b5c55]">(optional)</span></label>
+                    <label htmlFor="contact-order-id" className={labelCls}>Order ID <span className="normal-case text-[#6b5c55]">(optional)</span></label>
                     <input
+                      id="contact-order-id"
                       type="text"
                       value={form.order_id}
                       onChange={set('order_id')}
@@ -200,8 +204,9 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className={labelCls}>Message</label>
+                  <label htmlFor="contact-message" className={labelCls}>Message</label>
                   <textarea
+                    id="contact-message"
                     value={form.message}
                     onChange={set('message')}
                     rows={5}
@@ -211,7 +216,7 @@ export default function ContactPage() {
                   />
                 </div>
 
-                {error && <p className="text-[13px] font-sans text-[#c0392b]">{error}</p>}
+                {error && <p role="alert" className="text-[13px] font-sans text-[#c0392b]">{error}</p>}
 
                 <button
                   type="submit"
@@ -226,6 +231,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

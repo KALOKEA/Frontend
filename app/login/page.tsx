@@ -76,7 +76,7 @@ function LoginContent() {
     <div className="min-h-[70vh] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         {sessionExpired && (
-          <div className="mb-6 px-4 py-3 bg-amber-50 border border-amber-200 text-amber-800 text-sm text-center">
+          <div role="alert" className="mb-6 px-4 py-3 bg-amber-50 border border-amber-200 text-amber-800 text-sm text-center">
             Your session expired. Please sign in again to continue.
           </div>
         )}

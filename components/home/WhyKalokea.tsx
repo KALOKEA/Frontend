@@ -97,8 +97,9 @@ export default function WhyKalokea() {
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 40px rgba(10,8,6,.14)' }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}
             >
-              {/* Icon circle — why-icon */}
+              {/* Icon circle — why-icon (decorative, h3 below names the feature) */}
               <div
+                aria-hidden="true"
                 style={{
                   width: 52,
                   height: 52,

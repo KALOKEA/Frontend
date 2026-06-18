@@ -26,7 +26,7 @@ const PAY_COLOR: Record<string, string> = {
 function Flash({ msg }: { msg: { type: 'ok' | 'err'; text: string } | null }) {
   if (!msg) return null
   return (
-    <div className={`mb-4 px-4 py-3 text-sm border ${msg.type === 'ok' ? 'bg-[#e8f5e9] border-[#a5d6a7] text-[#2e7d32]' : 'bg-[#fdecea] border-[#ef9a9a] text-[#c62828]'}`}>
+    <div role="alert" className={`mb-4 px-4 py-3 text-sm border ${msg.type === 'ok' ? 'bg-[#e8f5e9] border-[#a5d6a7] text-[#2e7d32]' : 'bg-[#fdecea] border-[#ef9a9a] text-[#c62828]'}`}>
       {msg.text}
     </div>
   )
@@ -127,7 +127,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
     <div className="max-w-4xl">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <button onClick={() => router.back()} className="text-[#6b6b6b] hover:text-[#0a0a0a] text-sm flex items-center gap-1"><ChevronLeft size={14} />Back</button>
+        <button onClick={() => router.back()} className="text-[#6b6b6b] hover:text-[#0a0a0a] text-sm flex items-center gap-1"><ChevronLeft size={14} aria-hidden={true} />Back</button>
         <h1 className="font-serif text-2xl text-[#0a0a0a]">Order #{order.order_number}</h1>
         <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded ${STATUS_COLOR[order.status] || 'bg-gray-100'}`}>{order.status}</span>
         {order.shiprocket_status && (
@@ -173,6 +173,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
       {/* Items table */}
       <div className="bg-white border border-[#e8e4e0] mb-8">
         <h2 className="text-[11px] uppercase tracking-widest text-[#6b6b6b] px-5 pt-5 mb-3">Items ({items.length})</h2>
+        <div className="overflow-x-auto">
         <table className="min-w-[480px] w-full text-sm">
           <thead>
             <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
@@ -198,6 +199,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
             </tr>
           </tfoot>
         </table>
+        </div>
       </div>
 
       {/* ShipRocket panel */}
@@ -224,7 +226,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Label</p>
                 {order.label_url
-                  ? <a href={order.label_url} target="_blank" rel="noopener noreferrer" className="text-sm underline text-[#c8a4a5] inline-flex items-center gap-1">Download <ExternalLink size={11} /></a>
+                  ? <a href={order.label_url} target="_blank" rel="noopener noreferrer" className="text-sm underline text-[#c8a4a5] inline-flex items-center gap-1">Download <ExternalLink size={11} aria-hidden={true} /></a>
                   : <button disabled={srLoading} onClick={() => srAction(() => adminApi.generateLabel(id), 'Label generated')}
                       className="text-sm underline text-[#0a0a0a] disabled:opacity-40">Generate</button>}
               </div>
@@ -252,7 +254,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
             )}
             {order.pickup_scheduled_at && (
               <span className="px-4 py-2 text-sm bg-green-50 border border-green-200 text-green-700">
-                <Check size={13} className="inline mr-1" />Pickup scheduled {new Date(order.pickup_scheduled_at).toLocaleDateString('en-IN')}
+                <Check size={13} className="inline mr-1" aria-hidden={true} />Pickup scheduled {new Date(order.pickup_scheduled_at).toLocaleDateString('en-IN')}
               </span>
             )}
             {inSR && hasAwb && (
@@ -265,7 +267,7 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
               <button disabled={srLoading}
                 onClick={() => srAction(() => adminApi.createReturnPickup(id), 'Return pickup created — check ShipRocket for AWB')}
                 className="px-4 py-2 text-sm border border-orange-300 text-orange-700 hover:bg-orange-50 transition-colors disabled:opacity-40 flex items-center gap-1.5">
-                <Undo2 size={13} /> Create Return Pickup
+                <Undo2 size={13} aria-hidden={true} /> Create Return Pickup
               </button>
             )}
           </div>
@@ -274,10 +276,10 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
             <div className="mt-5 bg-[#faf8f5] border border-[#e8e4e0] p-4">
               <p className="text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-3">Package Details</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-                {[['Weight (kg)',pkgWeight,setPkgWeight],['Length (cm)',pkgLength,setPkgLength],['Breadth (cm)',pkgBreadth,setPkgBreadth],['Height (cm)',pkgHeight,setPkgHeight]].map(([label,val,set]:any) => (
+                {[['Weight (kg)',pkgWeight,setPkgWeight,'pkg-weight'],['Length (cm)',pkgLength,setPkgLength,'pkg-length'],['Breadth (cm)',pkgBreadth,setPkgBreadth,'pkg-breadth'],['Height (cm)',pkgHeight,setPkgHeight,'pkg-height']].map(([label,val,set,fid]:any) => (
                   <div key={label}>
-                    <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">{label}</label>
-                    <input type="number" step="0.1" min="0.1" value={val} onChange={e => set(e.target.value)}
+                    <label htmlFor={fid} className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">{label}</label>
+                    <input id={fid} type="number" step="0.1" min="0.1" value={val} onChange={e => set(e.target.value)}
                       className="w-full border border-[#e8e4e0] px-2 py-1.5 text-sm focus:outline-none focus:border-[#0a0a0a]" />
                   </div>
                 ))}
@@ -321,14 +323,14 @@ export default function AdminOrderDetailInner({ idOverride }: { idOverride?: str
           <Flash msg={refundMsg} />
           <div className="grid md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Amount ₹ (blank = full)</label>
-              <input type="number" step="0.01" value={refundAmt} onChange={e => setRefundAmt(e.target.value)}
+              <label htmlFor="refund-amount" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Amount ₹ (blank = full)</label>
+              <input id="refund-amount" type="number" step="0.01" value={refundAmt} onChange={e => setRefundAmt(e.target.value)}
                 placeholder={`Max ₹${(order.total/100).toFixed(2)}`}
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:outline-none focus:border-[#0a0a0a]" />
             </div>
             <div>
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Reason</label>
-              <input type="text" value={refundReason} onChange={e => setRefundReason(e.target.value)} placeholder="e.g. Customer request"
+              <label htmlFor="refund-reason" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Reason</label>
+              <input id="refund-reason" type="text" value={refundReason} onChange={e => setRefundReason(e.target.value)} placeholder="e.g. Customer request"
                 className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:outline-none focus:border-[#0a0a0a]" />
             </div>
           </div>

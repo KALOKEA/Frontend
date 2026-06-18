@@ -20,7 +20,6 @@ function SignupContent() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')          // Required mobile number
   const [email, setEmail] = useState('')          // Optional email for OTP
-  const [otpChannel, setOtpChannel] = useState<'phone' | 'email'>('phone')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
@@ -31,9 +30,7 @@ function SignupContent() {
     if (!phone.trim() || phone.length < 10) { toast('Please enter a valid 10-digit mobile number', 'error'); return }
     if (!acceptedTerms) { toast('Please accept the Terms & Conditions to continue', 'error'); return }
 
-    // Determine OTP channel: use phone if provided, else email
     const identifier = phone.trim()
-    setOtpChannel('phone')
 
     setLoading(true)
     try {
@@ -162,7 +159,7 @@ function SignupContent() {
               onClick={() => { setStep('details'); setOtp('') }}
               className="w-full text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors"
             >
-              <ChevronLeft size={12} className="inline" /> Change details
+              <ChevronLeft size={12} className="inline" aria-hidden={true} /> Change details
             </button>
           </form>
         )}

@@ -216,8 +216,9 @@ export default function AdminReturnsPage() {
       )}
 
       {editing && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setEditing(null)}>
-          <div className="bg-white w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setEditing(null)} />
+          <div className="relative bg-white w-full max-w-md p-6" role="dialog" aria-modal="true" aria-label="Update return status" onClick={(e) => e.stopPropagation()}>
             <h2 className="font-serif text-xl mb-0.5">Return · {returnId(editing)}</h2>
             <p className="text-xs text-[#6b6b6b] mb-4">Order: {(editing.orders as any)?.order_number || editing.order_id}</p>
             {editing.reason && (

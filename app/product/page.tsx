@@ -14,16 +14,17 @@ import ProductDetailClient from './ProductDetailClient'
 import Spinner from '@/components/ui/Spinner'
 
 export default function ProductFallbackPage() {
-  const [slug, setSlug] = useState<string | null>(null)
+  // undefined = still reading pathname (SSR safe), '' = bare /product/, string = valid slug
+  const [slug, setSlug] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     // pathname is e.g. /product/new-dress/ → extract "new-dress"
     const parts = window.location.pathname.replace(/\/$/, '').split('/')
     const s = parts[parts.length - 1]
-    setSlug(s && s !== 'product' ? s : null)
+    setSlug(s !== 'product' ? s : '')
   }, [])
 
-  if (slug === null) {
+  if (slug === undefined) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
         <Spinner size="lg" />
@@ -33,7 +34,7 @@ export default function ProductFallbackPage() {
 
   if (!slug) {
     // Bare /product/ — redirect to shop
-    if (typeof window !== 'undefined') window.location.replace('/shop/')
+    window.location.replace('/shop/')
     return null
   }
 

@@ -122,8 +122,9 @@ export default function AdminProductsPage() {
         {search && (
           <button
             onClick={() => setSearch('')}
+            aria-label="Clear search"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b6b] hover:text-[#0a0a0a] text-xl leading-none"
-          ><X size={16} /></button>
+          ><X size={16} aria-hidden="true" /></button>
         )}
       </div>
       {search.trim() && !loading && (
@@ -552,7 +553,7 @@ function ProductEditor({
             onClick={onBack}
             className="text-[11px] uppercase tracking-widest text-[#6b6b6b] hover:text-[#0a0a0a] shrink-0 flex items-center gap-1"
           >
-            <ChevronLeft size={13} /> Products
+            <ChevronLeft size={13} aria-hidden="true" /> Products
           </button>
           <span className="text-[#d0ccc8]">/</span>
           <h1 className="font-serif text-2xl text-[#0a0a0a] truncate">
@@ -835,9 +836,9 @@ function ProductEditor({
                   className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
                 >
                   {showMatrix ? (
-                    <><ChevronUp size={12} className="inline mr-1" /> Hide matrix generator</>
+                    <><ChevronUp size={12} className="inline mr-1" aria-hidden="true" /> Hide matrix generator</>
                   ) : (
-                    <><ChevronDown size={12} className="inline mr-1" /> Quick generate (size × colour matrix)</>
+                    <><ChevronDown size={12} className="inline mr-1" aria-hidden="true" /> Quick generate (size × colour matrix)</>
                   )}
                 </button>
               </div>
@@ -1067,11 +1068,13 @@ function ProductEditor({
                         {/* Reorder */}
                         <div className="flex flex-col gap-0.5">
                           <button onClick={() => moveImage(idx, -1)} disabled={idx === 0}
+                            aria-label="Move up"
                             className="text-[12px] leading-none text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-20 px-1 py-0.5"
-                            title="Move up"><ChevronUp size={12} /></button>
+                          ><ChevronUp size={12} aria-hidden="true" /></button>
                           <button onClick={() => moveImage(idx, 1)} disabled={idx === sortedImages.length - 1}
+                            aria-label="Move down"
                             className="text-[12px] leading-none text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-20 px-1 py-0.5"
-                            title="Move down"><ChevronDown size={12} /></button>
+                          ><ChevronDown size={12} aria-hidden="true" /></button>
                         </div>
                         {/* Actions */}
                         <div className="flex flex-col gap-1 items-end shrink-0">
@@ -1169,16 +1172,16 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="mb-3">
-      <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">{label}</label>
+    <label className="block mb-3">
+      <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">{label}</span>
       {children}
-    </div>
+    </label>
   )
 }
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <button type="button" onClick={() => onChange(!checked)}
+    <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)}
       className={`relative inline-flex w-10 h-5 rounded-full transition-colors shrink-0 ${
         checked ? 'bg-[#0a0a0a]' : 'bg-[#d0ccc8]'
       }`}>

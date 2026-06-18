@@ -22,8 +22,14 @@ export default function AnnouncementBar() {
   const items = [...messages, ...messages]
 
   return (
-    <div style={{ background: '#1E1208', padding: '10px 0', overflow: 'hidden' }}>
+    // Outer div is readable by screen readers via aria-label; inner animated
+    // track is aria-hidden to avoid repeating text twice for AT users.
+    <div
+      style={{ background: '#1E1208', padding: '10px 0', overflow: 'hidden' }}
+      aria-label={messages.join(' · ')}
+    >
       <div
+        aria-hidden="true"
         style={{
           display: 'flex',
           width: 'max-content',

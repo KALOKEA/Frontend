@@ -34,7 +34,7 @@ const PAGE_URLS: Record<string, string> = {
 function Flash({ msg }: { msg: { type: 'ok' | 'err'; text: string } | null }) {
   if (!msg) return null
   return (
-    <div className={`px-4 py-3 text-sm border mb-4 ${msg.type === 'ok' ? 'bg-[#e8f5e9] border-[#a5d6a7] text-[#2e7d32]' : 'bg-[#fdecea] border-[#ef9a9a] text-[#c62828]'}`}>
+    <div role="alert" className={`px-4 py-3 text-sm border mb-4 ${msg.type === 'ok' ? 'bg-[#e8f5e9] border-[#a5d6a7] text-[#2e7d32]' : 'bg-[#fdecea] border-[#ef9a9a] text-[#c62828]'}`}>
       {msg.text}
     </div>
   )
@@ -64,16 +64,18 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
       <Flash msg={msg} />
 
       <div className="mb-4">
-        <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Page Title</label>
+        <label htmlFor="cms-title" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Page Title</label>
         <input
+          id="cms-title"
           value={title} onChange={e => setTitle(e.target.value)}
           className="w-full border border-[#e8e4e0] px-3 py-2 text-sm outline-none focus:border-[#c8a4a5]"
         />
       </div>
 
       <div className="mb-4">
-        <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">SEO Meta Description</label>
+        <label htmlFor="cms-meta" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">SEO Meta Description</label>
         <input
+          id="cms-meta"
           value={meta} onChange={e => setMeta(e.target.value)}
           placeholder="Short description for search engines (150–160 chars)"
           className="w-full border border-[#e8e4e0] px-3 py-2 text-sm outline-none focus:border-[#c8a4a5]"
@@ -83,7 +85,7 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
 
       <div className="mb-4">
         <div className="flex items-center justify-between mb-1">
-          <label className="text-[11px] uppercase tracking-widest text-[#6b6b6b]">Content (HTML)</label>
+          <label htmlFor="cms-content" className="text-[11px] uppercase tracking-widest text-[#6b6b6b]">Content (HTML)</label>
           <button
             onClick={() => setPreview(!preview)}
             className="text-[10px] uppercase tracking-widest text-[#6b6b6b] hover:text-[#0a0a0a] border border-[#e8e4e0] px-3 py-1"
@@ -98,6 +100,7 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
           />
         ) : (
           <textarea
+            id="cms-content"
             value={content} onChange={e => setContent(e.target.value)}
             rows={18}
             className="w-full border border-[#e8e4e0] px-3 py-2 text-sm font-mono outline-none focus:border-[#c8a4a5] resize-y"
@@ -121,7 +124,7 @@ function PageEditor({ page, onSaved }: { page: CmsPage; onSaved: () => void }) {
           target="_blank" rel="noopener noreferrer"
           className="text-[11px] text-[#6b6b6b] hover:text-[#0a0a0a] underline flex items-center gap-1"
         >
-          View live page <ExternalLink size={11} />
+          View live page <ExternalLink size={11} aria-hidden={true} />
         </a>
         <span className="text-[10px] text-[#6b6b6b] sm:ml-auto w-full sm:w-auto">
           Last saved: {new Date(page.updated_at).toLocaleString('en-IN')}
@@ -162,11 +165,12 @@ export default function CmsEditor() {
           {/* Page selector */}
           <div className="md:w-48 shrink-0">
             <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-3 hidden md:block">Pages</p>
-            <nav className="flex md:flex-col flex-row flex-wrap gap-1 md:gap-0 md:space-y-0.5">
+            <nav aria-label="CMS pages" className="flex md:flex-col flex-row flex-wrap gap-1 md:gap-0 md:space-y-0.5">
               {pages.map(p => (
                 <button
                   key={p.slug}
                   onClick={() => setActive(p.slug)}
+                  aria-pressed={active === p.slug}
                   className={`w-auto md:w-full text-left px-3 py-2 md:py-2.5 text-[11px] font-sans tracking-widest uppercase transition-colors border-l-2 md:border-l-2 border-b-2 md:border-b-0 ${
                     active === p.slug
                       ? 'border-[#c8a4a5] bg-[#faf8f5] text-[#0a0a0a] font-medium'

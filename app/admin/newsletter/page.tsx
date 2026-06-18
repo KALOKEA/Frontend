@@ -2,11 +2,9 @@
 import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { adminApi } from '@/lib/api/admin'
-import api, { getAccessToken } from '@/lib/api/client'
+import api from '@/lib/api/client'
 import { useToast } from '@/components/ui/Toast'
 import Spinner from '@/components/ui/Spinner'
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 interface Subscriber { email: string; is_active: boolean; created_at: string }
 type Tab = 'subscribers' | 'campaign' | 'history'
@@ -206,10 +204,12 @@ export default function AdminNewsletterPage() {
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-6">
               <button disabled={page === 1} onClick={() => { setPage(p => p - 1); loadSubscribers(page - 1) }}
-                className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronLeft size={14} /></button>
+                aria-label="Previous page"
+                className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronLeft size={14} aria-hidden="true" /></button>
               <span className="px-3 py-1 text-sm text-[#6b6b6b]">{page} / {totalPages}</span>
               <button disabled={page >= totalPages} onClick={() => { setPage(p => p + 1); loadSubscribers(page + 1) }}
-                className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronRight size={14} /></button>
+                aria-label="Next page"
+                className="px-3 py-1 border border-[#e8e4e0] text-sm disabled:opacity-40 hover:bg-[#faf8f5]"><ChevronRight size={14} aria-hidden="true" /></button>
             </div>
           )}
         </>

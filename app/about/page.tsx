@@ -45,7 +45,7 @@ export default function AboutPage() {
   const t = team   ?? []
 
   return (
-    <main className="bg-[#FDFAF6]">
+    <div className="bg-[#FDFAF6]">
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
@@ -57,7 +57,7 @@ export default function AboutPage() {
           className="flex flex-col justify-center px-10 py-16 md:py-24 md:px-16 lg:px-24 relative z-10"
           style={{ flex: '0 0 50%' }}
         >
-          <div className="w-10 h-px bg-[#7C4A2D] mb-8" />
+          <div className="w-10 h-px bg-[#7C4A2D] mb-8" aria-hidden="true" />
           {!loaded ? (
             <>
               <Skeleton className="h-3 w-24 mb-5" />
@@ -99,6 +99,7 @@ export default function AboutPage() {
           ) : (
             /* Elegant placeholder when no image is set */
             <div
+              aria-hidden="true"
               className="w-full h-full flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #2A1A0E 0%, #1E1208 60%, #3A2015 100%)' }}
             >
@@ -108,6 +109,7 @@ export default function AboutPage() {
             </div>
           )}
           <div
+            aria-hidden="true"
             className="absolute inset-y-0 left-0 w-24 pointer-events-none hidden md:block"
             style={{ background: 'linear-gradient(to right, #1E1208, transparent)' }}
           />
@@ -190,7 +192,7 @@ export default function AboutPage() {
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-[#E0D4C4]">
+                      <div aria-hidden="true" className="w-full h-full flex items-center justify-center bg-[#E0D4C4]">
                         <span className="font-serif text-3xl text-[#7C4A2D]">
                           {name.charAt(0).toUpperCase()}
                         </span>
@@ -207,6 +209,6 @@ export default function AboutPage() {
         </section>
       )}
 
-    </main>
+    </div>
   )
 }

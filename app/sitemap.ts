@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { getAllProductSlugs, getAllCategorySlugs } from '@/lib/server/productsServer'
+import { BLOG_POSTS } from '@/lib/blog/posts'
 
 // Generated to /sitemap.xml at build (works with output:'export').
 // Product + category URLs are fetched from the backend during `next build`.
@@ -12,13 +13,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
   // Use canonical policy-page paths -- /shipping and /privacy redirect here via _redirects.
-  const staticRoutes = ['', 'shop', 'about', 'contact', 'shipping-policy', 'refund-policy', 'returns', 'size-guide', 'privacy-policy', 'terms', 'track-order']
+  const staticRoutes = ['', 'shop', 'about', 'contact', 'blog', 'shipping-policy', 'refund-policy', 'returns', 'size-guide', 'privacy-policy', 'terms', 'track-order']
     .map((path) => ({
       url: `${SITE_URL}/${path ? path + '/' : ''}`,
       lastModified: now,
       changeFrequency: 'weekly' as const,
       priority: path === '' ? 1 : 0.6,
     }))
+
+  // Journal / blog articles — long-form SEO content.
+  const blogRoutes = BLOG_POSTS.map((post) => ({
+    url: `${SITE_URL}/blog/${post.slug}/`,
+    lastModified: new Date(post.updated),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
 
   const [slugs, categories] = await Promise.all([getAllProductSlugs(), getAllCategorySlugs()])
 
@@ -37,5 +46,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  return [...staticRoutes, ...categoryRoutes, ...productRoutes]
+  return [...staticRoutes, ...blogRoutes, ...categoryRoutes, ...productRoutes]
 }

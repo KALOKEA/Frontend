@@ -59,14 +59,15 @@ export default function ProductForm({ product, onSaved }: ProductFormProps) {
       <Input label="Product Name" value={form.name} onChange={set('name')} required />
       <Input label="Slug (URL)" value={form.slug} onChange={set('slug')} required />
       <div>
-        <label className="text-[11px] uppercase tracking-widest text-[#6b6b6b] font-sans block mb-1">Description</label>
-        <textarea value={form.description} onChange={set('description')} rows={4} className="w-full border border-[#e8e4e0] px-4 py-3 text-sm font-sans outline-none focus:border-[#0a0a0a] resize-none" />
+        <label htmlFor="pf-description" className="text-[11px] uppercase tracking-widest text-[#6b6b6b] font-sans block mb-1">Description</label>
+        <textarea id="pf-description" value={form.description} onChange={set('description')} rows={4} className="w-full border border-[#e8e4e0] px-4 py-3 text-sm font-sans outline-none focus:border-[#0a0a0a] resize-none" />
       </div>
       <div>
-        <label className="text-[11px] uppercase tracking-widest text-[#6b6b6b] font-sans block mb-1">
+        <label htmlFor="pf-fabric-care" className="text-[11px] uppercase tracking-widest text-[#6b6b6b] font-sans block mb-1">
           Fabric &amp; Care Instructions
         </label>
         <textarea
+          id="pf-fabric-care"
           value={form.fabric_care}
           onChange={set('fabric_care')}
           rows={3}

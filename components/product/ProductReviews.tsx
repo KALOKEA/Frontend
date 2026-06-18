@@ -14,28 +14,59 @@ function Stars({
   rating,
   interactive = false,
   onRate,
+  label,
 }: {
   rating: number
   interactive?: boolean
   onRate?: (n: number) => void
+  /** Display-mode accessible label, e.g. "Rated 4.5 out of 5 stars" */
+  label?: string
 }) {
   const [hover, setHover] = useState(0)
   const active = interactive ? (hover || rating) : rating
+
+  // Interactive mode: each star is a button for keyboard/AT access (WCAG 2.1.1)
+  if (interactive) {
+    return (
+      <div role="group" aria-label="Select a star rating" className="flex gap-0.5">
+        {[1, 2, 3, 4, 5].map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => onRate && onRate(s)}
+            onMouseEnter={() => setHover(s)}
+            onMouseLeave={() => setHover(0)}
+            aria-label={`${s} star${s !== 1 ? 's' : ''}`}
+            aria-pressed={rating === s}
+            className="rounded transition-transform hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-400"
+          >
+            <svg
+              width={24} height={24} viewBox="0 0 24 24"
+              fill={active >= s ? '#F59E0B' : 'none'}
+              stroke="#F59E0B" strokeWidth="1.5"
+              aria-hidden="true"
+            >
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+            </svg>
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  // Display mode: container is a single img landmark with aria-label
   return (
-    <div className={`flex gap-0.5 ${interactive ? 'cursor-pointer' : ''}`}>
+    <div
+      className="flex gap-0.5"
+      role="img"
+      aria-label={label ?? `Rated ${rating} out of 5 stars`}
+    >
       {[1, 2, 3, 4, 5].map((s) => (
         <svg
-          key={s}
-          width={interactive ? 24 : 13}
-          height={interactive ? 24 : 13}
-          viewBox="0 0 24 24"
+          key={s} width={13} height={13} viewBox="0 0 24 24"
           fill={active >= s ? '#F59E0B' : 'none'}
-          stroke="#F59E0B"
-          strokeWidth="1.5"
-          onMouseEnter={() => interactive && setHover(s)}
-          onMouseLeave={() => interactive && setHover(0)}
-          onClick={() => onRate && onRate(s)}
-          className={interactive ? 'transition-transform hover:scale-110' : ''}
+          stroke="#F59E0B" strokeWidth="1.5"
+          aria-hidden="true"
         >
           <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
         </svg>
@@ -57,16 +88,31 @@ function SafeText({ text }: { text: string }) {
 function MediaThumb({ url }: { url: string }) {
   const isVideo = /\.(mp4|mov|webm)(\?|$)/i.test(url) || url.includes('/video/')
   const [zoomed, setZoomed] = useState(false)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
+
+  // Focus close button when lightbox opens
+  useEffect(() => {
+    if (zoomed) closeBtnRef.current?.focus()
+  }, [zoomed])
+
+  // Escape closes lightbox
+  useEffect(() => {
+    if (!zoomed) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setZoomed(false) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [zoomed])
 
   return (
     <>
       <button
         onClick={() => setZoomed(true)}
+        aria-label={isVideo ? 'View review video' : 'View review photo'}
         className="relative w-16 h-16 overflow-hidden bg-[#f4f2ef] border border-[#e8e4e0] hover:border-[#0a0a0a] transition-colors flex-shrink-0"
       >
         {isVideo ? (
           <div className="w-full h-full flex items-center justify-center bg-[#1a1a1a]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white" aria-hidden="true">
               <path d="M8 5v14l11-7z" />
             </svg>
           </div>
@@ -78,14 +124,19 @@ function MediaThumb({ url }: { url: string }) {
       {/* Lightbox */}
       {zoomed && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={isVideo ? 'Review video' : 'Review photo'}
           className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center p-4"
           onClick={() => setZoomed(false)}
         >
           <button
-            className="absolute top-4 right-4 text-white/70 hover:text-white"
+            ref={closeBtnRef}
+            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white"
             onClick={() => setZoomed(false)}
+            aria-label="Close"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
@@ -198,9 +249,9 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
       {/* Summary */}
       {reviews.length > 0 && (
         <div className="flex items-center gap-4 mb-5 pb-4 border-b border-[#e8e4e0]">
-          <span className="font-serif text-3xl text-[#0a0a0a]">{avg.toFixed(1)}</span>
+          <span className="font-serif text-3xl text-[#0a0a0a]" aria-hidden="true">{avg.toFixed(1)}</span>
           <div>
-            <Stars rating={Math.round(avg)} />
+            <Stars rating={Math.round(avg)} label={`Rated ${avg.toFixed(1)} out of 5 stars`} />
             <p className="text-[11px] text-[#6b6b6b] mt-0.5">
               {reviews.length} review{reviews.length > 1 ? 's' : ''}
             </p>
@@ -217,7 +268,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
               <div key={r.id} className="border-b border-[#f0ece8] pb-5 last:border-0">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <Stars rating={r.rating} />
+                    <Stars rating={r.rating} label={`Rated ${r.rating} out of 5 stars`} />
                     <span className="text-xs font-sans font-medium text-[#0a0a0a]">
                       {r.users?.name || 'Verified Customer'}
                     </span>
@@ -258,7 +309,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
 
       {/* Submit success */}
       {submitMsg?.ok && (
-        <p className="text-sm text-green-700 bg-green-50 border border-green-200 px-3 py-2 mb-4">
+        <p role="status" className="text-sm text-green-700 bg-green-50 border border-green-200 px-3 py-2 mb-4">
           {submitMsg.text}
         </p>
       )}
@@ -283,10 +334,11 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
             </div>
 
             <div className="mb-3">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
+              <label htmlFor="review-title" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
                 Title (optional)
               </label>
               <input
+                id="review-title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Summarise your experience"
@@ -296,10 +348,11 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
             </div>
 
             <div className="mb-4">
-              <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
+              <label htmlFor="review-body" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">
                 Review *
               </label>
               <textarea
+                id="review-body"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 rows={4}
@@ -323,7 +376,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                     <div key={i} className="relative w-16 h-16 border border-[#e8e4e0] overflow-hidden bg-[#f4f2ef]">
                       {preview === '__video__' ? (
                         <div className="w-full h-full flex items-center justify-center bg-[#1a1a1a]">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="white" aria-hidden="true">
                             <path d="M8 5v14l11-7z" />
                           </svg>
                         </div>
@@ -332,9 +385,10 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
                       )}
                       <button
                         onClick={() => removeMedia(i)}
+                        aria-label={`Remove media ${i + 1}`}
                         className="absolute top-0 right-0 w-5 h-5 bg-black/70 text-white flex items-center justify-center"
                       >
-                        <X size={10} />
+                        <X size={10} aria-hidden={true} />
                       </button>
                     </div>
                   ))}
@@ -363,7 +417,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
             </div>
 
             {submitMsg && !submitMsg.ok && (
-              <p className="text-sm text-red-600 mb-3">{submitMsg.text}</p>
+              <p role="alert" className="text-sm text-red-600 mb-3">{submitMsg.text}</p>
             )}
 
             <div className="flex gap-2">

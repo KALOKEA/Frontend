@@ -23,11 +23,12 @@ export default function VariantBuilder({ variants, onChange }: VariantBuilderPro
     <div>
       <div className="space-y-2 mb-3">
         {variants.map((v, i) => (
-          <div key={i} className="grid grid-cols-4 gap-2 items-center">
-            <input value={v.size} onChange={(e) => update(i, 'size', e.target.value)} placeholder="Size" className="border border-[#e8e4e0] px-3 py-2 text-xs font-sans outline-none focus:border-[#0a0a0a]" />
-            <input value={v.colour} onChange={(e) => update(i, 'colour', e.target.value)} placeholder="Colour" className="border border-[#e8e4e0] px-3 py-2 text-xs font-sans outline-none focus:border-[#0a0a0a]" />
-            <input value={v.stock} onChange={(e) => update(i, 'stock', Number(e.target.value))} type="number" placeholder="Stock" className="border border-[#e8e4e0] px-3 py-2 text-xs font-sans outline-none focus:border-[#0a0a0a]" />
-            <button type="button" onClick={() => remove(i)} className="text-[10px] font-sans text-red-500 hover:text-red-700">Remove</button>
+          <div key={i} className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_80px_1fr_60px] gap-2 items-center">
+            <input value={v.size} onChange={(e) => update(i, 'size', e.target.value)} placeholder="Size" aria-label="Size" className="border border-[#e8e4e0] px-3 py-2 text-xs font-sans outline-none focus:border-[#0a0a0a]" />
+            <input value={v.colour} onChange={(e) => update(i, 'colour', e.target.value)} placeholder="Colour" aria-label="Colour" className="border border-[#e8e4e0] px-3 py-2 text-xs font-sans outline-none focus:border-[#0a0a0a]" />
+            <input value={v.stock} onChange={(e) => update(i, 'stock', Number(e.target.value))} type="number" min="0" placeholder="Stock" aria-label="Stock" className="border border-[#e8e4e0] px-3 py-2 text-xs font-sans outline-none focus:border-[#0a0a0a]" />
+            <input value={v.sku} onChange={(e) => update(i, 'sku', e.target.value)} placeholder="SKU" aria-label="SKU" className="border border-[#e8e4e0] px-3 py-2 text-xs font-sans outline-none focus:border-[#0a0a0a]" />
+            <button type="button" onClick={() => remove(i)} aria-label={`Remove variant ${i + 1}`} className="text-[10px] font-sans text-red-500 hover:text-red-700 col-span-2 sm:col-span-1 text-left sm:text-center">Remove</button>
           </div>
         ))}
       </div>

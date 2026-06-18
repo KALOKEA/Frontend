@@ -188,20 +188,25 @@ export default function AdminExchangesPage() {
       )}
 
       {editing && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setEditing(null)}>
-          <div className="bg-white w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setEditing(null)} />
+          <div className="relative bg-white w-full max-w-md p-6" role="dialog" aria-modal="true" aria-label="Update exchange status" onClick={(e) => e.stopPropagation()}>
             <h2 className="font-serif text-xl mb-0.5">Exchange · {exchangeId(editing)}</h2>
             <p className="text-sm text-[#6b6b6b] mb-1">{editing.reason}</p>
             <p className="text-xs text-[#6b6b6b] mb-4">
               New: {[editing.new_snapshot_name, editing.new_snapshot_colour, editing.new_snapshot_size].filter(Boolean).join(' · ')} ·
               Price diff {formatPrice(editing.price_difference)} · GST diff {formatPrice(editing.gst_difference)}
             </p>
-            <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Status</label>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 mb-4 text-sm focus:outline-none">
-              {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Admin notes</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="w-full border border-[#e8e4e0] px-3 py-2 mb-3 text-sm focus:outline-none" />
+            <label className="block mb-4">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Status</span>
+              <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:outline-none">
+                {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </label>
+            <label className="block mb-3">
+              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Admin notes</span>
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:outline-none" />
+            </label>
             {msg && <p className="text-sm text-red-600 mb-3">{msg}</p>}
             <div className="flex gap-2 justify-end mt-4">
               <button onClick={() => setEditing(null)} className="px-4 py-2 text-sm border border-[#e8e4e0]">Cancel</button>

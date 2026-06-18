@@ -280,7 +280,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
       {/* Main page — pb-24 on mobile so sticky bar does not overlap */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-24 lg:pb-6">
-        <nav className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-8 overflow-x-auto whitespace-nowrap">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-8 overflow-x-auto whitespace-nowrap">
           <Link href="/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Home</Link>
           <span className="shrink-0">/</span>
           <Link href="/shop/" className="hover:text-[#0a0a0a] transition-colors shrink-0">Shop</Link>
@@ -293,7 +293,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             </>
           )}
           <span className="shrink-0">/</span>
-          <span className="text-[#6b6b6b] truncate">{product.name}</span>
+          <span className="text-[#6b6b6b] truncate" aria-current="page">{product.name}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
@@ -314,9 +314,9 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
             {(product.review_count ?? 0) > 0 && (
               <div className="flex items-center gap-2">
-                <div className="flex gap-0.5">
+                <div role="img" className="flex gap-0.5" aria-label={`${Number(product.avg_rating ?? 0).toFixed(1)} out of 5 stars`}>
                   {[1, 2, 3, 4, 5].map(s => (
-                    <svg key={s} width="13" height="13" viewBox="0 0 24 24"
+                    <svg key={s} width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"
                       fill={(product.avg_rating ?? 0) >= s - 0.5 ? '#F59E0B' : 'none'}
                       stroke="#F59E0B" strokeWidth="1.5">
                       <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
@@ -379,9 +379,9 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               <button
                 onClick={() => toggle(product.id)}
                 className={`w-11 h-11 border flex items-center justify-center transition-all duration-200 hover:scale-105 ${wishlisted ? 'border-[#7C4A2D] bg-[#7C4A2D]/10' : 'border-[#e8e4e0] hover:border-[#7C4A2D]'}`}
-                aria-label="Add to wishlist"
+                aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlisted ? '#7C4A2D' : 'none'} stroke={wishlisted ? '#7C4A2D' : '#0a0a0a'} strokeWidth="1.5">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlisted ? '#7C4A2D' : 'none'} stroke={wishlisted ? '#7C4A2D' : '#0a0a0a'} strokeWidth="1.5" aria-hidden="true">
                   <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
                 </svg>
               </button>
@@ -439,7 +439,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                 },
               ].map(({ icon, label, sub }) => (
                 <div key={label} className="flex flex-col items-center text-center gap-1.5 py-3">
-                  <div className="text-[#7C4A2D]">{icon}</div>
+                  <div className="text-[#7C4A2D]" aria-hidden="true">{icon}</div>
                   <p className="text-[10px] font-sans font-medium tracking-widest uppercase text-[#0A0908] leading-tight">{label}</p>
                   <p className="text-[10px] font-sans text-[#6b5c55]">{sub}</p>
                 </div>
@@ -448,22 +448,31 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
             {/* Tabs — Description / Fabric / Shipping / Returns / Reviews */}
             <div className="pt-4 border-t border-[#e8e4e0]">
-              <div className="flex gap-0 border-b border-[#E0D4C4] overflow-x-auto">
+              <div role="tablist" aria-label="Product details" className="flex gap-0 border-b border-[#E0D4C4] overflow-x-auto">
                 {TABS.map((t) => (
                   <button
                     key={t}
+                    role="tab"
+                    aria-selected={t === tab}
+                    aria-controls={`tab-panel-${t}`}
+                    id={`tab-${t}`}
                     onClick={() => setTab(t)}
                     className={`relative px-4 py-2.5 text-[9.5px] font-sans tracking-[0.18em] uppercase whitespace-nowrap transition-colors ${
                       t === tab ? 'text-[#0A0908] font-medium' : 'text-[#6b5c55] hover:text-[#0A0908]'
                     }`}
                   >
                     {t.charAt(0).toUpperCase() + t.slice(1)}
-                    <span className={`absolute bottom-0 left-0 right-0 h-[2px] bg-[#7C4A2D] transition-opacity ${t === tab ? 'opacity-100' : 'opacity-0'}`} />
+                    <span aria-hidden="true" className={`absolute bottom-0 left-0 right-0 h-[2px] bg-[#7C4A2D] transition-opacity ${t === tab ? 'opacity-100' : 'opacity-0'}`} />
                   </button>
                 ))}
               </div>
 
-              <div className="pt-5 text-[13px] font-sans text-[#6B5E55] leading-relaxed">
+              <div
+                role="tabpanel"
+                id={`tab-panel-${tab}`}
+                aria-labelledby={`tab-${tab}`}
+                className="pt-5 text-[13px] font-sans text-[#6B5E55] leading-relaxed"
+              >
                 {tab === 'description' && (
                   <DescriptionRenderer text={product.description || ''} />
                 )}

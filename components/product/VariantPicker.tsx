@@ -183,9 +183,10 @@ export default function VariantPicker({
                   }`}
                   style={{ backgroundColor: hex }}
                 >
-                  {/* Checkmark when selected */}
+                  {/* Checkmark when selected — decorative, aria-pressed on button conveys state */}
                   {selected && (
                     <svg
+                      aria-hidden="true"
                       className="absolute inset-0 m-auto"
                       width="11"
                       height="11"
@@ -222,6 +223,7 @@ export default function VariantPicker({
                   onClick={() => !oos && onSizeChange(s)}
                   disabled={oos}
                   aria-pressed={selectedSize === s}
+                  aria-label={oos ? `${s} — out of stock` : s}
                   className={`px-4 py-2.5 min-h-[44px] text-[10px] font-sans tracking-widest border transition-colors relative ${
                     oos
                       ? 'border-[#e8e4e0] text-[#d0ccc8] cursor-not-allowed line-through'

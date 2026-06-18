@@ -11,12 +11,14 @@ interface ImageUploaderProps {
 
 export default function ImageUploader({ images, onChange }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const upload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     if (!files.length) return
     setUploading(true)
+    setUploadError(null)
     try {
       const token = useAuthStore.getState().accessToken
       const results = await Promise.all(files.map(async (file) => {
@@ -27,12 +29,16 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
           headers: token ? { Authorization: `Bearer ${token}` } : {},
           body: form,
         })
+        if (!res.ok) throw new Error(`Upload failed (${res.status})`)
         const json = await res.json()
         return { url: json.data?.url || json.url }
       }))
       onChange([...images, ...results])
+    } catch (err: any) {
+      setUploadError(err?.message || 'Upload failed')
     } finally {
       setUploading(false)
+      if (inputRef.current) inputRef.current.value = ''
     }
   }
 
@@ -48,9 +54,9 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
             {img.is_primary && (
               <span className="absolute bottom-0 left-0 right-0 bg-[#c8a4a5] text-white text-[8px] text-center py-0.5">Primary</span>
             )}
-            <button onClick={() => remove(img.url)} className="absolute top-1 right-1 bg-white/90 w-5 h-5 flex items-center justify-center text-red-500"><X size={10} /></button>
+            <button onClick={() => remove(img.url)} aria-label="Remove image" className="absolute top-1 right-1 bg-white/90 w-5 h-5 flex items-center justify-center text-red-500"><X size={10} aria-hidden={true} /></button>
             {!img.is_primary && (
-              <button onClick={() => setPrimary(img.url)} className="absolute top-1 left-1 bg-white/90 text-[8px] px-1 py-0.5">Set Primary</button>
+              <button onClick={() => setPrimary(img.url)} aria-label="Set as primary image" className="absolute top-1 left-1 bg-white/90 text-[8px] px-1 py-0.5">Set Primary</button>
             )}
           </div>
         ))}
@@ -65,7 +71,8 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
           <span className="text-[9px] font-sans mt-1">Upload</span>
         </button>
       </div>
-      <input ref={inputRef} type="file" accept="image/*" multiple onChange={upload} className="hidden" />
+      {uploadError && <p role="alert" className="text-[10px] text-red-600 mb-2">{uploadError}</p>}
+      <input ref={inputRef} type="file" accept="image/*" multiple onChange={upload} className="hidden" aria-label="Upload images" />
     </div>
   )
 }

@@ -26,10 +26,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-1">
-      <label className="block text-xs font-sans text-[#6b6b6b]">{label}</label>
+    <label className="block space-y-1">
+      <span className="block text-xs font-sans text-[#6b6b6b]">{label}</span>
       {children}
-    </div>
+    </label>
   )
 }
 

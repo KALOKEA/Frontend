@@ -8,14 +8,15 @@ export default function RevenueChart({ data }: { data?: { date: string; amount: 
   )
   const max = Math.max(...data.map((d) => d.amount))
   return (
-    <div className="h-48 flex items-end gap-1">
+    <div className="h-48 flex items-end gap-1" role="img" aria-label="Revenue chart">
       {data.map((d) => (
-        <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
+        <div key={d.date} className="flex-1 flex flex-col items-center gap-1" title={`${d.date}: ₹${(d.amount / 100).toFixed(2)}`}>
           <div
             className="w-full bg-[#c8a4a5] transition-all"
             style={{ height: `${max ? (d.amount / max) * 100 : 0}%` }}
+            aria-hidden="true"
           />
-          <p className="text-[8px] font-sans text-[#6b6b6b] truncate w-full text-center">{d.date.slice(5)}</p>
+          <p className="text-[8px] font-sans text-[#6b6b6b] truncate w-full text-center" aria-hidden="true">{d.date.slice(5)}</p>
         </div>
       ))}
     </div>

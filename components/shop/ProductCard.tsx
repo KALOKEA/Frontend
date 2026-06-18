@@ -72,6 +72,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const el = cardRef.current
     if (!el) return
     const { left, top, width, height } = el.getBoundingClientRect()
@@ -82,7 +83,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const resetTilt = useCallback(() => setTilt({ x: 0, y: 0 }), [])
 
-    function handleWishlist(e: React.MouseEvent) {
+  function handleWishlist(e: React.MouseEvent) {
     e.preventDefault()
     setWishlisting(true)
     toggle(product.id)

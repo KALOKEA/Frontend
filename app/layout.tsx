@@ -619,8 +619,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <FlashSaleBanner />
           <Header />
           <CartDrawer />
-          {/* pt accounts for fixed header: ~36px announcement bar + 58/68px nav */}
-          <main id="main-content" tabIndex={-1} className="pt-[94px] md:pt-[104px]">
+          {/* pt accounts for fixed header: ~34px announcement bar + 58px mobile nav / 68px desktop nav.
+              Uses lg: because the taller desktop nav only activates at 1024px (lg). */}
+          <main id="main-content" tabIndex={-1} className="pt-[94px] lg:pt-[108px]">
             <ErrorBoundary>
               <PageTransition>
                 {children}

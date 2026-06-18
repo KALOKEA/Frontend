@@ -78,7 +78,7 @@ export default function SizeGuidePage() {
   const [tab, setTab] = useState<Tab>('Tops & Dresses')
 
   return (
-    <main className="bg-[#FDFAF6]">
+    <div className="bg-[#FDFAF6]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
 
         {/* Header */}
@@ -91,10 +91,14 @@ export default function SizeGuidePage() {
         </p>
 
         {/* Tabs */}
-        <div className="flex border-b border-[#E0D4C4] mb-8 overflow-x-auto">
+        <div role="tablist" aria-label="Size chart categories" className="flex border-b border-[#E0D4C4] mb-8 overflow-x-auto">
           {TABS.map((t) => (
             <button
               key={t}
+              role="tab"
+              id={`tab-${t.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`}
+              aria-selected={tab === t}
+              aria-controls={`panel-${t.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`}
               onClick={() => setTab(t)}
               className={`px-6 py-3 text-[10px] font-sans tracking-[0.2em] uppercase whitespace-nowrap transition-all duration-200 border-b-2 -mb-px ${
                 tab === t
@@ -110,67 +114,73 @@ export default function SizeGuidePage() {
         {/* Table */}
         <div className="overflow-x-auto mb-14">
           {tab === 'Tops & Dresses' && (
-            <table className="w-full">
-              <thead><tr className="border-b border-[#E0D4C4]">
-                {['KALOKEA Size', 'Bust (cm)', 'Waist (cm)', 'Hip (cm)', 'UK Size', 'EU Size', 'US Size'].map(h => (
-                  <th key={h} className={thCls}>{h}</th>
-                ))}
-              </tr></thead>
-              <tbody>
-                {TOPS_DRESSES.map(r => (
-                  <tr key={r.size} className="border-b border-[#F0EAE1] hover:bg-[#FAF6F2]">
-                    <td className={tdFirstCls}>{r.size}</td>
-                    <td className={tdCls}>{r.bust}</td>
-                    <td className={tdCls}>{r.waist}</td>
-                    <td className={tdCls}>{r.hip}</td>
-                    <td className={tdCls}>{r.uk}</td>
-                    <td className={tdCls}>{r.eu}</td>
-                    <td className={tdCls}>{r.us}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div role="tabpanel" id="panel-tops-dresses" aria-labelledby="tab-tops-dresses">
+              <table className="w-full">
+                <thead><tr className="border-b border-[#E0D4C4]">
+                  {['KALOKEA Size', 'Bust (cm)', 'Waist (cm)', 'Hip (cm)', 'UK Size', 'EU Size', 'US Size'].map(h => (
+                    <th key={h} className={thCls}>{h}</th>
+                  ))}
+                </tr></thead>
+                <tbody>
+                  {TOPS_DRESSES.map(r => (
+                    <tr key={r.size} className="border-b border-[#F0EAE1] hover:bg-[#FAF6F2]">
+                      <td className={tdFirstCls}>{r.size}</td>
+                      <td className={tdCls}>{r.bust}</td>
+                      <td className={tdCls}>{r.waist}</td>
+                      <td className={tdCls}>{r.hip}</td>
+                      <td className={tdCls}>{r.uk}</td>
+                      <td className={tdCls}>{r.eu}</td>
+                      <td className={tdCls}>{r.us}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
           {tab === 'Bottoms' && (
-            <table className="w-full">
-              <thead><tr className="border-b border-[#E0D4C4]">
-                {['KALOKEA Size', 'Waist (cm)', 'Hip (cm)', 'Inseam (cm)', 'US', 'UK'].map(h => (
-                  <th key={h} className={thCls}>{h}</th>
-                ))}
-              </tr></thead>
-              <tbody>
-                {BOTTOMS.map(r => (
-                  <tr key={r.size} className="border-b border-[#F0EAE1] hover:bg-[#FAF6F2]">
-                    <td className={tdFirstCls}>{r.size}</td>
-                    <td className={tdCls}>{r.waist}</td>
-                    <td className={tdCls}>{r.hips}</td>
-                    <td className={tdCls}>{r.inseam}</td>
-                    <td className={tdCls}>{r.us}</td>
-                    <td className={tdCls}>{r.uk}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div role="tabpanel" id="panel-bottoms" aria-labelledby="tab-bottoms">
+              <table className="w-full">
+                <thead><tr className="border-b border-[#E0D4C4]">
+                  {['KALOKEA Size', 'Waist (cm)', 'Hip (cm)', 'Inseam (cm)', 'US', 'UK'].map(h => (
+                    <th key={h} className={thCls}>{h}</th>
+                  ))}
+                </tr></thead>
+                <tbody>
+                  {BOTTOMS.map(r => (
+                    <tr key={r.size} className="border-b border-[#F0EAE1] hover:bg-[#FAF6F2]">
+                      <td className={tdFirstCls}>{r.size}</td>
+                      <td className={tdCls}>{r.waist}</td>
+                      <td className={tdCls}>{r.hips}</td>
+                      <td className={tdCls}>{r.inseam}</td>
+                      <td className={tdCls}>{r.us}</td>
+                      <td className={tdCls}>{r.uk}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
           {tab === 'Shoes' && (
-            <table className="w-full">
-              <thead><tr className="border-b border-[#E0D4C4]">
-                {['IN Size', 'EU', 'US', 'UK', 'Length (cm)'].map(h => (
-                  <th key={h} className={thCls}>{h}</th>
-                ))}
-              </tr></thead>
-              <tbody>
-                {SHOES.map(r => (
-                  <tr key={r.size} className="border-b border-[#F0EAE1] hover:bg-[#FAF6F2]">
-                    <td className={tdFirstCls}>{r.size}</td>
-                    <td className={tdCls}>{r.eu}</td>
-                    <td className={tdCls}>{r.us}</td>
-                    <td className={tdCls}>{r.uk}</td>
-                    <td className={tdCls}>{r.cm}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div role="tabpanel" id="panel-shoes" aria-labelledby="tab-shoes">
+              <table className="w-full">
+                <thead><tr className="border-b border-[#E0D4C4]">
+                  {['IN Size', 'EU', 'US', 'UK', 'Length (cm)'].map(h => (
+                    <th key={h} className={thCls}>{h}</th>
+                  ))}
+                </tr></thead>
+                <tbody>
+                  {SHOES.map(r => (
+                    <tr key={r.size} className="border-b border-[#F0EAE1] hover:bg-[#FAF6F2]">
+                      <td className={tdFirstCls}>{r.size}</td>
+                      <td className={tdCls}>{r.eu}</td>
+                      <td className={tdCls}>{r.us}</td>
+                      <td className={tdCls}>{r.uk}</td>
+                      <td className={tdCls}>{r.cm}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
 
@@ -180,7 +190,7 @@ export default function SizeGuidePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {HOW_TO_MEASURE.map(({ title, desc, icon }) => (
               <div key={title} className="flex items-start gap-4 bg-white border border-[#E0D4C4] p-5">
-                <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D]">
+                <div aria-hidden="true" className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#F2EAE0] text-[#7C4A2D]">
                   {icon}
                 </div>
                 <div>
@@ -203,6 +213,6 @@ export default function SizeGuidePage() {
         </div>
 
       </div>
-    </main>
+    </div>
   )
 }

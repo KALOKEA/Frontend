@@ -82,6 +82,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
       )}
 
       <div
+        id="mobile-menu"
         ref={dialogRef}
         className={`fixed top-0 right-0 h-full w-[82vw] max-w-[320px] bg-[#FDFAF6] z-50 transform transition-transform duration-300 flex flex-col ${
           open ? 'translate-x-0' : 'translate-x-full'

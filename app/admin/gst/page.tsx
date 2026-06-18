@@ -64,16 +64,16 @@ export default function AdminGstPage() {
         <h1 className="font-serif text-2xl md:text-3xl text-[#0a0a0a]">GST &amp; Tax Tracking</h1>
         <div className="flex flex-wrap items-end gap-3">
           <div>
-            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">From</label>
-            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="border border-[#e8e4e0] px-3 py-2 text-sm" />
+            <label htmlFor="gst-from" className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">From</label>
+            <input id="gst-from" type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="border border-[#e8e4e0] px-3 py-2 text-sm" />
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">To</label>
-            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="border border-[#e8e4e0] px-3 py-2 text-sm" />
+            <label htmlFor="gst-to" className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">To</label>
+            <input id="gst-to" type="date" value={to} onChange={(e) => setTo(e.target.value)} className="border border-[#e8e4e0] px-3 py-2 text-sm" />
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Type</label>
-            <select value={type} onChange={(e) => setType(e.target.value)} className="border border-[#e8e4e0] px-3 py-2 text-sm">
+            <label htmlFor="gst-type" className="block text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Type</label>
+            <select id="gst-type" value={type} onChange={(e) => setType(e.target.value)} className="border border-[#e8e4e0] px-3 py-2 text-sm">
               <option value="">All</option>
               <option value="sale">Sales</option>
               <option value="return">Returns</option>

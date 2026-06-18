@@ -39,8 +39,9 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
             onClick={() => setSidebarOpen(true)}
             className="p-1.5 text-[#0a0a0a]"
             aria-label="Open menu"
+            aria-expanded={sidebarOpen}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <line x1="3" y1="6" x2="21" y2="6"/>
               <line x1="3" y1="12" x2="21" y2="12"/>
               <line x1="3" y1="18" x2="21" y2="18"/>
@@ -48,7 +49,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
           </button>
           <span className="font-serif text-base tracking-widest text-[#0a0a0a]">KALOKEA Admin</span>
         </div>
-        <main className="flex-1 p-4 md:p-8 overflow-x-auto">{children}</main>
+        <div className="flex-1 p-4 md:p-8 overflow-x-auto">{children}</div>
       </div>
     </div>
   )

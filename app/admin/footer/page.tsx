@@ -26,10 +26,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-1">
-      <label className="block text-xs font-sans text-[#6b6b6b]">{label}</label>
+    <label className="block space-y-1">
+      <span className="block text-xs font-sans text-[#6b6b6b]">{label}</span>
       {children}
-    </div>
+    </label>
   )
 }
 
@@ -70,7 +70,7 @@ function LinkEditor({
               className="w-6 h-5 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-30"
               aria-label="Move up"
             >
-              <ChevronUp size={12} />
+              <ChevronUp size={12} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -79,7 +79,7 @@ function LinkEditor({
               className="w-6 h-5 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] disabled:opacity-30"
               aria-label="Move down"
             >
-              <ChevronDown size={12} />
+              <ChevronDown size={12} aria-hidden="true" />
             </button>
           </div>
           {/* Label */}

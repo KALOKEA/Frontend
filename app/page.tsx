@@ -14,6 +14,7 @@ import type { Metadata } from 'next'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
 
+// SITE_URL is used for metadata alternates and OG URLs
 export const metadata: Metadata = {
   title: "KALOKEA | Women's Fashion — Dresses, Tops, Shoes & Accessories India",
   description:
@@ -116,23 +117,9 @@ export const metadata: Metadata = {
   },
 }
 
-const websiteJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'Kalokea',
-  url: SITE_URL,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: { '@type': 'EntryPoint', urlTemplate: `${SITE_URL}/shop/everything/?q={search_term_string}` },
-    'query-input': 'required name=search_term_string',
-  },
-}
-
 export default function HomePage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
-
       <HeroBanner />
       <TrustStrip />
       <QuoteStrip />

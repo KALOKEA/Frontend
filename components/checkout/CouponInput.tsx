@@ -39,9 +39,9 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
     return (
       <div className="flex items-center justify-between border border-[#7C4A2D] px-4 py-3">
         <p className="text-xs font-sans text-[#0a0a0a]">
-          <Check size={11} className="inline mr-1 text-[#7C4A2D]" />Coupon <span className="font-medium">{appliedCode}</span> applied
+          <Check size={11} className="inline mr-1 text-[#7C4A2D]" aria-hidden={true} />Coupon <span className="font-medium">{appliedCode}</span> applied
         </p>
-        <button onClick={onRemove} className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#0a0a0a] tracking-widest uppercase underline">Remove</button>
+        <button onClick={onRemove} aria-label={`Remove coupon ${appliedCode}`} className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#0a0a0a] tracking-widest uppercase underline">Remove</button>
       </div>
     )
   }
@@ -54,6 +54,7 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           onKeyDown={(e) => e.key === 'Enter' && apply()}
           placeholder="Coupon code"
+          aria-label="Coupon code"
           className="flex-1 border border-[#e8e4e0] border-r-0 px-4 py-3 text-base font-sans outline-none focus:border-[#0a0a0a] uppercase placeholder:normal-case placeholder:text-[#6b6b6b] min-h-[44px]"
         />
         <button
@@ -64,7 +65,7 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
           {loading ? '...' : 'Apply'}
         </button>
       </div>
-      {error && <p className="text-[11px] text-red-500 font-sans mt-1">{error}</p>}
+      {error && <p role="alert" className="text-[11px] text-red-500 font-sans mt-1">{error}</p>}
     </div>
   )
 }

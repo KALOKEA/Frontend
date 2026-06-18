@@ -41,6 +41,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
   const [paused, setPaused] = useState(false)
   const [zoomed, setZoomed] = useState(false)
   const pauseRef = useRef<ReturnType<typeof setTimeout>>()
+  const zoomCloseRef = useRef<HTMLButtonElement>(null)
   // Touch swipe state
   const touchStartX = useRef<number | null>(null)
 
@@ -62,6 +63,11 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
+  }, [zoomed])
+
+  // ── Auto-focus close button when zoom opens (WCAG 2.4.3) ─────────────────
+  useEffect(() => {
+    if (zoomed) zoomCloseRef.current?.focus()
   }, [zoomed])
 
   // ── Navigation ──────────────────────────────────────────────────────────
@@ -105,21 +111,24 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
         >
           {current.type === 'image' ? (
             <>
-              {/* width/height are intrinsic hints for Next.js; CSS w-full h-auto
-                  makes the image fill width and set height from its natural ratio —
-                  zero empty space regardless of the image's actual dimensions. */}
-              <Image
-                src={current.url}
-                alt={current.alt}
-                width={600}
-                height={800}
-                className="w-full h-auto block transition-opacity duration-500 cursor-zoom-in"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority={active === 0}
+              {/* Wrap in button so zoom is keyboard-accessible (WCAG 2.1.1) */}
+              <button
                 onClick={() => setZoomed(true)}
-              />
+                aria-label={`Zoom: ${current.alt}`}
+                className="block w-full cursor-zoom-in"
+              >
+                <Image
+                  src={current.url}
+                  alt={current.alt}
+                  width={600}
+                  height={800}
+                  className="w-full h-auto block transition-opacity duration-500"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority={active === 0}
+                />
+              </button>
               {/* Zoom hint — tap on mobile, hover on desktop */}
-              <span className="absolute bottom-3 right-3 bg-black/55 text-white text-[8px] font-sans tracking-widest px-2 py-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity pointer-events-none select-none">
+              <span className="absolute bottom-3 right-3 bg-black/55 text-white text-[8px] font-sans tracking-widest px-2 py-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity pointer-events-none select-none" aria-hidden="true">
                 TAP TO ZOOM
               </span>
             </>
@@ -201,7 +210,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                   />
                 ) : (
                   <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white" aria-hidden="true">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
@@ -221,8 +230,9 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
           className="fixed inset-0 z-[9999] bg-black/92 flex items-center justify-center"
           onClick={() => setZoomed(false)}
         >
-          {/* Close button */}
+          {/* Close button — receives focus on modal open */}
           <button
+            ref={zoomCloseRef}
             className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
             onClick={() => setZoomed(false)}
             aria-label="Close zoom"

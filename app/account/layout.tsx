@@ -73,7 +73,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     if (hydrated && !isLoggedIn) router.push(`/login/?redirect=${encodeURIComponent(pathname)}`)
-  }, [hydrated, isLoggedIn, router])
+  }, [hydrated, isLoggedIn, router, pathname])
 
   // Close mobile nav on route change
   useEffect(() => { setMobileOpen(false) }, [pathname])
@@ -113,11 +113,12 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             onClick={() => setMobileOpen(o => !o)}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] -mr-2"
             aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             )}
           </button>
         </div>
@@ -163,7 +164,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             </div>
 
             {/* Navigation */}
-            <nav className="bg-white border border-[#e8e4e0]">
+            <nav aria-label="Account navigation" className="bg-white border border-[#e8e4e0]">
               {NAV.map((n, i) => {
                 const active = pathname === n.href
                 return (
@@ -177,17 +178,18 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                         ? 'text-[#0a0a0a] bg-[#faf8f5]'
                         : 'text-[#6b6b6b] hover:text-[#0a0a0a] hover:bg-[#faf8f5]'
                     }`}
+                    aria-current={active ? 'page' : undefined}
                   >
                     {/* Active indicator */}
                     {active && (
-                      <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#7C4A2D]" />
+                      <span aria-hidden="true" className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#7C4A2D]" />
                     )}
-                    <span className={active ? 'text-[#7C4A2D]' : 'text-[#d0ccc8]'}>
+                    <span aria-hidden="true" className={active ? 'text-[#7C4A2D]' : 'text-[#d0ccc8]'}>
                       {n.icon}
                     </span>
                     {n.label}
                     {active && (
-                      <span className="ml-auto">
+                      <span aria-hidden="true" className="ml-auto">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
                       </span>
                     )}
@@ -199,7 +201,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                 onClick={logout}
                 className="flex items-center gap-3 w-full px-5 py-3.5 text-[11px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-red-500 hover:bg-[#fef8f8] transition-colors border-t border-[#f4f2ef]"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
                 </svg>
                 Logout
@@ -222,7 +224,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           </aside>
 
           {/* ── Content ──────────────────────────────────────────────────── */}
-          <main className="flex-1 min-w-0">{children}</main>
+          <div className="flex-1 min-w-0">{children}</div>
         </div>
       </div>
     </div>
