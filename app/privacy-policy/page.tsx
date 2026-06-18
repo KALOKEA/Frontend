@@ -38,8 +38,10 @@ export default function Page() {
         <span aria-hidden="true">/</span>
         <span aria-current="page" className="text-[#6b6b6b]">Privacy Policy</span>
       </nav>
-      <h1 className="font-serif text-4xl text-[#0a0a0a] mb-2">Privacy Policy</h1>
-      <p className="text-sm font-sans text-[#6b6b6b] mb-10">Last updated: June 2025</p>
+      {/* The page heading lives in the CMS/Termly content itself (it includes its
+          own "PRIVACY POLICY" title + last-updated date). Rendering a second <h1>
+          here produced two stacked headings, so the page chrome heading was removed
+          to leave a single title. The breadcrumb above still labels the page. */}
       <CmsPageContent slug="privacy-policy" staticContent={SC} />
     </div>
   )
