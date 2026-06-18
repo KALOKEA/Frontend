@@ -81,14 +81,17 @@ export default function BackgroundMedia({
           loading={priority ? 'eager' : 'lazy'}
           // @ts-expect-error fetchpriority is valid HTML but not yet in React types
           fetchpriority={priority ? 'high' : 'auto'}
-          onError={
-            fallbackSrc
-              ? (e) => {
-                  const el = e.currentTarget as HTMLImageElement
-                  if (el.src !== fallbackSrc) el.src = fallbackSrc
-                }
-              : undefined
-          }
+          onError={(e) => {
+            const el = e.currentTarget as HTMLImageElement
+            // First failure: swap to the fallback image. If that ALSO fails (or
+            // there's no fallback), hide the broken <img> so the dark brand panel
+            // shows instead of the browser's broken-image icon.
+            if (fallbackSrc && el.src !== fallbackSrc) {
+              el.src = fallbackSrc
+            } else {
+              el.style.visibility = 'hidden'
+            }
+          }}
         />
       )}
     </div>

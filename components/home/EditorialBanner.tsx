@@ -28,8 +28,10 @@ function parseSlides(c: HomepageContent): EditorialSlide[] {
   }]
 }
 
-export default function EditorialBanner() {
-  const [c, setC] = useState<HomepageContent>(HERO_DEFAULTS)
+export default function EditorialBanner({ initialCms }: { initialCms?: Record<string, string> | null }) {
+  const [c, setC] = useState<HomepageContent>(
+    initialCms ? ({ ...HERO_DEFAULTS, ...initialCms } as HomepageContent) : HERO_DEFAULTS,
+  )
   const [slideIdx, setSlideIdx] = useState(0)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 

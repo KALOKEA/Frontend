@@ -146,7 +146,7 @@ export default async function HomePage() {
       <QuoteStrip />
       <CategoryGrid />
       <FeaturedProducts />
-      <EditorialBanner />
+      <EditorialBanner initialCms={initialCms} />
       <BestSellers />
       <PressStrip />
       <ShopTheLook />
