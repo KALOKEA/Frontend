@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import CartIcon from './CartIcon'
 import MobileMenu from './MobileMenu'
 import AnnouncementBar from './AnnouncementBar'
+import FlashSaleBanner from './FlashSaleBanner'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import { categoriesApi, type Category } from '@/lib/api/categories'
 
@@ -26,6 +27,7 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
   const { isLoggedIn } = useAuthStore()
   const [cats, setCats] = useState<Category[]>([])
 
@@ -65,6 +67,20 @@ export default function Header() {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  // Keep --header-h CSS variable in sync with actual rendered header height.
+  // This handles FlashSaleBanner appearing/disappearing without hardcoding px values.
+  useEffect(() => {
+    const el = headerRef.current
+    if (!el) return
+    const update = () => {
+      document.documentElement.style.setProperty('--header-h', el.offsetHeight + 'px')
+    }
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     const q = searchQuery.trim()
@@ -85,11 +101,13 @@ export default function Header() {
 
   return (
     <>
-      {/* ── Combined fixed header: announcement bar + nav ───────────────────
-          The announcement bar is INSIDE the fixed header so they form one
-          seamless dark block matching the reference design. The nav section
-          below it is transparent on home/top, white on scroll / inner pages. */}
-      <header className="fixed top-0 left-0 w-full z-[900]">
+      {/* ── Combined fixed header: flash banner + announcement bar + nav ────
+          All three live inside one fixed block so they move together and the
+          ResizeObserver can measure the real total height for --header-h. */}
+      <header ref={headerRef} className="fixed top-0 left-0 w-full z-[900]">
+
+        {/* ── Flash sale banner — shown only when admin enables a flash sale ── */}
+        <FlashSaleBanner />
 
         {/* ── Announcement bar — CMS-driven, marquee scrolling ── */}
         <AnnouncementBar />

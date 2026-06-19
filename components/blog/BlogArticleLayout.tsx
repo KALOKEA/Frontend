@@ -98,7 +98,7 @@ export default function BlogArticleLayout({ slug, faq, children }: Props) {
   } : null
 
   return (
-    <article className="bg-[#FDFAF6]">
+    <article className="bg-[#FDFAF6] pb-28 lg:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       {faqJsonLd && (

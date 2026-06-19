@@ -109,7 +109,7 @@ export default function ShippingReturnsPage() {
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 space-y-14">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-14 pb-28 lg:pb-14 space-y-14">
 
           {/* At-a-glance cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

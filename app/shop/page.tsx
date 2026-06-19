@@ -159,7 +159,7 @@ function ShopContent() {
   }, [params])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 pb-28 lg:pb-10">
       {/* Page header */}
       <div className="mb-6">
         <h1 className="font-serif text-3xl md:text-4xl text-[#0A0908] mb-1 font-light">

@@ -77,7 +77,7 @@ export default function TrackOrderPage() {
   const stepIndex   = result ? getStepIndex(result.status) : -1
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] py-12 px-4">
+    <div className="min-h-screen bg-[#faf8f5] pt-12 pb-28 lg:pb-12 px-4">
       <div className="max-w-2xl mx-auto">
         <h1 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] mb-2 text-center">Track Your Order</h1>
         <p className="text-center text-[#6b6b6b] text-sm mb-8">

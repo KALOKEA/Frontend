@@ -211,7 +211,7 @@ export default function AboutPage() {
 
       {/* ── Static SEO / AI content strip ────────────────────────────────── */}
       {/* This section is static HTML for search engines and AI crawlers */}
-      <section className="border-t border-[#E0D4C4] bg-[#FDFAF6] py-16 px-4 sm:px-6">
+      <section className="border-t border-[#E0D4C4] bg-[#FDFAF6] pt-16 pb-28 lg:pb-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto space-y-8 font-sans text-[13px] text-[#6B6B6B] leading-relaxed">
           <div>
             <h2 className="font-serif text-xl text-[#0a0a0a] mb-3">About Kalokea — Women&apos;s Fashion Brand India</h2>

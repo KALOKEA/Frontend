@@ -34,7 +34,7 @@ const SC = [
 
 export default function Page() {
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-16 pb-28 lg:pb-16">
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-sans tracking-widest uppercase text-[#6b6b6b] mb-10">
         <Link href="/" className="hover:text-[#0a0a0a]">Home</Link>
         <span aria-hidden="true">/</span>

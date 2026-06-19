@@ -241,7 +241,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 pb-28 lg:pb-10">
       <h1 className="font-serif text-3xl text-[#0a0a0a] mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">

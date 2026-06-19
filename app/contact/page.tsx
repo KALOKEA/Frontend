@@ -59,7 +59,7 @@ export default function ContactPage() {
 
   return (
     <div className="bg-[#FDFAF6]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-28 lg:pb-16">
 
         {/* Page header */}
         <div className="mb-12">

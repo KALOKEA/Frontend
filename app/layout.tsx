@@ -14,7 +14,6 @@ import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import BackToTop from '@/components/layout/BackToTop'
 import ScrollRevealInit from '@/components/ScrollRevealInit'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
-import FlashSaleBanner from '@/components/layout/FlashSaleBanner'
 import PageTransition from '@/components/PageTransition'
 import ExitIntentPopup from '@/components/layout/ExitIntentPopup'
 
@@ -658,12 +657,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <ToastProvider>
           <AuthBootstrap />
-          <FlashSaleBanner />
           <Header />
           <CartDrawer />
-          {/* pt accounts for fixed header: ~34px announcement bar + 58px mobile nav / 68px desktop nav.
-              Uses lg: because the taller desktop nav only activates at 1024px (lg). */}
-          <main id="main-content" tabIndex={-1} className="pt-[94px] lg:pt-[108px]">
+          {/* pt is driven by --header-h, set by the Header's ResizeObserver.
+              Fallback 94px covers the default mobile header (announcement + nav).
+              Automatically adapts when FlashSaleBanner appears or is dismissed. */}
+          <main id="main-content" tabIndex={-1} style={{ paddingTop: 'var(--header-h, 94px)' }}>
             <ErrorBoundary>
               <PageTransition>
                 {children}

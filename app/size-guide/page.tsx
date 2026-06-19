@@ -79,7 +79,7 @@ export default function SizeGuidePage() {
 
   return (
     <div className="bg-[#FDFAF6]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-16 pb-28 lg:pb-16">
 
         {/* Header */}
         <p className="text-[9.5px] font-sans tracking-[0.35em] uppercase text-[#7C4A2D] mb-3">Fit Guide</p>

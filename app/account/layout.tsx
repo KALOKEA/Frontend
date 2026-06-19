@@ -96,7 +96,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-page, #f4f2ef)' }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-28 md:py-12">
 
         {/* Mobile header */}
         <div className="flex items-center justify-between mb-6 md:hidden">

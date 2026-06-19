@@ -313,7 +313,7 @@ export default function FAQPage() {
         </section>
 
         {/* FAQ sections */}
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-14 pb-28 lg:pb-14">
           {FAQS.map(section => (
             <div key={section.category} id={section.category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}>
               <FAQSection category={section.category} items={section.items} />
