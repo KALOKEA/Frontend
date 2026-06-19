@@ -25,6 +25,15 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
       (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0) || a.sort_order - b.sort_order,
   )
 
+  // Normalise Cloudinary video URLs to .mp4 so MOV / QuickTime files
+  // uploaded from phones play natively in every browser.
+  function toPlayableMp4(url: string): string {
+    if (url.includes('res.cloudinary.com') && url.includes('/video/upload/')) {
+      return url.replace(/\.(mov|MOV|avi|AVI|wmv|mkv|3gp|flv|quicktime)(\?.*)?$/, '.mp4$2')
+    }
+    return url
+  }
+
   // Build unified media array: images first, then optional video
   const media: MediaItem[] = [
     ...sorted.map((img) => ({
@@ -33,7 +42,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
       alt: img.alt_text || productName,
     })),
     ...(videoUrl
-      ? [{ type: 'video' as const, url: videoUrl, alt: `${productName} – video` }]
+      ? [{ type: 'video' as const, url: toPlayableMp4(videoUrl), alt: `${productName} – video` }]
       : []),
   ]
 

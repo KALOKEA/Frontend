@@ -549,27 +549,38 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
           </div>
         </div>
 
-        {/* YouTube Video Embed */}
+        {/* Product Video Section */}
         {(() => {
           // Show a product video from EITHER a YouTube link (any format incl.
-          // Shorts) OR a directly-uploaded .mp4/.webm. Robust parser is shared
-          // with the homepage hero/editorial so behaviour is identical everywhere.
+          // Shorts) OR a directly-uploaded file. Cloudinary URLs are normalised
+          // to .mp4 so browsers can play MOV/AVI/etc that were uploaded by admin.
           const ytId = youTubeId(product.youtube_url)
-          const mp4 = product.video_url
+          // Normalise Cloudinary URLs: force .mp4 delivery so MOV / QuickTime
+          // files (common from phone uploads) play natively in every browser.
+          const rawMp4 = product.video_url
+          const mp4 = rawMp4 && rawMp4.includes('res.cloudinary.com') && rawMp4.includes('/video/upload/')
+            ? rawMp4.replace(/\.(mov|MOV|avi|AVI|wmv|mkv|3gp|flv|quicktime)(\?.*)?$/, '.mp4$2')
+            : rawMp4
+
           if (!ytId && !mp4) return null
           return (
-            <div className="mt-12 pt-10 border-t border-[#E0D4C4]">
-              <h2 className="font-serif text-xl text-[#0a0a0a] mb-4">Watch the Video</h2>
-              {/* Constrain max-width so the 16:9 ratio never creates an 800px+ tall box */}
-              <div style={{ maxWidth: '860px' }}>
+            <div className="mt-16 pt-12 border-t border-[#E0D4C4]">
+              {/* Section heading — editorial style with accent line */}
+              <div className="flex items-center gap-4 mb-6" style={{ maxWidth: '860px', margin: '0 auto 24px' }}>
+                <span style={{ display: 'block', width: 28, height: 1, background: '#C49070', flexShrink: 0 }} />
+                <h2 className="font-serif text-2xl text-[#0a0a0a] tracking-tight">Watch the Video</h2>
+              </div>
+              {/* 16:9 video player — max 860px wide, centred, with rounded corners + shadow */}
+              <div style={{ maxWidth: '860px', margin: '0 auto' }}>
                 <div
                   style={{
                     position: 'relative',
                     paddingBottom: '56.25%', // 16:9
                     height: 0,
                     overflow: 'hidden',
-                    borderRadius: 4,
-                    background: '#0a0a0a',
+                    borderRadius: 10,
+                    background: '#0e0e0e',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
                   }}
                 >
                   {ytId ? (
@@ -578,17 +589,26 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                       title={`${product.name} — video`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, borderRadius: 10 }}
                     />
                   ) : videoError ? (
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, color: 'rgba(255,255,255,0.45)', background: '#0a0a0a' }}>
-                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true">
+                    /* Compact error state — not a giant black void */
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12,
+                      background: 'linear-gradient(135deg, #111 0%, #1a1208 100%)',
+                    }}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" aria-hidden="true">
                         <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                        <line x1="3" y1="3" x2="21" y2="21" strokeWidth="1.5"/>
                       </svg>
-                      <span style={{ fontSize: '0.8rem', fontFamily: 'sans-serif' }}>Video unavailable</span>
-                      <a href={mp4!} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.72rem', color: '#C49070', textDecoration: 'underline', fontFamily: 'sans-serif' }}>
-                        Try opening directly ↗
+                      <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.45)', fontFamily: 'sans-serif', letterSpacing: '0.05em' }}>Video coming soon</span>
+                      <a
+                        href={rawMp4!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: '0.72rem', color: '#C49070', textDecoration: 'underline', fontFamily: 'sans-serif' }}
+                      >
+                        Open file directly ↗
                       </a>
                     </div>
                   ) : (
@@ -598,7 +618,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                       playsInline
                       preload="metadata"
                       onError={() => setVideoError(true)}
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, objectFit: 'contain', background: '#0a0a0a' }}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, objectFit: 'contain', background: '#0e0e0e', borderRadius: 10 }}
                     />
                   )}
                 </div>
