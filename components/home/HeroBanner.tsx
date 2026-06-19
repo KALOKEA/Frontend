@@ -76,7 +76,7 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
     >
       {/* ── Mobile image (above text on small screens) ── */}
       <div
-        className="md:hidden relative overflow-hidden"
+        className="md:hidden relative overflow-hidden shrink-0"
         style={{ height: '56vw', minHeight: 220, maxHeight: 400 }}
       >
         <BackgroundMedia
@@ -109,9 +109,14 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
       </div>
 
       {/* ── Left: dark text panel ── */}
+      {/* flex-1 on mobile fills all remaining space after the image so the dark
+          background reaches the bottom of the viewport. justify-center (mobile)
+          keeps the text vertically centered in that space, not pinned to the
+          bottom (which left a huge empty gap at the top). Desktop reverts to
+          justify-end so content sits low as designed in the 2-column grid. */}
       <div
-        className="flex flex-col justify-end relative k-hero-left"
-        style={{ background: '#1E1208', minHeight: 'clamp(480px, 60vh, 100vh)' }}
+        className="flex-1 md:flex-none flex flex-col justify-center md:justify-end relative k-hero-left"
+        style={{ background: '#1E1208' }}
       >
         {/* Ambient depth orbs */}
         <div className="k-hero-orbs" aria-hidden="true">

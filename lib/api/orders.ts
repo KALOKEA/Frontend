@@ -1,4 +1,4 @@
-import api from './client'
+import api, { getText } from './client'
 
 export interface Order {
   id: string
@@ -92,6 +92,7 @@ export const ordersApi = {
     return (Array.isArray(r) ? r : (r as any)?.data ?? []) as Order[]
   },
   getById: (id: string) => api.get<Order>(`/orders/${id}`),
-  getInvoice: (id: string) => api.get<string>(`/orders/${id}/invoice`),
+  // Invoice returns text/html — use getText() not api.get() (which calls res.json())
+  getInvoice: (id: string) => getText(`/orders/${id}/invoice`),
   cancel: (id: string) => api.post<{ message: string }>(`/orders/${id}/cancel`, {}),
 }

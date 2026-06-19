@@ -185,6 +185,18 @@ export async function tryRefresh(): Promise<boolean> {
   return _refreshInFlight
 }
 
+/**
+ * Fetch a non-JSON endpoint (e.g. the HTML invoice page) with the same Bearer
+ * auth header the rest of the API uses. Uses res.text() instead of res.json().
+ */
+export async function getText(path: string): Promise<string> {
+  const headers: Record<string, string> = { 'X-Requested-With': 'XMLHttpRequest' }
+  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`
+  const res = await fetch(`${BASE_URL}${path}`, { headers, credentials: 'include' })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return res.text()
+}
+
 export const api = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, body?: unknown) => request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
