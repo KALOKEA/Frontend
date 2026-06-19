@@ -145,6 +145,8 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [tab, setTab] = useState('description')
+  const [shareCopied, setShareCopied] = useState(false)
+  const [videoError, setVideoError] = useState(false)
   const { toggle, isWishlisted } = useWishlistStore()
 
   // Sticky ATC bar: show only when main ATC button has scrolled out of view
@@ -251,6 +253,21 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
     ? '— Select a Colour —'
     : '— Select a Size —'
 
+  // Share handler: Web Share API with clipboard fallback
+  async function handleShare() {
+    if (!product) return
+    const url = typeof window !== 'undefined' ? window.location.href : ''
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try { await navigator.share({ title: product.name, text: `Check out ${product.name} on Kalokea`, url }) } catch {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url)
+        setShareCopied(true)
+        setTimeout(() => setShareCopied(false), 2000)
+      } catch {}
+    }
+  }
+
   return (
     <>
       {/* Sticky mobile Add-to-Cart bar — slides up when main ATC scrolls out of view */}
@@ -313,40 +330,63 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               </p>
             )}
 
-            <h1 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] leading-tight">{product.name}</h1>
+            <div className="flex items-start gap-3">
+              <h1 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] leading-tight flex-1">{product.name}</h1>
+              {/* Share button — Web Share API on mobile, clipboard copy on desktop */}
+              <button
+                type="button"
+                onClick={handleShare}
+                className="shrink-0 mt-1.5 w-9 h-9 flex items-center justify-center rounded-full border border-[#e8e4e0] hover:border-[#7C4A2D] text-[#6b6b6b] hover:text-[#7C4A2D] transition-colors"
+                aria-label={shareCopied ? 'Link copied!' : 'Share product'}
+                title={shareCopied ? 'Link copied!' : 'Share'}
+              >
+                {shareCopied ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                  </svg>
+                )}
+              </button>
+            </div>
 
-            {/* Compact star rating pill — always visible; scrolls to Reviews tab on click */}
-            <button
-              type="button"
-              onClick={() => { setTab('reviews'); document.getElementById('tab-panel-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#e8e4e0] bg-white px-2.5 py-1 hover:border-[#F59E0B] transition-colors group"
-              aria-label={`Rating: ${Number(product.avg_rating ?? 0).toFixed(1)} out of 5, ${product.review_count ?? 0} reviews`}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true">
-                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-              </svg>
-              <span className="text-[12px] font-sans font-semibold text-[#0a0a0a]">
-                {Number(product.avg_rating ?? 0).toFixed(1)}
-              </span>
-              <span className="text-[11px] font-sans text-[#6b6b6b]">
-                ({product.review_count ?? 0})
-              </span>
-              {(product.review_count ?? 0) === 0 && (
-                <span className="text-[10px] font-sans text-[#7C4A2D] group-hover:underline">Be first to review</span>
-              )}
-            </button>
-
-            <div className="flex items-baseline gap-3">
-              {/* Price in Cormorant display size */}
-              <span className="price-display text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
-              {product.compare_price && product.compare_price > product.base_price && (
-                <>
-                  <span className="font-sans text-[14px] text-[#6b6b6b] line-through">{formatPrice(product.compare_price)}</span>
-                  <span className="bg-[#7C4A2D] text-white text-[9px] font-sans font-semibold tracking-widest uppercase px-2.5 py-1">
-                    -{discount}% OFF
-                  </span>
-                </>
-              )}
+            {/* Price + star rating on same row — price left, rating right */}
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex items-baseline gap-3">
+                {/* Price in Cormorant display size */}
+                <span className="price-display text-[#0a0a0a]">{formatPrice(product.base_price)}</span>
+                {product.compare_price && product.compare_price > product.base_price && (
+                  <>
+                    <span className="font-sans text-[14px] text-[#6b6b6b] line-through">{formatPrice(product.compare_price)}</span>
+                    <span className="bg-[#7C4A2D] text-white text-[9px] font-sans font-semibold tracking-widest uppercase px-2.5 py-1">
+                      -{discount}% OFF
+                    </span>
+                  </>
+                )}
+              </div>
+              {/* Star rating pill — always visible; click scrolls to Reviews tab */}
+              <button
+                type="button"
+                onClick={() => { setTab('reviews'); document.getElementById('tab-panel-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#e8e4e0] bg-white px-2.5 py-1 hover:border-[#F59E0B] transition-colors group"
+                aria-label={`Rating: ${Number(product.avg_rating ?? 0).toFixed(1)} out of 5, ${product.review_count ?? 0} reviews`}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                </svg>
+                <span className="text-[12px] font-sans font-semibold text-[#0a0a0a]">
+                  {Number(product.avg_rating ?? 0).toFixed(1)}
+                </span>
+                <span className="text-[11px] font-sans text-[#6b6b6b]">
+                  ({product.review_count ?? 0})
+                </span>
+                {(product.review_count ?? 0) === 0 && (
+                  <span className="text-[10px] font-sans text-[#7C4A2D] group-hover:underline">Be first to review</span>
+                )}
+              </button>
             </div>
             <CouponOfferBadge price={product.base_price} />
             <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
@@ -540,12 +580,24 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                       allowFullScreen
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
                     />
+                  ) : videoError ? (
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, color: 'rgba(255,255,255,0.45)', background: '#0a0a0a' }}>
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true">
+                        <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                        <line x1="3" y1="3" x2="21" y2="21" strokeWidth="1.5"/>
+                      </svg>
+                      <span style={{ fontSize: '0.8rem', fontFamily: 'sans-serif' }}>Video unavailable</span>
+                      <a href={mp4!} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.72rem', color: '#C49070', textDecoration: 'underline', fontFamily: 'sans-serif' }}>
+                        Try opening directly ↗
+                      </a>
+                    </div>
                   ) : (
                     <video
                       src={mp4!}
                       controls
                       playsInline
                       preload="metadata"
+                      onError={() => setVideoError(true)}
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, objectFit: 'contain', background: '#0a0a0a' }}
                     />
                   )}

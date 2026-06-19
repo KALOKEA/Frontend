@@ -204,26 +204,26 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Star ratings — gold stars + decimal rating like reference ── */}
-        {reviewCount > 0 && (
-          <div
-            className="flex items-center gap-1 mb-2"
-            role="img"
-            aria-label={`Rated ${rating.toFixed(1)} out of 5 stars (${reviewCount} review${reviewCount !== 1 ? 's' : ''})`}
-          >
-            {[1, 2, 3, 4, 5].map(i => (
-              <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="none" aria-hidden="true">
-                <StarFill index={i} rating={rating} />
-              </svg>
-            ))}
-            <span className="text-[11px] font-sans text-[#6B5E55] ml-0.5 font-medium" aria-hidden="true">
-              {rating.toFixed(1)}
-            </span>
+        {/* Star rating — always visible compact pill */}
+        <div
+          className="flex items-center gap-1 mb-2"
+          role="img"
+          aria-label={reviewCount > 0 ? `Rated ${rating.toFixed(1)} out of 5 stars (${reviewCount} review${reviewCount !== 1 ? 's' : ''})` : 'No reviews yet'}
+        >
+          {[1, 2, 3, 4, 5].map(i => (
+            <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="none" aria-hidden="true">
+              <StarFill index={i} rating={rating} />
+            </svg>
+          ))}
+          <span className="text-[11px] font-sans text-[#6B5E55] ml-0.5 font-medium" aria-hidden="true">
+            {rating.toFixed(1)}
+          </span>
+          {reviewCount > 0 && (
             <span className="text-[10px] font-sans text-[#6b5c55]" aria-hidden="true">
               ({reviewCount})
             </span>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Color swatches */}
         {swatches.length > 0 && (
