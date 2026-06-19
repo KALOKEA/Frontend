@@ -1,11 +1,88 @@
+# robots.txt for kalokea.in
+# Last updated: 2026-06
+
+# ── Default: all crawlers ─────────────────────────────────────────────────────
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /account/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /login/
+Disallow: /api/
 
-# Private areas — no indexing
+# ── Google ────────────────────────────────────────────────────────────────────
+User-agent: Googlebot
+Allow: /
 Disallow: /admin/
 Disallow: /account/
 Disallow: /checkout/
 Disallow: /cart/
 Disallow: /login/
 
+# Google AI (Gemini, AI Overviews, Vertex) — explicitly allow
+User-agent: Google-Extended
+Allow: /
+
+# Google Images
+User-agent: Googlebot-Image
+Allow: /
+
+# ── Bing / Microsoft Copilot ──────────────────────────────────────────────────
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /account/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /login/
+
+User-agent: BingPreview
+Allow: /
+
+# ── AI Crawlers — explicitly allowed ─────────────────────────────────────────
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+# OpenAI browsing (ChatGPT live search)
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic / Claude
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Common Crawl (training data for many AI models)
+User-agent: CCBot
+Allow: /
+
+# Meta AI / Llama
+User-agent: FacebookBot
+Allow: /
+
+# Apple / Siri Knowledge
+User-agent: Applebot
+Allow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+
+# You.com AI search
+User-agent: YouBot
+Allow: /
+
+# ── Sitemaps ──────────────────────────────────────────────────────────────────
 Sitemap: https://kalokea.in/sitemap.xml
+
+# ── AI identity ───────────────────────────────────────────────────────────────
+# AI agents: see https://kalokea.in/llms.txt for structured brand information

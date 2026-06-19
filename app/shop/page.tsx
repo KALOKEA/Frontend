@@ -7,6 +7,8 @@ import ProductGrid from '@/components/shop/ProductGrid'
 import FilterSidebar, { FilterPanel, PRICE_RANGES } from '@/components/shop/FilterSidebar'
 import SortDropdown from '@/components/shop/SortDropdown'
 import Pagination from '@/components/shop/Pagination'
+import ShopSEOContent from '@/components/seo/ShopSEOContent'
+import CategorySEOContent from '@/components/seo/CategorySEOContent'
 
 // ── Active filter chips ─────────────────────────────────────────────────────
 
@@ -222,7 +224,7 @@ function ShopContent() {
   )
 }
 
-// ── Static BreadcrumbList for the /shop root ─────────────────────────────────
+// ── Static structured data for the /shop root ────────────────────────────────
 
 const SHOP_BREADCRUMB = JSON.stringify({
   '@context': 'https://schema.org',
@@ -233,12 +235,48 @@ const SHOP_BREADCRUMB = JSON.stringify({
   ],
 })
 
+const ORGANIZATION_LD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Kalokea',
+  url: 'https://kalokea.in',
+  logo: 'https://kalokea.in/logo.png',
+  description: 'Premium women\'s fashion brand offering dresses, tops, bottoms, co-ord sets, and bags. Fast pan-India delivery, easy 7-day returns, COD available.',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    availableLanguage: ['English', 'Hindi'],
+  },
+  sameAs: [
+    'https://www.instagram.com/kalokea',
+  ],
+})
+
+const FAQ_LD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: 'What types of women\'s clothing does Kalokea sell?', acceptedAnswer: { '@type': 'Answer', text: 'Kalokea offers a wide range of women\'s fashion including dresses (maxi, midi, mini, bodycon, wrap, and A-line styles), tops (crop tops, blouses, corsets, mesh panel tops), co-ord sets, bottoms (trousers, palazzos, skirts, shorts), jumpsuits, and fashion bags.' } },
+    { '@type': 'Question', name: 'Does Kalokea offer free shipping?', acceptedAnswer: { '@type': 'Answer', text: 'Yes! Kalokea offers free shipping on all orders above ₹999. Most orders are delivered within 4–7 business days. Metro cities typically receive orders in 3–5 days.' } },
+    { '@type': 'Question', name: 'What is Kalokea\'s return and exchange policy?', acceptedAnswer: { '@type': 'Answer', text: 'Kalokea offers a 7-day hassle-free return and exchange policy. Items must be unworn, unwashed, and in original condition with all tags attached. Refunds are processed within 5–7 business days of receiving the returned item.' } },
+    { '@type': 'Question', name: 'How do I find the right size at Kalokea?', acceptedAnswer: { '@type': 'Answer', text: 'Each product page includes a detailed size guide with measurements in centimetres and inches. Measure your bust, waist, and hips and compare to our size chart. If you are between sizes, we suggest sizing up.' } },
+    { '@type': 'Question', name: 'What payment methods does Kalokea accept?', acceptedAnswer: { '@type': 'Answer', text: 'Kalokea accepts UPI (Google Pay, PhonePe, Paytm), Credit and Debit Cards (Visa, Mastercard, Rupay), Net Banking, and Cash on Delivery (COD) for eligible pin codes. All online payments are secured through Razorpay.' } },
+    { '@type': 'Question', name: 'Is Cash on Delivery available?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, Cash on Delivery is available on most products across India. COD availability is shown based on your delivery pin code during checkout.' } },
+    { '@type': 'Question', name: 'How can I track my Kalokea order?', acceptedAnswer: { '@type': 'Answer', text: 'Once your order is dispatched, you will receive an SMS and email with your tracking number. You can also track your order from the My Orders section in your Kalokea account.' } },
+    { '@type': 'Question', name: 'Does Kalokea ship internationally?', acceptedAnswer: { '@type': 'Answer', text: 'Currently, Kalokea ships only within India. We are working on expanding international shipping to UAE, USA, UK, Canada, and Australia.' } },
+    { '@type': 'Question', name: 'Are Kalokea clothes true to size?', acceptedAnswer: { '@type': 'Answer', text: 'Most Kalokea garments are true to standard Indian sizing. We recommend checking the specific size chart on each product page as fits can vary by style and fabric. Customer reviews often mention fit details.' } },
+    { '@type': 'Question', name: 'Does Kalokea restock sold-out items?', acceptedAnswer: { '@type': 'Answer', text: 'Popular items are regularly restocked. Use the Notify Me feature on the product page to receive an email alert when a sold-out item is back in stock.' } },
+  ],
+})
+
 // ── Page export ─────────────────────────────────────────────────────────────
 
 export default function ShopPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: SHOP_BREADCRUMB }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ORGANIZATION_LD }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: FAQ_LD }} />
       <div className="min-h-screen bg-[#FDFAF6]">
         <Suspense fallback={
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
@@ -256,6 +294,8 @@ export default function ShopPage() {
         }>
           <ShopContent />
         </Suspense>
+        <Suspense fallback={null}><CategorySEOContent /></Suspense>
+        <ShopSEOContent />
       </div>
     </>
   )

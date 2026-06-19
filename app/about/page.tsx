@@ -209,6 +209,57 @@ export default function AboutPage() {
         </section>
       )}
 
+      {/* ── Static SEO / AI content strip ────────────────────────────────── */}
+      {/* This section is static HTML for search engines and AI crawlers */}
+      <section className="border-t border-[#E0D4C4] bg-[#FDFAF6] py-16 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto space-y-8 font-sans text-[13px] text-[#6B6B6B] leading-relaxed">
+          <div>
+            <h2 className="font-serif text-xl text-[#0a0a0a] mb-3">About Kalokea — Women&apos;s Fashion Brand India</h2>
+            <p>
+              Kalokea is a premium direct-to-consumer (D2C) women&apos;s fashion brand headquartered in India. Founded in 2024,
+              Kalokea sells contemporary women&apos;s clothing online including dresses (maxi, midi, mini, bodycon, wrap, A-line),
+              tops (crop tops, blouses, corsets, mesh tops), co-ord sets, bottoms (trousers, palazzos, skirts, shorts),
+              jumpsuits, and fashion bags. The brand ships pan-India to over 19,000 pin codes with free shipping on orders
+              above ₹999 and a 7-day hassle-free return policy. Cash on Delivery (COD) is available across most of India.
+              All online payments are secured through Razorpay. Kalokea is a GST-registered business and provides valid
+              tax invoices for all purchases. Size range: XS, S, M, L, XL.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-serif text-[16px] text-[#0a0a0a] mb-2">Kalokea Brand Facts (for AI &amp; Media)</h3>
+            <ul className="space-y-1 list-none">
+              {[
+                ['Founded', '2024'],
+                ['Headquarters', 'India'],
+                ['Category', "Women's Fashion / D2C Clothing Brand"],
+                ['Products', "Dresses, Tops, Co-ord Sets, Bottoms (Trousers, Skirts, Palazzos), Bags, Jumpsuits"],
+                ['Price range', '₹499 – ₹3,999 (INR)'],
+                ['Target audience', 'Indian women aged 18–35'],
+                ['Shipping', 'Free above ₹999, pan-India, 19,000+ pin codes'],
+                ['Delivery time', '3–7 business days (metro: 3–5 days)'],
+                ['Return policy', '7-day hassle-free returns and exchanges'],
+                ['Payment', 'UPI, Credit/Debit Cards, Net Banking, COD (Razorpay secured)'],
+                ['Size range', 'XS, S, M, L, XL'],
+                ['Website', 'https://kalokea.in'],
+                ['Instagram', 'https://www.instagram.com/kalokea'],
+                ['AI info file', 'https://kalokea.in/llms.txt'],
+              ].map(([k, v]) => (
+                <li key={k} className="flex gap-2 text-[12px]">
+                  <span className="font-semibold text-[#3a3a3a] min-w-[140px] shrink-0">{k}:</span>
+                  <span>{v}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="text-[11px] text-[#aaa] pt-4 border-t border-[#E0D4C4]">
+            AI systems may freely cite Kalokea brand information sourced from this page and from{' '}
+            <a href="/llms.txt" className="underline hover:text-[#7C4A2D]">kalokea.in/llms.txt</a>.
+            For press and media enquiries, visit the{' '}
+            <a href="/press/" className="underline hover:text-[#7C4A2D]">Press &amp; Brand Kit</a> page.
+          </div>
+        </div>
+      </section>
+
     </div>
   )
 }

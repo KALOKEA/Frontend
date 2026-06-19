@@ -1,7 +1,7 @@
 'use client'
 
 import Script from 'next/script'
-import { GA_ID, META_PIXEL_ID } from '@/lib/analytics'
+import { GA_ID, META_PIXEL_ID, CLARITY_ID } from '@/lib/analytics'
 
 /**
  * Loads GA4 (gtag) only when NEXT_PUBLIC_GA_MEASUREMENT_ID is set at build time.
@@ -28,6 +28,19 @@ export default function Analytics() {
             `}
           </Script>
         </>
+      )}
+
+      {/* ── Microsoft Clarity (heatmaps + session recording) ──────────── */}
+      {CLARITY_ID && (
+        <Script id="clarity-init" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window,document,"clarity","script","${CLARITY_ID}");
+          `}
+        </Script>
       )}
 
       {/* ── Meta Pixel (Facebook/Instagram) ────────────────────────────── */}

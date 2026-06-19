@@ -38,18 +38,42 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': `${SITE_URL}/#organization`,
   name: 'Kalokea',
+  legalName: 'Kalokea',
   url: SITE_URL,
   logo: {
     '@type': 'ImageObject',
+    '@id': `${SITE_URL}/#logo`,
     url: `${SITE_URL}/logo.png`,
+    contentUrl: `${SITE_URL}/logo.png`,
     width: 200,
     height: 60,
+    caption: 'Kalokea — Premium Women\'s Fashion India',
   },
-  description: "India's curated women's fashion boutique — dresses, tops, shoes, bags and accessories.",
+  image: `${SITE_URL}/og-image.jpg`,
+  description: "Kalokea is a premium direct-to-consumer (D2C) women's fashion brand based in India. We offer contemporary women's clothing including dresses, tops, co-ord sets, bottoms, bags, and jumpsuits. Free shipping above ₹999, 7-day returns, COD available, pan-India delivery to 19,000+ pin codes.",
+  slogan: "Contemporary Women's Fashion, Made for Modern India",
   foundingDate: '2024',
+  foundingLocation: {
+    '@type': 'Country',
+    name: 'India',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'India',
+  },
+  knowsAbout: [
+    "Women's Fashion", "Women's Clothing", "Dresses", "Tops", "Co-ord Sets",
+    "Women's Bottoms", "Fashion Bags", "Indian Fashion", "Contemporary Fashion",
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: "Kalokea Women's Fashion Collection",
+    url: `${SITE_URL}/shop/`,
+  },
   sameAs: [
-    'https://www.instagram.com/kalokea.fashion',
+    'https://www.instagram.com/kalokea',
     'https://www.facebook.com/kalokea.in',
   ],
   contactPoint: {
@@ -57,16 +81,23 @@ const organizationJsonLd = {
     contactType: 'customer service',
     email: 'hello@kalokea.in',
     availableLanguage: ['English', 'Hindi'],
+    contactOption: 'TollFree',
+    areaServed: 'IN',
   },
 }
 
-// WebSite schema tells Google about the site search — enables Sitelinks Searchbox
-// in search results when users search for "kalokea".
+// WebSite schema — enables Sitelinks Searchbox in Google results
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': `${SITE_URL}/#website`,
   name: 'Kalokea',
+  alternateName: "Kalokea Fashion",
   url: SITE_URL,
+  description: "Shop women's dresses, tops, co-ord sets, bags and more at Kalokea. Free shipping above ₹999. 7-day returns. COD available.",
+  publisher: {
+    '@id': `${SITE_URL}/#organization`,
+  },
   potentialAction: {
     '@type': 'SearchAction',
     target: {
@@ -75,6 +106,7 @@ const websiteJsonLd = {
     },
     'query-input': 'required name=search_term_string',
   },
+  inLanguage: 'en-IN',
 }
 
 export const viewport: Viewport = {
@@ -544,6 +576,10 @@ export const metadata: Metadata = {
     'online shopping pune women', 'buy kurta online surat',
   ].join(', '),
   metadataBase: new URL('https://kalokea.in'),
+  // Google Search Console site verification (set NEXT_PUBLIC_GSC_VERIFICATION in .env)
+  ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } }
+    : {}),
   openGraph: {
     type: 'website',
     siteName: 'KALOKEA',
@@ -567,6 +603,10 @@ export const metadata: Metadata = {
     description: "Shop the latest women's fashion at Kalokea. Free shipping above Rs.999.",
     images: ['https://kalokea.in/og-image.jpg'],
   },
+  // Pinterest domain verification (set NEXT_PUBLIC_PINTEREST_VERIFY in .env)
+  ...(process.env.NEXT_PUBLIC_PINTEREST_VERIFY
+    ? { other: { 'p:domain_verify': process.env.NEXT_PUBLIC_PINTEREST_VERIFY } }
+    : {}),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -603,6 +643,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
       </head>
       <body>
+        {/* llms.txt — structured brand info for AI agents */}
+        <link rel="ai-info" href="/llms.txt" />
         {/* Skip-to-content — WCAG 2.4.1 (Level A). Visible only on keyboard focus. */}
         <a href="#main-content" className="skip-link">Skip to main content</a>
         <script

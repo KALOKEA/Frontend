@@ -147,6 +147,9 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
   const [tab, setTab] = useState('description')
   const [shareCopied, setShareCopied] = useState(false)
   const [videoError, setVideoError] = useState(false)
+  // Detected from onLoadedMetadata — adapts container to actual video dimensions
+  const [videoPaddingBottom, setVideoPaddingBottom] = useState('177.78%') // 9:16 default for phone uploads
+  const [videoMaxWidth, setVideoMaxWidth] = useState('460px')
   const { toggle, isWishlisted } = useWishlistStore()
 
   // Sticky ATC bar: show only when main ATC button has scrolled out of view
@@ -551,17 +554,11 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
         {/* Product Video Section */}
         {(() => {
-          // Show a product video from EITHER a YouTube link (any format incl.
-          // Shorts) OR a directly-uploaded file.
           const ytId = youTubeId(product.youtube_url)
           const rawMp4 = product.video_url
 
-          // Build a Cloudinary-transcoded URL (H.264 MP4) as a reliable fallback
-          // for formats the browser can't decode (HEVC, AVI, WMV, etc.).
-          // We inject f_mp4,vc_h264,ac_aac transformation ONLY for Cloudinary URLs
-          // that don't already have it. This is lazy-transcoded by Cloudinary on
-          // first request; the rawMp4 URL is used as primary since it's confirmed
-          // to be accessible and often plays fine (H.264 MOV, standard MP4).
+          // Cloudinary H.264 transcoded URL — ensures cross-browser compatibility
+          // (handles HEVC/H.265, MOV, AVI uploaded from phones)
           const transcodedMp4 = rawMp4 && rawMp4.includes('res.cloudinary.com') && rawMp4.includes('/video/upload/')
             ? rawMp4.includes('vc_h264')
               ? rawMp4
@@ -569,75 +566,107 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             : rawMp4
 
           if (!ytId && !rawMp4) return null
+
+          // YouTube is always landscape; Cloudinary uploads from phones are portrait.
+          // onLoadedMetadata dynamically corrects this once the video header is read.
+          const isYouTube = !!ytId
+
           return (
             <div className="mt-16 pt-12 border-t border-[#E0D4C4]">
-              {/* Section heading — editorial style with accent line */}
-              <div className="flex items-center gap-4 mb-6" style={{ maxWidth: '860px', margin: '0 auto 24px' }}>
-                <span style={{ display: 'block', width: 28, height: 1, background: '#C49070', flexShrink: 0 }} />
-                <h2 className="font-serif text-2xl text-[#0a0a0a] tracking-tight">Watch the Video</h2>
+
+              {/* ── Section heading — centered editorial style ── */}
+              <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                <p style={{
+                  fontSize: '0.6rem', letterSpacing: '0.3em', color: '#C49070',
+                  textTransform: 'uppercase', marginBottom: '8px', fontFamily: 'sans-serif',
+                }}>
+                  See it in motion
+                </p>
+                <h2 className="font-serif text-[1.6rem] md:text-[2rem] text-[#0a0a0a] tracking-tight leading-tight">
+                  Watch the Video
+                </h2>
+                <div style={{ width: 40, height: 1, background: '#C49070', margin: '12px auto 0' }} />
               </div>
-              {/* 16:9 video player — max 860px wide, centred, with rounded corners + shadow */}
-              <div style={{ maxWidth: '860px', margin: '0 auto' }}>
-                <div
-                  style={{
-                    position: 'relative',
-                    paddingBottom: '56.25%', // 16:9
-                    height: 0,
-                    overflow: 'hidden',
-                    borderRadius: 10,
-                    background: '#0e0e0e',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-                  }}
-                >
-                  {ytId ? (
-                    <iframe
-                      src={youTubeEmbed(ytId)}
-                      title={`${product.name} — video`}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, borderRadius: 10 }}
-                    />
-                  ) : videoError ? (
-                    /* Compact error state — not a giant black void */
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12,
-                      background: 'linear-gradient(135deg, #111 0%, #1a1208 100%)',
-                    }}>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" aria-hidden="true">
-                        <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                      </svg>
-                      <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.45)', fontFamily: 'sans-serif', letterSpacing: '0.05em' }}>Video coming soon</span>
-                      <a
-                        href={rawMp4!}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ fontSize: '0.72rem', color: '#C49070', textDecoration: 'underline', fontFamily: 'sans-serif' }}
+
+              {/* ── Video player ── */}
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '0 16px' }}>
+                <div style={{
+                  position: 'relative',
+                  width: '100%',
+                  maxWidth: isYouTube ? '860px' : videoMaxWidth,
+                  // Warm gold glow border for an editorial, fashion-forward feel
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  boxShadow: '0 24px 64px rgba(0,0,0,0.28), 0 0 0 1px rgba(196,144,112,0.25), 0 0 48px rgba(196,144,112,0.08)',
+                  background: '#0a0a0a',
+                  transition: 'max-width 0.4s ease',
+                }}>
+                  {/* Aspect-ratio wrapper — adapts to actual video dimensions */}
+                  <div style={{ position: 'relative', paddingBottom: isYouTube ? '56.25%' : videoPaddingBottom, height: 0 }}>
+
+                    {isYouTube ? (
+                      <iframe
+                        src={youTubeEmbed(ytId!)}
+                        title={`${product.name} — video`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                      />
+                    ) : videoError ? (
+                      <div style={{
+                        position: 'absolute', inset: 0,
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14,
+                        background: 'linear-gradient(160deg, #111 0%, #1c1008 100%)',
+                      }}>
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1" aria-hidden="true">
+                          <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                        </svg>
+                        <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'sans-serif', letterSpacing: '0.06em' }}>
+                          Video unavailable
+                        </span>
+                        <a href={rawMp4!} target="_blank" rel="noopener noreferrer"
+                          style={{ fontSize: '0.7rem', color: '#C49070', textDecoration: 'underline', fontFamily: 'sans-serif' }}>
+                          Open file directly ↗
+                        </a>
+                      </div>
+                    ) : (
+                      <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        controls
+                        onLoadedMetadata={(e) => {
+                          // Detect actual video dimensions and set the perfect aspect ratio
+                          const v = e.currentTarget
+                          if (v.videoWidth > 0 && v.videoHeight > 0) {
+                            const pct = (v.videoHeight / v.videoWidth) * 100
+                            setVideoPaddingBottom(`${pct}%`)
+                            // Wide containers for landscape, constrained for portrait/square
+                            setVideoMaxWidth(v.videoWidth >= v.videoHeight ? '860px' : '460px')
+                          }
+                        }}
+                        onError={() => setVideoError(true)}
+                        style={{
+                          position: 'absolute', top: 0, left: 0,
+                          width: '100%', height: '100%',
+                          border: 0,
+                          objectFit: 'cover',
+                          background: '#0a0a0a',
+                        }}
                       >
-                        Open file directly ↗
-                      </a>
-                    </div>
-                  ) : (
-                    // Use rawMp4 as primary source — this is the URL that works
-                    // when opened directly. transcodedMp4 is offered as a <source>
-                    // fallback so the browser picks whichever it can decode.
-                    <video
-                      controls
-                      playsInline
-                      preload="metadata"
-                      onError={() => setVideoError(true)}
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, objectFit: 'contain', background: '#0e0e0e', borderRadius: 10 }}
-                    >
-                      {/* Primary: Cloudinary H.264 transcoded (universally supported) */}
-                      {transcodedMp4 && transcodedMp4 !== rawMp4 && (
-                        <source src={transcodedMp4} type="video/mp4" />
-                      )}
-                      {/* Fallback: original uploaded URL (confirmed accessible) */}
-                      <source src={rawMp4!} />
-                    </video>
-                  )}
+                        {/* Primary: Cloudinary H.264 transcoded (universal support) */}
+                        {transcodedMp4 && transcodedMp4 !== rawMp4 && (
+                          <source src={transcodedMp4} type="video/mp4" />
+                        )}
+                        {/* Fallback: original uploaded URL */}
+                        <source src={rawMp4!} />
+                      </video>
+                    )}
+                  </div>
                 </div>
               </div>
+
             </div>
           )
         })()}

@@ -5,6 +5,8 @@
 
 export const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID
+/** Microsoft Clarity project ID — set NEXT_PUBLIC_CLARITY_ID in .env */
+export const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID
 
 type AnyRecord = Record<string, unknown>
 

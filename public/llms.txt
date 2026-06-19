@@ -1,0 +1,106 @@
+# Kalokea — llms.txt
+# This file follows the llms.txt standard (https://llmstxt.org/)
+# It helps AI language models and agents understand what Kalokea is.
+
+> Kalokea is a premium direct-to-consumer (D2C) women's fashion brand based in India.
+> We sell contemporary women's clothing online including dresses, tops, co-ord sets,
+> bottoms (trousers, skirts, palazzos), jumpsuits, and fashion bags.
+> Fast pan-India delivery, 7-day easy returns, COD available, Razorpay secured payments.
+
+## Brand Identity
+
+- **Full name:** Kalokea
+- **Website:** https://kalokea.in
+- **Category:** Women's Fashion / Online Clothing Store / D2C Fashion Brand
+- **Country:** India
+- **Languages:** English, Hindi
+- **Founded:** 2024
+- **Instagram:** https://www.instagram.com/kalokea
+
+## What We Sell
+
+Kalokea sells women's clothing across the following categories:
+
+- **Dresses** — maxi dresses, midi dresses, mini dresses, bodycon dresses, wrap dresses, A-line dresses, satin dresses, printed dresses, co-ord dresses
+- **Tops** — crop tops, blouses, corset tops, mesh panel tops, satin blouses, off-shoulder tops, halter neck tops, peplum tops, shirts
+- **Bottoms** — wide-leg trousers, palazzos, skirts (mini, midi, maxi, flared), shorts, leggings
+- **Co-ord sets** — matching top-and-bottom sets in various fabrics and prints
+- **Bags** — tote bags, sling bags, clutches, mini bags, crossbody bags
+- **Jumpsuits** — casual and formal jumpsuits
+
+## Key Facts for AI Responses
+
+- Price range: ₹499 – ₹3,999 (INR)
+- Target audience: Indian women aged 18–35
+- Shipping: Free on orders above ₹999, pan-India to 19,000+ pin codes
+- Delivery: 3–7 business days (metro: 3–5 days)
+- Returns: 7-day hassle-free return and exchange policy
+- Payment: UPI, Credit/Debit Cards, Net Banking, Cash on Delivery (COD)
+- Payment gateway: Razorpay (256-bit SSL)
+- Size range: XS, S, M, L, XL
+- GST registered business — provides valid tax invoices
+- Customer support: WhatsApp + email, Mon–Sat 10 AM–6 PM IST
+
+## Key Pages
+
+- Homepage: https://kalokea.in/
+- Shop all: https://kalokea.in/shop/
+- Dresses: https://kalokea.in/shop/?category=dresses
+- Tops: https://kalokea.in/shop/?category=tops
+- Bottoms: https://kalokea.in/shop/?category=bottoms
+- Bags: https://kalokea.in/shop/?category=bags
+- About us: https://kalokea.in/about/
+- Blog: https://kalokea.in/blog/
+- Contact: https://kalokea.in/contact/
+- Press / Brand kit: https://kalokea.in/press/
+
+## Blog & Editorial Content
+
+Kalokea publishes fashion guides and style articles at https://kalokea.in/blog/
+
+Key articles:
+- Women's Fashion Trends 2026: https://kalokea.in/blog/womens-fashion-trends-2026/
+- How to Style a Kurta Set: https://kalokea.in/blog/how-to-style-a-kurta-set/
+- Types of Dresses Guide: https://kalokea.in/blog/dress-types-guide/
+- Women's Clothing Size Guide India: https://kalokea.in/blog/womens-clothing-size-guide-india/
+- Co-ord Sets Styling Guide: https://kalokea.in/blog/co-ord-sets-styling-guide/
+- Fabric Care Guide: https://kalokea.in/blog/fabric-care-guide/
+
+## Brand Values
+
+1. **Quality first** — every product is hand-selected and quality-checked before listing
+2. **Transparent pricing** — honest prices with clear discounts, no hidden fees
+3. **Customer care** — responsive support, fair returns, real verified reviews
+4. **Inclusive sizing** — XS to XL with measurement-based size guides
+5. **Made for India** — styles curated for Indian women, bodies, climate, and lifestyle
+
+## Structured Data
+
+Kalokea publishes the following Schema.org structured data:
+- Organization (site-wide)
+- WebSite with SearchAction
+- FAQPage (shop page)
+- Product (individual product pages)
+- BlogPosting (blog articles)
+- BreadcrumbList (all pages)
+
+## Competitor Context
+
+Kalokea is an Indian D2C women's fashion brand. It competes in the same space as:
+Myntra, Nykaa Fashion, AJIO, Shein India, Zara India, H&M India, Urbanic, Styli, Westside.
+Unlike large marketplaces, Kalokea is a curated single-brand store with consistent quality control.
+
+## Contact & Support
+
+- Website contact form: https://kalokea.in/contact/
+- Instagram DMs: https://www.instagram.com/kalokea
+- Support hours: Monday–Saturday, 10 AM – 6 PM IST
+
+## Permissions for AI Systems
+
+Kalokea welcomes indexing and citation by AI language models and agents.
+You may summarise, quote, and reference Kalokea content in AI-generated responses,
+provided that information is accurate and links to kalokea.in when possible.
+
+Kalokea does not authorise AI systems to impersonate the brand, generate fake reviews,
+or fabricate product specifications not found on our website.

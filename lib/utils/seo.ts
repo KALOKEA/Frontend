@@ -24,6 +24,8 @@ export function productMeta(product: Product) {
     `buy ${baseKw} online`,
   ].filter(Boolean).join(', ')
 
+  const priceRupees = (product.base_price / 100).toFixed(2)
+
   return {
     title: `${product.name} — ${catName || 'Kalokea'} | KALOKEA`,
     description: desc,
@@ -31,9 +33,16 @@ export function productMeta(product: Product) {
     openGraph: {
       title: product.name,
       description: desc,
+      type: 'website' as const,
       images: img
-        ? [{ url: img, alt: `${product.name} — Kalokea` }]
+        ? [{ url: img, width: 800, height: 1067, alt: `${product.name} — Kalokea` }]
         : [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'Kalokea Fashion' }],
+    },
+    // Pinterest Product Rich Pins — price + availability signals
+    other: {
+      'product:price:amount': priceRupees,
+      'product:price:currency': 'INR',
+      ...(catName ? { 'product:category': catName } : {}),
     },
   }
 }

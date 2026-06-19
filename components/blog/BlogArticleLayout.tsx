@@ -34,21 +34,47 @@ export default function BlogArticleLayout({ slug, faq, children }: Props) {
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
+    '@id': `${url}#article`,
     headline: post.title,
+    name: post.title,
     description: post.description,
     datePublished: post.date,
     dateModified: post.updated,
-    image: `${SITE_URL}/og-image.jpg`,
-    author: { '@type': 'Organization', name: 'Kalokea', url: SITE_URL },
+    image: {
+      '@type': 'ImageObject',
+      url: `${SITE_URL}/og-image.jpg`,
+      width: 1200,
+      height: 630,
+    },
+    author: {
+      '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
+      name: 'Kalokea',
+      url: SITE_URL,
+    },
     publisher: {
       '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
       name: 'Kalokea',
       logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png`, width: 200, height: 60 },
     },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+    },
     keywords: post.keywords.join(', '),
     inLanguage: 'en-IN',
+    url,
+    isPartOf: {
+      '@type': 'Blog',
+      '@id': `${SITE_URL}/blog/#blog`,
+      name: 'Kalokea Journal',
+      description: "Fashion guides, style tips, and wardrobe advice from Kalokea — India's curated women's fashion brand.",
+      url: `${SITE_URL}/blog/`,
+      publisher: { '@id': `${SITE_URL}/#organization` },
+    },
   }
 
   const breadcrumbJsonLd = {
