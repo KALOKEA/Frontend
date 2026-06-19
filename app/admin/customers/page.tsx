@@ -57,7 +57,7 @@ export default function AdminCustomersPage() {
   function load(p = page) {
     setLoading(true)
     adminApi.listCustomers(p, limit)
-      .then(res => { setCustomers((res as any).data || []); setTotal((res as any).meta?.total || 0) })
+      .then(res => { setCustomers(res.data || []); setTotal(res.meta?.total || 0) })
       .catch(() => setCustomers([]))
       .finally(() => setLoading(false))
   }
@@ -71,7 +71,7 @@ export default function AdminCustomersPage() {
       setSearching(true)
       try {
         const res = await adminApi.searchCustomers(val.trim())
-        setSearchResults(Array.isArray(res) ? res : (res as any)?.data || [])
+        setSearchResults(Array.isArray(res) ? res : [])
       } catch { setSearchResults([]) }
       finally { setSearching(false) }
     }, 350)

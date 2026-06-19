@@ -46,10 +46,10 @@ function productToForm(p: Product): FormState {
   return {
     id: p.id,
     name: p.name, slug: p.slug, description: p.description || '',
-    fabric_care: (p as any).fabric_care || '',
-    model_info: (p as any).model_info || '',
+    fabric_care: p.fabric_care || '',
+    model_info: p.model_info || '',
     youtube_url: p.youtube_url || '',
-    video_url: (p as any).video_url || '',
+    video_url: p.video_url || '',
     base_price: String(Math.round(p.base_price / 100)),
     compare_price: p.compare_price ? String(Math.round(p.compare_price / 100)) : '',
     hsn_code: p.hsn_code || '',
@@ -57,7 +57,7 @@ function productToForm(p: Product): FormState {
     category_id: p.category_id || '',
     tags: (p.tags || []).join(', '),
     is_featured: p.is_featured, is_active: p.is_active,
-    sort_weight: String((p as any).sort_weight ?? 0),
+    sort_weight: String(p.sort_weight ?? 0),
   }
 }
 
@@ -79,8 +79,8 @@ export default function AdminProductsPage() {
 
   function loadProducts() {
     setLoading(true)
-    productsApi.getAll({ limit: 200, include_inactive: 'true' } as any)
-      .then(res => setProducts((res as any).data || []))
+    productsApi.getAll({ limit: 200, include_inactive: 'true' })
+      .then(res => setProducts(res.data || []))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false))
   }

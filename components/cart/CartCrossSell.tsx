@@ -30,7 +30,7 @@ export default function CartCrossSell({ onNavigate }: CartCrossSellProps) {
     const cartProductIds = new Set(cartItems.map((i) => i.product_id))
 
     productsApi
-      .getAll({ is_featured: 'true', limit: '8' })
+      .getAll({ featured: 'true', limit: '8' })
       .then((res) => {
         const pool = res.data ?? []
         const filtered: Product[] = pool

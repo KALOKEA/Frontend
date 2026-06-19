@@ -15,7 +15,7 @@ const EMAIL_TYPES = [
   'order_confirmation','order_shipped','order_cancelled',
   'return_filed','admin_return_filed','return_approved','return_rejected',
   'newsletter_welcome','password_reset','contact_form',
-  'otp','back_in_stock',
+  'otp','back_in_stock','winback',
 ]
 
 export default function AdminEmailLogPage() {

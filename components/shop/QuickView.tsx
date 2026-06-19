@@ -15,6 +15,7 @@ import type { Product, ProductVariant } from '@/lib/api/products'
 import { useCartStore } from '@/lib/store/useCartStore'
 import { useToast } from '@/components/ui/Toast'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
+import { getColorHex } from '@/lib/utils/colorHex'
 
 interface QuickViewProps {
   product: Product
@@ -257,7 +258,7 @@ export default function QuickView({ product, onClose }: QuickViewProps) {
                             ? 'border-[#0a0a0a] ring-1 ring-offset-1 ring-[#0a0a0a]'
                             : 'border-[#D8CFC5] hover:border-[#7C4A2D]'
                         }`}
-                        style={{ backgroundColor: colour.toLowerCase() }}
+                        style={{ backgroundColor: getColorHex(colour) }}
                       />
                     ))}
                   </div>

@@ -367,8 +367,8 @@ export default function OrdersPage() {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-[#0a0a0a] font-medium truncate">{item.snapshot_name}</p>
                             <p className="text-[11px] text-[#6b6b6b]">
-                              {[(item as any).snapshot_colour, (item as any).snapshot_size].filter(Boolean).join(' · ')}
-                              {(item as any).snapshot_colour || (item as any).snapshot_size ? ' · ' : ''}
+                              {[item.snapshot_colour, item.snapshot_size].filter(Boolean).join(' · ')}
+                              {(item.snapshot_colour || item.snapshot_size) ? ' · ' : ''}
                               Qty {item.quantity}
                             </p>
                           </div>
@@ -547,8 +547,8 @@ export default function OrdersPage() {
             <select id="ex-item" value={exItemId} onChange={e => loadOptions(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2.5 text-sm mb-4 focus:border-[#0a0a0a] outline-none">
               {(exchangeFor.order_items || []).map(it => (
                 <option key={it.id} value={it.id}>
-                  {it.snapshot_name}{[(it as any).snapshot_colour, (it as any).snapshot_size].filter(Boolean).length
-                    ? ` (${[(it as any).snapshot_colour, (it as any).snapshot_size].filter(Boolean).join(', ')})` : ''} × {it.quantity}
+                  {it.snapshot_name}{[it.snapshot_colour, it.snapshot_size].filter(Boolean).length
+                    ? ` (${[it.snapshot_colour, it.snapshot_size].filter(Boolean).join(', ')})` : ''} × {it.quantity}
                 </option>
               ))}
             </select>

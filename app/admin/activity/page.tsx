@@ -49,9 +49,9 @@ export default function AdminActivityPage() {
     setLoading(true)
     adminApi.listActivityLog(p, limit, undefined, ef || undefined)
       .then(res => {
-        setEntries((res as any).data || [])
-        setTotal((res as any).meta?.total || 0)
-        setTotalPages((res as any).meta?.total_pages || 1)
+        setEntries(res.data || [])
+        setTotal(res.meta?.total || 0)
+        setTotalPages(res.meta?.total_pages || 1)
       })
       .catch(() => setEntries([]))
       .finally(() => setLoading(false))

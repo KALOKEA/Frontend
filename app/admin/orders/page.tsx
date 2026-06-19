@@ -47,8 +47,8 @@ export default function AdminOrdersPage() {
     setLoading(true)
     adminApi.listOrders(p, limit, sf || undefined, sq.trim() || undefined)
       .then(res => {
-        setOrders((res as any).data || [])
-        setTotal((res as any).meta?.total || 0)
+        setOrders(res.data || [])
+        setTotal(res.meta?.total || 0)
       })
       .catch(() => setOrders([]))
       .finally(() => setLoading(false))

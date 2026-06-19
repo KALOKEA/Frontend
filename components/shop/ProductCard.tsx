@@ -5,6 +5,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
+import { getColorHex } from '@/lib/utils/colorHex'
 import type { Product } from '@/lib/api/products'
 
 // Lazy-loaded so the modal bundle only loads when first triggered
@@ -235,7 +236,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 aria-label={colour}
                 title={colour}
                 className="w-3.5 h-3.5 rounded-full border border-[#D8CFC5] hover:ring-1 hover:ring-offset-1 hover:ring-[#7C4A2D] transition-all cursor-default"
-                style={{ backgroundColor: colour.toLowerCase() }}
+                style={{ backgroundColor: getColorHex(colour) }}
               />
             ))}
             {totalColours > swatches.length && (
