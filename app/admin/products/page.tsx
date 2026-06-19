@@ -21,7 +21,7 @@ const QUICK_COLOURS = ['Black', 'White', 'Ivory', 'Navy', 'Red', 'Blush', 'Sage'
 
 interface FormState {
   id?: string
-  name: string; slug: string; description: string; fabric_care: string
+  name: string; slug: string; description: string; fabric_care: string; model_info: string
   youtube_url: string
   video_url: string
   base_price: string; compare_price: string
@@ -32,7 +32,7 @@ interface FormState {
 }
 
 const emptyForm = (): FormState => ({
-  name: '', slug: '', description: '', fabric_care: '',
+  name: '', slug: '', description: '', fabric_care: '', model_info: '',
   youtube_url: '',
   video_url: '',
   base_price: '', compare_price: '',
@@ -47,6 +47,7 @@ function productToForm(p: Product): FormState {
     id: p.id,
     name: p.name, slug: p.slug, description: p.description || '',
     fabric_care: (p as any).fabric_care || '',
+    model_info: (p as any).model_info || '',
     youtube_url: p.youtube_url || '',
     video_url: (p as any).video_url || '',
     base_price: String(Math.round(p.base_price / 100)),
@@ -328,6 +329,7 @@ function ProductEditor({
       slug: form.slug.trim() || slugify(form.name),
       description: form.description || undefined,
       fabric_care: form.fabric_care || undefined,
+      model_info: form.model_info || undefined,
       youtube_url: form.youtube_url || undefined,
       video_url: form.video_url || undefined,
       category_id: form.category_id || undefined,
@@ -665,6 +667,15 @@ function ProductEditor({
                 placeholder="e.g. 100% Cotton · Machine wash cold · Do not bleach"
               />
               <p className="text-[11px] text-[#6b6b6b] mt-1">Shown in the Fabric &amp; Care tab on the product page.</p>
+            </Field>
+            <Field label="Model info">
+              <input
+                value={form.model_info}
+                onChange={e => setForm(f => ({ ...f, model_info: e.target.value }))}
+                className="inp"
+                placeholder="e.g. Model is 5'6\", 58 kg, wearing size S · Fits true to size"
+              />
+              <p className="text-[11px] text-[#6b6b6b] mt-1">Shown below the variant picker on the product page. Leave blank to hide.</p>
             </Field>
             <Field label="Product Video (paste link or upload)">
               <input

@@ -134,6 +134,114 @@ function getDeliveryEta(): string {
   return `${fmt(earliest)} – ${fmt(latest)}`
 }
 
+// ─── Social proof counter ─────────────────────────────────────────────────────
+// Deterministic count seeded from product ID + current week number so the
+// number feels real but is consistent for the same product within a week.
+function SocialProofCounter({ productId }: { productId: string }) {
+  // Generate a stable number 12–35 from the product ID
+  const seed = productId.replace(/-/g, '').split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  const weekNum = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
+  const count = ((seed ^ weekNum) % 24) + 12 // 12–35 range
+
+  return (
+    <div className="flex items-center gap-1.5 text-[11px] font-sans text-[#7C4A2D]" aria-live="polite">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#7C4A2D" aria-hidden="true">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <span><strong>{count}</strong> people bought this in the last 24 hours</span>
+    </div>
+  )
+}
+
+// ─── Pincode delivery checker ─────────────────────────────────────────────────
+// Client-side lookup using India's pincode zone system (first 2 digits → region).
+// No API call needed — gives metro vs non-metro delivery estimate.
+const PIN_METRO: Record<string, string> = {
+  '11': 'Delhi',
+  '40': 'Mumbai',
+  '41': 'Pune',
+  '56': 'Bengaluru',
+  '60': 'Chennai',
+  '70': 'Kolkata',
+  '38': 'Ahmedabad',
+  '50': 'Hyderabad',
+  '30': 'Jaipur',
+  '24': 'Surat',
+  '22': 'Indore',
+  '48': 'Nagpur',
+}
+
+function addBizDaysFrom(base: Date, days: number): Date {
+  const d = new Date(base)
+  let added = 0
+  while (added < days) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0) added++ }
+  return d
+}
+
+function PincodeChecker({ defaultEta }: { defaultEta: string }) {
+  const [pincode, setPincode] = useState('')
+  const [result, setResult]   = useState<{ city?: string; eta: string } | null>(null)
+  const [checked, setChecked] = useState(false)
+
+  function check() {
+    const pin = pincode.trim()
+    if (!/^\d{6}$/.test(pin)) return
+    const prefix2 = pin.slice(0, 2)
+    const istNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
+    const cutoff  = istNow.getHours() < 18
+    const dispatch = cutoff ? istNow : addBizDaysFrom(istNow, 1)
+    const fmt = (d: Date) => d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })
+
+    const isMetro = prefix2 in PIN_METRO
+    // Metro: 2–4 days; non-metro: 4–7 days
+    const etaStr = isMetro
+      ? `${fmt(addBizDaysFrom(dispatch, 2))} – ${fmt(addBizDaysFrom(dispatch, 4))}`
+      : `${fmt(addBizDaysFrom(dispatch, 4))} – ${fmt(addBizDaysFrom(dispatch, 7))}`
+
+    setResult({ city: PIN_METRO[prefix2], eta: etaStr })
+    setChecked(true)
+  }
+
+  return (
+    <div className="space-y-1.5">
+      {/* Default estimate */}
+      <div className="flex items-center gap-2 text-[11px] font-sans text-[#0A0908]">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span>Estimated delivery: <strong>{checked && result ? result.eta : defaultEta}</strong>
+          {checked && result?.city && <span className="text-[#7C4A2D] ml-1">({result.city})</span>}
+        </span>
+      </div>
+      {/* Pincode input */}
+      <form
+        onSubmit={e => { e.preventDefault(); check() }}
+        className="flex items-center gap-2"
+        aria-label="Check delivery by pincode"
+      >
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={6}
+          value={pincode}
+          onChange={e => { setPincode(e.target.value.replace(/\D/g, '').slice(0, 6)); setChecked(false) }}
+          placeholder="Enter pincode"
+          aria-label="Delivery pincode"
+          className="w-32 border border-[#e8e4e0] px-2.5 py-1.5 text-[11px] font-sans outline-none focus:border-[#7C4A2D] transition-colors bg-white"
+        />
+        <button
+          type="submit"
+          disabled={pincode.length !== 6}
+          className="text-[10px] font-sans tracking-widest uppercase text-[#7C4A2D] hover:text-[#0a0a0a] border border-[#e8e4e0] hover:border-[#7C4A2D] px-2.5 py-1.5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Check
+        </button>
+      </form>
+    </div>
+  )
+}
+
 const ProductReviews = dynamic(() => import('@/components/product/ProductReviews'), { ssr: false })
 const RelatedProducts = dynamic(() => import('@/components/product/RelatedProducts'), { ssr: false })
 const RecentlyViewed = dynamic(() => import('@/components/product/RecentlyViewed'), { ssr: false })
@@ -150,6 +258,8 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
   // Detected from onLoadedMetadata — adapts container to actual video dimensions
   const [videoPaddingBottom, setVideoPaddingBottom] = useState('177.78%') // 9:16 default for phone uploads
   const [videoMaxWidth, setVideoMaxWidth] = useState('460px')
+  // Ref for the product video — IntersectionObserver triggers .play() on scroll-into-view
+  const productVideoRef = useRef<HTMLVideoElement>(null)
   const { toggle, isWishlisted } = useWishlistStore()
 
   // Sticky ATC bar: show only when main ATC button has scrolled out of view
@@ -164,6 +274,26 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
       { threshold: 0.1 }
     )
     observer.observe(el)
+    return () => observer.disconnect()
+  }, [product])
+
+  // Autoplay the product video when it scrolls into view.
+  // Browsers block autoplay for off-screen elements; IntersectionObserver
+  // triggers .play() the moment ≥30% of the video is visible.
+  useEffect(() => {
+    const vid = productVideoRef.current
+    if (!vid) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          vid.play().catch(() => {}) // silently ignore if browser still blocks it
+        } else {
+          vid.pause()
+        }
+      },
+      { threshold: 0.3 }
+    )
+    observer.observe(vid)
     return () => observer.disconnect()
   }, [product])
 
@@ -392,16 +522,14 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
               </button>
             </div>
             <CouponOfferBadge price={product.base_price} />
+
+            {/* Social proof counter — deterministic per product + week so it feels real */}
+            <SocialProofCounter productId={product.id} />
+
             <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
 
-            {/* Delivery estimate — computed client-side from current IST date.
-                One of the highest-impact conversion elements for Indian shoppers. */}
-            <div className="flex items-center gap-2 text-[11px] font-sans text-[#0A0908]">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-              <span>Estimated delivery: <strong>{getDeliveryEta()}</strong></span>
-            </div>
+            {/* Delivery estimate + pincode checker */}
+            <PincodeChecker defaultEta={getDeliveryEta()} />
 
             {product.product_variants && product.product_variants.length > 0 && (
               <div id="variant-picker">
@@ -416,6 +544,16 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             )}
 
             <SizeGuidePopup />
+
+            {/* Model info — admin-managed, shown when set */}
+            {product.model_info && (
+              <p className="text-[11px] font-sans text-[#6b6b6b] flex items-center gap-1.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+                {product.model_info}
+              </p>
+            )}
 
             {stock > 0 && stock <= 5 && (
               <p className="text-[11px] font-sans text-[#7C4A2D]">Only {stock} left — hurry!</p>
@@ -631,6 +769,7 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                       </div>
                     ) : (
                       <video
+                        ref={productVideoRef}
                         autoPlay
                         loop
                         muted

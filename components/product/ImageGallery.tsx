@@ -58,15 +58,17 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
   // Touch swipe state
   const touchStartX = useRef<number | null>(null)
 
-  // ── Auto-scroll ─────────────────────────────────────────────────────────
+  // ── Auto-scroll — pause on video slides so video can play fully ──────────
   useEffect(() => {
     if (media.length <= 1 || paused) return
+    // Don't auto-advance when the current slide is a video
+    if (media[active]?.type === 'video') return
     const id = setInterval(
       () => setActive((prev) => (prev + 1) % media.length),
       3500,
     )
     return () => clearInterval(id)
-  }, [media.length, paused])
+  }, [media.length, paused, active, media])
 
   // ── Keyboard: Escape closes zoom ─────────────────────────────────────────
   useEffect(() => {
@@ -150,9 +152,12 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                Primary = Cloudinary H.264 transcoded; fallback = original URL. */
             <div className="relative w-full aspect-[3/4] bg-[#0a0a0a] flex items-center justify-center">
               <video
-                controls
+                autoPlay
+                muted
+                loop
                 playsInline
-                preload="metadata"
+                controls
+                preload="auto"
                 className="w-full h-full object-contain"
               >
                 {/* H.264 transcoded (handles HEVC, MOV, AVI from phone uploads) */}

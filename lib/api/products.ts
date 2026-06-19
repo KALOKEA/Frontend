@@ -35,6 +35,8 @@ export interface Product {
   fabric_care?: string
   avg_rating?: number
   review_count?: number
+  /** "Model is 5'6", 58 kg, wearing size S — Fits true to size" */
+  model_info?: string
   created_at: string
   categories?: { id: string; name: string; slug: string }
   product_images?: ProductImage[]
