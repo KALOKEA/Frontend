@@ -673,7 +673,7 @@ function ProductEditor({
                 value={form.model_info}
                 onChange={e => setForm(f => ({ ...f, model_info: e.target.value }))}
                 className="inp"
-                placeholder="e.g. Model is 5'6\", 58 kg, wearing size S · Fits true to size"
+                placeholder={`e.g. Model is 5'6", 58 kg, wearing size S · Fits true to size`}
               />
               <p className="text-[11px] text-[#6b6b6b] mt-1">Shown below the variant picker on the product page. Leave blank to hide.</p>
             </Field>
