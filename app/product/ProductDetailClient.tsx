@@ -552,17 +552,23 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
         {/* Product Video Section */}
         {(() => {
           // Show a product video from EITHER a YouTube link (any format incl.
-          // Shorts) OR a directly-uploaded file. Cloudinary URLs are normalised
-          // to .mp4 so browsers can play MOV/AVI/etc that were uploaded by admin.
+          // Shorts) OR a directly-uploaded file.
           const ytId = youTubeId(product.youtube_url)
-          // Normalise Cloudinary URLs: force .mp4 delivery so MOV / QuickTime
-          // files (common from phone uploads) play natively in every browser.
           const rawMp4 = product.video_url
-          const mp4 = rawMp4 && rawMp4.includes('res.cloudinary.com') && rawMp4.includes('/video/upload/')
-            ? rawMp4.replace(/\.(mov|MOV|avi|AVI|wmv|mkv|3gp|flv|quicktime)(\?.*)?$/, '.mp4$2')
+
+          // Build a Cloudinary-transcoded URL (H.264 MP4) as a reliable fallback
+          // for formats the browser can't decode (HEVC, AVI, WMV, etc.).
+          // We inject f_mp4,vc_h264,ac_aac transformation ONLY for Cloudinary URLs
+          // that don't already have it. This is lazy-transcoded by Cloudinary on
+          // first request; the rawMp4 URL is used as primary since it's confirmed
+          // to be accessible and often plays fine (H.264 MOV, standard MP4).
+          const transcodedMp4 = rawMp4 && rawMp4.includes('res.cloudinary.com') && rawMp4.includes('/video/upload/')
+            ? rawMp4.includes('vc_h264')
+              ? rawMp4
+              : rawMp4.replace('/video/upload/', '/video/upload/f_mp4,vc_h264,ac_aac/')
             : rawMp4
 
-          if (!ytId && !mp4) return null
+          if (!ytId && !rawMp4) return null
           return (
             <div className="mt-16 pt-12 border-t border-[#E0D4C4]">
               {/* Section heading — editorial style with accent line */}
@@ -612,14 +618,23 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                       </a>
                     </div>
                   ) : (
+                    // Use rawMp4 as primary source — this is the URL that works
+                    // when opened directly. transcodedMp4 is offered as a <source>
+                    // fallback so the browser picks whichever it can decode.
                     <video
-                      src={mp4!}
                       controls
                       playsInline
                       preload="metadata"
                       onError={() => setVideoError(true)}
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, objectFit: 'contain', background: '#0e0e0e', borderRadius: 10 }}
-                    />
+                    >
+                      {/* Primary: Cloudinary H.264 transcoded (universally supported) */}
+                      {transcodedMp4 && transcodedMp4 !== rawMp4 && (
+                        <source src={transcodedMp4} type="video/mp4" />
+                      )}
+                      {/* Fallback: original uploaded URL (confirmed accessible) */}
+                      <source src={rawMp4!} />
+                    </video>
                   )}
                 </div>
               </div>

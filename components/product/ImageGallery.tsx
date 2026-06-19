@@ -25,11 +25,12 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
       (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0) || a.sort_order - b.sort_order,
   )
 
-  // Normalise Cloudinary video URLs to .mp4 so MOV / QuickTime files
-  // uploaded from phones play natively in every browser.
-  function toPlayableMp4(url: string): string {
-    if (url.includes('res.cloudinary.com') && url.includes('/video/upload/')) {
-      return url.replace(/\.(mov|MOV|avi|AVI|wmv|mkv|3gp|flv|quicktime)(\?.*)?$/, '.mp4$2')
+  // Build Cloudinary H.264 transcoded URL for guaranteed cross-browser playback.
+  // Injects f_mp4,vc_h264,ac_aac transformation so MOV, HEVC, AVI, etc. are
+  // served as H.264 MP4. The original URL is kept as a fallback <source>.
+  function toTranscodedMp4(url: string): string {
+    if (url.includes('res.cloudinary.com') && url.includes('/video/upload/') && !url.includes('vc_h264')) {
+      return url.replace('/video/upload/', '/video/upload/f_mp4,vc_h264,ac_aac/')
     }
     return url
   }
@@ -42,7 +43,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
       alt: img.alt_text || productName,
     })),
     ...(videoUrl
-      ? [{ type: 'video' as const, url: toPlayableMp4(videoUrl), alt: `${productName} – video` }]
+      ? [{ type: 'video' as const, url: videoUrl, alt: `${productName} – video` }]
       : []),
   ]
 
@@ -145,16 +146,22 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
               </span>
             </>
           ) : (
-            /* Video: use controls so user can play/pause; aspect-[9/16] as a
-               portrait fallback so the container is never zero-height while loading */
+            /* Video: multi-source for widest browser compatibility.
+               Primary = Cloudinary H.264 transcoded; fallback = original URL. */
             <div className="relative w-full aspect-[3/4] bg-[#0a0a0a] flex items-center justify-center">
               <video
-                src={current.url}
                 controls
                 playsInline
                 preload="metadata"
                 className="w-full h-full object-contain"
-              />
+              >
+                {/* H.264 transcoded (handles HEVC, MOV, AVI from phone uploads) */}
+                {toTranscodedMp4(current.url) !== current.url && (
+                  <source src={toTranscodedMp4(current.url)} type="video/mp4" />
+                )}
+                {/* Original URL — confirmed accessible, often H.264 MOV that plays fine */}
+                <source src={current.url} />
+              </video>
             </div>
           )}
 
