@@ -43,7 +43,10 @@ export function youTubeBackgroundEmbed(id: string): string {
   return `https://www.youtube-nocookie.com/embed/${id}?${p.toString()}`
 }
 
-/** Standard embed URL with user controls — for the product "Watch the Video" player. */
+/** Standard embed URL with user controls — for the product "Watch the Video" player.
+ *  Uses youtube-nocookie.com to avoid third-party cookie blocking in browsers that
+ *  block cross-site iframes (Safari ITP, Firefox, uBlock etc.) which would show
+ *  the "This content is blocked" error on the product page. */
 export function youTubeEmbed(id: string): string {
-  return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`
+  return `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`
 }

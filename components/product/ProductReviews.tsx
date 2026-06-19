@@ -185,20 +185,33 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
 
   useEffect(() => { loadReviews() }, [product_id]) // eslint-disable-line
 
+  // Revoke all blob preview URLs to avoid memory leaks
+  function revokeAllPreviews(previews: string[]) {
+    previews.forEach((url) => { if (url !== '__video__') URL.revokeObjectURL(url) })
+  }
+
+  // Revoke object URLs on unmount
+  useEffect(() => () => revokeAllPreviews(mediaPreviews), []) // eslint-disable-line
+
   // Add media files (max 5 total)
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? [])
     const combined = [...mediaFiles, ...files].slice(0, 5)
     setMediaFiles(combined)
-    // Generate preview URLs
-    const previews = combined.map((f) =>
+    // Generate preview URLs — only for the newly added files to avoid re-creating existing blob URLs
+    const existingCount = mediaFiles.length
+    const newPreviews = combined.slice(existingCount).map((f) =>
       f.type.startsWith('video/') ? '__video__' : URL.createObjectURL(f),
     )
-    setMediaPreviews(previews)
+    setMediaPreviews((prev) => [...prev, ...newPreviews].slice(0, 5))
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   function removeMedia(i: number) {
+    // Revoke the removed blob URL before dropping it from state
+    if (mediaPreviews[i] && mediaPreviews[i] !== '__video__') {
+      URL.revokeObjectURL(mediaPreviews[i])
+    }
     setMediaFiles((prev) => prev.filter((_, idx) => idx !== i))
     setMediaPreviews((prev) => prev.filter((_, idx) => idx !== i))
   }
@@ -228,11 +241,12 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
 
       setSubmitMsg({ text: 'Thank you! Your review is pending approval and will appear shortly.', ok: true })
       setRating(0); setTitle(''); setBody('')
+      revokeAllPreviews(mediaPreviews)
       setMediaFiles([]); setMediaPreviews([])
       setShowForm(false)
-    } catch (e: any) {
+    } catch (e: unknown) {
       setUploading(false)
-      setSubmitMsg({ text: e?.message || 'Could not submit review. Try again.', ok: false })
+      setSubmitMsg({ text: e instanceof Error ? e.message : 'Could not submit review. Try again.', ok: false })
     } finally {
       setSubmitting(false)
     }
@@ -422,7 +436,7 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
 
             <div className="flex gap-2">
               <button
-                onClick={() => { setShowForm(false); setSubmitMsg(null); setMediaFiles([]); setMediaPreviews([]) }}
+                onClick={() => { setShowForm(false); setSubmitMsg(null); revokeAllPreviews(mediaPreviews); setMediaFiles([]); setMediaPreviews([]) }}
                 className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-white"
               >
                 Cancel

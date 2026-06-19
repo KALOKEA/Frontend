@@ -28,8 +28,8 @@ export default function BackInStockNotify({ variantId, productName, variantLabel
       const data = await res.json()
       if (!res.ok) throw new Error(data?.message || 'Failed to subscribe')
       setStatus('success')
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Something went wrong. Please try again.')
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
       setStatus('error')
     }
   }
@@ -75,7 +75,7 @@ export default function BackInStockNotify({ variantId, productName, variantLabel
         </button>
       </form>
       {status === 'error' && (
-        <p className="mt-2 text-[12px] font-sans text-red-600">{errorMsg}</p>
+        <p role="alert" className="mt-2 text-[12px] font-sans text-red-600">{errorMsg}</p>
       )}
     </div>
   )

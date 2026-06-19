@@ -10,7 +10,10 @@ interface Look {
   href: string
 }
 
-const DEFAULT_LOOKS: Look[] = JSON.parse(HERO_DEFAULTS.stl_looks)
+function parseDefaultLooks(): Look[] {
+  try { return JSON.parse(HERO_DEFAULTS.stl_looks) ?? [] } catch { return [] }
+}
+const DEFAULT_LOOKS: Look[] = parseDefaultLooks()
 
 export default function ShopTheLook() {
   const [looks, setLooks] = useState<Look[]>(DEFAULT_LOOKS)

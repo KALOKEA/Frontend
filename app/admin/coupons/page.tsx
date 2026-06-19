@@ -81,8 +81,8 @@ export default function AdminCouponsPage() {
         await adminApi.createCoupon(payload)
       }
       setForm(null); load()
-    } catch (e: any) {
-      setMsg(e?.message || 'Failed to save coupon')
+    } catch (e: unknown) {
+      setMsg(e instanceof Error ? e.message : 'Failed to save coupon')
     } finally {
       setSaving(false)
     }

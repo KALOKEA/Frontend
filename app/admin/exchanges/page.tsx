@@ -48,8 +48,8 @@ export default function AdminExchangesPage() {
     try {
       await exchangesApi.updateStatus(editing.id, { status, admin_notes: notes || undefined })
       toast('Exchange updated'); setEditing(null); load()
-    } catch (e: any) {
-      setMsg(e?.message || 'Failed to update')
+    } catch (e: unknown) {
+      setMsg(e instanceof Error ? e.message : 'Failed to update')
     } finally { setSaving(false) }
   }
 
@@ -60,8 +60,8 @@ export default function AdminExchangesPage() {
       await exchangesApi.updateStatus(e.id, { status: newStatus })
       toast(`Exchange ${newStatus}`)
       load()
-    } catch (err: any) {
-      toast(err?.message || 'Action failed')
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : 'Action failed')
     } finally { setQuickBusy(null) }
   }
 
@@ -103,6 +103,7 @@ export default function AdminExchangesPage() {
         <select
           value={filterStatus}
           onChange={e => setFilterStatus(e.target.value)}
+          aria-label="Filter by status"
           className="text-sm border border-[#e8e4e0] px-3 py-2 bg-white text-[#0a0a0a] focus:outline-none"
         >
           <option value="">All Statuses</option>

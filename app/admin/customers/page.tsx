@@ -51,6 +51,9 @@ export default function AdminCustomersPage() {
     load(page)
   }, [page]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Cleanup search timer on unmount
+  useEffect(() => () => { if (searchTimer.current) clearTimeout(searchTimer.current) }, [])
+
   function load(p = page) {
     setLoading(true)
     adminApi.listCustomers(p, limit)
@@ -95,8 +98,8 @@ export default function AdminCustomersPage() {
     try {
       await adminApi.deleteUser(c.id)
       load(page)
-    } catch (e: any) {
-      alert(e?.message || 'Delete failed')
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : 'Delete failed')
     }
   }
 
@@ -115,8 +118,8 @@ export default function AdminCustomersPage() {
       else await adminApi.createUser(payload)
       setForm(null)
       load(page)
-    } catch (e: any) {
-      setFormMsg(e?.message || 'Failed to save')
+    } catch (e: unknown) {
+      setFormMsg(e instanceof Error ? e.message : 'Failed to save')
     } finally {
       setSaving(false)
     }
@@ -155,6 +158,7 @@ export default function AdminCustomersPage() {
           value={search}
           onChange={e => onSearchChange(e.target.value)}
           placeholder="Search by name, email or phone…"
+          aria-label="Search customers"
           className="w-full border border-[#e8e4e0] px-4 py-2.5 text-sm focus:border-[#0a0a0a] outline-none pr-10"
         />
         {searching && (

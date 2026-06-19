@@ -33,8 +33,8 @@ export default function AdminBannersPage() {
     try {
       const { url } = await uploadImage(files[0], 'banners')
       setForm(f => f ? { ...f, image_url: url } : f)
-    } catch (e: any) {
-      setMsg(e?.message || 'Upload failed')
+    } catch (e: unknown) {
+      setMsg(e instanceof Error ? e.message : 'Upload failed')
     } finally {
       setUploading(false)
     }
@@ -55,8 +55,8 @@ export default function AdminBannersPage() {
         is_active: true,
       })
       setForm(null); load()
-    } catch (e: any) {
-      setMsg(e?.message || 'Failed to save banner')
+    } catch (e: unknown) {
+      setMsg(e instanceof Error ? e.message : 'Failed to save banner')
     } finally {
       setSaving(false)
     }

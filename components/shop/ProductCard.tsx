@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useWishlistStore } from '@/lib/store/useWishlistStore'
 import { formatPrice, formatDiscount } from '@/lib/utils/formatPrice'
@@ -56,6 +56,8 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { toggle, isWishlisted } = useWishlistStore()
   const [hovered, setHovered]       = useState(false)
   const [wishlisting, setWishlisting] = useState(false)
+  const wishlistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => { if (wishlistTimerRef.current) clearTimeout(wishlistTimerRef.current) }, [])
   const [quickViewOpen, setQuickViewOpen] = useState(false)
   const wishlisted   = isWishlisted(product.id)
   const discount     = formatDiscount(product.compare_price || 0, product.base_price)
@@ -87,7 +89,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.preventDefault()
     setWishlisting(true)
     toggle(product.id)
-    setTimeout(() => setWishlisting(false), 600)
+    wishlistTimerRef.current = setTimeout(() => setWishlisting(false), 600)
   }
 
   return (
@@ -152,6 +154,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             fill={wishlisted ? '#7C4A2D' : 'none'}
             stroke={wishlisted ? '#7C4A2D' : '#0A0908'}
             strokeWidth="1.5"
+            aria-hidden="true"
           >
             <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
           </svg>

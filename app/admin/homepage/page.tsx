@@ -245,8 +245,8 @@ export default function AdminHomepagePage() {
       await homepageContentApi.update(key, values[key] ?? '')
       setSaved(key)
       setTimeout(() => setSaved(null), 2500)
-    } catch (e: any) {
-      setError(e?.message || 'Save failed')
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Save failed')
     } finally {
       setSaving(null)
     }
@@ -286,7 +286,7 @@ export default function AdminHomepagePage() {
       await homepageContentApi.update('announcement_items', JSON.stringify(announcements.filter(Boolean)))
       setAnnSaved(true)
       setTimeout(() => setAnnSaved(false), 2500)
-    } catch (e: any) { setError(e?.message || 'Save failed') }
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Save failed') }
     finally { setAnnSaving(false) }
   }
 
@@ -298,7 +298,7 @@ export default function AdminHomepagePage() {
       await homepageContentApi.update('hero_slides', JSON.stringify(toSave))
       setHeroSlidesSaved(true)
       setTimeout(() => setHeroSlidesSaved(false), 2500)
-    } catch (e: any) { setError(e?.message || 'Save failed') }
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Save failed') }
     finally { setHeroSlidesSaving(false) }
   }
 
@@ -310,7 +310,7 @@ export default function AdminHomepagePage() {
       await homepageContentApi.update('editorial_slides', JSON.stringify(toSave))
       setEditSlidesSaved(true)
       setTimeout(() => setEditSlidesSaved(false), 2500)
-    } catch (e: any) { setError(e?.message || 'Save failed') }
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Save failed') }
     finally { setEditSlidesSaving(false) }
   }
 
@@ -427,6 +427,7 @@ export default function AdminHomepagePage() {
                   value={msg}
                   onChange={e => setAnnouncements(a => a.map((x, j) => j === i ? e.target.value : x))}
                   placeholder="e.g. Free Shipping on Orders Above ₹999"
+                  aria-label={`Announcement message ${i + 1}`}
                   className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
                 />
                 <button onClick={() => setAnnouncements(a => a.filter((_, j) => j !== i))} aria-label="Remove message" className="text-red-500 hover:text-red-700">
@@ -476,6 +477,7 @@ export default function AdminHomepagePage() {
                     value={slide.image}
                     onChange={e => setHeroSlides(s => s.map((x, j) => j === i ? { ...x, image: e.target.value } : x))}
                     placeholder="Image URL"
+                    aria-label={`Hero slide ${i + 1} image URL`}
                     className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
                   />
                   <CloudinaryUploadButton folder="hero" accept="image/*" label="Upload"
@@ -486,6 +488,7 @@ export default function AdminHomepagePage() {
                     value={slide.video}
                     onChange={e => setHeroSlides(s => s.map((x, j) => j === i ? { ...x, video: e.target.value } : x))}
                     placeholder="Video URL (optional)"
+                    aria-label={`Hero slide ${i + 1} video URL`}
                     className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]"
                   />
                   <CloudinaryUploadButton folder="hero" accept="video/mp4,video/webm,video/*" mediaUpload label="Upload"
@@ -524,7 +527,7 @@ export default function AdminHomepagePage() {
             Editorial Carousel Slides
           </h2>
           <p className="text-[10px] font-sans text-[#6b6b6b] mb-3">
-            Add multiple slides to cycle the editorial panel every 6s. If empty, the single editorial image/video above is used.
+            Add multiple slides to cycle the editorial panel every 5s. If empty, the single editorial image/video above is used.
           </p>
           <div className="space-y-3">
             {editSlides.map((slide, i) => (
@@ -539,6 +542,7 @@ export default function AdminHomepagePage() {
                   <input value={slide.image}
                     onChange={e => setEditSlides(s => s.map((x, j) => j === i ? { ...x, image: e.target.value } : x))}
                     placeholder="Image URL"
+                    aria-label={`Editorial slide ${i + 1} image URL`}
                     className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
                   <CloudinaryUploadButton folder="editorial" accept="image/*" label="Upload"
                     onUploaded={(url) => setEditSlides(s => s.map((x, j) => j === i ? { ...x, image: url } : x))} />
@@ -547,6 +551,7 @@ export default function AdminHomepagePage() {
                   <input value={slide.video}
                     onChange={e => setEditSlides(s => s.map((x, j) => j === i ? { ...x, video: e.target.value } : x))}
                     placeholder="Video URL (optional)"
+                    aria-label={`Editorial slide ${i + 1} video URL`}
                     className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
                   <CloudinaryUploadButton folder="editorial" accept="video/mp4,video/webm,video/*" mediaUpload label="Upload"
                     onUploaded={(url) => setEditSlides(s => s.map((x, j) => j === i ? { ...x, video: url } : x))} />
@@ -595,16 +600,19 @@ export default function AdminHomepagePage() {
                 <input value={look.title}
                   onChange={e => setLooks(l => l.map((x, j) => j === i ? { ...x, title: e.target.value } : x))}
                   placeholder="Look title"
+                  aria-label={`Look ${i + 1} title`}
                   className="w-full border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
                 <input
                   value={look.tags.join(', ')}
                   onChange={e => setLooks(l => l.map((x, j) => j === i ? { ...x, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) } : x))}
                   placeholder="Tags: e.g. Aurelia Dress, Chain Bag"
+                  aria-label={`Look ${i + 1} tags`}
                   className="w-full border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
                 <div className="flex gap-1.5 items-center">
                   <input value={look.image}
                     onChange={e => setLooks(l => l.map((x, j) => j === i ? { ...x, image: e.target.value } : x))}
                     placeholder="Image URL"
+                    aria-label={`Look ${i + 1} image URL`}
                     className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
                   <CloudinaryUploadButton folder="looks" accept="image/*" label="Upload"
                     onUploaded={(url) => setLooks(l => l.map((x, j) => j === i ? { ...x, image: url } : x))} />
@@ -612,6 +620,7 @@ export default function AdminHomepagePage() {
                 <input value={look.href}
                   onChange={e => setLooks(l => l.map((x, j) => j === i ? { ...x, href: e.target.value } : x))}
                   placeholder="Link URL e.g. /shop/"
+                  aria-label={`Look ${i + 1} link URL`}
                   className="w-full border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
               </div>
             ))}
@@ -641,10 +650,12 @@ export default function AdminHomepagePage() {
                 <input value={logo.name}
                   onChange={e => setLogos(l => l.map((x, j) => j === i ? { ...x, name: e.target.value } : x))}
                   placeholder="Brand name"
+                  aria-label={`Press logo ${i + 1} brand name`}
                   className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
                 <input value={logo.url}
                   onChange={e => setLogos(l => l.map((x, j) => j === i ? { ...x, url: e.target.value } : x))}
                   placeholder="https://..."
+                  aria-label={`Press logo ${i + 1} URL`}
                   className="flex-1 border border-[#e8e4e0] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[#0a0a0a]" />
                 <button onClick={() => setLogos(l => l.filter((_, j) => j !== i))} aria-label="Remove logo" className="text-red-500 hover:text-red-700 shrink-0">
                   <Trash2 size={13} aria-hidden="true" />

@@ -67,8 +67,8 @@ export default function AdminEmailLogPage() {
       toast(result.message || 'Email resent successfully')
       load(page)
       if (viewing?.id === row.id) setViewing(null)
-    } catch (e: any) {
-      toast(e?.message || 'Failed to resend email')
+    } catch (e: unknown) {
+      toast(e instanceof Error ? e.message : 'Failed to resend email')
     } finally {
       setResending(null)
     }
@@ -108,6 +108,7 @@ export default function AdminEmailLogPage() {
         <select
           value={status}
           onChange={e => setStatus(e.target.value)}
+          aria-label="Filter by status"
           className="text-sm border border-[#e8e4e0] px-3 py-2 bg-white text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a]"
         >
           <option value="">All statuses</option>
@@ -118,6 +119,7 @@ export default function AdminEmailLogPage() {
         <select
           value={emailType}
           onChange={e => setEmailType(e.target.value)}
+          aria-label="Filter by email type"
           className="text-sm border border-[#e8e4e0] px-3 py-2 bg-white text-[#0a0a0a] focus:outline-none focus:border-[#0a0a0a]"
         >
           <option value="">All types</option>

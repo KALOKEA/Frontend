@@ -61,6 +61,8 @@ export default function QuickView({ product, onClose }: QuickViewProps) {
   const [selectedSize,   setSelectedSize]   = useState<string | null>(uniqueSizes[0] ?? null)
   const [selectedColour, setSelectedColour] = useState<string | null>(uniqueColours[0] ?? null)
   const [adding, setAdding] = useState(false)
+  const addTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => { if (addTimerRef.current) clearTimeout(addTimerRef.current) }, [])
 
   // Find the best matching variant
   const selectedVariant: ProductVariant | null =
@@ -147,7 +149,7 @@ export default function QuickView({ product, onClose }: QuickViewProps) {
     })
     toast('Added to bag', 'success')
     openCart()
-    setTimeout(() => { setAdding(false); onClose() }, 400)
+    addTimerRef.current = setTimeout(() => { setAdding(false); onClose() }, 400)
   }
 
   return (
@@ -176,7 +178,7 @@ export default function QuickView({ product, onClose }: QuickViewProps) {
             className="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-[#f4f0ec] hover:bg-[#e8e4e0] transition-colors text-[#6b5c55]"
             aria-label="Close quick view"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
           </button>

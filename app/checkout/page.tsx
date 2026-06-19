@@ -88,7 +88,6 @@ export default function CheckoutPage() {
   }, [])
 
   const placeOrder = async () => {
-    processingPayment.current = true
     setCheckoutError(null)
 
     // Validate billing details (matches the backend's required fields).
@@ -113,6 +112,9 @@ export default function CheckoutPage() {
       setCheckoutError('Company name and GSTIN are required for a GST invoice'); return
     }
 
+    // Only lock the cart-empty redirect guard AFTER passing validation.
+    // Early validation returns above must not leave processingPayment stuck true.
+    processingPayment.current = true
     setLoading(true)
     try {
       // Save billing address to profile if user opted in (fire-and-forget — don't block checkout).
@@ -230,7 +232,7 @@ export default function CheckoutPage() {
       }
     } catch (err) {
       processingPayment.current = false
-      const msg = (err as Error).message || 'Failed to place order'
+      const msg = err instanceof Error ? err.message : 'Failed to place order'
       setCheckoutError(msg)
       // Intentionally not logging here — error is surfaced to the user via setCheckoutError.
     } finally {

@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Check } from 'lucide-react'
@@ -22,6 +22,12 @@ function WishlistCard({ product }: { product: Product }) {
   const { addItem } = useCartStore()
   const [adding, setAdding] = useState(false)
   const [added, setAdded] = useState(false)
+  const addTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const addedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => {
+    if (addTimerRef.current)  clearTimeout(addTimerRef.current)
+    if (addedTimerRef.current) clearTimeout(addedTimerRef.current)
+  }, [])
 
   const imgUrl = getPrimaryImage(product)
   const discount = formatDiscount(product.compare_price || 0, product.base_price)
@@ -43,10 +49,10 @@ function WishlistCard({ product }: { product: Product }) {
       quantity: 1,
       max_stock: inStockVariant.stock,
     })
-    setTimeout(() => {
+    addTimerRef.current = setTimeout(() => {
       setAdding(false)
       setAdded(true)
-      setTimeout(() => setAdded(false), 2500)
+      addedTimerRef.current = setTimeout(() => setAdded(false), 2500)
     }, 500)
   }
 
@@ -129,6 +135,7 @@ function WishlistCard({ product }: { product: Product }) {
           </button>
           <button
             onClick={() => toggle(product.id)}
+            aria-label={`Remove ${product.name} from wishlist`}
             className="w-full py-2 text-[10px] font-sans tracking-widest uppercase text-[#6b5c55] hover:text-red-500 transition-colors border border-[#e8e4e0] hover:border-red-200"
           >
             Remove

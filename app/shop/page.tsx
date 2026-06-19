@@ -80,8 +80,8 @@ function MobileFilterDrawer({ open, onClose }: { open: boolean; onClose: () => v
   useEffect(() => {
     if (!open) return
     document.body.style.overflow = 'hidden'
-    setTimeout(() => closeRef.current?.focus(), 30)
-    return () => { document.body.style.overflow = '' }
+    const t = setTimeout(() => closeRef.current?.focus(), 30)
+    return () => { document.body.style.overflow = ''; clearTimeout(t) }
   }, [open])
 
   if (!open) return null
@@ -95,6 +95,7 @@ function MobileFilterDrawer({ open, onClose }: { open: boolean; onClose: () => v
       />
       {/* Drawer */}
       <div
+        id="mobile-filter-drawer"
         role="dialog"
         aria-modal="true"
         aria-label="Product filters"
@@ -135,6 +136,7 @@ function ShopContent() {
   const searchQuery = params.get('search')
 
   useEffect(() => {
+    let active = true
     setLoading(true)
     const query: Record<string, string> = { limit: String(limit), page: String(page) }
     if (params.get('category')) query.category_slug = params.get('category')!
@@ -147,9 +149,10 @@ function ShopContent() {
     if (params.get('search')) query.search = params.get('search')!
 
     productsApi.getAll(query)
-      .then(res => { setProducts(res.data || []); setTotal(res.meta?.total || 0) })
-      .catch(() => { setProducts([]); setTotal(0) })
-      .finally(() => setLoading(false))
+      .then(res => { if (active) { setProducts(res.data || []); setTotal(res.meta?.total || 0) } })
+      .catch(() => { if (active) { setProducts([]); setTotal(0) } })
+      .finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params])
 

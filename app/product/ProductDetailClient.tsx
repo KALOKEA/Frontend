@@ -105,10 +105,11 @@ function FabricRenderer({ text }: { text: string }) {
 // Skips Sundays (India logistics). Orders cut-off at 18:00 IST — after that,
 // dispatch starts the next business day.
 function getDeliveryEta(): string {
-  const now = new Date()
-  const istOffset = 5.5 * 60 * 60 * 1000
-  const ist = new Date(now.getTime() + istOffset)
-  const cutoff = ist.getHours() < 18 // dispatch same day if before 6 PM IST
+  // Create a Date object that reflects the current time in IST regardless of
+  // where the user's browser is. Using toLocaleString with en-US + IST timezone
+  // gives a parseable string that new Date() handles reliably in modern browsers.
+  const istNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
+  const cutoff = istNow.getHours() < 18 // dispatch same day if before 6 PM IST
 
   // Add N business days skipping Sundays
   function addBizDays(base: Date, days: number): Date {
@@ -126,7 +127,7 @@ function getDeliveryEta(): string {
 
   // Metro cities: 2–3 business days from dispatch; non-metro: 4–6
   // We show the metro range (most customers) as the default.
-  const dispatchStart = cutoff ? ist : addBizDays(ist, 1)
+  const dispatchStart = cutoff ? istNow : addBizDays(istNow, 1)
   const earliest = addBizDays(dispatchStart, 2)
   const latest   = addBizDays(dispatchStart, 5)
 

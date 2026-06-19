@@ -150,7 +150,7 @@ export default function OrdersPage() {
       await exchangesApi.create({ order_id: exchangeFor.id, order_item_id: exItemId, new_variant_id: exVariantId, reason: exReason })
       toast('Exchange request submitted')
       setExchangeFor(null); load()
-    } catch (e: any) { toast(e?.message || 'Could not submit exchange', 'error') }
+    } catch (e: unknown) { toast(e instanceof Error ? e.message : 'Could not submit exchange', 'error') }
     finally { setSubmitting(false) }
   }
 
@@ -162,6 +162,8 @@ export default function OrdersPage() {
       const blobUrl = URL.createObjectURL(blob)
       const w = window.open(blobUrl, '_blank')
       if (!w) toast('Allow pop-ups to view the invoice', 'error')
+      // Revoke after a short delay to give the browser time to start loading the document.
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 500)
     } catch { toast('Could not open invoice', 'error') }
   }
 
@@ -172,7 +174,7 @@ export default function OrdersPage() {
       await returnsApi.create({ order_id: returnFor.id, reason })
       toast('Return request submitted')
       setReturnFor(null); load()
-    } catch (e: any) { toast(e?.message || 'Could not submit return', 'error') }
+    } catch (e: unknown) { toast(e instanceof Error ? e.message : 'Could not submit return', 'error') }
     finally { setSubmitting(false) }
   }
 
@@ -183,7 +185,7 @@ export default function OrdersPage() {
       await ordersApi.cancel(cancelFor.id)
       toast('Order cancelled successfully')
       setCancelFor(null); load()
-    } catch (e: any) { toast(e?.message || 'Could not cancel order', 'error') }
+    } catch (e: unknown) { toast(e instanceof Error ? e.message : 'Could not cancel order', 'error') }
     finally { setCancelling(false) }
   }
 
@@ -219,8 +221,8 @@ export default function OrdersPage() {
       })
       rz.on('payment.failed', () => { toast('Payment failed. Please try again.', 'error'); setRetryingId(null) })
       rz.open()
-    } catch (e: any) {
-      toast(e?.message || 'Could not initiate payment. Please try again.', 'error')
+    } catch (e: unknown) {
+      toast(e instanceof Error ? e.message : 'Could not initiate payment. Please try again.', 'error')
       setRetryingId(null)
     }
   }

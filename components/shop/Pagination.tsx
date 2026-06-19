@@ -34,7 +34,7 @@ export default function Pagination({ total, page, limit }: PaginationProps) {
   return (
     <div className="flex items-center justify-center gap-1 mt-12" role="navigation" aria-label="Pagination">
       {page > 1 && (
-        <button onClick={() => goTo(page - 1)} aria-label="Previous page" className="w-11 h-11 border border-[#e8e4e0] flex items-center justify-center text-[#0a0a0a] hover:border-[#0a0a0a]"><ChevronLeft size={16} /></button>
+        <button onClick={() => goTo(page - 1)} aria-label="Previous page" className="w-11 h-11 border border-[#e8e4e0] flex items-center justify-center text-[#0a0a0a] hover:border-[#0a0a0a]"><ChevronLeft size={16} aria-hidden="true" /></button>
       )}
       {pageNums.map((p, i) =>
         p === '…' ? (
@@ -52,7 +52,7 @@ export default function Pagination({ total, page, limit }: PaginationProps) {
         )
       )}
       {page < totalPages && (
-        <button onClick={() => goTo(page + 1)} aria-label="Next page" className="w-11 h-11 border border-[#e8e4e0] flex items-center justify-center text-[#0a0a0a] hover:border-[#0a0a0a]"><ChevronRight size={16} /></button>
+        <button onClick={() => goTo(page + 1)} aria-label="Next page" className="w-11 h-11 border border-[#e8e4e0] flex items-center justify-center text-[#0a0a0a] hover:border-[#0a0a0a]"><ChevronRight size={16} aria-hidden="true" /></button>
       )}
     </div>
   )

@@ -83,8 +83,8 @@ export default function AdminOrdersPage() {
       })
       setEditing(null)
       load(page)
-    } catch (e: any) {
-      setMsg(e?.message || 'Failed to update')
+    } catch (e: unknown) {
+      setMsg(e instanceof Error ? e.message : 'Failed to update')
     } finally {
       setSaving(false)
     }
@@ -104,7 +104,7 @@ export default function AdminOrdersPage() {
           onClick={async () => {
             setExporting(true)
             try { await adminApi.exportOrders({ status: statusFilter || undefined }) }
-            catch (e: any) { alert(e?.message || 'Export failed') }
+            catch (e: unknown) { alert(e instanceof Error ? e.message : 'Export failed') }
             finally { setExporting(false) }
           }}
           disabled={exporting}
@@ -120,6 +120,7 @@ export default function AdminOrdersPage() {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search by order number or guest email…"
+          aria-label="Search orders"
           className="w-full border border-[#e8e4e0] px-4 py-2.5 text-sm focus:border-[#0a0a0a] outline-none pr-8"
         />
         {search && (
@@ -328,8 +329,9 @@ export default function AdminOrdersPage() {
               </span>
             </p>
 
-            <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">New status</label>
+            <label htmlFor="order-new-status" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">New status</label>
             <select
+              id="order-new-status"
               value={newStatus}
               onChange={e => setNewStatus(e.target.value)}
               className="w-full border border-[#e8e4e0] px-3 py-2 mb-4 text-sm focus:border-[#0a0a0a] outline-none"
@@ -345,12 +347,12 @@ export default function AdminOrdersPage() {
                   Marking as shipped emails the customer with tracking details.
                 </p>
                 <div>
-                  <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Tracking number</label>
-                  <input value={tracking} onChange={e => setTracking(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none" />
+                  <label htmlFor="order-tracking" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Tracking number</label>
+                  <input id="order-tracking" value={tracking} onChange={e => setTracking(e.target.value)} className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none" />
                 </div>
                 <div>
-                  <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Courier</label>
-                  <input value={courier} onChange={e => setCourier(e.target.value)} placeholder="Delhivery, BlueDart, DTDC…" className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none" />
+                  <label htmlFor="order-courier" className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Courier</label>
+                  <input id="order-courier" value={courier} onChange={e => setCourier(e.target.value)} placeholder="Delhivery, BlueDart, DTDC…" className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none" />
                 </div>
               </div>
             )}

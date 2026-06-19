@@ -34,7 +34,8 @@ export default function CartDrawer() {
     if (isOpen) {
       previousFocus.current = document.activeElement as HTMLElement
       // Small delay so the drawer has rendered
-      setTimeout(() => closeRef.current?.focus(), 30)
+      const t = setTimeout(() => closeRef.current?.focus(), 30)
+      return () => clearTimeout(t)
     } else {
       previousFocus.current?.focus()
       previousFocus.current = null
@@ -111,7 +112,7 @@ export default function CartDrawer() {
             className="w-11 h-11 flex items-center justify-center text-[#6B5E55] hover:text-[#0A0908] transition-colors -mr-2"
             aria-label="Close cart"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
           </button>
@@ -122,7 +123,7 @@ export default function CartDrawer() {
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="w-16 h-16 flex items-center justify-center mb-4 border border-[#E0D4C4]">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.4">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.4" aria-hidden="true">
                   <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
                   <line x1="3" y1="6" x2="21" y2="6"/>
                   <path d="M16 10a4 4 0 01-8 0"/>
@@ -147,7 +148,7 @@ export default function CartDrawer() {
                       <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="64px" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4A882" strokeWidth="1.5">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4A882" strokeWidth="1.5" aria-hidden="true">
                           <rect x="3" y="3" width="18" height="18" rx="2"/>
                           <circle cx="8.5" cy="8.5" r="1.5"/>
                           <polyline points="21 15 16 10 5 21"/>
@@ -190,6 +191,7 @@ export default function CartDrawer() {
                       <button
                         onClick={() => removeItem(item.variant_id)}
                         className="text-[9.5px] uppercase tracking-widest text-[#6B5E55] hover:text-red-500 transition-colors"
+                        aria-label={`Remove ${item.name} from cart`}
                       >
                         Remove
                       </button>

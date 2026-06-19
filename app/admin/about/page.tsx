@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import {
   siteContentApi, invalidateSiteContentCache,
   type AboutHero, type AboutValue, type AboutStat, type TeamMember,
@@ -58,6 +58,7 @@ export default function AdminAboutPage() {
   const [loading, setLoading]   = useState(true)
   const [saving, setSaving]     = useState(false)
   const [msg, setMsg]           = useState<{ text: string; ok: boolean } | null>(null)
+  const msgTimerRef             = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Hero
   const [hero, setHero]       = useState<AboutHero>(ABOUT_HERO_DEFAULT)
@@ -84,10 +85,12 @@ export default function AdminAboutPage() {
   }, [])
 
   useEffect(() => { load() }, [load])
+  useEffect(() => () => { if (msgTimerRef.current) clearTimeout(msgTimerRef.current) }, [])
 
   const flash = (text: string, ok: boolean) => {
     setMsg({ text, ok })
-    setTimeout(() => setMsg(null), 4000)
+    if (msgTimerRef.current) clearTimeout(msgTimerRef.current)
+    msgTimerRef.current = setTimeout(() => setMsg(null), 4000)
   }
 
   const save = async (e: React.FormEvent) => {
@@ -102,8 +105,8 @@ export default function AdminAboutPage() {
       ])
       invalidateSiteContentCache()
       flash('Saved', true)
-    } catch (err: any) {
-      flash(err?.message || 'Could not save', false)
+    } catch (err: unknown) {
+      flash(err instanceof Error ? err.message : 'Could not save', false)
     } finally {
       setSaving(false)
     }

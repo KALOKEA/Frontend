@@ -47,7 +47,7 @@ export default function ContactPage() {
       }
       setSent(true)
     } catch (err) {
-      setError((err as Error).message || 'Something went wrong. Please try again.')
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }

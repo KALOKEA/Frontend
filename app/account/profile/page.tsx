@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import api from '@/lib/api/client'
 import { useToast } from '@/components/ui/Toast'
@@ -10,6 +10,8 @@ export default function ProfilePage() {
   const [name, setName]     = useState(user?.name || '')
   const [loading, setLoading] = useState(false)
   const [saved, setSaved]   = useState(false)
+  const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => { if (savedTimerRef.current) clearTimeout(savedTimerRef.current) }, [])
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,7 +23,8 @@ export default function ProfilePage() {
       if (user && accessToken) setAuth(accessToken, { ...user, name: updated.name })
       setSaved(true)
       toast('Profile updated')
-      setTimeout(() => setSaved(false), 3000)
+      if (savedTimerRef.current) clearTimeout(savedTimerRef.current)
+      savedTimerRef.current = setTimeout(() => setSaved(false), 3000)
     } catch {
       toast('Failed to update profile', 'error')
     } finally {

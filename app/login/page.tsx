@@ -38,7 +38,7 @@ function LoginContent() {
       toast('OTP sent successfully')
       setStep('verify')
     } catch (err) {
-      toast((err as Error).message || 'Failed to send OTP', 'error')
+      toast(err instanceof Error ? err.message : 'Failed to send OTP', 'error')
     } finally {
       setLoading(false)
     }
@@ -66,7 +66,7 @@ function LoginContent() {
       const redirect = (safeRelative && notLoginPage) ? rawRedirect : '/'
       router.push(redirect)
     } catch (err) {
-      toast((err as Error).message || 'Invalid OTP', 'error')
+      toast(err instanceof Error ? err.message : 'Invalid OTP', 'error')
     } finally {
       setLoading(false)
     }

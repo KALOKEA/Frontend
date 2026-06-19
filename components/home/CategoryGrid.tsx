@@ -16,15 +16,6 @@ const FALLBACK_IMAGES: Record<string, string> = {
   default:     'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=75',
 }
 
-// Static fallback — used when backend returns no categories
-// Order matches design: Dresses(1), Tops(2-center), Bags(3), Bottoms(4), Accessories(5)
-const STATIC_CATEGORIES: Category[] = [
-  { id: 'c1', name: 'Dresses',     slug: 'dresses',     image_url: '', sort_order: 1, is_active: true },
-  { id: 'c2', name: 'Tops',        slug: 'tops',         image_url: '', sort_order: 2, is_active: true },
-  { id: 'c3', name: 'Bags',        slug: 'bags',         image_url: '', sort_order: 3, is_active: true },
-  { id: 'c4', name: 'Bottoms',     slug: 'bottoms',      image_url: '', sort_order: 4, is_active: true },
-  { id: 'c5', name: 'Accessories', slug: 'accessories',  image_url: '', sort_order: 5, is_active: true },
-]
 
 function getCatImage(cat: Category): string {
   if (cat.image_url) return cat.image_url
@@ -57,6 +48,7 @@ const MOSAIC_PLACEMENT = [
 
 export default function CategoryGrid() {
   const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
   const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
   const gridRef = useRef<HTMLDivElement>(null)
 
@@ -76,10 +68,11 @@ export default function CategoryGrid() {
                    c.slug !== 'everything' &&
                    c.slug !== 'sale'
           )
-          setCategories(filtered) // No static fallback — only real DB categories
+          setCategories(filtered)
         })
       })
-      .catch(() => setCategories([]))  // On error show nothing, not fake data
+      .catch(() => setCategories([]))
+      .finally(() => setLoading(false))
   }, [])
 
   useEffect(() => {
@@ -94,6 +87,9 @@ export default function CategoryGrid() {
   }, [categories])
 
   const cats = categories.slice(0, 5)
+
+  // Hide section when loaded with no categories
+  if (!loading && cats.length === 0) return null
 
   return (
     /* section-sm: padding 48px 0 */
@@ -116,8 +112,23 @@ export default function CategoryGrid() {
         </h2>
       </div>
 
-      {/* Mosaic grid — full-width with own max-width + padding (matches .mosaic CSS) */}
-      {/* Responsive gutter: px-4 mobile → px-7 sm → px-[52px] lg (matches --gutter CSS var) */}
+      {/* Mosaic grid — full-width with own max-width + padding */}
+      {loading ? (
+        /* Skeleton — 2-col mobile, 5-cell mosaic on md+ */
+        <div
+          className="grid grid-cols-2 md:grid-cols-12 k-mosaic-grid gap-3 mx-auto px-4 sm:px-7 lg:px-[52px]"
+          style={{ maxWidth: 1380 }}
+          aria-hidden="true"
+        >
+          {MOSAIC_PLACEMENT.map((placement, i) => (
+            <div
+              key={i}
+              className={`bg-[#E4DDD4] animate-pulse aspect-[3/4] ${placement}`}
+              style={{ borderRadius: 4 }}
+            />
+          ))}
+        </div>
+      ) : (
       <div
         ref={gridRef}
         className="grid grid-cols-2 md:grid-cols-12 k-mosaic-grid gap-3 mx-auto px-4 sm:px-7 lg:px-[52px]"
@@ -156,6 +167,7 @@ export default function CategoryGrid() {
           </Link>
         ))}
       </div>
+      )}
     </section>
   )
 }

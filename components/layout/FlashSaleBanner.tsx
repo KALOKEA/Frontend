@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { settingsApi, type PublicSettings } from '@/lib/api/settings'
 import { X, Copy, Check, Zap } from 'lucide-react'
 
@@ -19,6 +19,7 @@ export default function FlashSaleBanner() {
   const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number } | null>(null)
   const [dismissed, setDismissed] = useState(false)
   const [copied, setCopied] = useState(false)
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Fetch flash sale settings on mount (public endpoint — no auth)
   useEffect(() => {
@@ -57,7 +58,8 @@ export default function FlashSaleBanner() {
     try {
       await navigator.clipboard.writeText(code)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2500)
+      if (copyTimer.current) clearTimeout(copyTimer.current)
+      copyTimer.current = setTimeout(() => setCopied(false), 2500)
     } catch {}
   }
 
@@ -74,7 +76,7 @@ export default function FlashSaleBanner() {
       <div className="flex items-center justify-center gap-3 flex-wrap">
         {/* Icon + label */}
         <span className="flex items-center gap-1.5 font-medium">
-          <Zap size={14} className="text-amber-400 fill-amber-400" />
+          <Zap size={14} className="text-amber-400 fill-amber-400" aria-hidden="true" />
           {sale.flash_sale_label || 'Flash Sale'}
           {sale.flash_sale_discount_pct > 0 && (
             <span className="ml-1 text-amber-400 font-semibold">
@@ -103,8 +105,8 @@ export default function FlashSaleBanner() {
               {sale.flash_sale_coupon}
             </span>
             {copied
-              ? <Check size={12} className="text-green-400" />
-              : <Copy size={12} className="opacity-70" />}
+              ? <Check size={12} className="text-green-400" aria-hidden="true" />
+              : <Copy size={12} className="opacity-70" aria-hidden="true" />}
           </button>
         )}
 
@@ -123,7 +125,7 @@ export default function FlashSaleBanner() {
         aria-label="Dismiss flash sale banner"
         className="absolute right-3 top-1/2 -translate-y-1/2 p-1 opacity-60 hover:opacity-100 transition-opacity"
       >
-        <X size={14} />
+        <X size={14} aria-hidden="true" />
       </button>
     </div>
   )

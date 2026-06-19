@@ -42,7 +42,7 @@ export default function MobileBottomNav() {
             aria-current={active ? 'page' : undefined}
           >
             <span className="k-mobile-bottom-nav__icon-wrap">
-              <Icon size={22} strokeWidth={active ? 2 : 1.5} />
+              <Icon size={22} strokeWidth={active ? 2 : 1.5} aria-hidden="true" />
               {badge > 0 && (
                 <span className="k-mobile-bottom-nav__badge" aria-hidden="true">
                   {badge > 9 ? '9+' : badge}

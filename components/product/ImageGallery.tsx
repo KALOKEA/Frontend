@@ -40,7 +40,10 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
   const [zoomed, setZoomed] = useState(false)
-  const pauseRef = useRef<ReturnType<typeof setTimeout>>()
+  const pauseRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  // Cleanup pause timer on unmount
+  useEffect(() => () => clearTimeout(pauseRef.current), [])
   const zoomCloseRef = useRef<HTMLButtonElement>(null)
   // Touch swipe state
   const touchStartX = useRef<number | null>(null)
@@ -151,7 +154,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                 aria-label="Previous image"
                 className="absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-white"
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5" aria-hidden="true">
                   <path d="M15 18l-6-6 6-6" />
                 </svg>
               </button>
@@ -160,7 +163,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                 aria-label="Next image"
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 backdrop-blur-sm flex items-center justify-center shadow opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-white"
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5" aria-hidden="true">
                   <path d="M9 18l6-6-6-6" />
                 </svg>
               </button>
@@ -237,7 +240,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
             onClick={() => setZoomed(false)}
             aria-label="Close zoom"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
@@ -266,7 +269,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                 onClick={(e) => { e.stopPropagation(); prev() }}
                 aria-label="Previous"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M15 18l-6-6 6-6" />
                 </svg>
               </button>
@@ -275,7 +278,7 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
                 onClick={(e) => { e.stopPropagation(); next() }}
                 aria-label="Next"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M9 18l6-6-6-6" />
                 </svg>
               </button>

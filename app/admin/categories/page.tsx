@@ -44,6 +44,9 @@ export default function AdminCategoriesPage() {
   const [toast, setToast]           = useState<{ msg: string; type: 'ok' | 'err' } | null>(null)
   const [slugManual, setSlugManual] = useState(false)
   const fileRef                     = useRef<HTMLInputElement>(null)
+  const toastTimerRef               = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (toastTimerRef.current) clearTimeout(toastTimerRef.current) }, [])
 
   function load() {
     setLoading(true)
@@ -57,7 +60,8 @@ export default function AdminCategoriesPage() {
 
   function showToast(msg: string, type: 'ok' | 'err' = 'ok') {
     setToast({ msg, type })
-    setTimeout(() => setToast(null), 3000)
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    toastTimerRef.current = setTimeout(() => setToast(null), 3000)
   }
 
   async function onImageUpload(files: FileList | null) {
@@ -67,8 +71,8 @@ export default function AdminCategoriesPage() {
       const { url } = await uploadImage(files[0], 'categories')
       setForm(f => f ? { ...f, image_url: url } : f)
       showToast('Photo uploaded')
-    } catch (e: any) {
-      showToast(e?.message || 'Upload failed', 'err')
+    } catch (e: unknown) {
+      showToast(e instanceof Error ? e.message : 'Upload failed', 'err')
     } finally {
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''
@@ -112,8 +116,8 @@ export default function AdminCategoriesPage() {
       }
       setForm(null)
       load()
-    } catch (e: any) {
-      showToast(e?.message || 'Save failed', 'err')
+    } catch (e: unknown) {
+      showToast(e instanceof Error ? e.message : 'Save failed', 'err')
     } finally {
       setSaving(false)
     }
@@ -123,8 +127,8 @@ export default function AdminCategoriesPage() {
     try {
       await categoriesApi.update(c.id, { is_active: !c.is_active })
       load()
-    } catch (e: any) {
-      showToast(e?.message || 'Failed', 'err')
+    } catch (e: unknown) {
+      showToast(e instanceof Error ? e.message : 'Failed', 'err')
     }
   }
 
@@ -133,8 +137,8 @@ export default function AdminCategoriesPage() {
     try {
       await categoriesApi.remove(c.id)
       load()
-    } catch (e: any) {
-      showToast(e?.message || 'Failed', 'err')
+    } catch (e: unknown) {
+      showToast(e instanceof Error ? e.message : 'Failed', 'err')
     }
   }
 

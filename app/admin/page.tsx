@@ -63,6 +63,15 @@ export default function AdminDashboard() {
           {recentOrders.length ? (
             <div className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-sm font-sans">
+              <thead className="sr-only">
+                <tr>
+                  <th scope="col">Order</th>
+                  <th scope="col">Customer</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Date</th>
+                </tr>
+              </thead>
               <tbody>
                 {recentOrders.map(o => (
                   <tr key={o.id} className="border-b border-[#f0ece8] last:border-0 hover:bg-[#faf8f5]">

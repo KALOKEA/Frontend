@@ -69,7 +69,7 @@ export default function OrderSummary({
               {item.image_url && (
                 <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="56px" />
               )}
-              <span className="absolute -top-1 -right-1 bg-[#0a0a0a] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full">{item.quantity}</span>
+              <span aria-label={`Quantity: ${item.quantity}`} className="absolute -top-1 -right-1 bg-[#0a0a0a] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full">{item.quantity}</span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-sans text-[#0a0a0a] truncate">{item.name}</p>

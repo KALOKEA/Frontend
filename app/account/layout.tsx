@@ -112,8 +112,9 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           <button
             onClick={() => setMobileOpen(o => !o)}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] -mr-2"
-            aria-label="Toggle menu"
+            aria-label="Toggle account menu"
             aria-expanded={mobileOpen}
+            aria-controls="account-sidebar"
           >
             {mobileOpen ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -126,7 +127,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         <div className="flex flex-col md:flex-row gap-6 lg:gap-8">
 
           {/* ── Sidebar ─────────────────────────────────────────────────── */}
-          <aside className={`w-full md:w-64 shrink-0 ${mobileOpen ? 'block' : 'hidden md:block'}`}>
+          <aside id="account-sidebar" className={`w-full md:w-64 shrink-0 ${mobileOpen ? 'block' : 'hidden md:block'}`}>
 
             {/* Profile card */}
             <div className="bg-white border border-[#e8e4e0] p-6 mb-4">

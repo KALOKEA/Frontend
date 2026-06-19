@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { settingsApi, INDIAN_STATES, type StoreSettings } from '@/lib/api/settings'
 import { twoFactorApi } from '@/lib/api/auth'
 import Spinner from '@/components/ui/Spinner'
@@ -34,16 +34,19 @@ function TwoFactorSection() {
   const [token, setToken] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null)
+  const msgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     twoFactorApi.status()
       .then(r => setStatus(r.enabled ? 'enabled' : 'disabled'))
       .catch(() => setStatus('disabled'))
+    return () => { if (msgTimerRef.current) clearTimeout(msgTimerRef.current) }
   }, [])
 
   function flash(text: string, ok: boolean) {
     setMsg({ text, ok })
-    setTimeout(() => setMsg(null), 5000)
+    if (msgTimerRef.current) clearTimeout(msgTimerRef.current)
+    msgTimerRef.current = setTimeout(() => setMsg(null), 5000)
   }
 
   async function handleSetup() {
@@ -53,8 +56,8 @@ function TwoFactorSection() {
       setQrCode(r.qr_code)
       setSecret(r.secret)
       setPhase('confirm-enable')
-    } catch (e: any) {
-      flash(e?.message || 'Setup failed', false)
+    } catch (e: unknown) {
+      flash(e instanceof Error ? e.message : 'Setup failed', false)
     } finally { setBusy(false) }
   }
 
@@ -68,8 +71,8 @@ function TwoFactorSection() {
       setToken('')
       setQrCode('')
       flash('2FA enabled — your account is now protected', true)
-    } catch (e: any) {
-      flash(e?.message || 'Invalid code — try again', false)
+    } catch (e: unknown) {
+      flash(e instanceof Error ? e.message : 'Invalid code — try again', false)
     } finally { setBusy(false) }
   }
 
@@ -82,8 +85,8 @@ function TwoFactorSection() {
       setPhase('idle')
       setToken('')
       flash('2FA disabled', true)
-    } catch (e: any) {
-      flash(e?.message || 'Invalid code — 2FA not disabled', false)
+    } catch (e: unknown) {
+      flash(e instanceof Error ? e.message : 'Invalid code — 2FA not disabled', false)
     } finally { setBusy(false) }
   }
 
@@ -158,6 +161,7 @@ function TwoFactorSection() {
                 value={token}
                 onChange={e => setToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 placeholder="000000"
+                aria-label="Authenticator code"
                 className={`${INP} tracking-widest text-center font-mono`}
               />
               <button
@@ -190,6 +194,7 @@ function TwoFactorSection() {
               value={token}
               onChange={e => setToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
               placeholder="000000"
+              aria-label="Current authenticator code"
               className={`${INP} tracking-widest text-center font-mono`}
             />
             <button
@@ -226,6 +231,9 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null)
+  const saveMsgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (saveMsgTimerRef.current) clearTimeout(saveMsgTimerRef.current) }, [])
 
   useEffect(() => {
     settingsApi.get()
@@ -248,9 +256,10 @@ export default function AdminSettingsPage() {
       })
       setForm({ ...DEFAULT_FORM, ...updated })
       setMsg({ text: 'Settings saved', ok: true })
-      setTimeout(() => setMsg(null), 4000)
-    } catch (e: any) {
-      setMsg({ text: e?.message || 'Could not save — check your connection', ok: false })
+      if (saveMsgTimerRef.current) clearTimeout(saveMsgTimerRef.current)
+      saveMsgTimerRef.current = setTimeout(() => setMsg(null), 4000)
+    } catch (e: unknown) {
+      setMsg({ text: e instanceof Error ? e.message : 'Could not save — check your connection', ok: false })
     } finally {
       setSaving(false)
     }
@@ -499,6 +508,7 @@ export default function AdminSettingsPage() {
               <input
                 type="checkbox"
                 className="sr-only peer"
+                aria-label="Enable flash sale banner"
                 checked={!!form.flash_sale_enabled}
                 onChange={e => setForm(f => ({ ...DEFAULT_FORM, ...f, flash_sale_enabled: e.target.checked }))}
               />
@@ -590,10 +600,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-3">
-      <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1.5">
-        {label}
+      <label className="block">
+        <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1.5">{label}</span>
+        {children}
       </label>
-      {children}
     </div>
   )
 }

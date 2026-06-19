@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 import {
   siteContentApi, invalidateSiteContentCache,
@@ -86,6 +86,7 @@ function LinkEditor({
           <input
             className={INP}
             placeholder="Label (e.g. New Arrivals)"
+            aria-label={`Link ${i + 1} label`}
             value={l.label}
             onChange={e => setLink(i, 'label', e.target.value)}
           />
@@ -93,6 +94,7 @@ function LinkEditor({
           <input
             className={INP}
             placeholder="Path (e.g. /shop/new-arrivals/)"
+            aria-label={`Link ${i + 1} path`}
             value={l.href}
             onChange={e => setLink(i, 'href', e.target.value)}
           />
@@ -122,6 +124,7 @@ export default function AdminFooterPage() {
   const [loading, setLoading]   = useState(true)
   const [saving, setSaving]     = useState(false)
   const [msg, setMsg]           = useState<{ text: string; ok: boolean } | null>(null)
+  const msgTimerRef             = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const [shopCol,    setShopCol]    = useState<FooterLink[]>(FOOTER_SHOP_DEFAULT)
   const [helpCol,    setHelpCol]    = useState<FooterLink[]>(FOOTER_HELP_DEFAULT)
@@ -146,10 +149,12 @@ export default function AdminFooterPage() {
   }, [])
 
   useEffect(() => { load() }, [load])
+  useEffect(() => () => { if (msgTimerRef.current) clearTimeout(msgTimerRef.current) }, [])
 
   const flash = (text: string, ok: boolean) => {
     setMsg({ text, ok })
-    setTimeout(() => setMsg(null), 4000)
+    if (msgTimerRef.current) clearTimeout(msgTimerRef.current)
+    msgTimerRef.current = setTimeout(() => setMsg(null), 4000)
   }
 
   const save = async (e: React.FormEvent) => {
@@ -165,8 +170,8 @@ export default function AdminFooterPage() {
       ])
       invalidateSiteContentCache()
       flash('Saved', true)
-    } catch (err: any) {
-      flash(err?.message || 'Could not save', false)
+    } catch (err: unknown) {
+      flash(err instanceof Error ? err.message : 'Could not save', false)
     } finally {
       setSaving(false)
     }

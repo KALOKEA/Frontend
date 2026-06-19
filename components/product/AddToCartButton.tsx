@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/lib/store/useCartStore'
 import { useToast } from '@/components/ui/Toast'
@@ -18,6 +18,10 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
   const router = useRouter()
   const [adding, setAdding] = useState(false)
   const [buyingNow, setBuyingNow] = useState(false)
+  const addTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Cleanup timer on unmount to avoid state updates after unmount
+  useEffect(() => () => { if (addTimerRef.current) clearTimeout(addTimerRef.current) }, [])
 
   function buildCartItem() {
     if (!selectedVariant) { toast('Please select your size and colour', 'error'); return null }
@@ -59,9 +63,9 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
       price: item.price,
       quantity,
     })
-    setTimeout(() => {
+    addTimerRef.current = setTimeout(() => {
       setAdding(false)
-      toast(`Added to cart`)
+      toast('Added to cart')
       openCart()
     }, 300)
   }
@@ -70,8 +74,12 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
     const item = buildCartItem()
     if (!item) return
     setBuyingNow(true)
-    addItem(item)
-    router.push('/checkout/')
+    try {
+      addItem(item)
+      router.push('/checkout/')
+    } catch {
+      setBuyingNow(false)
+    }
   }
 
   const isOOS = selectedVariant?.stock === 0

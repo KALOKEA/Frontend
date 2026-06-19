@@ -21,7 +21,11 @@ function safeLink(link: string | null | undefined, fallback = '/shop/'): string 
 function parseSlides(c: HomepageContent): HeroSlide[] {
   try {
     const parsed: HeroSlide[] = JSON.parse(c.hero_slides || '[]')
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    // Filter out empty/invalid slides — an empty image src causes a blank panel
+    const valid = Array.isArray(parsed)
+      ? parsed.filter(s => (s.image && s.image.trim()) || (s.video && s.video.trim()))
+      : []
+    if (valid.length > 0) return valid
   } catch {}
   return [{
     image: c.hero_image_url || HERO_DEFAULTS.hero_image_url,

@@ -19,8 +19,13 @@ function safeLink(link: string | null | undefined, fallback = '/about/'): string
 function parseSlides(c: HomepageContent): EditorialSlide[] {
   try {
     const parsed: EditorialSlide[] = JSON.parse(c.editorial_slides || '[]')
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    // Filter out empty/invalid slides so a blank image URL never renders a dark panel
+    const valid = Array.isArray(parsed)
+      ? parsed.filter(s => (s.image && s.image.trim()) || (s.video && s.video.trim()))
+      : []
+    if (valid.length > 0) return valid
   } catch {}
+  // Fall back to the single legacy editorial_image_url (or the coded default)
   return [{
     image: c.editorial_image_url || HERO_DEFAULTS.editorial_image_url,
     video: c.editorial_video_url || '',
@@ -41,12 +46,12 @@ export default function EditorialBanner({ initialCms }: { initialCms?: Record<st
 
   const slides = parseSlides(c)
 
-  // Auto-advance every 6 s — only when >1 slide
+  // Auto-advance every 5 s — only when >1 slide
   useEffect(() => {
     if (slides.length <= 1) return
     timerRef.current = setTimeout(() => {
       setSlideIdx(i => (i + 1) % slides.length)
-    }, 6000)
+    }, 5000)
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [slideIdx, slides.length])
 

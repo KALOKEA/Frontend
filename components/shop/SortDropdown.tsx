@@ -22,6 +22,7 @@ export default function SortDropdown() {
     <select
       value={current}
       onChange={(e) => onChange(e.target.value)}
+      aria-label="Sort products"
       className="border border-[#e8e4e0] text-xs font-sans text-[#0a0a0a] px-3 py-2 min-h-[44px] outline-none focus:border-[#0a0a0a] bg-white"
     >
       {SORTS.map((s) => (

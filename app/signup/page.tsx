@@ -38,7 +38,7 @@ function SignupContent() {
       toast('OTP sent to +91' + identifier)
       setStep('otp')
     } catch (err) {
-      toast((err as Error).message || 'Failed to send OTP', 'error')
+      toast(err instanceof Error ? err.message : 'Failed to send OTP', 'error')
     } finally {
       setLoading(false)
     }
@@ -64,7 +64,7 @@ function SignupContent() {
       const redirect = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/'
       router.push(redirect)
     } catch (err) {
-      toast((err as Error).message || 'Invalid OTP', 'error')
+      toast(err instanceof Error ? err.message : 'Invalid OTP', 'error')
     } finally {
       setLoading(false)
     }

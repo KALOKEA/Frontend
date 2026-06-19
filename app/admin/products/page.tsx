@@ -160,8 +160,8 @@ function ProductTable({ products, onEdit, onRefresh }: {
     try {
       await productsApi.hardDelete(p.id)
       onRefresh()
-    } catch (e: any) {
-      alert(e?.message || 'Delete failed')
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : 'Delete failed')
     }
   }
 
@@ -268,6 +268,7 @@ function ProductEditor({
   const [uploading, setUploading] = useState(false)
   const [videoUploading, setVideoUploading] = useState(false)
   const [toast, setToast]         = useState<{ msg: string; type: 'ok' | 'err' } | null>(null)
+  const toastTimerRef             = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [slugManual, setSlugManual] = useState(!!initial)
 
   // ── Pending variants (for new products before first save) ──────────────────
@@ -291,6 +292,7 @@ function ProductEditor({
       .then(cats => setCategories(Array.isArray(cats) ? cats : (cats as any)?.data || []))
       .catch(() => {})
     if (initial?.id) refreshMedia(initial.id)
+    return () => { if (toastTimerRef.current) clearTimeout(toastTimerRef.current) }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   function setName(name: string) {
@@ -299,7 +301,8 @@ function ProductEditor({
 
   function showToast(msg: string, type: 'ok' | 'err' = 'ok') {
     setToast({ msg, type })
-    setTimeout(() => setToast(null), 3500)
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    toastTimerRef.current = setTimeout(() => setToast(null), 3500)
   }
 
   async function refreshMedia(productId: string) {
@@ -346,8 +349,9 @@ function ProductEditor({
         let created
         try {
           created = await productsApi.create(payload)
-        } catch (e: any) {
-          if (e?.message?.includes('slug') || e?.message?.includes('products_slug_key')) {
+        } catch (e: unknown) {
+          const msg = e instanceof Error ? e.message : ''
+          if (msg.includes('slug') || msg.includes('products_slug_key')) {
             // Slug already taken — append short random suffix and retry once
             const suffix = Date.now().toString(36).slice(-4)
             created = await productsApi.create({ ...payload, slug: `${payload.slug}-${suffix}` })
@@ -371,6 +375,7 @@ function ProductEditor({
                 price: Math.round(parseFloat(v.price || '0') * 100),
                 stock: parseInt(v.stock || '0', 10),
                 sku: v.sku || undefined,
+                is_active: true,
               })
               saved++
             } catch { /* skip individual failures */ }
@@ -388,8 +393,8 @@ function ProductEditor({
         }
         setTimeout(() => variantsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300)
       }
-    } catch (e: any) {
-      showToast(e?.message || 'Save failed', 'err')
+    } catch (e: unknown) {
+      showToast(e instanceof Error ? e.message : 'Save failed', 'err')
     } finally {
       setSaving(false)
     }
@@ -428,12 +433,13 @@ function ProductEditor({
         price: Math.round(parseFloat(vDraft.price) * 100),
         stock: parseInt(vDraft.stock || '0', 10),
         sku: vDraft.sku || undefined,
+        is_active: true,
       })
       setVDraft(emptyVariant())
       await refreshMedia(form.id)
       showToast('Variant added')
-    } catch (e: any) {
-      showToast(e?.message || 'Could not add variant', 'err')
+    } catch (e: unknown) {
+      showToast(e instanceof Error ? e.message : 'Could not add variant', 'err')
     } finally {
       setVSaving(false)
     }
@@ -481,6 +487,7 @@ function ProductEditor({
               price: Math.round(parseFloat(v.price) * 100),
               stock: parseInt(v.stock, 10),
               sku: v.sku || undefined,
+              is_active: true,
             })
             saved++
           } catch { /* skip individual failure */ }
@@ -514,8 +521,8 @@ function ProductEditor({
       const { url } = await uploadAdminMedia(file, 'products/video')
       setForm(f => ({ ...f, video_url: url }))
       showToast('Video uploaded')
-    } catch (e: any) {
-      showToast(e?.message || 'Video upload failed — is Cloudinary configured?', 'err')
+    } catch (e: unknown) {
+      showToast(e instanceof Error ? e.message : 'Video upload failed — is Cloudinary configured?', 'err')
     } finally {
       setVideoUploading(false)
     }
@@ -532,8 +539,8 @@ function ProductEditor({
       }
       await refreshMedia(form.id)
       showToast(`${files.length > 1 ? `${files.length} photos` : 'Photo'} uploaded`)
-    } catch (e: any) {
-      showToast(e?.message || 'Upload failed — is Cloudinary configured on the server?', 'err')
+    } catch (e: unknown) {
+      showToast(e instanceof Error ? e.message : 'Upload failed — is Cloudinary configured on the server?', 'err')
     } finally {
       setUploading(false)
     }
@@ -1231,32 +1238,44 @@ function VariantRow({ v, onSave, onDelete }: {
   onSave: (v: ProductVariant, stock: string, price: string) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }) {
-  const [stock, setStock]   = useState(String(v.stock))
-  const [price, setPrice]   = useState(String(Math.round(v.price / 100)))
-  const [saving, setSaving] = useState(false)
+  const [stock, setStock]     = useState(String(v.stock))
+  const [price, setPrice]     = useState(String(Math.round(v.price / 100)))
+  const [saving, setSaving]   = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const busy = saving || deleting
   return (
     <tr className="border-b border-[#f0ece8] last:border-0">
       <td className="py-2 pr-3 text-[#0a0a0a]">{v.colour || '—'}</td>
       <td className="py-2 pr-3 text-[#0a0a0a]">{v.size || '—'}</td>
-      <td className="py-2 pr-3 text-[#6b6b6b] text-xs">{v.sku || '—'}</td>
+      <td className="py-2 pr-3 text-[#6b6b6b] text-xs font-mono">{v.sku || '—'}</td>
       <td className="py-2 pr-3">
         <input type="number" value={price} onChange={e => setPrice(e.target.value)}
-          className="w-20 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none" />
+          disabled={busy}
+          className="w-20 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none disabled:opacity-50" />
       </td>
       <td className="py-2 pr-3">
         <input type="number" value={stock} onChange={e => setStock(e.target.value)}
-          className="w-16 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none" />
+          disabled={busy}
+          className="w-16 border border-[#e8e4e0] px-2 py-1 text-sm focus:border-[#0a0a0a] outline-none disabled:opacity-50" />
       </td>
-      <td className="py-2 pr-3 flex gap-2 items-center">
+      <td className="py-2 flex gap-2 items-center">
         <button
-          onClick={async () => { setSaving(true); await onSave(v, stock, price); setSaving(false) }}
-          disabled={saving}
-          className="px-3 py-1 text-xs bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50"
+          onClick={async () => {
+            setSaving(true)
+            try { await onSave(v, stock, price) } finally { setSaving(false) }
+          }}
+          disabled={busy}
+          className="px-3 py-1 text-xs bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors"
         >{saving ? '…' : 'Save'}</button>
         <button
-          onClick={() => onDelete(v.id)}
-          className="px-3 py-1 text-xs border border-red-300 text-red-600 hover:bg-red-50"
-        >Delete</button>
+          onClick={async () => {
+            if (!confirm('Delete this variant?')) return
+            setDeleting(true)
+            try { await onDelete(v.id) } finally { setDeleting(false) }
+          }}
+          disabled={busy}
+          className="px-3 py-1 text-xs border border-red-300 text-red-600 hover:bg-red-50 disabled:opacity-50 transition-colors"
+        >{deleting ? '…' : 'Delete'}</button>
       </td>
     </tr>
   )

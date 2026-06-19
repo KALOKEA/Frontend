@@ -7,7 +7,10 @@ interface PressLogo {
   url: string
 }
 
-const DEFAULT_LOGOS: PressLogo[] = JSON.parse(HERO_DEFAULTS.press_logos)
+function parseDefaultLogos(): PressLogo[] {
+  try { return JSON.parse(HERO_DEFAULTS.press_logos) ?? [] } catch { return [] }
+}
+const DEFAULT_LOGOS: PressLogo[] = parseDefaultLogos()
 
 export default function PressStrip() {
   const [logos, setLogos] = useState<PressLogo[]>(DEFAULT_LOGOS)

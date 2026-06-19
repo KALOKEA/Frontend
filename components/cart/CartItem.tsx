@@ -29,7 +29,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center border border-[#e8e4e0]">
             <button
-              onClick={() => updateQuantity(item.variant_id, item.quantity - 1)}
+              onClick={() => updateQuantity(item.variant_id, Math.max(1, item.quantity - 1))}
               className="w-10 h-10 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a] text-lg"
               aria-label={`Decrease quantity of ${item.name}`}
             >−</button>
