@@ -85,7 +85,12 @@ export const ordersApi = {
     cart_items?: { variant_id: string; quantity: number }[] // fallback if server cart is empty
   }) => api.post<OrderQuote>('/orders/quote', data),
 
-  getMyOrders: () => api.get<Order[]>('/orders/my'),
+  getMyOrders: async (): Promise<Order[]> => {
+    const r = await api.get<unknown>('/orders/my')
+    // Backend returns { data: Order[], meta: {...} } (paginated), but the client's
+    // smart-unwrap keeps the full object when `meta` is present. Unwrap manually.
+    return (Array.isArray(r) ? r : (r as any)?.data ?? []) as Order[]
+  },
   getById: (id: string) => api.get<Order>(`/orders/${id}`),
   getInvoice: (id: string) => api.get<string>(`/orders/${id}/invoice`),
   cancel: (id: string) => api.post<{ message: string }>(`/orders/${id}/cancel`, {}),

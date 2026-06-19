@@ -315,22 +315,26 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
             <h1 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] leading-tight">{product.name}</h1>
 
-            {(product.review_count ?? 0) > 0 && (
-              <div className="flex items-center gap-2">
-                <div role="img" className="flex gap-0.5" aria-label={`${Number(product.avg_rating ?? 0).toFixed(1)} out of 5 stars`}>
-                  {[1, 2, 3, 4, 5].map(s => (
-                    <svg key={s} width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"
-                      fill={(product.avg_rating ?? 0) >= s - 0.5 ? '#F59E0B' : 'none'}
-                      stroke="#F59E0B" strokeWidth="1.5">
-                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-                    </svg>
-                  ))}
-                </div>
-                <span className="text-[12px] font-sans text-[#6b6b6b]">
-                  {Number(product.avg_rating ?? 0).toFixed(1)}/5 · {product.review_count} review{(product.review_count ?? 0) !== 1 ? 's' : ''}
-                </span>
-              </div>
-            )}
+            {/* Compact star rating pill — always visible; scrolls to Reviews tab on click */}
+            <button
+              type="button"
+              onClick={() => { setTab('reviews'); document.getElementById('tab-panel-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#e8e4e0] bg-white px-2.5 py-1 hover:border-[#F59E0B] transition-colors group"
+              aria-label={`Rating: ${Number(product.avg_rating ?? 0).toFixed(1)} out of 5, ${product.review_count ?? 0} reviews`}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true">
+                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+              </svg>
+              <span className="text-[12px] font-sans font-semibold text-[#0a0a0a]">
+                {Number(product.avg_rating ?? 0).toFixed(1)}
+              </span>
+              <span className="text-[11px] font-sans text-[#6b6b6b]">
+                ({product.review_count ?? 0})
+              </span>
+              {(product.review_count ?? 0) === 0 && (
+                <span className="text-[10px] font-sans text-[#7C4A2D] group-hover:underline">Be first to review</span>
+              )}
+            </button>
 
             <div className="flex items-baseline gap-3">
               {/* Price in Cormorant display size */}
@@ -516,32 +520,36 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
           return (
             <div className="mt-12 pt-10 border-t border-[#E0D4C4]">
               <h2 className="font-serif text-xl text-[#0a0a0a] mb-4">Watch the Video</h2>
-              <div
-                style={{
-                  position: 'relative',
-                  paddingBottom: '56.25%', // 16:9
-                  height: 0,
-                  overflow: 'hidden',
-                  borderRadius: 4,
-                  background: '#0a0a0a',
-                }}
-              >
-                {ytId ? (
-                  <iframe
-                    src={youTubeEmbed(ytId)}
-                    title={`${product.name} — video`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                  />
-                ) : (
-                  <video
-                    src={mp4}
-                    controls
-                    playsInline
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, objectFit: 'cover' }}
-                  />
-                )}
+              {/* Constrain max-width so the 16:9 ratio never creates an 800px+ tall box */}
+              <div style={{ maxWidth: '860px' }}>
+                <div
+                  style={{
+                    position: 'relative',
+                    paddingBottom: '56.25%', // 16:9
+                    height: 0,
+                    overflow: 'hidden',
+                    borderRadius: 4,
+                    background: '#0a0a0a',
+                  }}
+                >
+                  {ytId ? (
+                    <iframe
+                      src={youTubeEmbed(ytId)}
+                      title={`${product.name} — video`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                    />
+                  ) : (
+                    <video
+                      src={mp4!}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0, objectFit: 'contain', background: '#0a0a0a' }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           )

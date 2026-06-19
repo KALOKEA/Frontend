@@ -136,14 +136,17 @@ export default function ImageGallery({ images, productName, videoUrl }: Props) {
               </span>
             </>
           ) : (
-            <video
-              src={current.url}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-auto block"
-            />
+            /* Video: use controls so user can play/pause; aspect-[9/16] as a
+               portrait fallback so the container is never zero-height while loading */
+            <div className="relative w-full aspect-[3/4] bg-[#0a0a0a] flex items-center justify-center">
+              <video
+                src={current.url}
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-contain"
+              />
+            </div>
           )}
 
           {/* ── Prev / Next arrows ─────────────────────────────────── */}
