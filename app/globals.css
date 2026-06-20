@@ -592,10 +592,10 @@ select.inp {
     grid-column: 1 / -1;
   }
 }
-/* Logo — responsive: large on desktop, fills brand col on mobile */
+/* Logo — responsive */
 .k-footer-logo {
-  width: 300px;
-  height: 76px;
+  width: 180px;
+  height: 46px;
   object-fit: contain;
   object-position: left center;
   display: block;
@@ -603,9 +603,8 @@ select.inp {
 }
 @media (max-width: 640px) {
   .k-footer-logo {
-    width: 100%;
-    max-width: 220px;
-    height: 56px;
+    width: 150px;
+    height: 38px;
   }
 }
 @media (max-width: 360px)  { .k-footer-grid { padding: 32px 14px 28px; } }
