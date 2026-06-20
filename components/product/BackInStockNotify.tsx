@@ -1,13 +1,12 @@
 'use client'
 import { useState } from 'react'
+import { BASE_URL } from '@/lib/api/client'
 
 interface Props {
   variantId: string
   productName: string
   variantLabel: string
 }
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 export default function BackInStockNotify({ variantId, productName, variantLabel }: Props) {
   const [email, setEmail] = useState('')
@@ -20,7 +19,7 @@ export default function BackInStockNotify({ variantId, productName, variantLabel
     setStatus('loading')
     setErrorMsg('')
     try {
-      const res = await fetch(`${API_URL}/stock-notifications/subscribe`, {
+      const res = await fetch(`${BASE_URL}/stock-notifications/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ variant_id: variantId, email: email.trim().toLowerCase() }),

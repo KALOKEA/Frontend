@@ -1,6 +1,4 @@
-import api, { getAccessToken } from './client'
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import api, { getAccessToken, BASE_URL } from './client'
 
 // ---- Dashboard / analytics ------------------------------------------------
 export interface DashboardStats {

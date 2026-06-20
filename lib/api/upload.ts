@@ -1,6 +1,4 @@
-import { getAccessToken } from './client'
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import { getAccessToken, BASE_URL } from './client'
 
 export interface UploadResult {
   url: string

@@ -1,6 +1,4 @@
-import api from './client'
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import api, { BASE_URL } from './client'
 
 // ─── Aggregated homepage data ────────────────────────────────────────────────
 // Stale-while-revalidate singleton backed by ONE aggregated endpoint (/homepage

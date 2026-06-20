@@ -2,8 +2,7 @@
 import { Check } from 'lucide-react'
 import { useState } from 'react'
 import { formatPrice } from '@/lib/utils/formatPrice'
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import { BASE_URL } from '@/lib/api/client'
 
 interface TrackResult {
   order_number:       string

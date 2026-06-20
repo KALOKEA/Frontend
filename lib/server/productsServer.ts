@@ -9,9 +9,7 @@
  * NOTE: responses are wrapped by the backend TransformInterceptor as { data: ... }.
  */
 import type { Product } from '@/lib/api/products'
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import { BASE_URL } from '@/lib/api/client'
 
 async function unwrap<T>(res: Response): Promise<T | null> {
   if (!res.ok) return null

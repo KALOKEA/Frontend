@@ -8,6 +8,7 @@ import {
   FOOTER_SHOP_DEFAULT, FOOTER_HELP_DEFAULT,
   FOOTER_COMPANY_DEFAULT, FOOTER_LEGAL_DEFAULT,
 } from '@/lib/api/siteContent'
+import { BASE_URL } from '@/lib/api/client'
 
 const HIDDEN_PATHS = ['/checkout', '/checkout/']
 
@@ -24,8 +25,6 @@ const SETTINGS_FALLBACK: FooterSettings = {
   footer_pinterest_url: 'https://www.pinterest.com/kalokea',
   seller_gstin:         '',
 }
-
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 interface ColState {
   shopCol:    FooterLink[]
@@ -51,7 +50,7 @@ export default function FooterWrapper() {
 
   useEffect(() => {
     // Fetch social links / GSTIN from settings API
-    fetch(`${API}/settings/public`)
+    fetch(`${BASE_URL}/settings/public`)
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d) setSettings({ ...SETTINGS_FALLBACK, ...(d?.data ?? d) }) })
       .catch(() => {/* keep fallback */})

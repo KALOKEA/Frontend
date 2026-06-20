@@ -3,6 +3,7 @@ import { X } from 'lucide-react'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { useAuthStore } from '@/lib/store/useAuthStore'
+import { BASE_URL } from '@/lib/api/client'
 
 interface ImageUploaderProps {
   images: { url: string; is_primary?: boolean }[]
@@ -24,7 +25,7 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
       const results = await Promise.all(files.map(async (file) => {
         const form = new FormData()
         form.append('file', file)
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/upload/image`, {
+        const res = await fetch(`${BASE_URL}/upload/image`, {
           method: 'POST',
           headers: token ? { Authorization: `Bearer ${token}` } : {},
           body: form,

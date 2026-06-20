@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 // ─── In-memory GET cache + in-flight dedup ──────────────────────────────────
 // memCache: completed GET responses cached 60 s so back-navigation is instant.

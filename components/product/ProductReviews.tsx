@@ -173,6 +173,9 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
   const [submitting, setSubmitting] = useState(false)
   const [submitMsg, setSubmitMsg] = useState<{ text: string; ok: boolean } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  // Keep a current-value ref so the unmount cleanup always sees the latest preview URLs
+  const mediaPreviewsRef = useRef<string[]>([])
+  useEffect(() => { mediaPreviewsRef.current = mediaPreviews }, [mediaPreviews])
 
   function loadReviews() {
     setLoading(true)
@@ -190,8 +193,8 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
     previews.forEach((url) => { if (url !== '__video__') URL.revokeObjectURL(url) })
   }
 
-  // Revoke object URLs on unmount
-  useEffect(() => () => revokeAllPreviews(mediaPreviews), []) // eslint-disable-line
+  // Revoke object URLs on unmount — use ref so cleanup always sees the latest array
+  useEffect(() => () => revokeAllPreviews(mediaPreviewsRef.current), [])
 
   // Add media files (max 5 total)
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {

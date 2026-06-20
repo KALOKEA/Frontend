@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { settingsApi, INDIAN_STATES, type StoreSettings } from '@/lib/api/settings'
 import { twoFactorApi } from '@/lib/api/auth'
 import Spinner from '@/components/ui/Spinner'
-import Image from 'next/image'
 
 const INP = 'w-full border border-[#e8e4e0] px-3 py-2 text-sm outline-none focus:border-[#0a0a0a] transition-colors bg-white'
 

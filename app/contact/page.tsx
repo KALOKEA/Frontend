@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import { BASE_URL } from '@/lib/api/client'
 
 const SUBJECTS = [
   'Order Status',
@@ -32,7 +31,7 @@ export default function ContactPage() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${API_URL}/contact`, {
+      const res = await fetch(`${BASE_URL}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

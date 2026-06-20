@@ -73,7 +73,9 @@ export default function BillingDetails({
         <F label="Last name" req><input value={value.last_name} onChange={(e) => set('last_name', e.target.value)} className="inp" /></F>
       </div>
 
-      <F label="Company name (optional)"><input value={value.company} onChange={(e) => set('company', e.target.value)} className="inp" /></F>
+      {!value.gst_invoice && (
+        <F label="Company name (optional)"><input value={value.company} onChange={(e) => set('company', e.target.value)} className="inp" /></F>
+      )}
 
       <F label="Country / Region" req>
         <input value="India" disabled className="inp bg-[#faf8f5] text-[#6b6b6b]" />

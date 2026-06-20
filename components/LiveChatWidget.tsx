@@ -1,11 +1,10 @@
 'use client'
 import { useEffect } from 'react'
-
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import { BASE_URL } from '@/lib/api/client'
 
 export default function LiveChatWidget() {
   useEffect(() => {
-    fetch(`${API}/settings/public`)
+    fetch(`${BASE_URL}/settings/public`)
       .then(r => r.json())
       .then(settings => {
         // Backend wraps all responses in { success, data, timestamp } — unwrap.

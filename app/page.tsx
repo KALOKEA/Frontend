@@ -12,8 +12,9 @@ import Testimonials from '@/components/home/Testimonials'
 import NewsletterSignup from '@/components/home/NewsletterSignup'
 import type { Metadata } from 'next'
 
+import { BASE_URL } from '@/lib/api/client'
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 // Build-time homepage fetch. Because the site is `output: 'export'`, this runs
 // ONCE during the build and the resulting hero content is baked into the static
@@ -24,7 +25,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-7
 // real data after mount.
 async function getInitialCms(): Promise<Record<string, string> | null> {
   try {
-    const res = await fetch(`${API_URL}/homepage`, { cache: 'force-cache' })
+    const res = await fetch(`${BASE_URL}/homepage`, { cache: 'force-cache' })
     if (!res.ok) return null
     const json = await res.json()
     const raw = json?.data ?? json

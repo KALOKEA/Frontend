@@ -13,8 +13,8 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
+import { BASE_URL } from '@/lib/api/client'
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 const DISMISS_KEY  = 'k_exit_popup_t'
 const DISMISS_DAYS = 7
 

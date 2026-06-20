@@ -1,8 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import DOMPurify from 'dompurify'
-
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import { BASE_URL } from '@/lib/api/client'
 
 interface Props {
   slug: string
@@ -14,7 +13,7 @@ export default function CmsPageContent({ slug, staticContent }: Props) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${API}/cms/${slug}`)
+    fetch(`${BASE_URL}/cms/${slug}`)
       .then(r => r.json())
       .then(data => {
         // Backend wraps all responses in { success, data, timestamp }

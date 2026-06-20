@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { productsApi, type Product } from '@/lib/api/products'
 import ProductGrid from '@/components/shop/ProductGrid'
 import FilterSidebar, { FilterPanel, PRICE_RANGES } from '@/components/shop/FilterSidebar'
+import ShopCategorySidebar from '@/components/shop/ShopCategorySidebar'
 import SortDropdown from '@/components/shop/SortDropdown'
 import Pagination from '@/components/shop/Pagination'
 import ShopSEOContent from '@/components/seo/ShopSEOContent'
@@ -177,8 +178,11 @@ function ShopContent() {
       {/* Active filter chips */}
       <Suspense fallback={null}><ActiveFilters /></Suspense>
 
-      <div className="flex gap-8">
-        {/* Desktop sidebar */}
+      <div className="flex gap-6 xl:gap-8">
+        {/* Desktop: categories sidebar (Myntra-style) */}
+        <ShopCategorySidebar activeSlug={category ?? undefined} />
+
+        {/* Desktop: filter sidebar */}
         <aside className="hidden lg:block">
           <Suspense fallback={null}><FilterSidebar /></Suspense>
         </aside>

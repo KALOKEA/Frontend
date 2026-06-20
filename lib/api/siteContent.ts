@@ -1,6 +1,4 @@
-import api from './client'
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
+import api, { BASE_URL } from './client'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -97,7 +95,7 @@ export const FOOTER_COMPANY_DEFAULT: FooterLink[] = [
   { label: 'Terms of Use',   href: '/terms/' },
   { label: 'Careers',        href: '/about/' },
   { label: 'Sustainability',  href: '/about/' },
-  { label: 'Press',          href: '/about/' },
+  { label: 'Press',          href: '/press/' },
 ]
 
 export const FOOTER_LEGAL_DEFAULT: FooterLink[] = [

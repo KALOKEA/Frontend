@@ -111,25 +111,14 @@ function getDeliveryEta(): string {
   const istNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
   const cutoff = istNow.getHours() < 18 // dispatch same day if before 6 PM IST
 
-  // Add N business days skipping Sundays
-  function addBizDays(base: Date, days: number): Date {
-    const d = new Date(base)
-    let added = 0
-    while (added < days) {
-      d.setDate(d.getDate() + 1)
-      if (d.getDay() !== 0) added++ // 0 = Sunday
-    }
-    return d
-  }
-
   const fmt = (d: Date) =>
     d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })
 
   // Metro cities: 2–3 business days from dispatch; non-metro: 4–6
   // We show the metro range (most customers) as the default.
-  const dispatchStart = cutoff ? istNow : addBizDays(istNow, 1)
-  const earliest = addBizDays(dispatchStart, 2)
-  const latest   = addBizDays(dispatchStart, 5)
+  const dispatchStart = cutoff ? istNow : addBizDaysFrom(istNow, 1)
+  const earliest = addBizDaysFrom(dispatchStart, 2)
+  const latest   = addBizDaysFrom(dispatchStart, 5)
 
   return `${fmt(earliest)} – ${fmt(latest)}`
 }

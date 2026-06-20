@@ -115,11 +115,9 @@ export default function Header() {
         {/* ── Nav bar — transparent on home/top, white on scroll / inner pages ── */}
         <div
           className={`transition-all duration-300 ${
-            scrolled
-              ? 'bg-white shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
-              : isTransparent
-                ? 'bg-transparent'
-                : 'bg-white shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
+            isTransparent
+              ? 'bg-transparent'
+              : 'bg-white shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
           }`}
         >
           {/* ── Desktop: left-logo layout matching design reference ────────── */}
@@ -129,14 +127,23 @@ export default function Header() {
             style={{ maxWidth: 1380, padding: '0 clamp(20px, 4vw, 52px)', height: 68 }}
           >
             {/* Logo — left-aligned */}
-            <Link
-              href="/"
-              className={`font-serif font-semibold tracking-[0.12em] uppercase leading-none select-none shrink-0 transition-colors duration-300 ${
-                isTransparent ? 'text-white' : 'text-[#0A0806]'
-              }`}
-              style={{ fontSize: '1.7rem' }}
-            >
-              KALOKEA
+            <Link href="/" aria-label="Kalokea Home" className="shrink-0 select-none">
+              {/* White background pill wrapper on transparent (dark) nav so the */}
+              {/* black-on-white JPEG logo stays readable against hero imagery.  */}
+              <span
+                className={`flex items-center transition-all duration-300 ${
+                  isTransparent
+                    ? 'bg-white/90 rounded px-2 py-1 shadow-sm'
+                    : ''
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/kalokea-logo.jpeg"
+                  alt="Kalokea"
+                  style={{ height: 38, width: 'auto', display: 'block' }}
+                />
+              </span>
             </Link>
 
             {/* Nav links — center */}
@@ -209,14 +216,21 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link
-              href="/"
-              className={`font-serif font-semibold tracking-[0.12em] uppercase leading-none transition-colors duration-300 ${
-                isTransparent ? 'text-white' : 'text-[#0A0806]'
-              }`}
-              style={{ fontSize: '1.2rem' }}
-            >
-              KALOKEA
+            <Link href="/" aria-label="Kalokea Home">
+              <span
+                className={`flex items-center transition-all duration-300 ${
+                  isTransparent
+                    ? 'bg-white/90 rounded px-1.5 py-0.5 shadow-sm'
+                    : ''
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/kalokea-logo.jpeg"
+                  alt="Kalokea"
+                  style={{ height: 30, width: 'auto', display: 'block' }}
+                />
+              </span>
             </Link>
 
             {/* Cart */}

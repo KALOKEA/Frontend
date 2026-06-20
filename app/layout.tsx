@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import './globals.css'
+import { BASE_URL } from '@/lib/api/client'
 import Header from '@/components/layout/Header'
 import FooterWrapper from '@/components/layout/FooterWrapper'
 import CartDrawer from '@/components/layout/CartDrawer'
@@ -574,7 +575,7 @@ export const metadata: Metadata = {
     'online fashion store kolkata women', 'fashion delivery ahmedabad',
     'online shopping pune women', 'buy kurta online surat',
   ].join(', '),
-  metadataBase: new URL('https://kalokea.in'),
+  metadataBase: new URL(SITE_URL),
   // Google Search Console site verification (set NEXT_PUBLIC_GSC_VERIFICATION in .env)
   ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION
     ? { verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } }
@@ -584,10 +585,10 @@ export const metadata: Metadata = {
     siteName: 'KALOKEA',
     title: "KALOKEA | Women's Fashion",
     description: "Shop the latest women's fashion at Kalokea. Free shipping above Rs.999.",
-    url: 'https://kalokea.in',
+    url: SITE_URL,
     images: [
       {
-        url: 'https://kalokea.in/og-image.jpg',
+        url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: "KALOKEA -- Women's Fashion",
@@ -600,7 +601,7 @@ export const metadata: Metadata = {
     creator: '@kalokea',
     title: "KALOKEA | Women's Fashion",
     description: "Shop the latest women's fashion at Kalokea. Free shipping above Rs.999.",
-    images: ['https://kalokea.in/og-image.jpg'],
+    images: [`${SITE_URL}/og-image.jpg`],
   },
   // Pinterest domain verification (set NEXT_PUBLIC_PINTEREST_VERIFY in .env)
   ...(process.env.NEXT_PUBLIC_PINTEREST_VERIFY
@@ -628,8 +629,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="KALOKEA" />
         {/* API + images */}
-        <link rel="preconnect" href="https://backend-production-73aa.up.railway.app" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://backend-production-73aa.up.railway.app" />
+        <link rel="preconnect" href={BASE_URL} crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href={BASE_URL} />
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         {/* Razorpay -- preconnect so the payment modal opens instantly */}

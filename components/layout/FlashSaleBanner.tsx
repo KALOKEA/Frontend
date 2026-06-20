@@ -54,6 +54,9 @@ export default function FlashSaleBanner() {
     sessionStorage.setItem('flash-dismissed', '1')
   }
 
+  // Clear copy timer on unmount to avoid state update after unmount
+  useEffect(() => () => { if (copyTimer.current) clearTimeout(copyTimer.current) }, [])
+
   async function copyCoupon(code: string) {
     try {
       await navigator.clipboard.writeText(code)

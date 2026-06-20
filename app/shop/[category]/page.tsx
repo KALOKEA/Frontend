@@ -5,8 +5,9 @@ interface Props {
   params: { category: string }
 }
 
+import { BASE_URL } from '@/lib/api/client'
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 // ── SEO metadata per category ─────────────────────────────────────────────────
 
@@ -163,7 +164,7 @@ export async function generateStaticParams() {
   // absent from the DB at build time the pages 404 and Next.js emits RSC errors.
   const fallback = Object.keys(CATEGORY_META)
   try {
-    const res = await fetch(`${BACKEND_URL}/categories`, { next: { revalidate: 3600 } })
+    const res = await fetch(`${BASE_URL}/categories`, { next: { revalidate: 3600 } })
     if (!res.ok) return fallback.map(category => ({ category }))
     const json = await res.json()
     const dbSlugs: string[] = (json?.data || []).map((c: { slug: string }) => c.slug)

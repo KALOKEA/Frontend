@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getHomepageData, HERO_DEFAULTS } from '@/lib/api/homepageContent'
+import { BASE_URL } from '@/lib/api/client'
 
 const INSTAGRAM_HANDLE = 'kalokea.fashion'
 const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}`
@@ -48,8 +49,7 @@ export default function InstagramGrid() {
   }, [])
 
   useEffect(() => {
-    const BASE = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
-    fetch(`${BASE}/instagram-feed`)
+    fetch(`${BASE_URL}/instagram-feed`)
       .then((r) => (r.ok && r.status !== 204) ? r.json() : null)
       .then((json) => {
         if (json?.data?.length) {
