@@ -71,60 +71,39 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
   return (
     <section
       aria-label="Hero"
-      className="flex flex-col md:grid -mt-[94px] lg:-mt-[108px]"
-      style={{ gridTemplateColumns: '1fr 1fr', minHeight: '100vh' }}
+      className="relative overflow-hidden -mt-[94px] lg:-mt-[108px]"
+      style={{ minHeight: '100vh' }}
     >
-      {/* ── Mobile image (above text on small screens) ── */}
+      {/* ── Full-bleed background video / image ── */}
+      <BackgroundMedia
+        image={current.image}
+        video={current.video}
+        isVideo={isVideo}
+        alt="Kalokea — Women's Fashion Collection"
+        priority
+        mediaClassName="transition-opacity duration-700"
+      />
+
+      {/* ── Gradient overlay — dark on bottom-left (text), light on top-right (video) ── */}
       <div
-        className="md:hidden relative overflow-hidden shrink-0"
-        style={{ height: '56vw', minHeight: 220, maxHeight: 400 }}
-      >
-        <BackgroundMedia
-          image={current.image}
-          video={current.video}
-          isVideo={isVideo}
-          alt="Kalokea — Women's Fashion Collection"
-          priority
-        />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }}
-        />
-        {/* Mobile slide dots */}
-        {slides.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-0.5" role="tablist" aria-label="Slides">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goTo(i)}
-                className="p-2 flex items-center justify-center"
-                aria-label={`Go to slide ${i + 1}`}
-                aria-current={i === slideIdx ? true : undefined}
-              >
-                <span className={`block w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === slideIdx ? 'bg-white scale-125' : 'bg-white/40'}`} />
-              </button>
-            ))}
-          </div>
-        )}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: [
+            'linear-gradient(135deg, rgba(10,6,2,.88) 0%, rgba(10,6,2,.42) 50%, rgba(10,6,2,.08) 100%)',
+            'linear-gradient(to top, rgba(10,6,2,.68) 0%, transparent 48%)',
+          ].join(', '),
+        }}
+      />
+
+      {/* ── Ambient depth orbs — subtle warm accent ── */}
+      <div className="k-hero-orbs" aria-hidden="true">
+        <span className="k-hero-orb k-hero-orb--1" />
+        <span className="k-hero-orb k-hero-orb--2" />
+        <span className="k-hero-orb k-hero-orb--3" />
       </div>
 
-      {/* ── Left: dark text panel ── */}
-      {/* flex-1 on mobile fills all remaining space after the image so the dark
-          background reaches the bottom of the viewport. justify-center (mobile)
-          keeps the text vertically centered in that space, not pinned to the
-          bottom (which left a huge empty gap at the top). Desktop reverts to
-          justify-end so content sits low as designed in the 2-column grid. */}
-      <div
-        className="flex-1 md:flex-none flex flex-col justify-center md:justify-end relative k-hero-left"
-        style={{ background: '#1E1208' }}
-      >
-        {/* Ambient depth orbs */}
-        <div className="k-hero-orbs" aria-hidden="true">
-          <span className="k-hero-orb k-hero-orb--1" />
-          <span className="k-hero-orb k-hero-orb--2" />
-          <span className="k-hero-orb k-hero-orb--3" />
-        </div>
-
+      {/* ── Text content — anchored bottom-left, full width on mobile ── */}
+      <div className="k-hero-content">
         {/* Eyebrow */}
         <div
           className={mounted ? 'animate-fade-up anim-delay-100' : 'opacity-0'}
@@ -142,7 +121,7 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
         <h1
           className={`font-serif ${mounted ? 'animate-fade-up anim-delay-200' : 'opacity-0'}`}
           style={{
-            fontSize: 'clamp(2.8rem, 5vw, 5.2rem)', fontWeight: 300,
+            fontSize: 'clamp(2.4rem, 5vw, 5.2rem)', fontWeight: 300,
             lineHeight: 1.08, color: '#FFFFFF', marginBottom: 24,
           }}
         >
@@ -154,8 +133,8 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
         <p
           className={mounted ? 'animate-fade-up anim-delay-300' : 'opacity-0'}
           style={{
-            fontSize: '.88rem', color: 'rgba(255,255,255,.55)',
-            lineHeight: 1.7, maxWidth: 360, marginBottom: 40,
+            fontSize: '.88rem', color: 'rgba(255,255,255,.72)',
+            lineHeight: 1.7, maxWidth: 400, marginBottom: 40,
           }}
         >
           {c.hero_subtext}
@@ -193,59 +172,44 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
         </div>
       </div>
 
-      {/* ── Right: image / carousel panel — desktop only ── */}
-      <div className="hidden md:block relative overflow-hidden" style={{ minHeight: '100vh' }}>
-        <BackgroundMedia
-          image={current.image}
-          video={current.video}
-          isVideo={isVideo}
-          alt="Kalokea — Women's Fashion Collection"
-          priority
-          mediaClassName="transition-opacity duration-700"
-        />
-
-        {/* Vignette */}
+      {/* ── Slide dots — centered at bottom ── */}
+      {slides.length > 1 && (
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(135deg, rgba(30,18,8,.15) 0%, transparent 60%)' }}
-        />
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-0.5 z-10"
+          role="tablist"
+          aria-label="Slides"
+        >
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className="p-2 flex items-center justify-center"
+              aria-label={`Go to slide ${i + 1}`}
+              aria-current={i === slideIdx ? true : undefined}
+            >
+              <span className={`block w-2 h-2 rounded-full transition-all duration-300 ${
+                i === slideIdx ? 'bg-white scale-110' : 'bg-white/40 hover:bg-white/70'
+              }`} />
+            </button>
+          ))}
+        </div>
+      )}
 
-        {/* Slide dots — shown only when multiple slides */}
-        {slides.length > 1 && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-0.5 z-10" role="tablist" aria-label="Slides">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goTo(i)}
-                className="p-2 flex items-center justify-center"
-                aria-label={`Go to slide ${i + 1}`}
-                aria-current={i === slideIdx ? true : undefined}
-              >
-                <span className={`block w-2 h-2 rounded-full transition-all duration-300 ${
-                  i === slideIdx ? 'bg-white scale-110' : 'bg-white/40 hover:bg-white/70'
-                }`} />
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Scroll indicator — only when single slide */}
-        {slides.length <= 1 && (
-          <div
-            aria-hidden="true"
-            className="absolute"
-            style={{
-              bottom: 32, left: '50%', transform: 'translateX(-50%)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
-              color: 'rgba(255,255,255,.4)', fontSize: '.68rem',
-              letterSpacing: '.15em', textTransform: 'uppercase',
-            }}
-          >
-            Scroll
-            <span style={{ display: 'block', width: 1, height: 40, background: 'rgba(255,255,255,.3)' }} />
-          </div>
-        )}
-      </div>
+      {/* ── Scroll indicator — desktop only, single slide ── */}
+      {slides.length <= 1 && (
+        <div
+          aria-hidden="true"
+          className="absolute hidden md:flex flex-col items-center"
+          style={{
+            bottom: 32, right: 40, gap: 8,
+            color: 'rgba(255,255,255,.4)', fontSize: '.68rem',
+            letterSpacing: '.15em', textTransform: 'uppercase',
+          }}
+        >
+          Scroll
+          <span style={{ display: 'block', width: 1, height: 40, background: 'rgba(255,255,255,.3)' }} />
+        </div>
+      )}
     </section>
   )
 }
