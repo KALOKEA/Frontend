@@ -134,7 +134,7 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  height: 38,
+                  height: 52,
                   width: 'auto',
                   display: 'block',
                   transition: 'filter 0.3s',
@@ -219,7 +219,7 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  height: 30,
+                  height: 40,
                   width: 'auto',
                   display: 'block',
                   transition: 'filter 0.3s',

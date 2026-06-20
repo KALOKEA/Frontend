@@ -99,12 +99,13 @@ export default function Footer({
       <div className="k-footer-grid">
         {/* Brand col */}
         <div>
-          <Link
-            href="/"
-            className="font-serif"
-            style={{ fontSize: '1.6rem', fontWeight: 600, color: '#FFFFFF', letterSpacing: '.12em', marginBottom: 16, display: 'inline-block', textDecoration: 'none' }}
-          >
-            KALOKEA
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <Link href="/" aria-label="Kalokea Home" style={{ display: 'inline-block', marginBottom: 16, textDecoration: 'none' }}>
+            <img
+              src="/kalokea-logo.png"
+              alt="Kalokea"
+              style={{ height: 48, width: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
+            />
           </Link>
           <p style={{ fontSize: '.82rem', lineHeight: 1.7, maxWidth: 260, color: 'rgba(255,255,255,.6)' }}>
             Premium women&apos;s fashion rooted in Indian craftsmanship and global sensibility. Dressed for every chapter of your story.
