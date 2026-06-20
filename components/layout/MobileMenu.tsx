@@ -96,7 +96,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#E0D4C4] shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/kalokea-logo.png" alt="Kalokea" style={{ height: 36, width: 'auto', display: 'block' }} />
+          <img src="/kalokea-logo.png" alt="Kalokea" style={{ height: 50, width: 'auto', display: 'block' }} />
           <button
             ref={closeRef}
             onClick={onClose}
