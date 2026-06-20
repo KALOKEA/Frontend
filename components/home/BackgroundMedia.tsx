@@ -42,11 +42,11 @@ export default function BackgroundMedia({
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: '#0a0a0a' }}>
       {ytId ? (
-        // YouTube background — sized by HEIGHT so video always fills top-to-bottom.
-        // height:100% = fills the container exactly top to bottom.
-        // width:177.78vh = 16:9 ratio of the viewport height → naturally wider
-        // than screen on standard monitors; overflow-hidden clips the sides.
-        // No filters — video plays as-is.
+        // YouTube background — height locked by inset-y-0 (top:0 + bottom:0).
+        // Direct constraint = no percentage-height resolution issues.
+        // width:177.78vh = 16:9 of viewport height, centred horizontally.
+        // minWidth:100% ensures it covers on ultrawide screens.
+        // No filters — video plays as-is, natural colours.
         <div className="absolute inset-0 overflow-hidden">
           <iframe
             src={youTubeBackgroundEmbed(ytId)}
@@ -54,11 +54,10 @@ export default function BackgroundMedia({
             aria-hidden="true"
             tabIndex={-1}
             allow="autoplay; encrypted-media; picture-in-picture"
-            className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none border-0"
+            className="absolute inset-y-0 left-1/2 -translate-x-1/2 pointer-events-none border-0"
             style={{
-              height: '100%',        /* fills container top to bottom exactly */
-              width: '177.78vh',     /* 16:9 × viewport height — natural ratio */
-              minWidth: '56.25vw',   /* fallback: at least covers landscape width */
+              width: '177.78vh',   /* 16:9 × viewport height */
+              minWidth: '100%',    /* cover full width if screen wider than 16:9 */
             }}
           />
         </div>
