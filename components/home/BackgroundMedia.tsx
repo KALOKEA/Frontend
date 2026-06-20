@@ -32,7 +32,7 @@ export default function BackgroundMedia({
   video = '',
   isVideo,
   alt = "Kalokea — Women's Fashion",
-  objectPosition = 'center top',
+  objectPosition = 'center center',
   priority = false,
   mediaClassName = '',
   fallbackSrc,

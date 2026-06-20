@@ -117,8 +117,13 @@ export default function Header() {
           className={`transition-all duration-300 ${
             isTransparent
               ? 'bg-transparent'
-              : 'bg-white shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
+              : 'shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
           }`}
+          style={isTransparent ? {} : {
+            background: 'rgba(255,255,255,0.88)',
+            backdropFilter: 'blur(14px)',
+            WebkitBackdropFilter: 'blur(14px)',
+          }}
         >
           {/* ── Desktop: left-logo layout matching design reference ────────── */}
           {/* Shown at lg (1024px+) to avoid cramped layout on tablets */}
