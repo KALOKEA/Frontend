@@ -105,14 +105,7 @@ export default function Footer({
             <img
               src="/kalokea-logo.png"
               alt="Kalokea"
-              style={{
-                width: 300,
-                height: 76,
-                objectFit: 'contain',
-                objectPosition: 'left center',
-                display: 'block',
-                filter: 'brightness(0) invert(1)',
-              }}
+              className="k-footer-logo"
             />
           </Link>
 

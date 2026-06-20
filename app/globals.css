@@ -581,15 +581,31 @@ select.inp {
     grid-column: 1 / -1;
   }
 }
-/* Mobile: single column stack */
+/* Mobile: brand full-width, Help + Company side by side */
 @media (max-width: 640px) {
   .k-footer-grid {
-    grid-template-columns: 1fr;
-    gap: 36px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 20px;
     padding: 40px 20px 32px;
   }
   .k-footer-grid > .k-footer-brand {
-    grid-column: auto;
+    grid-column: 1 / -1;
+  }
+}
+/* Logo — responsive: large on desktop, fills brand col on mobile */
+.k-footer-logo {
+  width: 300px;
+  height: 76px;
+  object-fit: contain;
+  object-position: left center;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+@media (max-width: 640px) {
+  .k-footer-logo {
+    width: 100%;
+    max-width: 220px;
+    height: 56px;
   }
 }
 @media (max-width: 360px)  { .k-footer-grid { padding: 32px 14px 28px; } }
