@@ -41,9 +41,11 @@ export default function Header() {
       .catch(() => {})
   }, [])
 
-  // Transparent nav: only on home page when not scrolled (matches design reference)
+  // Nav is always transparent (no white background ever).
+  // Text/icon colour switches: white only on homepage hero (dark behind), dark everywhere else.
   const isHome = pathname === '/'
-  const isTransparent = isHome && !scrolled
+  const isTransparent = true
+  const heroMode = isHome && !scrolled
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 60)
@@ -89,13 +91,13 @@ export default function Header() {
     router.push(`/shop/?search=${encodeURIComponent(q)}`)
   }
 
-  // Nav link colour — matches .nav-links a / .nav-links a.light in design CSS
-  const linkCls = isTransparent
+  // Nav link colour — white on dark hero, dark on light pages / after scroll
+  const linkCls = heroMode
     ? 'text-white/85 hover:text-white'
     : 'text-[#160F09] hover:text-[#7C4A2D]'
 
-  // Icon button colour — matches .nav-btn svg / .nav-btn.light svg
-  const iconCls = isTransparent
+  // Icon button colour
+  const iconCls = heroMode
     ? 'text-white hover:bg-white/10'
     : 'text-[#0A0806] hover:bg-[#F0EAE1]'
 
@@ -114,16 +116,7 @@ export default function Header() {
 
         {/* ── Nav bar — transparent on home/top, white on scroll / inner pages ── */}
         <div
-          className={`transition-all duration-300 ${
-            isTransparent
-              ? 'bg-transparent'
-              : 'shadow-[0_2px_20px_rgba(10,8,6,0.08)]'
-          }`}
-          style={isTransparent ? {} : {
-            background: 'rgba(255,255,255,0.88)',
-            backdropFilter: 'blur(14px)',
-            WebkitBackdropFilter: 'blur(14px)',
-          }}
+          className="bg-transparent transition-all duration-300"
         >
           {/* ── Desktop: left-logo layout matching design reference ────────── */}
           {/* Shown at lg (1024px+) to avoid cramped layout on tablets */}
@@ -143,7 +136,7 @@ export default function Header() {
                   height: 'auto',
                   display: 'block',
                   transition: 'filter 0.3s',
-                  filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
+                  filter: heroMode ? 'brightness(0) invert(1)' : 'none',
                 }}
               />
             </Link>
@@ -228,7 +221,7 @@ export default function Header() {
                   height: 'auto',
                   display: 'block',
                   transition: 'filter 0.3s',
-                  filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
+                  filter: heroMode ? 'brightness(0) invert(1)' : 'none',
                 }}
               />
             </Link>

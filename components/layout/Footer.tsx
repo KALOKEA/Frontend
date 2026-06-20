@@ -62,8 +62,8 @@ export default function Footer({
   }
 
   const colLinkStyle: React.CSSProperties = {
-    fontSize: '1rem',
-    lineHeight: 1.8,
+    fontSize: '.84rem',
+    lineHeight: 1.7,
     color: 'rgba(255,255,255,.6)',
     transition: 'color .2s',
     textDecoration: 'none',
@@ -72,7 +72,7 @@ export default function Footer({
   function renderCol(heading: string, links: FooterLink[]) {
     return (
       <div>
-        <h4 style={{ fontSize: '1.125rem', fontWeight: 600, letterSpacing: '.10em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 20 }}>
+        <h4 style={{ fontSize: '.72rem', fontWeight: 600, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 20 }}>
           {heading}
         </h4>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 10, listStyle: 'none', padding: 0, margin: 0 }}>
@@ -101,17 +101,17 @@ export default function Footer({
         {/* Brand col */}
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <Link href="/" aria-label="Kalokea Home" style={{ display: 'inline-block', marginBottom: 16, textDecoration: 'none' }}>
+          <Link href="/" aria-label="Kalokea Home" style={{ display: 'inline-block', marginBottom: 24, textDecoration: 'none' }}>
             <img
               src="/kalokea-logo.png"
               alt="Kalokea"
-              style={{ width: 180, height: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
+              style={{ width: 280, height: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
             />
           </Link>
-          <p style={{ fontSize: '1rem', lineHeight: 1.8, maxWidth: 280, color: 'rgba(255,255,255,.6)' }}>
+          <p style={{ fontSize: '.84rem', lineHeight: 1.7, maxWidth: 260, color: 'rgba(255,255,255,.6)' }}>
             Premium women&apos;s fashion rooted in Indian craftsmanship and global sensibility. Dressed for every chapter of your story.
           </p>
-          <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+          <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
             <a
               href={instagramUrl} target="_blank" rel="noopener noreferrer"
               aria-label="Instagram"
