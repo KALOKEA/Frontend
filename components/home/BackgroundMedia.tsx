@@ -40,29 +40,25 @@ export default function BackgroundMedia({
   const ytId = isVideo ? youTubeId(video) : null
 
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: '#3D2010' }}>
+    <div className="absolute inset-0 overflow-hidden" style={{ background: '#0a0a0a' }}>
       {ytId ? (
-        // YouTube background — muted autoplay loop. Cover technique: width=100vw
-        // at 16:9 gives height=56.25vw. minHeight/minWidth ensures full coverage
-        // on tall/ultrawide screens. brightness() boosts video content, but cannot
-        // help PURE BLACK pixels (0,0,0 × any multiplier = 0). The warm ambient
-        // overlay in HeroBanner.tsx uses mix-blend-mode:lighten to fill those.
-        <div
-          className="absolute inset-0 overflow-hidden"
-          style={{ filter: 'brightness(3.5) contrast(0.65) saturate(1.25)' }}
-        >
+        // YouTube background — sized by HEIGHT so video always fills top-to-bottom.
+        // height:100% = fills the container exactly top to bottom.
+        // width:177.78vh = 16:9 ratio of the viewport height → naturally wider
+        // than screen on standard monitors; overflow-hidden clips the sides.
+        // No filters — video plays as-is.
+        <div className="absolute inset-0 overflow-hidden">
           <iframe
             src={youTubeBackgroundEmbed(ytId)}
             title="Background video"
             aria-hidden="true"
             tabIndex={-1}
             allow="autoplay; encrypted-media; picture-in-picture"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none border-0"
+            className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none border-0"
             style={{
-              width: '100vw',
-              height: '56.25vw',   /* 16:9 ratio of viewport width */
-              minHeight: '100%',   /* ensures full height coverage */
-              minWidth: '177.78%', /* 16:9 ratio of parent height  */
+              height: '100%',        /* fills container top to bottom exactly */
+              width: '177.78vh',     /* 16:9 × viewport height — natural ratio */
+              minWidth: '56.25vw',   /* fallback: at least covers landscape width */
             }}
           />
         </div>
