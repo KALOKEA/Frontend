@@ -124,7 +124,7 @@ export default function Header() {
           {/* Shown at lg (1024px+) to avoid cramped layout on tablets */}
           <div
             className="hidden lg:flex items-center justify-between gap-6 mx-auto"
-            style={{ maxWidth: 1380, padding: '0 clamp(20px, 4vw, 52px)', height: 84 }}
+            style={{ maxWidth: 1440, padding: '0 clamp(20px, 4vw, 52px)', height: 84 }}
           >
             {/* Logo — left-aligned */}
             {/* Fixed container forces the logo to fill the box (handles PNG with transparent padding) */}
@@ -134,8 +134,8 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  height: 74,
-                  width: 'auto',
+                  width: 200,
+                  height: 'auto',
                   display: 'block',
                   transition: 'filter 0.3s',
                   filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
@@ -149,7 +149,7 @@ export default function Header() {
                 <Link
                   key={n.href}
                   href={n.href}
-                  className={`text-[0.82rem] font-medium tracking-[0.08em] uppercase transition-colors duration-200 ${linkCls}`}
+                  className={`text-[0.9rem] font-medium tracking-[0.07em] uppercase transition-colors duration-200 ${linkCls}`}
                 >
                   {n.label}
                 </Link>
@@ -219,8 +219,8 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  height: 58,
-                  width: 'auto',
+                  width: 150,
+                  height: 'auto',
                   display: 'block',
                   transition: 'filter 0.3s',
                   filter: isTransparent ? 'brightness(0) invert(1)' : 'none',

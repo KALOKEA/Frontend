@@ -62,7 +62,8 @@ export default function Footer({
   }
 
   const colLinkStyle: React.CSSProperties = {
-    fontSize: '.84rem',
+    fontSize: '1rem',
+    lineHeight: 1.8,
     color: 'rgba(255,255,255,.6)',
     transition: 'color .2s',
     textDecoration: 'none',
@@ -71,7 +72,7 @@ export default function Footer({
   function renderCol(heading: string, links: FooterLink[]) {
     return (
       <div>
-        <h4 style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: 20 }}>
+        <h4 style={{ fontSize: '1.125rem', fontWeight: 600, letterSpacing: '.10em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 20 }}>
           {heading}
         </h4>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 10, listStyle: 'none', padding: 0, margin: 0 }}>
@@ -104,10 +105,10 @@ export default function Footer({
             <img
               src="/kalokea-logo.png"
               alt="Kalokea"
-              style={{ height: 80, width: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
+              style={{ width: 180, height: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
             />
           </Link>
-          <p style={{ fontSize: '.82rem', lineHeight: 1.7, maxWidth: 260, color: 'rgba(255,255,255,.6)' }}>
+          <p style={{ fontSize: '1rem', lineHeight: 1.8, maxWidth: 280, color: 'rgba(255,255,255,.6)' }}>
             Premium women&apos;s fashion rooted in Indian craftsmanship and global sensibility. Dressed for every chapter of your story.
           </p>
           <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
@@ -156,7 +157,7 @@ export default function Footer({
 
       {/* GSTIN row */}
       {gstin && (
-        <div style={{ maxWidth: 1380, margin: '0 auto', paddingLeft: 'clamp(20px, 4vw, 52px)', paddingRight: 'clamp(20px, 4vw, 52px)', paddingTop: 16, paddingBottom: 8, borderTop: '1px solid rgba(255,255,255,.07)' }}>
+        <div style={{ maxWidth: 1440, margin: '0 auto', paddingLeft: 'clamp(20px, 4vw, 52px)', paddingRight: 'clamp(20px, 4vw, 52px)', paddingTop: 16, paddingBottom: 8, borderTop: '1px solid rgba(255,255,255,.07)' }}>
           <p style={{ fontSize: '.78rem', color: 'rgba(255,255,255,.4)' }}>
             Kalokea Fashion Pvt. Ltd. &nbsp;|&nbsp; GSTIN: {gstin} &nbsp;|&nbsp; Registered in Gujarat, India
           </p>

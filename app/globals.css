@@ -25,7 +25,7 @@
   --muted:      #7A6E68;
   --serif:      'Cormorant Garamond';
   --sans:       'DM Sans';
-  --max:        1380px;
+  --max:        1440px;
   --gutter:     52px;
   --nav-h:      68px;
 
@@ -483,7 +483,7 @@ select.inp {
 
 /* Section container — replaces inline padding:0 52px */
 .k-container {
-  max-width: 1380px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 52px;
 }
@@ -562,9 +562,9 @@ select.inp {
 
 /* Footer top grid: 1.6fr 1fr 1fr 1fr → 2col → 1col */
 .k-footer-grid {
-  max-width: 1380px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 64px 52px 48px;
+  padding: 56px 52px 40px;
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr;
   gap: 48px;
@@ -583,7 +583,7 @@ select.inp {
 .k-footer-bottom {
   border-top: 1px solid rgba(255,255,255,.07);
   padding: 20px 52px;
-  max-width: 1380px;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -619,7 +619,7 @@ select.inp {
   justify-content: space-between;
   gap: 32px;
   flex-wrap: wrap;
-  max-width: 1380px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 @media (max-width: 768px) {
@@ -660,7 +660,7 @@ select.inp {
 .k-hero-content {
   position: absolute;
   bottom: clamp(48px, 8vh, 80px);
-  left: max(52px, calc((100vw - 1380px) / 2 + 52px));
+  left: max(52px, calc((100vw - 1440px) / 2 + 52px));
   right: 45%;  /* slightly more breathing room on desktop */
   z-index: 1;
   max-width: 560px;
