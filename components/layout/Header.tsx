@@ -124,7 +124,7 @@ export default function Header() {
           {/* Shown at lg (1024px+) to avoid cramped layout on tablets */}
           <div
             className="hidden lg:flex items-center justify-between gap-6 mx-auto"
-            style={{ maxWidth: 1380, padding: '0 clamp(20px, 4vw, 52px)', height: 68 }}
+            style={{ maxWidth: 1380, padding: '0 clamp(20px, 4vw, 52px)', height: 84 }}
           >
             {/* Logo — left-aligned */}
             {/* Fixed container forces the logo to fill the box (handles PNG with transparent padding) */}
@@ -134,9 +134,8 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  height: 56,
+                  height: 74,
                   width: 'auto',
-                  maxWidth: 220,
                   display: 'block',
                   transition: 'filter 0.3s',
                   filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
@@ -197,7 +196,7 @@ export default function Header() {
           </div>
 
           {/* ── Mobile/Tablet: hamburger-left, logo-center, cart-right (< lg) ── */}
-          <div className="lg:hidden flex items-center justify-between px-4 h-[58px]">
+          <div className="lg:hidden flex items-center justify-between px-4 h-[70px]">
             {/* Hamburger */}
             <button
               className={`w-10 h-10 flex items-center justify-center -ml-1 transition-colors rounded-full ${iconCls}`}
@@ -220,9 +219,8 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  height: 44,
+                  height: 58,
                   width: 'auto',
-                  maxWidth: 180,
                   display: 'block',
                   transition: 'filter 0.3s',
                   filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
