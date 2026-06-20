@@ -127,15 +127,17 @@ export default function Header() {
             style={{ maxWidth: 1380, padding: '0 clamp(20px, 4vw, 52px)', height: 68 }}
           >
             {/* Logo — left-aligned */}
-            {/* Transparent PNG: brightness(0) invert(1) turns black logo white on dark nav */}
+            {/* Fixed container forces the logo to fill the box (handles PNG with transparent padding) */}
             <Link href="/" aria-label="Kalokea Home" className="shrink-0 select-none">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  height: 64,
-                  width: 'auto',
+                  width: 190,
+                  height: 52,
+                  objectFit: 'contain',
+                  objectPosition: 'left center',
                   display: 'block',
                   transition: 'filter 0.3s',
                   filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
@@ -219,8 +221,10 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  height: 48,
-                  width: 'auto',
+                  width: 150,
+                  height: 42,
+                  objectFit: 'contain',
+                  objectPosition: 'left center',
                   display: 'block',
                   transition: 'filter 0.3s',
                   filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
