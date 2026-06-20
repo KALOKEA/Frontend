@@ -515,7 +515,14 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
             {/* Social proof counter — deterministic per product + week so it feels real */}
             <SocialProofCounter productId={product.id} />
 
-            <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
+              {(selectedVariant?.sku || activeVariants[0]?.sku) && (
+                <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide shrink-0">
+                  SKU: <span className="text-[#0a0a0a] font-medium">{selectedVariant?.sku || activeVariants[0]?.sku}</span>
+                </p>
+              )}
+            </div>
 
             {/* Delivery estimate + pincode checker */}
             <PincodeChecker defaultEta={getDeliveryEta()} />
