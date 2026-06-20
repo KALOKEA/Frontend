@@ -53,7 +53,7 @@ export default function BackgroundMedia({
         // brightness(1.7) compensates for dark/moody video footage.
         <div
           className="absolute inset-0 overflow-hidden"
-          style={{ filter: 'brightness(1.7) contrast(0.85) saturate(1.1)' }}
+          style={{ filter: 'brightness(2.5) contrast(0.78) saturate(1.2)' }}
         >
           <iframe
             src={youTubeBackgroundEmbed(ytId)}

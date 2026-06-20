@@ -109,6 +109,28 @@ const websiteJsonLd = {
   inLanguage: 'en-IN',
 }
 
+// GEO: Speakable schema — tells Google AI Overview and AI assistants
+// exactly which content to extract when someone asks "what is Kalokea?"
+// Also helps Perplexity, ChatGPT search, Gemini cite the right answer.
+const speakableJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${SITE_URL}/#webpage`,
+  url: SITE_URL,
+  name: "Kalokea — Women's Fashion India",
+  isPartOf: { '@id': `${SITE_URL}/#website` },
+  about: { '@id': `${SITE_URL}/#organization` },
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    xpath: [
+      "/html/head/title",
+      "/html/head/meta[@name='description']/@content",
+    ],
+  },
+  description: "Kalokea is a premium Indian women's fashion brand. We sell dresses, tops, co-ord sets, bottoms, jumpsuits, and bags. Free shipping above ₹999. Easy 7-day returns. Cash on delivery available across India.",
+  inLanguage: 'en-IN',
+}
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -654,6 +676,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableJsonLd) }}
         />
         <Analytics />
         <ToastProvider>

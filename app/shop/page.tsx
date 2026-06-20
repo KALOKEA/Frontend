@@ -95,13 +95,14 @@ function MobileFilterDrawer({ open, onClose }: { open: boolean; onClose: () => v
         onClick={onClose}
         aria-hidden="true"
       />
-      {/* Drawer */}
+      {/* Left-side drawer — slides from left, near the Filter button */}
       <div
         id="mobile-filter-drawer"
         role="dialog"
         aria-modal="true"
         aria-label="Product filters"
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl max-h-[85vh] overflow-y-auto lg:hidden"
+        className="fixed top-0 left-0 bottom-0 z-50 bg-white overflow-y-auto lg:hidden"
+        style={{ width: '85vw', maxWidth: 340, boxShadow: '4px 0 32px rgba(0,0,0,0.22)' }}
       >
         <div className="sticky top-0 bg-white px-5 pt-5 pb-3 border-b border-[#E0D4C4] flex items-center justify-between">
           <h3 className="font-serif text-lg text-[#0a0a0a]">Filter</h3>
