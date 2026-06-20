@@ -25,19 +25,6 @@ interface Props {
   mediaClassName?: string
   /** Fallback image URL if the primary image fails to load. */
   fallbackSrc?: string
-  /**
-   * YouTube iframe width as a vh-based multiplier (default 177.78 = perfect 16:9).
-   * Increase to crop sides more (video zooms in visually).
-   * Decrease below 177.78 adds YouTube black bars (avoid).
-   * Set via CMS hero_video_width field.
-   */
-  videoWidthVh?: number
-  /**
-   * Vertical shift % of hero height. 0 = top-aligned (default).
-   * Positive = shift video DOWN (shows higher portion of video frame below headers).
-   * E.g. 10 shifts video down 10% so model's head clears the navbar.
-   */
-  videoOffsetPct?: number
 }
 
 export default function BackgroundMedia({
@@ -49,19 +36,16 @@ export default function BackgroundMedia({
   priority = false,
   mediaClassName = '',
   fallbackSrc,
-  videoWidthVh = 177.78,
-  videoOffsetPct = 0,
 }: Props) {
   const ytId = isVideo ? youTubeId(video) : null
 
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: '#0a0a0a' }}>
       {ytId ? (
-        // YouTube background — height locked by inset-y-0 (top:0 + bottom:0).
-        // Direct constraint = no percentage-height resolution issues.
-        // width:177.78vh = 16:9 of viewport height, centred horizontally.
-        // minWidth:100% ensures it covers on ultrawide screens.
-        // No filters — video plays as-is, natural colours.
+        // YouTube video — HEIGHT fills hero top-to-bottom (inset-y-0 = top:0 + bottom:0).
+        // Width = 177.78vh (16:9 of viewport height). On 16:9 screens fills exactly.
+        // On other screens sides may have dark space — that is intentional and fine.
+        // NO scale, NO effects. Just full-height video, horizontally centred.
         <div className="absolute inset-0 overflow-hidden">
           <iframe
             src={youTubeBackgroundEmbed(ytId)}
@@ -69,11 +53,9 @@ export default function BackgroundMedia({
             aria-hidden="true"
             tabIndex={-1}
             allow="autoplay; encrypted-media; picture-in-picture"
-            className="absolute inset-y-0 left-1/2 pointer-events-none border-0"
+            className="absolute inset-y-0 left-1/2 -translate-x-1/2 pointer-events-none border-0"
             style={{
-              width: `${videoWidthVh}vh`,  /* default 177.78vh = 16:9, increase to crop sides */
-              minWidth: '100%',            /* cover full width on ultrawide */
-              transform: `translateX(-50%) translateY(${videoOffsetPct}%)`,
+              width: '177.78vh',  /* 16:9 × viewport height — no black bars from YouTube */
             }}
           />
         </div>

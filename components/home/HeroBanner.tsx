@@ -82,8 +82,6 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
         alt="Kalokea — Women's Fashion Collection"
         priority
         mediaClassName="transition-opacity duration-700"
-        videoWidthVh={Number(c.hero_video_width_vh) || 177.78}
-        videoOffsetPct={Number(c.hero_video_offset_pct) || 0}
       />
 
       {/* ── Gradient overlay — minimal dark on left for text readability only ── */}
