@@ -5,7 +5,7 @@ import Footer from './Footer'
 import {
   siteContentApi,
   type FooterLink,
-  FOOTER_SHOP_DEFAULT, FOOTER_HELP_DEFAULT,
+  FOOTER_HELP_DEFAULT,
   FOOTER_COMPANY_DEFAULT, FOOTER_LEGAL_DEFAULT,
 } from '@/lib/api/siteContent'
 import { BASE_URL } from '@/lib/api/client'
@@ -27,7 +27,6 @@ const SETTINGS_FALLBACK: FooterSettings = {
 }
 
 interface ColState {
-  shopCol:    FooterLink[]
   helpCol:    FooterLink[]
   companyCol: FooterLink[]
   legalLinks: FooterLink[]
@@ -35,7 +34,6 @@ interface ColState {
 }
 
 const COL_FALLBACK: ColState = {
-  shopCol:    FOOTER_SHOP_DEFAULT,
   helpCol:    FOOTER_HELP_DEFAULT,
   companyCol: FOOTER_COMPANY_DEFAULT,
   legalLinks: FOOTER_LEGAL_DEFAULT,
@@ -59,7 +57,6 @@ export default function FooterWrapper() {
     siteContentApi.getParsed()
       .then(d => {
         setCols({
-          shopCol:    d.footer_shop_col,
           helpCol:    d.footer_help_col,
           companyCol: d.footer_company_col,
           legalLinks: d.footer_legal_links,
@@ -76,7 +73,6 @@ export default function FooterWrapper() {
       facebookUrl={settings.footer_facebook_url}
       pinterestUrl={settings.footer_pinterest_url}
       gstin={settings.seller_gstin}
-      shopCol={cols.shopCol}
       helpCol={cols.helpCol}
       companyCol={cols.companyCol}
       legalLinks={cols.legalLinks}
