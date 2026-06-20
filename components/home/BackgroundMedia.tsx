@@ -25,6 +25,19 @@ interface Props {
   mediaClassName?: string
   /** Fallback image URL if the primary image fails to load. */
   fallbackSrc?: string
+  /**
+   * YouTube iframe width as a vh-based multiplier (default 177.78 = perfect 16:9).
+   * Increase to crop sides more (video zooms in visually).
+   * Decrease below 177.78 adds YouTube black bars (avoid).
+   * Set via CMS hero_video_width field.
+   */
+  videoWidthVh?: number
+  /**
+   * Vertical shift % of hero height. 0 = top-aligned (default).
+   * Positive = shift video DOWN (shows higher portion of video frame below headers).
+   * E.g. 10 shifts video down 10% so model's head clears the navbar.
+   */
+  videoOffsetPct?: number
 }
 
 export default function BackgroundMedia({
@@ -36,6 +49,8 @@ export default function BackgroundMedia({
   priority = false,
   mediaClassName = '',
   fallbackSrc,
+  videoWidthVh = 177.78,
+  videoOffsetPct = 0,
 }: Props) {
   const ytId = isVideo ? youTubeId(video) : null
 
@@ -54,10 +69,11 @@ export default function BackgroundMedia({
             aria-hidden="true"
             tabIndex={-1}
             allow="autoplay; encrypted-media; picture-in-picture"
-            className="absolute inset-y-0 left-1/2 -translate-x-1/2 pointer-events-none border-0"
+            className="absolute inset-y-0 left-1/2 pointer-events-none border-0"
             style={{
-              width: '177.78vh',   /* 16:9 × viewport height */
-              minWidth: '100%',    /* cover full width if screen wider than 16:9 */
+              width: `${videoWidthVh}vh`,  /* default 177.78vh = 16:9, increase to crop sides */
+              minWidth: '100%',            /* cover full width on ultrawide */
+              transform: `translateX(-50%) translateY(${videoOffsetPct}%)`,
             }}
           />
         </div>
