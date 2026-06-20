@@ -105,7 +105,7 @@ export default function Footer({
             <img
               src="/kalokea-logo.png"
               alt="Kalokea"
-              style={{ width: 280, height: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
+              style={{ width: 280, height: 64, objectFit: 'contain', objectPosition: 'left center', display: 'block', filter: 'brightness(0) invert(1)' }}
             />
           </Link>
           <p style={{ fontSize: '.84rem', lineHeight: 1.7, maxWidth: 260, color: 'rgba(255,255,255,.6)' }}>

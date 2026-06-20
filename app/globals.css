@@ -564,7 +564,7 @@ select.inp {
 .k-footer-grid {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 70px 52px 50px;
+  padding: 56px 52px 40px;
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr;
   gap: 48px;
