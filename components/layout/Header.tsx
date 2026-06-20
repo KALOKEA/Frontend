@@ -127,23 +127,20 @@ export default function Header() {
             style={{ maxWidth: 1380, padding: '0 clamp(20px, 4vw, 52px)', height: 68 }}
           >
             {/* Logo — left-aligned */}
+            {/* Transparent PNG: brightness(0) invert(1) turns black logo white on dark nav */}
             <Link href="/" aria-label="Kalokea Home" className="shrink-0 select-none">
-              {/* White background pill wrapper on transparent (dark) nav so the */}
-              {/* black-on-white JPEG logo stays readable against hero imagery.  */}
-              <span
-                className={`flex items-center transition-all duration-300 ${
-                  isTransparent
-                    ? 'bg-white/90 rounded px-2 py-1 shadow-sm'
-                    : ''
-                }`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/kalokea-logo.jpeg"
-                  alt="Kalokea"
-                  style={{ height: 38, width: 'auto', display: 'block' }}
-                />
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/kalokea-logo.png"
+                alt="Kalokea"
+                style={{
+                  height: 38,
+                  width: 'auto',
+                  display: 'block',
+                  transition: 'filter 0.3s',
+                  filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
+                }}
+              />
             </Link>
 
             {/* Nav links — center */}
@@ -217,20 +214,18 @@ export default function Header() {
 
             {/* Logo */}
             <Link href="/" aria-label="Kalokea Home">
-              <span
-                className={`flex items-center transition-all duration-300 ${
-                  isTransparent
-                    ? 'bg-white/90 rounded px-1.5 py-0.5 shadow-sm'
-                    : ''
-                }`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/kalokea-logo.jpeg"
-                  alt="Kalokea"
-                  style={{ height: 30, width: 'auto', display: 'block' }}
-                />
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/kalokea-logo.png"
+                alt="Kalokea"
+                style={{
+                  height: 30,
+                  width: 'auto',
+                  display: 'block',
+                  transition: 'filter 0.3s',
+                  filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
+                }}
+              />
             </Link>
 
             {/* Cart */}
