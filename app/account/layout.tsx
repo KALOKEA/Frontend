@@ -209,6 +209,17 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
               </button>
             </nav>
 
+            {/* Store credit card */}
+            <div className="mt-4 bg-[#1E1208] border border-[#3a2a1a] p-5 relative overflow-hidden">
+              {/* Decorative corner accent */}
+              <div aria-hidden="true" className="absolute top-0 right-0 w-16 h-16 opacity-10" style={{ background: 'radial-gradient(circle at top right, #C49070, transparent)' }} />
+              <p className="text-[9px] uppercase tracking-[0.22em] text-[#C49070] mb-2">Store Credit</p>
+              <p className="font-serif text-2xl text-white mb-1">₹250</p>
+              <p className="text-[10px] text-[rgba(255,255,255,.45)] leading-relaxed">
+                Apply at checkout for instant savings on your next order.
+              </p>
+            </div>
+
             {/* Help card */}
             <div className="mt-4 bg-white border border-[#e8e4e0] p-5">
               <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-2">Need help?</p>

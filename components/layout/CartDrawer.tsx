@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCartStore } from '@/lib/store/useCartStore'
@@ -9,15 +9,31 @@ import CartCrossSell from '@/components/cart/CartCrossSell'
 // Free shipping threshold in paise — ₹999. Synced with backend default.
 const FREE_SHIPPING_THRESHOLD = 99900
 
+// ── Coupon codes (frontend-only) ─────────────────────────────────────────────
+const COUPONS: Record<string, { type: 'percent' | 'flat'; value: number; label: string }> = {
+  KALOKEA10: { type: 'percent', value: 10, label: '10% off' },
+  WELCOME:   { type: 'flat',    value: 20000, label: '₹200 off' },
+}
+function calcDiscount(total: number, code: string): number {
+  const c = COUPONS[code.toUpperCase().trim()]
+  if (!c) return 0
+  return c.type === 'percent' ? Math.round(total * c.value / 100) : Math.min(c.value, total)
+}
+
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem } = useCartStore()
-  const total = items.reduce((s, i) => s + i.price * i.quantity, 0)
+  const [couponInput, setCouponInput] = useState('')
+  const [appliedCode, setAppliedCode] = useState<string | null>(null)
+  const [couponError, setCouponError] = useState('')
+  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
+  const discount = appliedCode ? calcDiscount(subtotal, appliedCode) : 0
+  const total = subtotal - discount
   const count = items.reduce((s, i) => s + i.quantity, 0)
 
   // Free shipping progress
-  const freeShippingPct = Math.min(100, Math.round((total / FREE_SHIPPING_THRESHOLD) * 100))
-  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total)
-  const freeShippingUnlocked = total >= FREE_SHIPPING_THRESHOLD
+  const freeShippingPct = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100))
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal)
+  const freeShippingUnlocked = subtotal >= FREE_SHIPPING_THRESHOLD
 
   const closeRef = useRef<HTMLButtonElement>(null)
   const drawerRef = useRef<HTMLDivElement>(null)
@@ -239,10 +255,71 @@ export default function CartDrawer() {
               </div>
             </div>
 
+            {/* Coupon row */}
+            <div>
+              {appliedCode ? (
+                <div className="flex items-center justify-between py-1">
+                  <div className="flex items-center gap-2">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                    <span className="text-[11px] text-green-700 font-medium tracking-wider uppercase">{appliedCode}</span>
+                  </div>
+                  <button
+                    onClick={() => { setAppliedCode(null); setCouponInput(''); setCouponError('') }}
+                    className="text-[10px] text-[#6b5e55] hover:text-red-500 uppercase tracking-widest"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={e => { setCouponInput(e.target.value); setCouponError('') }}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        const code = couponInput.trim().toUpperCase()
+                        if (COUPONS[code]) { setAppliedCode(code); setCouponError('') }
+                        else setCouponError('Invalid code')
+                      }
+                    }}
+                    placeholder="Coupon code"
+                    className="flex-1 border border-[#E0D4C4] px-3 py-2 text-[11px] font-sans outline-none focus:border-[#0A0908] bg-transparent uppercase tracking-widest placeholder:normal-case placeholder:tracking-normal placeholder:text-[#b0a898]"
+                    aria-label="Coupon code"
+                  />
+                  <button
+                    onClick={() => {
+                      const code = couponInput.trim().toUpperCase()
+                      if (COUPONS[code]) { setAppliedCode(code); setCouponError('') }
+                      else setCouponError('Invalid code')
+                    }}
+                    className="px-3 py-2 bg-[#0A0908] text-white text-[10px] uppercase tracking-widest hover:bg-[#1a1612] transition-colors shrink-0"
+                  >
+                    Apply
+                  </button>
+                </div>
+              )}
+              {couponError && (
+                <p className="text-[10px] text-red-500 mt-1">{couponError}</p>
+              )}
+            </div>
+
             <div className="flex justify-between items-center">
               <span className="text-sm text-[#6B5E55]">Subtotal</span>
-              <span className="font-serif text-base text-[#0A0908]">{formatPrice(total)}</span>
+              <span className="font-serif text-base text-[#0A0908]">{formatPrice(subtotal)}</span>
             </div>
+            {discount > 0 && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-green-700">Discount ({appliedCode})</span>
+                <span className="text-sm font-medium text-green-700">−{formatPrice(discount)}</span>
+              </div>
+            )}
+            {discount > 0 && (
+              <div className="flex justify-between items-center border-t border-[#E0D4C4] pt-2">
+                <span className="text-sm font-medium text-[#0A0908]">Total</span>
+                <span className="font-serif text-base text-[#0A0908]">{formatPrice(total)}</span>
+              </div>
+            )}
             <p className="text-[10px] text-[#6b5c55]">GST and shipping calculated at checkout</p>
 
             <Link

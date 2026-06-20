@@ -84,14 +84,13 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
         mediaClassName="transition-opacity duration-700"
       />
 
-      {/* ── Gradient overlay — dark on bottom-left (text), moderate on right ── */}
-      {/* Right side darkened to 38% so any baked-in image text is suppressed    */}
+      {/* ── Gradient overlay — dark left (text), open right (video visible) ── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: [
-            'linear-gradient(135deg, rgba(10,6,2,.88) 0%, rgba(10,6,2,.52) 50%, rgba(10,6,2,.38) 100%)',
-            'linear-gradient(to top, rgba(10,6,2,.72) 0%, rgba(10,6,2,.18) 55%, transparent 100%)',
+            'linear-gradient(to right, rgba(10,6,2,.62) 0%, rgba(10,6,2,.32) 45%, rgba(10,6,2,.06) 100%)',
+            'linear-gradient(to top, rgba(10,6,2,.48) 0%, rgba(10,6,2,.08) 50%, transparent 100%)',
           ].join(', '),
         }}
       />
