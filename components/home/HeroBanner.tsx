@@ -89,8 +89,8 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
         className="absolute inset-0 pointer-events-none"
         style={{
           background: [
-            'linear-gradient(to right, rgba(10,6,2,.62) 0%, rgba(10,6,2,.32) 45%, rgba(10,6,2,.06) 100%)',
-            'linear-gradient(to top, rgba(10,6,2,.48) 0%, rgba(10,6,2,.08) 50%, transparent 100%)',
+            'linear-gradient(to right, rgba(10,6,2,.55) 0%, rgba(10,6,2,.22) 42%, rgba(10,6,2,.02) 100%)',
+            'linear-gradient(to top, rgba(10,6,2,.40) 0%, rgba(10,6,2,.06) 45%, transparent 100%)',
           ].join(', '),
         }}
       />
