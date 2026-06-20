@@ -84,13 +84,27 @@ export default function HeroBanner({ initialCms }: { initialCms?: Record<string,
         mediaClassName="transition-opacity duration-700"
       />
 
+      {/* ── Warm ambient fill — mix-blend-mode:lighten fills PURE BLACK pixels ──
+           brightness() cannot help 0,0,0 pixels (0 × any = 0).
+           lighten takes max(A, B) per channel, so dark video pixels show
+           the warm golden gradient instead of black. Bright pixels are
+           unaffected (video wins). This works for ANY dark/night video. ── */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to right, rgba(60,38,15,0.25) 0%, rgba(95,62,22,0.72) 48%, rgba(105,68,25,0.88) 100%)',
+          mixBlendMode: 'lighten',
+        }}
+      />
+
       {/* ── Gradient overlay — dark left (text), open right (video visible) ── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: [
-            'linear-gradient(to right, rgba(10,6,2,.55) 0%, rgba(10,6,2,.22) 42%, rgba(10,6,2,.02) 100%)',
-            'linear-gradient(to top, rgba(10,6,2,.40) 0%, rgba(10,6,2,.06) 45%, transparent 100%)',
+            'linear-gradient(to right, rgba(10,6,2,.52) 0%, rgba(10,6,2,.18) 42%, rgba(10,6,2,.0) 100%)',
+            'linear-gradient(to top, rgba(10,6,2,.38) 0%, rgba(10,6,2,.05) 45%, transparent 100%)',
           ].join(', '),
         }}
       />

@@ -40,20 +40,16 @@ export default function BackgroundMedia({
   const ytId = isVideo ? youTubeId(video) : null
 
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: '#1E1208' }}>
+    <div className="absolute inset-0 overflow-hidden" style={{ background: '#3D2010' }}>
       {ytId ? (
-        // YouTube background — muted autoplay loop. A 16:9 box sized to at least
-        // fill the panel (min-width/height + aspect-ratio) gives an object-cover
-        // effect that no plain iframe otherwise has.
-        // brightness(1.7) compensates for dark/moody video footage so the desktop
-        // hero matches the vibrant look of the static poster shown on mobile.
-        // Cover technique: width=100vw at 16:9 gives height=56.25vw.
-        // If that height < viewport height (tall screens), min-height kicks in.
-        // min-width ensures full coverage on ultra-wide screens.
-        // brightness(1.7) compensates for dark/moody video footage.
+        // YouTube background — muted autoplay loop. Cover technique: width=100vw
+        // at 16:9 gives height=56.25vw. minHeight/minWidth ensures full coverage
+        // on tall/ultrawide screens. brightness() boosts video content, but cannot
+        // help PURE BLACK pixels (0,0,0 × any multiplier = 0). The warm ambient
+        // overlay in HeroBanner.tsx uses mix-blend-mode:lighten to fill those.
         <div
           className="absolute inset-0 overflow-hidden"
-          style={{ filter: 'brightness(2.5) contrast(0.78) saturate(1.2)' }}
+          style={{ filter: 'brightness(3.5) contrast(0.65) saturate(1.25)' }}
         >
           <iframe
             src={youTubeBackgroundEmbed(ytId)}
