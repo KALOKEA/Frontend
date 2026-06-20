@@ -47,6 +47,10 @@ export default function BackgroundMedia({
         // effect that no plain iframe otherwise has.
         // brightness(1.7) compensates for dark/moody video footage so the desktop
         // hero matches the vibrant look of the static poster shown on mobile.
+        // Cover technique: width=100vw at 16:9 gives height=56.25vw.
+        // If that height < viewport height (tall screens), min-height kicks in.
+        // min-width ensures full coverage on ultra-wide screens.
+        // brightness(1.7) compensates for dark/moody video footage.
         <div
           className="absolute inset-0 overflow-hidden"
           style={{ filter: 'brightness(1.7) contrast(0.85) saturate(1.1)' }}
@@ -58,7 +62,12 @@ export default function BackgroundMedia({
             tabIndex={-1}
             allow="autoplay; encrypted-media; picture-in-picture"
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none border-0"
-            style={{ width: 'auto', height: 'auto', minWidth: '100%', minHeight: '100%', aspectRatio: '16 / 9' }}
+            style={{
+              width: '100vw',
+              height: '56.25vw',   /* 16:9 ratio of viewport width */
+              minHeight: '100%',   /* ensures full height coverage */
+              minWidth: '177.78%', /* 16:9 ratio of parent height  */
+            }}
           />
         </div>
       ) : isVideo && video ? (

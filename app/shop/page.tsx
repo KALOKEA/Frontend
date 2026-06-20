@@ -8,8 +8,6 @@ import FilterSidebar, { FilterPanel, PRICE_RANGES } from '@/components/shop/Filt
 import ShopCategorySidebar from '@/components/shop/ShopCategorySidebar'
 import SortDropdown from '@/components/shop/SortDropdown'
 import Pagination from '@/components/shop/Pagination'
-import ShopSEOContent from '@/components/seo/ShopSEOContent'
-import CategorySEOContent from '@/components/seo/CategorySEOContent'
 
 // ── Active filter chips ─────────────────────────────────────────────────────
 
@@ -83,7 +81,8 @@ function MobileFilterDrawer({ open, onClose }: { open: boolean; onClose: () => v
   useEffect(() => {
     if (!open) return
     document.body.style.overflow = 'hidden'
-    const t = setTimeout(() => closeRef.current?.focus(), 30)
+    // preventScroll stops Chrome from scrolling to the fixed drawer's DOM position
+    const t = setTimeout(() => closeRef.current?.focus({ preventScroll: true }), 30)
     return () => { document.body.style.overflow = ''; clearTimeout(t) }
   }, [open])
 
@@ -298,8 +297,6 @@ export default function ShopPage() {
         }>
           <ShopContent />
         </Suspense>
-        <Suspense fallback={null}><CategorySEOContent /></Suspense>
-        <ShopSEOContent />
       </div>
     </>
   )
