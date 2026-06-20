@@ -134,10 +134,9 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  width: 190,
-                  height: 52,
-                  objectFit: 'contain',
-                  objectPosition: 'left center',
+                  height: 56,
+                  width: 'auto',
+                  maxWidth: 220,
                   display: 'block',
                   transition: 'filter 0.3s',
                   filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
@@ -221,10 +220,9 @@ export default function Header() {
                 src="/kalokea-logo.png"
                 alt="Kalokea"
                 style={{
-                  width: 150,
-                  height: 42,
-                  objectFit: 'contain',
-                  objectPosition: 'left center',
+                  height: 44,
+                  width: 'auto',
+                  maxWidth: 180,
                   display: 'block',
                   transition: 'filter 0.3s',
                   filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
