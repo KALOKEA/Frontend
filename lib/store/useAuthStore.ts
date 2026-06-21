@@ -7,7 +7,7 @@ import { setAccessToken } from '@/lib/api/client'
 // a hard page-refresh restores auth state instantly — without waiting for a
 // /auth/me round-trip or depending on the httpOnly refresh cookie (which may
 // be blocked by browsers when the frontend and backend are on different
-// eTLD+1 domains, e.g. kalokea.in → railway.app).
+// eTLD+1 domains, e.g. kalokea.com → railway.app).
 //
 // Security: we never store the refresh token in localStorage.  Only the user
 // object (non-sensitive profile data) is persisted here. The access token is

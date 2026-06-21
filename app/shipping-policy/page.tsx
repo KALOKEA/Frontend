@@ -5,7 +5,7 @@ import CmsPageContent from '@/components/CmsPageContent'
 export const metadata: Metadata = {
   title: 'Shipping Policy | Kalokea',
   description: 'Kalokea shipping policy — delivery times, free shipping, and order tracking.',
-  alternates: { canonical: 'https://kalokea.in/shipping-policy/' },
+  alternates: { canonical: 'https://kalokea.com/shipping-policy/' },
 }
 
 const SC = [
@@ -26,9 +26,9 @@ const SC = [
   '<h2>Failed Delivery Attempts</h2>',
   '<p>If delivery fails (NDR), the courier makes up to 3 attempts. After 3 failed attempts, the package is returned to us. You will be notified at each step and can choose to re-schedule delivery or request a refund.</p>',
   '<h2>Damaged in Transit</h2>',
-  '<p>If your package arrives visibly damaged, refuse delivery and contact us immediately at <a href="mailto:support@kalokea.in">support@kalokea.in</a> with a photo. If damage is found after opening, contact us within 48 hours of delivery.</p>',
+  '<p>If your package arrives visibly damaged, refuse delivery and contact us immediately at <a href="mailto:support@kalokea.com">support@kalokea.com</a> with a photo. If damage is found after opening, contact us within 48 hours of delivery.</p>',
   '<h2>Contact Us</h2>',
-  '<p>Email <a href="mailto:support@kalokea.in">support@kalokea.in</a> — Mon to Sat, 10 AM to 6 PM IST.</p>',
+  '<p>Email <a href="mailto:support@kalokea.com">support@kalokea.com</a> — Mon to Sat, 10 AM to 6 PM IST.</p>',
 ].join('\n')
 
 const shippingFaqJsonLd = {

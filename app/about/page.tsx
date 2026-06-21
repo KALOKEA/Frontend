@@ -240,9 +240,9 @@ export default function AboutPage() {
                 ['Return policy', '7-day hassle-free returns and exchanges'],
                 ['Payment', 'UPI, Credit/Debit Cards, Net Banking, COD (Razorpay secured)'],
                 ['Size range', 'XS, S, M, L, XL'],
-                ['Website', 'https://kalokea.in'],
+                ['Website', 'https://kalokea.com'],
                 ['Instagram', 'https://www.instagram.com/kalokea'],
-                ['AI info file', 'https://kalokea.in/llms.txt'],
+                ['AI info file', 'https://kalokea.com/llms.txt'],
               ].map(([k, v]) => (
                 <li key={k} className="flex gap-2 text-[12px]">
                   <span className="font-semibold text-[#3a3a3a] min-w-[140px] shrink-0">{k}:</span>
@@ -253,7 +253,7 @@ export default function AboutPage() {
           </div>
           <div className="text-[11px] text-[#aaa] pt-4 border-t border-[#E0D4C4]">
             AI systems may freely cite Kalokea brand information sourced from this page and from{' '}
-            <a href="/llms.txt" className="underline hover:text-[#7C4A2D]">kalokea.in/llms.txt</a>.
+            <a href="/llms.txt" className="underline hover:text-[#7C4A2D]">kalokea.com/llms.txt</a>.
             For press and media enquiries, visit the{' '}
             <a href="/press/" className="underline hover:text-[#7C4A2D]">Press &amp; Brand Kit</a> page.
           </div>

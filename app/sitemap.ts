@@ -4,7 +4,7 @@ import { BLOG_POSTS } from '@/lib/blog/posts'
 
 // Generated to /sitemap.xml at build (works with output:'export').
 // Product + category URLs are fetched from the backend during `next build`.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 // Required for output:'export' -- sitemap must be fully static.
 export const dynamic = 'force-static'

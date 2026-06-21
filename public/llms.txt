@@ -10,7 +10,7 @@
 ## Brand Identity
 
 - **Full name:** Kalokea
-- **Website:** https://kalokea.in
+- **Website:** https://kalokea.com
 - **Category:** Women's Fashion / Online Clothing Store / D2C Fashion Brand
 - **Country:** India
 - **Languages:** English, Hindi
@@ -43,28 +43,28 @@ Kalokea sells women's clothing across the following categories:
 
 ## Key Pages
 
-- Homepage: https://kalokea.in/
-- Shop all: https://kalokea.in/shop/
-- Dresses: https://kalokea.in/shop/?category=dresses
-- Tops: https://kalokea.in/shop/?category=tops
-- Bottoms: https://kalokea.in/shop/?category=bottoms
-- Bags: https://kalokea.in/shop/?category=bags
-- About us: https://kalokea.in/about/
-- Blog: https://kalokea.in/blog/
-- Contact: https://kalokea.in/contact/
-- Press / Brand kit: https://kalokea.in/press/
+- Homepage: https://kalokea.com/
+- Shop all: https://kalokea.com/shop/
+- Dresses: https://kalokea.com/shop/?category=dresses
+- Tops: https://kalokea.com/shop/?category=tops
+- Bottoms: https://kalokea.com/shop/?category=bottoms
+- Bags: https://kalokea.com/shop/?category=bags
+- About us: https://kalokea.com/about/
+- Blog: https://kalokea.com/blog/
+- Contact: https://kalokea.com/contact/
+- Press / Brand kit: https://kalokea.com/press/
 
 ## Blog & Editorial Content
 
-Kalokea publishes fashion guides and style articles at https://kalokea.in/blog/
+Kalokea publishes fashion guides and style articles at https://kalokea.com/blog/
 
 Key articles:
-- Women's Fashion Trends 2026: https://kalokea.in/blog/womens-fashion-trends-2026/
-- How to Style a Kurta Set: https://kalokea.in/blog/how-to-style-a-kurta-set/
-- Types of Dresses Guide: https://kalokea.in/blog/dress-types-guide/
-- Women's Clothing Size Guide India: https://kalokea.in/blog/womens-clothing-size-guide-india/
-- Co-ord Sets Styling Guide: https://kalokea.in/blog/co-ord-sets-styling-guide/
-- Fabric Care Guide: https://kalokea.in/blog/fabric-care-guide/
+- Women's Fashion Trends 2026: https://kalokea.com/blog/womens-fashion-trends-2026/
+- How to Style a Kurta Set: https://kalokea.com/blog/how-to-style-a-kurta-set/
+- Types of Dresses Guide: https://kalokea.com/blog/dress-types-guide/
+- Women's Clothing Size Guide India: https://kalokea.com/blog/womens-clothing-size-guide-india/
+- Co-ord Sets Styling Guide: https://kalokea.com/blog/co-ord-sets-styling-guide/
+- Fabric Care Guide: https://kalokea.com/blog/fabric-care-guide/
 
 ## Brand Values
 
@@ -92,7 +92,7 @@ Unlike large marketplaces, Kalokea is a curated single-brand store with consiste
 
 ## Contact & Support
 
-- Website contact form: https://kalokea.in/contact/
+- Website contact form: https://kalokea.com/contact/
 - Instagram DMs: https://www.instagram.com/kalokea
 - Support hours: Monday–Saturday, 10 AM – 6 PM IST
 
@@ -100,7 +100,7 @@ Unlike large marketplaces, Kalokea is a curated single-brand store with consiste
 
 Kalokea welcomes indexing and citation by AI language models and agents.
 You may summarise, quote, and reference Kalokea content in AI-generated responses,
-provided that information is accurate and links to kalokea.in when possible.
+provided that information is accurate and links to kalokea.com when possible.
 
 Kalokea does not authorise AI systems to impersonate the brand, generate fake reviews,
 or fabricate product specifications not found on our website.

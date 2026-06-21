@@ -42,10 +42,13 @@ export default function BackgroundMedia({
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: '#0a0a0a' }}>
       {ytId ? (
-        // YouTube video — HEIGHT fills hero top-to-bottom (inset-y-0 = top:0 + bottom:0).
-        // Width = 177.78vh (16:9 of viewport height). On 16:9 screens fills exactly.
-        // On other screens sides may have dark space — that is intentional and fine.
-        // NO scale, NO effects. Just full-height video, horizontally centred.
+        // YouTube video — the video's full HEIGHT always fills the hero top-to-bottom.
+        // height:100% locks the iframe to the hero's actual height (not the viewport,
+        // so it stays correct even if the section grows taller than 100vh). aspect-ratio
+        // 16/9 derives the width from that height, so the 16:9 video fills the frame with
+        // NO YouTube letterbox bars. Centred both axes; width simply overflows (cropped
+        // sides) on narrow screens or leaves dark side space on ultra-wide screens —
+        // both are fine. Height is NEVER cropped. NO scale, NO effects.
         <div className="absolute inset-0 overflow-hidden">
           <iframe
             src={youTubeBackgroundEmbed(ytId)}
@@ -53,9 +56,10 @@ export default function BackgroundMedia({
             aria-hidden="true"
             tabIndex={-1}
             allow="autoplay; encrypted-media; picture-in-picture"
-            className="absolute inset-y-0 left-1/2 -translate-x-1/2 pointer-events-none border-0"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none border-0"
             style={{
-              width: '177.78vh',  /* 16:9 × viewport height — no black bars from YouTube */
+              height: '100%',          /* fill hero height exactly, top to bottom */
+              aspectRatio: '16 / 9',   /* width derived from height — no black bars */
             }}
           />
         </div>
@@ -72,7 +76,10 @@ export default function BackgroundMedia({
           loop
           playsInline
           aria-hidden="true"
-          className={`absolute inset-0 w-full h-full object-cover ${mediaClassName}`}
+          // Full HEIGHT, native aspect ratio, centred — height never cropped; width
+          // overflows (cropped sides) or leaves side space, both acceptable. Matches
+          // the YouTube branch so uploaded mp4 heroes behave identically.
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-auto max-w-none ${mediaClassName}`}
           style={{ objectPosition }}
         />
       ) : (

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BLOG_POSTS } from '@/lib/blog/posts'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 export const metadata: Metadata = {
   title: 'The Kalokea Journal — Women’s Fashion Tips, Trends & Styling Guides',

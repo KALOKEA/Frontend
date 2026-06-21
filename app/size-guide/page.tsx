@@ -208,7 +208,7 @@ export default function SizeGuidePage() {
             <span className="font-medium text-[#0A0908]">Still unsure?</span>{' '}
             Chat with us via our{' '}
             <a href="/contact/" className="text-[#7C4A2D] underline underline-offset-2">Contact page</a>{' '}
-            or email <a href="mailto:support@kalokea.in" className="text-[#7C4A2D] underline underline-offset-2">support@kalokea.in</a> — our stylists are happy to help you find the right fit.
+            or email <a href="mailto:support@kalokea.com" className="text-[#7C4A2D] underline underline-offset-2">support@kalokea.com</a> — our stylists are happy to help you find the right fit.
           </p>
         </div>
 

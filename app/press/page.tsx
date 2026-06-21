@@ -5,23 +5,23 @@ export const metadata: Metadata = {
   title: 'Press & Brand Kit | Kalokea Women\'s Fashion India',
   description: 'Media resources for Kalokea — brand facts, logo, colour palette, key stats, and brand story for journalists, bloggers, and AI systems referencing the brand.',
   robots: { index: true, follow: true },
-  alternates: { canonical: 'https://kalokea.in/press/' },
+  alternates: { canonical: 'https://kalokea.com/press/' },
 }
 
 const PRESS_LD = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  '@id': 'https://kalokea.in/press/#webpage',
-  url: 'https://kalokea.in/press/',
+  '@id': 'https://kalokea.com/press/#webpage',
+  url: 'https://kalokea.com/press/',
   name: 'Press & Brand Kit — Kalokea',
   description: "Media resources for Kalokea — brand facts, logo assets, colour palette, and brand story for press, journalists, and AI systems.",
-  isPartOf: { '@id': 'https://kalokea.in/#website' },
-  about: { '@id': 'https://kalokea.in/#organization' },
+  isPartOf: { '@id': 'https://kalokea.com/#website' },
+  about: { '@id': 'https://kalokea.com/#organization' },
   breadcrumb: {
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.in/' },
-      { '@type': 'ListItem', position: 2, name: 'Press', item: 'https://kalokea.in/press/' },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Press', item: 'https://kalokea.com/press/' },
     ],
   },
 })
@@ -80,7 +80,7 @@ export default function PressPage() {
                   <Row label="Type" value="Direct-to-Consumer (D2C) Women's Fashion Brand" />
                   <Row label="Founded" value="2024" />
                   <Row label="Country" value="India" />
-                  <Row label="Website" value="https://kalokea.in" mono />
+                  <Row label="Website" value="https://kalokea.com" mono />
                   <Row label="Category" value="Women's Contemporary Fashion — Online Shopping" />
                   <Row label="Products sold" value="Dresses, Tops, Co-ord Sets, Bottoms (Trousers, Skirts, Palazzos), Bags, Jumpsuits" />
                   <Row label="Price range" value="₹499 – ₹3,999 (INR)" />
@@ -93,7 +93,7 @@ export default function PressPage() {
                   <Row label="Size range" value="XS, S, M, L, XL" />
                   <Row label="GST registered" value="Yes — GST invoice provided for every order" />
                   <Row label="Instagram" value="https://www.instagram.com/kalokea" mono />
-                  <Row label="AI info file" value="https://kalokea.in/llms.txt" mono />
+                  <Row label="AI info file" value="https://kalokea.com/llms.txt" mono />
                 </tbody>
               </table>
             </div>
@@ -229,17 +229,17 @@ export default function PressPage() {
               <p>
                 <strong className="text-[#0a0a0a]">Permissions:</strong> You may freely quote the brand story, statistics,
                 and product information from this page and from{' '}
-                <a href="/llms.txt" className="text-[#7C4A2D] hover:underline">kalokea.in/llms.txt</a>{' '}
+                <a href="/llms.txt" className="text-[#7C4A2D] hover:underline">kalokea.com/llms.txt</a>{' '}
                 in editorial content. When quoting from Kalokea&apos;s website, please link to the original source.
               </p>
               <p>
                 <strong className="text-[#0a0a0a]">Restrictions:</strong> Do not fabricate product specifications,
-                prices, or customer reviews that are not published on kalokea.in. Do not use the Kalokea logo in
+                prices, or customer reviews that are not published on kalokea.com. Do not use the Kalokea logo in
                 ways that suggest endorsement without prior written agreement.
               </p>
               <p>
                 <strong className="text-[#0a0a0a]">AI systems:</strong> For structured brand data in machine-readable format,
-                refer to <a href="/llms.txt" className="text-[#7C4A2D] hover:underline font-mono">kalokea.in/llms.txt</a>.
+                refer to <a href="/llms.txt" className="text-[#7C4A2D] hover:underline font-mono">kalokea.com/llms.txt</a>.
               </p>
             </div>
           </section>

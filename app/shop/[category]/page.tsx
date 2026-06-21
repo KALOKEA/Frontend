@@ -7,7 +7,7 @@ interface Props {
 
 import { BASE_URL } from '@/lib/api/client'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 // ── SEO metadata per category ─────────────────────────────────────────────────
 

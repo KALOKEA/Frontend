@@ -33,7 +33,7 @@ const PROACTIVE_REFRESH_MS = 10 * 60 * 1000
  *
  * WHY two paths?
  * The httpOnly refresh cookie is sometimes blocked by browsers when the
- * frontend (kalokea.in) and backend (railway.app) are on different eTLD+1
+ * frontend (kalokea.com) and backend (railway.app) are on different eTLD+1
  * domains (Chrome/Safari SameSite policies). The fast path makes auth
  * independent of the cookie for routine page refreshes. The cookie is still
  * used for the proactive token rotation below.

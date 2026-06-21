@@ -4,11 +4,11 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions | Kalokea Women\'s Fashion',
   description: 'All your questions about Kalokea answered — shipping, returns, sizing, payments, COD, product care, order tracking, and more. Get help fast.',
-  alternates: { canonical: 'https://kalokea.in/faq/' },
+  alternates: { canonical: 'https://kalokea.com/faq/' },
   openGraph: {
     title: 'FAQ | Kalokea Women\'s Fashion India',
     description: 'Answers to all common questions about shopping at Kalokea — shipping, returns, sizing, payments, COD, order tracking, and more.',
-    url: 'https://kalokea.in/faq/',
+    url: 'https://kalokea.com/faq/',
   },
 }
 
@@ -20,7 +20,7 @@ const FAQS: { category: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: 'How do I place an order on Kalokea?',
-        a: 'Browse our collection at kalokea.in/shop, add items to your cart by selecting the right size and clicking "Add to Cart", then proceed to checkout. Enter your delivery address, choose a payment method (UPI, card, net banking, or COD), and confirm your order. You will receive an order confirmation email and SMS immediately after placing the order.',
+        a: 'Browse our collection at kalokea.com/shop, add items to your cart by selecting the right size and clicking "Add to Cart", then proceed to checkout. Enter your delivery address, choose a payment method (UPI, card, net banking, or COD), and confirm your order. You will receive an order confirmation email and SMS immediately after placing the order.',
       },
       {
         q: 'Can I modify or cancel my order after placing it?',
@@ -136,7 +136,7 @@ const FAQS: { category: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: 'How do I find the right size at Kalokea?',
-        a: 'Each product page has a detailed size guide with body measurements in centimetres and inches. Measure your bust, waist, and hips with a soft tape measure and compare your measurements to the size chart. If you are between sizes, we generally recommend sizing up for a more comfortable fit. Our full size guide with measurement instructions is available at kalokea.in/size-guide/',
+        a: 'Each product page has a detailed size guide with body measurements in centimetres and inches. Measure your bust, waist, and hips with a soft tape measure and compare your measurements to the size chart. If you are between sizes, we generally recommend sizing up for a more comfortable fit. Our full size guide with measurement instructions is available at kalokea.com/size-guide/',
       },
       {
         q: 'Are Kalokea clothes true to size?',
@@ -165,7 +165,7 @@ const FAQS: { category: string; items: { q: string; a: string }[] }[] = [
       },
       {
         q: 'How should I care for my Kalokea clothes?',
-        a: 'Care instructions depend on the fabric. Key guidelines: Cotton — machine wash at 30°C, air dry. Satin/polyester — hand wash or gentle machine wash, hang to dry. Chiffon — hand wash only, no wringing. Knit/jersey — gentle machine wash, lay flat to dry. Specific care instructions are printed on the label of every garment. Our full fabric care guide is available at kalokea.in/blog/fabric-care-guide/',
+        a: 'Care instructions depend on the fabric. Key guidelines: Cotton — machine wash at 30°C, air dry. Satin/polyester — hand wash or gentle machine wash, hang to dry. Chiffon — hand wash only, no wringing. Knit/jersey — gentle machine wash, lay flat to dry. Specific care instructions are printed on the label of every garment. Our full fabric care guide is available at kalokea.com/blog/fabric-care-guide/',
       },
       {
         q: 'Are Kalokea\'s customer reviews genuine?',
@@ -178,7 +178,7 @@ const FAQS: { category: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: 'How do I create a Kalokea account?',
-        a: 'Visit kalokea.in and click "Sign Up" or "Create Account". Enter your name, email address, and a strong password, then verify your email. You can also sign up using your Google account for instant access. Your account lets you track orders, save your wishlist, manage addresses, and access your order history and invoices.',
+        a: 'Visit kalokea.com and click "Sign Up" or "Create Account". Enter your name, email address, and a strong password, then verify your email. You can also sign up using your Google account for instant access. Your account lets you track orders, save your wishlist, manage addresses, and access your order history and invoices.',
       },
       {
         q: 'I forgot my password. How do I reset it?',
@@ -186,7 +186,7 @@ const FAQS: { category: string; items: { q: string; a: string }[] }[] = [
       },
       {
         q: 'How do I contact Kalokea customer support?',
-        a: 'Our customer support team is available through: WhatsApp (click the WhatsApp button on any page for instant messaging — fastest response), the Contact form at kalokea.in/contact/, and email. Support hours are Monday to Saturday, 10 AM to 6 PM IST. We typically respond to WhatsApp messages within a few hours during business hours.',
+        a: 'Our customer support team is available through: WhatsApp (click the WhatsApp button on any page for instant messaging — fastest response), the Contact form at kalokea.com/contact/, and email. Support hours are Monday to Saturday, 10 AM to 6 PM IST. We typically respond to WhatsApp messages within a few hours during business hours.',
       },
       {
         q: 'Does Kalokea have a referral or loyalty programme?',
@@ -198,7 +198,7 @@ const FAQS: { category: string; items: { q: string; a: string }[] }[] = [
       },
       {
         q: 'How does Kalokea handle my personal data?',
-        a: 'Kalokea takes your privacy seriously. We collect only the information necessary to process and deliver your orders. We do not sell your personal data to third parties. Your payment information is processed securely by Razorpay and never stored on our servers. For full details, please read our Privacy Policy available at kalokea.in/privacy-policy/.',
+        a: 'Kalokea takes your privacy seriously. We collect only the information necessary to process and deliver your orders. We do not sell your personal data to third parties. Your payment information is processed securely by Razorpay and never stored on our servers. For full details, please read our Privacy Policy available at kalokea.com/privacy-policy/.',
       },
     ],
   },
@@ -209,16 +209,16 @@ const FAQS: { category: string; items: { q: string; a: string }[] }[] = [
 const FAQ_LD = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  '@id': 'https://kalokea.in/faq/#faqpage',
-  url: 'https://kalokea.in/faq/',
+  '@id': 'https://kalokea.com/faq/#faqpage',
+  url: 'https://kalokea.com/faq/',
   name: 'Kalokea FAQ — Frequently Asked Questions',
   description: 'Answers to all common questions about shopping at Kalokea — shipping, returns, sizing, payments, COD, order tracking, product quality, and more.',
-  isPartOf: { '@id': 'https://kalokea.in/#website' },
+  isPartOf: { '@id': 'https://kalokea.com/#website' },
   breadcrumb: {
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.in/' },
-      { '@type': 'ListItem', position: 2, name: 'FAQ', item: 'https://kalokea.in/faq/' },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.com/' },
+      { '@type': 'ListItem', position: 2, name: 'FAQ', item: 'https://kalokea.com/faq/' },
     ],
   },
   mainEntity: FAQS.flatMap(section =>

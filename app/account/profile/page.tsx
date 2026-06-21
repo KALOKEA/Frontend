@@ -87,7 +87,7 @@ export default function ProfilePage() {
                 disabled
                 className="w-full border border-[#f0ece8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#6b6b6b] cursor-not-allowed"
               />
-              <p className="text-[11px] text-[#7C4A2D] mt-1">To update your email, contact support at support@kalokea.in</p>
+              <p className="text-[11px] text-[#7C4A2D] mt-1">To update your email, contact support at support@kalokea.com</p>
             </div>
 
             {user?.phone && (
@@ -133,7 +133,7 @@ export default function ProfilePage() {
           <div>
             <p className="text-sm text-[#0a0a0a] mb-1">Your account is secured with OTP authentication</p>
             <p className="text-[11px] text-[#6b6b6b] leading-relaxed">
-              Every login requires a one-time code sent to your mobile number. No password is stored. To change your registered phone number, contact support at support@kalokea.in
+              Every login requires a one-time code sent to your mobile number. No password is stored. To change your registered phone number, contact support at support@kalokea.com
             </p>
           </div>
         </div>

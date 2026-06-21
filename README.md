@@ -1,6 +1,6 @@
 # Kalokea — Frontend
 
-Next.js 14 static-export storefront for [Kalokea](https://kalokea.pages.dev), a fashion e-commerce brand. Deployed on Cloudflare Pages.
+Next.js 14 static-export storefront for [Kalokea](https://kalokea.com), a fashion e-commerce brand. Deployed on Cloudflare Pages.
 
 ## Stack
 
@@ -28,7 +28,7 @@ npm run dev    # http://localhost:3000
 |---|---|
 | `NEXT_PUBLIC_API_URL` | Backend API base URL (e.g. `https://your-api.railway.app`) |
 | `NEXT_PUBLIC_RAZORPAY_KEY_ID` | Razorpay publishable key |
-| `NEXT_PUBLIC_SITE_URL` | Canonical site URL for SEO (e.g. `https://kalokea.pages.dev`) |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL for SEO (e.g. `https://kalokea.com`) |
 | `NEXT_PUBLIC_GA_ID` | Google Analytics measurement ID (optional) |
 
 ## Build & deploy

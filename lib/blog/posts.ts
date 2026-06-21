@@ -8,7 +8,7 @@
 
 import type { Metadata } from 'next'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 export interface BlogPost {
   slug: string

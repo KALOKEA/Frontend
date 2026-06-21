@@ -5,7 +5,7 @@ import CmsPageContent from '@/components/CmsPageContent'
 export const metadata: Metadata = {
   title: 'Refund & Return Policy | Kalokea',
   description: 'Kalokea refund and return policy — 7-day returns on eligible items.',
-  alternates: { canonical: 'https://kalokea.in/refund-policy/' },
+  alternates: { canonical: 'https://kalokea.com/refund-policy/' },
 }
 
 const SC = [
@@ -16,18 +16,18 @@ const SC = [
   '<p>Items <strong>not eligible</strong> for return: sale items, intimate wear, accessories, and final-sale items.</p>',
   '<h2>How to Initiate a Return</h2>',
   '<p>Log in to your account, go to <strong>My Orders</strong>, select the order, and click <strong>Request Return</strong>. Our team reviews requests within 24-48 hours and sends a return shipping label.</p>',
-  '<p>Guest orders: email <a href="mailto:support@kalokea.in">support@kalokea.in</a> with your order number and reason.</p>',
+  '<p>Guest orders: email <a href="mailto:support@kalokea.com">support@kalokea.com</a> with your order number and reason.</p>',
   '<h2>Refund Process</h2>',
   '<p><strong>Online payments (Razorpay):</strong> Refunded to the original payment method within 5-7 business days after approval.</p>',
   '<p><strong>Cash on Delivery:</strong> Refunded as store credit or via bank transfer (NEFT/UPI) within 5-7 business days.</p>',
   '<h2>Exchange Policy</h2>',
   '<p>Free size exchanges (subject to stock). Select "Exchange" during the return request. The replacement ships once we receive the original.</p>',
   '<h2>Damaged or Wrong Items</h2>',
-  '<p>Email <a href="mailto:support@kalokea.in">support@kalokea.in</a> with your order number and a photo within <strong>48 hours of delivery</strong>. We will arrange a free pickup and send a replacement or full refund.</p>',
+  '<p>Email <a href="mailto:support@kalokea.com">support@kalokea.com</a> with your order number and a photo within <strong>48 hours of delivery</strong>. We will arrange a free pickup and send a replacement or full refund.</p>',
   '<h2>Return Shipping</h2>',
   '<p>We provide a prepaid return label via ShipRocket. If the return is due to change of mind, a flat return shipping fee of <strong>Rs. 99</strong> will be deducted from your refund.</p>',
   '<h2>Contact Us</h2>',
-  '<p>Email <a href="mailto:support@kalokea.in">support@kalokea.in</a> — Mon to Sat, 10 AM to 6 PM IST.</p>',
+  '<p>Email <a href="mailto:support@kalokea.com">support@kalokea.com</a> — Mon to Sat, 10 AM to 6 PM IST.</p>',
 ].join('\n')
 
 const refundFaqJsonLd = {
@@ -47,7 +47,7 @@ const refundFaqJsonLd = {
       name: 'How do I initiate a return on Kalokea?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Log in to your account, go to My Orders, select the order, and click Request Return. For guest orders, email support@kalokea.in with your order number and reason. Requests are reviewed within 24–48 hours.',
+        text: 'Log in to your account, go to My Orders, select the order, and click Request Return. For guest orders, email support@kalokea.com with your order number and reason. Requests are reviewed within 24–48 hours.',
       },
     },
     {

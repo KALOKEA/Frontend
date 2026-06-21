@@ -227,10 +227,10 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                 For order support, returns, or any questions, contact us.
               </p>
               <a
-                href="mailto:support@kalokea.in"
+                href="mailto:support@kalokea.com"
                 className="text-[10px] uppercase tracking-widest text-[#7C4A2D] hover:underline"
               >
-                support@kalokea.in
+                support@kalokea.com
               </a>
             </div>
           </aside>

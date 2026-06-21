@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { getPost, relatedPosts } from '@/lib/blog/posts'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 export interface FaqItem {
   q: string

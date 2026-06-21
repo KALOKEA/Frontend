@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Browse Kalokea's complete women's fashion collection. Shop dresses, tops, bottoms, shoes, bags and accessories. Free shipping above ₹999.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'}/shop/`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'}/shop/`,
   },
   openGraph: {
     title: "Shop Women's Fashion | Kalokea",

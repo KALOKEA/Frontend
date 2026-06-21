@@ -14,7 +14,7 @@ import type { Metadata } from 'next'
 
 import { BASE_URL } from '@/lib/api/client'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 // Build-time homepage fetch. Because the site is `output: 'export'`, this runs
 // ONCE during the build and the resulting hero content is baked into the static

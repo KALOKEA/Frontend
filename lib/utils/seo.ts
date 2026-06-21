@@ -1,7 +1,7 @@
 import type { Product } from '@/lib/api/products'
 import type { Category } from '@/lib/api/categories'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 export function productMeta(product: Product) {
   const img = product.product_images?.find((i) => i.is_primary)?.url

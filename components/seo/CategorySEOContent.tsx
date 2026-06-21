@@ -44,7 +44,7 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
       },
       {
         title: 'How to Choose the Right Dress for Your Body Type',
-        body: "Every body is a dress body — it's about knowing which silhouettes amplify what you love. If you prefer to define the waist: wrap dresses, belted styles, and fit-and-flare cuts all create an hourglass line. If you prefer to draw attention to the shoulder: off-shoulder or square necklines broaden the shoulder and create visual balance. If you want a lean vertical line: shift dresses, column styles, and vertical prints all elongate. For more guidance, visit our Size Guide at kalokea.in/size-guide/ — our stylists have written detailed notes for each common fit concern.",
+        body: "Every body is a dress body — it's about knowing which silhouettes amplify what you love. If you prefer to define the waist: wrap dresses, belted styles, and fit-and-flare cuts all create an hourglass line. If you prefer to draw attention to the shoulder: off-shoulder or square necklines broaden the shoulder and create visual balance. If you want a lean vertical line: shift dresses, column styles, and vertical prints all elongate. For more guidance, visit our Size Guide at kalokea.com/size-guide/ — our stylists have written detailed notes for each common fit concern.",
       },
     ],
     closingCta:

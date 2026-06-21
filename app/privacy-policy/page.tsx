@@ -5,12 +5,12 @@ import CmsPageContent from '@/components/CmsPageContent'
 export const metadata: Metadata = {
   title: 'Privacy Policy | Kalokea',
   description: 'How Kalokea collects, uses, and protects your personal information.',
-  alternates: { canonical: 'https://kalokea.in/privacy-policy/' },
+  alternates: { canonical: 'https://kalokea.com/privacy-policy/' },
 }
 
 const SC = [
   '<h2>Introduction</h2>',
-  '<p>Kalokea ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website kalokea.in or make a purchase.</p>',
+  '<p>Kalokea ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website kalokea.com or make a purchase.</p>',
   '<h2>Information We Collect</h2>',
   '<p><strong>Personal Information:</strong> Name, email address, phone number, shipping address, and payment details (processed securely by Razorpay — we never store card data).</p>',
   '<p><strong>Usage Data:</strong> Pages visited, products viewed, device type, and browser information collected via cookies and analytics.</p>',
@@ -23,11 +23,11 @@ const SC = [
   '<h2>Data Retention</h2>',
   '<p>We retain your personal data for as long as your account is active or as needed to provide services, comply with legal obligations, and resolve disputes.</p>',
   '<h2>Your Rights</h2>',
-  '<p>You have the right to access, correct, or delete your personal data. To exercise these rights, email <a href="mailto:support@kalokea.in">support@kalokea.in</a>.</p>',
+  '<p>You have the right to access, correct, or delete your personal data. To exercise these rights, email <a href="mailto:support@kalokea.com">support@kalokea.com</a>.</p>',
   '<h2>Security</h2>',
   '<p>We implement industry-standard security measures including SSL encryption, secure payment processing via Razorpay, and limited staff access to personal data.</p>',
   '<h2>Contact</h2>',
-  '<p>For privacy-related queries, email <a href="mailto:support@kalokea.in">support@kalokea.in</a> — Mon to Sat, 10 AM to 6 PM IST.</p>',
+  '<p>For privacy-related queries, email <a href="mailto:support@kalokea.com">support@kalokea.com</a> — Mon to Sat, 10 AM to 6 PM IST.</p>',
 ].join('\n')
 
 export default function Page() {

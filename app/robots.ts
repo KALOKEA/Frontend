@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next'
 // Generated to /robots.txt at build (works with output:'export').
 // Note: public/robots.txt (static file) overrides this at runtime on Cloudflare Pages.
 // Keep both in sync. This file is used by build tooling; public/robots.txt is served.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 export const dynamic = 'force-static'
 

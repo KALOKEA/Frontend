@@ -338,7 +338,7 @@ export default function AdminSettingsPage() {
                 type="email"
                 value={form.admin_email}
                 onChange={e => set('admin_email', e.target.value)}
-                placeholder="you@kalokea.in"
+                placeholder="you@kalokea.com"
                 className={INP}
               />
             </Field>

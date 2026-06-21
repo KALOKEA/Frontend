@@ -234,8 +234,8 @@ const SHOP_BREADCRUMB = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.in/' },
-    { '@type': 'ListItem', position: 2, name: 'Shop', item: 'https://kalokea.in/shop/' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Shop', item: 'https://kalokea.com/shop/' },
   ],
 })
 
@@ -243,8 +243,8 @@ const ORGANIZATION_LD = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Kalokea',
-  url: 'https://kalokea.in',
-  logo: 'https://kalokea.in/logo.png',
+  url: 'https://kalokea.com',
+  logo: 'https://kalokea.com/logo.png',
   description: 'Premium women\'s fashion brand offering dresses, tops, bottoms, co-ord sets, and bags. Fast pan-India delivery, easy 7-day returns, COD available.',
   contactPoint: {
     '@type': 'ContactPoint',

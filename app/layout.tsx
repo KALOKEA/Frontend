@@ -33,7 +33,7 @@ const dmSans = DM_Sans({
   display: 'swap',
 })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.in'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
@@ -79,7 +79,7 @@ const organizationJsonLd = {
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',
-    email: 'hello@kalokea.in',
+    email: 'support@kalokea.com',
     availableLanguage: ['English', 'Hindi'],
     contactOption: 'TollFree',
     areaServed: 'IN',

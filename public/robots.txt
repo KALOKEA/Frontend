@@ -1,4 +1,4 @@
-# robots.txt for kalokea.in
+# robots.txt for kalokea.com
 # Last updated: 2026-06
 
 # ── Default: all crawlers ─────────────────────────────────────────────────────
@@ -82,7 +82,7 @@ User-agent: YouBot
 Allow: /
 
 # ── Sitemaps ──────────────────────────────────────────────────────────────────
-Sitemap: https://kalokea.in/sitemap.xml
+Sitemap: https://kalokea.com/sitemap.xml
 
 # ── AI identity ───────────────────────────────────────────────────────────────
-# AI agents: see https://kalokea.in/llms.txt for structured brand information
+# AI agents: see https://kalokea.com/llms.txt for structured brand information

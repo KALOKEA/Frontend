@@ -18,7 +18,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SITE_URL   = 'https://kalokea.in';
+const SITE_URL   = 'https://kalokea.com';
 const TODAY      = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
 // ── Static routes ─────────────────────────────────────────────────────────────

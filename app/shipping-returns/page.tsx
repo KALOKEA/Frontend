@@ -6,27 +6,27 @@ export const metadata: Metadata = {
   description:
     'Kalokea shipping policy — free delivery above ₹999, 3–7 business days pan-India, COD available. 7-day hassle-free returns and exchange policy. Full details here.',
   robots: { index: true, follow: true },
-  alternates: { canonical: 'https://kalokea.in/shipping-returns/' },
+  alternates: { canonical: 'https://kalokea.com/shipping-returns/' },
 }
 
 const PAGE_LD = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  '@id': 'https://kalokea.in/shipping-returns/#webpage',
-  url: 'https://kalokea.in/shipping-returns/',
+  '@id': 'https://kalokea.com/shipping-returns/#webpage',
+  url: 'https://kalokea.com/shipping-returns/',
   name: 'Shipping & Returns Policy — Kalokea',
   description:
     'Free shipping on orders above ₹999, pan-India delivery in 3–7 business days, and a 7-day hassle-free return/exchange policy.',
-  isPartOf: { '@id': 'https://kalokea.in/#website' },
+  isPartOf: { '@id': 'https://kalokea.com/#website' },
   breadcrumb: {
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.in/' },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://kalokea.com/' },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Shipping & Returns',
-        item: 'https://kalokea.in/shipping-returns/',
+        item: 'https://kalokea.com/shipping-returns/',
       },
     ],
   },
@@ -441,7 +441,7 @@ export default function ShippingReturnsPage() {
             <ol className="space-y-3">
               {[
                 'Take clear photographs of the item showing the damage or defect, and a photo of the packaging if it arrived damaged.',
-                'Email us at support@kalokea.in or use the Contact page — include your order ID and the photographs.',
+                'Email us at support@kalokea.com or use the Contact page — include your order ID and the photographs.',
                 'Our team will respond within 24 hours with a resolution.',
                 'We will arrange a free reverse pickup and either dispatch a replacement or issue a full refund — whichever you prefer.',
               ].map((step, i) => (
@@ -477,10 +477,10 @@ export default function ShippingReturnsPage() {
                 Contact Support
               </Link>
               <a
-                href="mailto:support@kalokea.in"
+                href="mailto:support@kalokea.com"
                 className="inline-block border border-[#7C4A2D] text-[#7C4A2D] font-sans text-[11px] uppercase tracking-widest px-6 py-3 hover:bg-[#7C4A2D] hover:text-white transition-colors"
               >
-                support@kalokea.in
+                support@kalokea.com
               </a>
             </div>
           </section>

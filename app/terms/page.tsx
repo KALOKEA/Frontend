@@ -5,12 +5,12 @@ import CmsPageContent from '@/components/CmsPageContent'
 export const metadata: Metadata = {
   title: 'Terms & Conditions | Kalokea',
   description: 'Terms and conditions for using Kalokea.',
-  alternates: { canonical: 'https://kalokea.in/terms/' },
+  alternates: { canonical: 'https://kalokea.com/terms/' },
 }
 
 const SC = [
   '<h2>Acceptance of Terms</h2>',
-  '<p>By accessing and using kalokea.in, you agree to be bound by these Terms and Conditions. If you do not agree, please do not use our website.</p>',
+  '<p>By accessing and using kalokea.com, you agree to be bound by these Terms and Conditions. If you do not agree, please do not use our website.</p>',
   '<h2>Products and Pricing</h2>',
   '<p>All prices are in Indian Rupees (INR) and inclusive of applicable taxes. We reserve the right to change prices at any time. Product images are for illustration — actual colours may vary slightly due to display settings.</p>',
   '<h2>Orders and Payment</h2>',
@@ -21,7 +21,7 @@ const SC = [
   '<h2>Returns and Refunds</h2>',
   '<p>We offer 7-day returns on eligible items. For full details, see our <a href="/refund-policy/">Refund & Return Policy</a>.</p>',
   '<h2>Intellectual Property</h2>',
-  '<p>All content on kalokea.in — including text, images, logos, and design — is the property of Kalokea and protected by copyright law. You may not reproduce or use it without prior written permission.</p>',
+  '<p>All content on kalokea.com — including text, images, logos, and design — is the property of Kalokea and protected by copyright law. You may not reproduce or use it without prior written permission.</p>',
   '<h2>User Accounts</h2>',
   '<p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. Notify us immediately of any unauthorised use.</p>',
   '<h2>Limitation of Liability</h2>',
@@ -29,7 +29,7 @@ const SC = [
   '<h2>Governing Law</h2>',
   '<p>These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Mumbai, Maharashtra.</p>',
   '<h2>Contact</h2>',
-  '<p>For queries regarding these Terms, email <a href="mailto:support@kalokea.in">support@kalokea.in</a>.</p>',
+  '<p>For queries regarding these Terms, email <a href="mailto:support@kalokea.com">support@kalokea.com</a>.</p>',
 ].join('\n')
 
 export default function Page() {

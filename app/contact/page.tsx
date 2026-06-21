@@ -100,7 +100,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-sans uppercase tracking-widest text-[#6b5c55] mb-0.5">Email</p>
-                    <p className="font-sans text-[14px] text-[#0A0908]">support@kalokea.in</p>
+                    <p className="font-sans text-[14px] text-[#0A0908]">support@kalokea.com</p>
                     <p className="text-[11px] font-sans text-[#6B5E55]">We reply within 24 hours</p>
                   </div>
                 </div>
