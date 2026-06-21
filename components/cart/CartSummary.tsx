@@ -30,10 +30,29 @@ export default function CartSummary({ couponDiscount = 0 }: { couponDiscount?: n
           <span>Shipping</span>
           <span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
         </div>
-        {shipping > 0 && (
-          <p className="text-[10px] font-sans text-[#7C4A2D]">
-            Add {formatPrice(SHIPPING_THRESHOLD - subtotal)} more for free shipping
-          </p>
+        {shipping > 0 ? (
+          <div className="pt-1">
+            <p className="text-[10px] font-sans text-[#7C4A2D]">
+              Add <span className="font-semibold">{formatPrice(SHIPPING_THRESHOLD - subtotal)}</span> more for free shipping
+            </p>
+            <div
+              className="mt-1.5 h-1 bg-[#e8e4e0] rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuenow={Math.min(100, Math.round((subtotal / SHIPPING_THRESHOLD) * 100))}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Free shipping progress"
+            >
+              <div
+                className="h-full bg-[#7C4A2D] rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(100, Math.round((subtotal / SHIPPING_THRESHOLD) * 100))}%` }}
+              />
+            </div>
+          </div>
+        ) : (
+          subtotal > 0 && (
+            <p className="text-[10px] font-sans text-green-700 font-semibold">✓ You&apos;ve unlocked free shipping</p>
+          )
         )}
       </div>
 
