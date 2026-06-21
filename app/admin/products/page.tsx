@@ -29,6 +29,7 @@ interface FormState {
   category_id: string; tags: string
   is_featured: boolean; is_active: boolean
   sort_weight: string
+  faqs: { q: string; a: string }[]
 }
 
 const emptyForm = (): FormState => ({
@@ -40,6 +41,7 @@ const emptyForm = (): FormState => ({
   category_id: '', tags: '',
   is_featured: false, is_active: true,
   sort_weight: '0',
+  faqs: [],
 })
 
 function productToForm(p: Product): FormState {
@@ -58,6 +60,7 @@ function productToForm(p: Product): FormState {
     tags: (p.tags || []).join(', '),
     is_featured: p.is_featured, is_active: p.is_active,
     sort_weight: String(p.sort_weight ?? 0),
+    faqs: Array.isArray(p.faqs) ? p.faqs : [],
   }
 }
 
@@ -341,6 +344,7 @@ function ProductEditor({
       is_featured: form.is_featured,
       is_active: form.is_active,
       sort_weight: parseInt(form.sort_weight, 10) || 0,
+      faqs: form.faqs.map(f => ({ q: f.q.trim(), a: f.a.trim() })).filter(f => f.q || f.a),
     }
     try {
       if (form.id) {
@@ -774,6 +778,44 @@ function ProductEditor({
             </Field>
           </Card>
 
+          {/* ── Product FAQ (admin-editable, shown on product page) ────── */}
+          <Card title={`Product FAQ${form.faqs.length ? ` (${form.faqs.length})` : ''}`}>
+            <p className="text-[11px] text-[#6b6b6b] mb-3">
+              Shown as an accordion on the product page. Add the questions customers ask most
+              (fit, fabric, wash care, delivery…). Leave empty to hide the FAQ section.
+            </p>
+            {form.faqs.map((fq, i) => (
+              <div key={i} className="border border-[#e8e4e0] bg-[#faf8f5] p-3 mb-2">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] uppercase tracking-widest text-[#6b6b6b]">Q{i + 1}</span>
+                  <button
+                    onClick={() => setForm(f => ({ ...f, faqs: f.faqs.filter((_, idx) => idx !== i) }))}
+                    className="text-[10px] uppercase tracking-widest text-red-500 hover:underline"
+                  >Remove</button>
+                </div>
+                <input
+                  value={fq.q}
+                  onChange={e => setForm(f => ({ ...f, faqs: f.faqs.map((x, idx) => idx === i ? { ...x, q: e.target.value } : x) }))}
+                  className="inp mb-2"
+                  placeholder="Question — e.g. Is this fabric stretchable?"
+                />
+                <textarea
+                  value={fq.a}
+                  rows={2}
+                  onChange={e => setForm(f => ({ ...f, faqs: f.faqs.map((x, idx) => idx === i ? { ...x, a: e.target.value } : x) }))}
+                  className="inp resize-y"
+                  placeholder="Answer shown to customers"
+                />
+              </div>
+            ))}
+            <button
+              onClick={() => setForm(f => ({ ...f, faqs: [...f.faqs, { q: '', a: '' }] }))}
+              className="px-3 py-2 text-sm border border-[#0a0a0a] hover:bg-[#faf8f5] transition-colors"
+            >
+              + Add FAQ
+            </button>
+          </Card>
+
           {/* ── Variants ─────────────────────────────────────────────── */}
           <div ref={variantsSectionRef}>
             <Card title={
@@ -803,10 +845,11 @@ function ProductEditor({
                         <VariantRow
                           key={v.id}
                           v={v}
-                          onSave={async (v2, stock, price) => {
+                          onSave={async (v2, stock, price, sku) => {
                             await variantsApi.update(v2.id, {
                               stock: parseInt(stock, 10),
                               price: Math.round(parseFloat(price) * 100),
+                              sku, // '' clears the SKU; backend trims to NULL
                             })
                             if (form.id) refreshMedia(form.id)
                           }}
@@ -1246,11 +1289,12 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 
 function VariantRow({ v, onSave, onDelete }: {
   v: ProductVariant
-  onSave: (v: ProductVariant, stock: string, price: string) => Promise<void>
+  onSave: (v: ProductVariant, stock: string, price: string, sku: string) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }) {
   const [stock, setStock]     = useState(String(v.stock))
   const [price, setPrice]     = useState(String(Math.round(v.price / 100)))
+  const [sku, setSku]         = useState(v.sku || '')
   const [saving, setSaving]   = useState(false)
   const [deleting, setDeleting] = useState(false)
   const busy = saving || deleting
@@ -1258,7 +1302,11 @@ function VariantRow({ v, onSave, onDelete }: {
     <tr className="border-b border-[#f0ece8] last:border-0">
       <td className="py-2 pr-3 text-[#0a0a0a]">{v.colour || '—'}</td>
       <td className="py-2 pr-3 text-[#0a0a0a]">{v.size || '—'}</td>
-      <td className="py-2 pr-3 text-[#6b6b6b] text-xs font-mono">{v.sku || '—'}</td>
+      <td className="py-2 pr-3">
+        <input value={sku} onChange={e => setSku(e.target.value)}
+          disabled={busy} placeholder="—" title="Set your own SKU"
+          className="w-28 border border-[#e8e4e0] px-2 py-1 text-xs font-mono focus:border-[#0a0a0a] outline-none disabled:opacity-50" />
+      </td>
       <td className="py-2 pr-3">
         <input type="number" value={price} onChange={e => setPrice(e.target.value)}
           disabled={busy}
@@ -1273,7 +1321,7 @@ function VariantRow({ v, onSave, onDelete }: {
         <button
           onClick={async () => {
             setSaving(true)
-            try { await onSave(v, stock, price) } finally { setSaving(false) }
+            try { await onSave(v, stock, price, sku) } finally { setSaving(false) }
           }}
           disabled={busy}
           className="px-3 py-1 text-xs bg-[#0a0a0a] text-white hover:bg-[#333] disabled:opacity-50 transition-colors"

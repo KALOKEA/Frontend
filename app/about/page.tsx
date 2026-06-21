@@ -6,6 +6,7 @@ import {
   type AboutHero, type AboutValue, type AboutStat, type TeamMember,
   ABOUT_HERO_DEFAULT, ABOUT_VALUES_DEFAULT, ABOUT_STATS_DEFAULT,
 } from '@/lib/api/siteContent'
+import ShopSEOContent from '@/components/seo/ShopSEOContent'
 
 // ─── Skeleton primitives ─────────────────────────────────────────────────────
 
@@ -208,6 +209,11 @@ export default function AboutPage() {
           </div>
         </section>
       )}
+
+      {/* ── Comprehensive GEO / answer-engine content ─────────────────────── */}
+      {/* Moved here from the product pages so the full brand FAQ + prose lives in
+          one canonical place that search engines and AI assistants can cite. */}
+      <ShopSEOContent />
 
       {/* ── Static SEO / AI content strip ────────────────────────────────── */}
       {/* This section is static HTML for search engines and AI crawlers */}

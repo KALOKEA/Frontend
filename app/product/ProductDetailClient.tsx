@@ -364,7 +364,9 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
   const discount = formatDiscount(product.compare_price || 0, product.base_price)
   const stock = selectedVariant?.stock || 0
   const wishlisted = isWishlisted(product.id)
-  const TABS = ['description', 'fabric', 'shipping', 'returns', 'reviews']
+  // Reviews moved OUT of the tabs into a dedicated, always-visible section near the
+  // bottom of the page (after related products) so customers can actually find them.
+  const TABS = ['description', 'fabric', 'shipping', 'returns']
   const hasVariants = (product.product_variants?.length ?? 0) > 0
   const isOOS = hasVariants && selectedVariant !== null && selectedVariant.stock === 0
 
@@ -489,10 +491,10 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                   </>
                 )}
               </div>
-              {/* Star rating pill — always visible; click scrolls to Reviews tab */}
+              {/* Star rating pill — always visible; click scrolls to the Reviews section */}
               <button
                 type="button"
-                onClick={() => { setTab('reviews'); document.getElementById('tab-panel-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
+                onClick={() => document.getElementById('product-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                 className="inline-flex items-center gap-1.5 rounded-full border border-[#e8e4e0] bg-white px-2.5 py-1 hover:border-[#F59E0B] transition-colors group"
                 aria-label={`Rating: ${Number(product.avg_rating ?? 0).toFixed(1)} out of 5, ${product.review_count ?? 0} reviews`}
               >
@@ -678,9 +680,6 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
                     <p>Free return pickup. Refund processed in 5–7 business days.</p>
                   </div>
                 )}
-                {tab === 'reviews' && (
-                  <ProductReviews product_id={product.id} />
-                )}
               </div>
             </div>
           </div>
@@ -806,9 +805,36 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
           )
         })()}
 
+        {/* Product FAQ — admin-editable; covers fit, fabric, care, delivery, etc. */}
+        {Array.isArray(product.faqs) && product.faqs.length > 0 && (
+          <div className="mt-12 pt-10 border-t border-[#E0D4C4]">
+            <h2 className="font-serif text-2xl md:text-3xl text-[#0A0908] mb-6 text-center">Frequently Asked Questions</h2>
+            <div className="max-w-3xl mx-auto"><ProductFAQ faqs={product.faqs} /></div>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: product.faqs.map(f => ({
+                  '@type': 'Question',
+                  name: f.q,
+                  acceptedAnswer: { '@type': 'Answer', text: f.a },
+                })),
+              }) }}
+            />
+          </div>
+        )}
+
         {/* Related Products */}
         <div className="mt-16 pt-10 border-t border-[#E0D4C4]">
           <RelatedProducts exclude_id={product.id} category_id={product.categories?.id} />
+        </div>
+
+        {/* Customer Reviews — full-width, always visible (moved out of the hidden tab
+            so customers can find it). Sits below "You May Also Like". */}
+        <div id="product-reviews" className="mt-12 pt-10 border-t border-[#E0D4C4] scroll-mt-28">
+          <h2 className="font-serif text-2xl md:text-3xl text-[#0A0908] mb-6 text-center">Customer Reviews</h2>
+          <ProductReviews product_id={product.id} />
         </div>
 
         {/* Recently Viewed */}
@@ -817,5 +843,35 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
         </div>
       </div>
     </>
+  )
+}
+
+// ── Admin-editable product FAQ accordion ────────────────────────────────────────
+function ProductFAQ({ faqs }: { faqs: { q: string; a: string }[] }) {
+  const [open, setOpen] = useState<number | null>(0)
+  return (
+    <div className="border-t border-[#E0D4C4]">
+      {faqs.map((f, i) => (
+        <div key={i} className="border-b border-[#E0D4C4]">
+          <button
+            onClick={() => setOpen(o => (o === i ? null : i))}
+            className="w-full text-left py-4 flex items-center justify-between gap-4"
+            aria-expanded={open === i}
+          >
+            <span className="font-sans text-[14px] font-medium text-[#0A0908] leading-snug">{f.q}</span>
+            <span
+              className="shrink-0 w-5 h-5 flex items-center justify-center rounded-full border border-[#C49070] text-[#C49070] text-xs transition-transform"
+              style={{ transform: open === i ? 'rotate(45deg)' : 'none' }}
+              aria-hidden="true"
+            >+</span>
+          </button>
+          {open === i && (
+            <div className="pb-4 pr-8">
+              <p className="font-sans text-[13px] text-[#6B5E55] leading-relaxed whitespace-pre-line">{f.a}</p>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   )
 }

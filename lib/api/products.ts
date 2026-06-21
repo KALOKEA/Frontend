@@ -37,6 +37,8 @@ export interface Product {
   review_count?: number
   /** "Model is 5'6", 58 kg, wearing size S — Fits true to size" */
   model_info?: string
+  /** Admin-editable FAQ list shown on the product page. */
+  faqs?: { q: string; a: string }[]
   sort_weight?: number
   created_at: string
   categories?: { id: string; name: string; slug: string }
