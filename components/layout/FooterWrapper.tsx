@@ -42,7 +42,8 @@ const COL_FALLBACK: ColState = {
 
 export default function FooterWrapper() {
   const pathname = usePathname()
-  const hide = HIDDEN_PATHS.some(p => pathname === p || pathname.startsWith('/checkout/'))
+  // Hide the storefront footer on checkout and across the admin panel.
+  const hide = pathname.startsWith('/admin') || HIDDEN_PATHS.some(p => pathname === p || pathname.startsWith('/checkout/'))
   const [settings, setSettings] = useState<FooterSettings>(SETTINGS_FALLBACK)
   const [cols, setCols]         = useState<ColState>(COL_FALLBACK)
 

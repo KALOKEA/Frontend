@@ -1,0 +1,7 @@
+# Kalokea — Security contact (RFC 9116)
+# https://kalokea.com/.well-known/security.txt
+
+Contact: mailto:support@kalokea.com
+Preferred-Languages: en, hi
+Canonical: https://kalokea.com/.well-known/security.txt
+Expires: 2027-06-21T00:00:00.000Z

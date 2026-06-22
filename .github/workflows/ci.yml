@@ -28,3 +28,6 @@ jobs:
         env:
           # Product pages are fetched at build time; point CI at the live API.
           NEXT_PUBLIC_API_URL: https://backend-production-73aa.up.railway.app
+
+      - name: npm audit (non-blocking — review advisories)
+        run: npm audit --audit-level=high || true

@@ -22,6 +22,10 @@ const NAV_LINKS = [
 export default function Header() {
   const router = useRouter()
   const pathname = usePathname()
+  // Admin has its own shell (sidebar). The storefront header must NOT render on
+  // /admin — its z-900 layer was sitting on top of admin modals (e.g. the
+  // email-log "Details" dialog appeared to do nothing because it opened behind it).
+  const isAdmin = !!pathname?.startsWith('/admin')
   const [scrolled, setScrolled]     = useState(false)
   const [menuOpen, setMenuOpen]     = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -83,6 +87,12 @@ export default function Header() {
     return () => ro.disconnect()
   }, [])
 
+  // On admin routes the storefront header isn't rendered, so reset the layout's
+  // top padding to 0 (otherwise <main> keeps the storefront's --header-h gap).
+  useEffect(() => {
+    if (isAdmin) document.documentElement.style.setProperty('--header-h', '0px')
+  }, [isAdmin])
+
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     const q = searchQuery.trim()
@@ -100,6 +110,9 @@ export default function Header() {
   const iconCls = heroMode
     ? 'text-white hover:bg-white/10'
     : 'text-[#0A0806] hover:bg-[#F0EAE1]'
+
+  // Never render the storefront chrome inside the admin panel.
+  if (isAdmin) return null
 
   return (
     <>

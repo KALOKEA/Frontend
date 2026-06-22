@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { BASE_URL } from '@/lib/api/client'
 
 const DISMISS_KEY  = 'k_exit_popup_t'
@@ -31,6 +32,8 @@ function storeDismiss() {
 }
 
 export default function ExitIntentPopup() {
+  const pathname = usePathname()
+  const isAdmin = !!pathname?.startsWith('/admin')
   const [open, setOpen]     = useState(false)
   const [email, setEmail]   = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
@@ -52,6 +55,8 @@ export default function ExitIntentPopup() {
 
   // ── Attach exit-intent listeners ─────────────────────────────────────────
   useEffect(() => {
+    // Never arm the storefront newsletter popup inside the admin panel.
+    if (isAdmin) return
     // Desktop: mouse leaves viewport from the top
     const onMouseLeave = (e: MouseEvent) => {
       if (e.clientY < 10) tryShow()
@@ -66,7 +71,7 @@ export default function ExitIntentPopup() {
       document.removeEventListener('mouseleave', onMouseLeave)
       if (mobileTimer !== null) clearTimeout(mobileTimer)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isAdmin]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Body scroll lock + auto-focus ────────────────────────────────────────
   useEffect(() => {
@@ -108,7 +113,7 @@ export default function ExitIntentPopup() {
     }
   }
 
-  if (!open) return null
+  if (!open || isAdmin) return null
 
   return (
     <>

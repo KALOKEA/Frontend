@@ -6,7 +6,7 @@ import api from '@/lib/api/client'
 import { useToast } from '@/components/ui/Toast'
 import Spinner from '@/components/ui/Spinner'
 
-interface Subscriber { email: string; is_active: boolean; created_at: string }
+interface Subscriber { email: string; is_active: boolean; created_at: string; name?: string | null; phone?: string | null }
 type Tab = 'subscribers' | 'campaign' | 'history'
 
 export default function AdminNewsletterPage() {
@@ -169,10 +169,12 @@ export default function AdminNewsletterPage() {
             <div className="flex justify-center py-20"><Spinner size="lg" /></div>
           ) : (
             <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
-              <table className="w-full min-w-[400px] text-sm font-sans">
+              <table className="w-full min-w-[560px] text-sm font-sans">
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0] bg-[#faf8f5]">
+                    <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">Email</th>
+                    <th className="px-4 py-3">Phone</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">Subscribed</th>
                   </tr>
@@ -180,7 +182,9 @@ export default function AdminNewsletterPage() {
                 <tbody>
                   {subscribers.map(s => (
                     <tr key={s.email} className="border-b border-[#f0ece8] last:border-0 hover:bg-[#faf8f5] transition-colors">
+                      <td className="px-4 py-3 text-[#0a0a0a]">{s.name || <span className="text-[#b9b2aa]">—</span>}</td>
                       <td className="px-4 py-3 font-mono text-xs text-[#0a0a0a]">{s.email}</td>
+                      <td className="px-4 py-3 text-[#6b6b6b] text-xs">{s.phone || '—'}</td>
                       <td className="px-4 py-3">
                         <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded ${
                           s.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'
@@ -194,7 +198,7 @@ export default function AdminNewsletterPage() {
                     </tr>
                   ))}
                   {!subscribers.length && (
-                    <tr><td colSpan={3} className="px-4 py-10 text-center text-[#6b6b6b]">No subscribers</td></tr>
+                    <tr><td colSpan={5} className="px-4 py-10 text-center text-[#6b6b6b]">No subscribers</td></tr>
                   )}
                 </tbody>
               </table>

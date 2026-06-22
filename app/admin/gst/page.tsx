@@ -112,7 +112,7 @@ export default function AdminGstPage() {
             {/* CGST / SGST / IGST */}
             <div className="bg-white border border-[#e8e4e0] p-6">
               <h2 className="font-serif text-lg text-[#0a0a0a] mb-4">Net tax breakdown</h2>
-              <table className="w-full min-w-[540px] text-sm font-sans">
+              <table className="w-full text-sm font-sans">
                 <tbody>
                   <Row label="CGST (intra-state)" value={formatPrice(t!.cgst)} />
                   <Row label="SGST (intra-state)" value={formatPrice(t!.sgst)} />
@@ -128,7 +128,7 @@ export default function AdminGstPage() {
             {/* By transaction type */}
             <div className="bg-white border border-[#e8e4e0] p-6">
               <h2 className="font-serif text-lg text-[#0a0a0a] mb-4">By transaction type</h2>
-              <table className="w-full min-w-[540px] text-sm font-sans">
+              <table className="w-full text-sm font-sans">
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                     <th className="py-2">Type</th><th className="py-2 text-right">Taxable</th><th className="py-2 text-right">GST</th>
@@ -149,7 +149,7 @@ export default function AdminGstPage() {
 
           {/* Rate-wise (GSTR-1 style) */}
           {summary.by_rate.length > 0 && (
-            <div className="bg-white border border-[#e8e4e0] mb-8">
+            <div className="bg-white border border-[#e8e4e0] mb-8 overflow-x-auto">
               <h2 className="font-serif text-lg text-[#0a0a0a] px-6 pt-5 pb-3">Rate-wise summary (GSTR-1)</h2>
               <table className="w-full min-w-[540px] text-sm font-sans">
                 <thead>
