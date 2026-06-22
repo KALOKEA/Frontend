@@ -661,6 +661,10 @@ function ProductEditor({
                 className="inp resize-y"
                 placeholder="Product description shown on product page…"
               />
+              <p className="text-[11px] text-[#6b6b6b] mt-1">
+                Tip: wrap text in <code>**double asterisks**</code> to make it <strong>bold</strong> on the product page.
+                Use <code>•</code> to start a bulleted section.
+              </p>
             </Field>
             <Field label="Fabric & Care">
               <textarea

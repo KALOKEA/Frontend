@@ -57,8 +57,12 @@ export default function FooterWrapper() {
     // Fetch footer column links from site_content API
     siteContentApi.getParsed()
       .then(d => {
+        // Guarantee the Help & Support link is present even if the admin's saved
+        // footer column predates it (otherwise the /help page is unreachable).
+        const help = Array.isArray(d.footer_help_col) ? d.footer_help_col : []
+        const hasHelp = help.some(l => l.href === '/help/' || /help\b/i.test(l.label))
         setCols({
-          helpCol:    d.footer_help_col,
+          helpCol:    hasHelp ? help : [{ label: 'Help & Support', href: '/help/' }, ...help],
           companyCol: d.footer_company_col,
           legalLinks: d.footer_legal_links,
           copyright:  d.footer_copyright,

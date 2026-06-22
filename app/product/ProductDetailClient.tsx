@@ -27,11 +27,22 @@ const SECTION_HEADERS = [
   'How to Wear', 'Styling Tips', 'Occasion', 'Occasions',
 ]
 
+// Render inline **bold** markdown as <strong>; everything else stays plain text
+// (React escapes it, so this is XSS-safe — no raw HTML). Lets the admin bold parts
+// of a product description just by wrapping text in **double asterisks**.
+function renderInline(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    /^\*\*[^*]+\*\*$/.test(part)
+      ? <strong key={i} className="font-semibold text-[#0A0908]">{part.slice(2, -2)}</strong>
+      : <span key={i}>{part}</span>,
+  )
+}
+
 function DescriptionRenderer({ text }: { text: string }) {
   if (!text) return <p>A beautifully crafted piece made with care and attention to detail.</p>
 
   const cleaned = text.replace(/^Product\s*Description\s*/i, '').trim()
-  if (!cleaned.includes('•')) return <p className="leading-relaxed">{cleaned}</p>
+  if (!cleaned.includes('•')) return <p className="leading-relaxed">{renderInline(cleaned)}</p>
 
   type Section = { title: string; items: string[] }
   let intro = ''
@@ -60,7 +71,7 @@ function DescriptionRenderer({ text }: { text: string }) {
 
   return (
     <div className="space-y-4">
-      {intro && <p className="leading-relaxed">{intro.trim()}</p>}
+      {intro && <p className="leading-relaxed">{renderInline(intro.trim())}</p>}
       {sections.map((s, i) => (
         <div key={i} className="space-y-1.5">
           <p className="text-[10px] uppercase tracking-[0.15em] text-[#0A0908] font-semibold">{s.title}</p>
@@ -68,7 +79,7 @@ function DescriptionRenderer({ text }: { text: string }) {
             {s.items.map((item, j) => (
               <li key={j} className="flex items-start gap-2.5">
                 <span className="text-[#7C4A2D] shrink-0 mt-[1px]">—</span>
-                <span>{item}</span>
+                <span>{renderInline(item)}</span>
               </li>
             ))}
           </ul>
