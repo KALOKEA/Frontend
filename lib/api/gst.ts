@@ -39,6 +39,23 @@ export interface GstSummary {
   count: number
 }
 
+export interface GstCashflow {
+  from: string | null
+  to: string | null
+  collected: number
+  prepaid_collected: number
+  cod_collected: number
+  cod_outstanding: number
+  refunded: number
+  net_in_hand: number
+  counts: {
+    prepaid_collected: number
+    cod_collected: number
+    cod_outstanding: number
+    refunded: number
+  }
+}
+
 function qs(params: Record<string, string | undefined>): string {
   const p = new URLSearchParams()
   Object.entries(params).forEach(([k, v]) => { if (v) p.set(k, v) })
@@ -69,6 +86,8 @@ export const gstApi = {
     api.get<GstLedgerRow[]>(`/gst/ledger${qs(params)}`),
   summary: (params: { from?: string; to?: string }) =>
     api.get<GstSummary>(`/gst/summary${qs(params)}`),
+  cashflow: (params: { from?: string; to?: string }) =>
+    api.get<GstCashflow>(`/gst/cashflow${qs(params)}`),
 
   downloadTransactions: (params: { from?: string; to?: string; type?: string }) =>
     downloadCsv(`/gst/export/transactions${qs(params)}`, `gst-transactions${params.from ? '-' + params.from : ''}.csv`),

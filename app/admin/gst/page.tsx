@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
-import { gstApi, type GstSummary, type GstLedgerRow } from '@/lib/api/gst'
+import { gstApi, type GstSummary, type GstLedgerRow, type GstCashflow } from '@/lib/api/gst'
 import StatsCard from '@/components/admin/StatsCard'
 import Spinner from '@/components/ui/Spinner'
 import { useToast } from '@/components/ui/Toast'
@@ -27,6 +27,7 @@ export default function AdminGstPage() {
   const [to, setTo] = useState(today())
   const [type, setType] = useState('')
   const [summary, setSummary] = useState<GstSummary | null>(null)
+  const [cashflow, setCashflow] = useState<GstCashflow | null>(null)
   const [rows, setRows] = useState<GstLedgerRow[]>([])
   const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState(false)
@@ -36,9 +37,10 @@ export default function AdminGstPage() {
     Promise.all([
       gstApi.summary({ from, to }),
       gstApi.ledger({ from, to, type: type || undefined }),
+      gstApi.cashflow({ from, to }),
     ])
-      .then(([s, r]) => { setSummary(s); setRows(r) })
-      .catch(() => { setSummary(null); setRows([]) })
+      .then(([s, r, cf]) => { setSummary(s); setRows(r); setCashflow(cf) })
+      .catch(() => { setSummary(null); setRows([]); setCashflow(null) })
       .finally(() => setLoading(false))
   }, [from, to, type])
 
@@ -107,6 +109,38 @@ export default function AdminGstPage() {
             <StatsCard title="Gross (incl. GST)" value={formatPrice(t!.gross)} />
             <StatsCard title="Ledger Entries" value={summary.count} />
           </div>
+
+          {/* ── Cash flow / settlement — the 3 money scenarios ── */}
+          {cashflow && (
+            <div className="bg-white border border-[#e8e4e0] p-6 mb-8">
+              <h2 className="font-serif text-lg text-[#0a0a0a] mb-1">Cash flow &amp; settlement</h2>
+              <p className="text-xs text-[#6b6b6b] mb-4">
+                Money view (not tax). COD cash is counted as received once the order is marked <strong>delivered</strong>.
+              </p>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="border border-[#e8e4e0] p-4">
+                  <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Money received</p>
+                  <p className="text-2xl font-serif text-green-700">{formatPrice(cashflow.collected)}</p>
+                  <p className="text-[11px] text-[#6b6b6b] mt-1">Prepaid {formatPrice(cashflow.prepaid_collected)} · COD {formatPrice(cashflow.cod_collected)}</p>
+                </div>
+                <div className="border border-[#e8e4e0] p-4">
+                  <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">COD outstanding</p>
+                  <p className="text-2xl font-serif text-amber-700">{formatPrice(cashflow.cod_outstanding)}</p>
+                  <p className="text-[11px] text-[#6b6b6b] mt-1">{cashflow.counts.cod_outstanding} order(s) sold, cash not yet collected</p>
+                </div>
+                <div className="border border-[#e8e4e0] p-4">
+                  <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Refunded (paid out)</p>
+                  <p className="text-2xl font-serif text-red-600">{formatPrice(cashflow.refunded)}</p>
+                  <p className="text-[11px] text-[#6b6b6b] mt-1">{cashflow.counts.refunded} return/exchange refund(s)</p>
+                </div>
+                <div className="border border-[#e8e4e0] p-4 bg-[#faf8f5]">
+                  <p className="text-[10px] uppercase tracking-widest text-[#6b6b6b] mb-1">Net in hand</p>
+                  <p className="text-2xl font-serif text-[#0a0a0a]">{formatPrice(cashflow.net_in_hand)}</p>
+                  <p className="text-[11px] text-[#6b6b6b] mt-1">Received − refunded</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* CGST / SGST / IGST */}

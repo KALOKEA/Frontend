@@ -12,6 +12,7 @@ const NAV = [
   { label: 'About',      href: '/admin/about/' },
   { label: 'Footer',     href: '/admin/footer/' },
   { label: 'CMS Pages',  href: '/admin/cms/' },
+  { label: 'Help & FAQ', href: '/admin/help/' },
   { label: 'Products',   href: '/admin/products/' },
   { label: 'Categories', href: '/admin/categories/' },
   { label: 'Orders',     href: '/admin/orders/' },

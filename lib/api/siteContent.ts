@@ -80,6 +80,7 @@ export const FOOTER_SHOP_DEFAULT: FooterLink[] = [
 ]
 
 export const FOOTER_HELP_DEFAULT: FooterLink[] = [
+  { label: 'Help & Support',    href: '/help/' },
   { label: 'Contact Us',        href: '/contact/' },
   { label: 'Size Guide',        href: '/size-guide/' },
   { label: 'Track Order',       href: '/track-order/' },
