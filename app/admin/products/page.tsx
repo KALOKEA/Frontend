@@ -24,6 +24,7 @@ interface FormState {
   name: string; slug: string; description: string; fabric_care: string; model_info: string
   youtube_url: string
   video_url: string
+  videos: string
   base_price: string; compare_price: string
   hsn_code: string; gst_rate: string
   category_id: string; tags: string
@@ -36,6 +37,7 @@ const emptyForm = (): FormState => ({
   name: '', slug: '', description: '', fabric_care: '', model_info: '',
   youtube_url: '',
   video_url: '',
+  videos: '',
   base_price: '', compare_price: '',
   hsn_code: '', gst_rate: '',
   category_id: '', tags: '',
@@ -52,6 +54,7 @@ function productToForm(p: Product): FormState {
     model_info: p.model_info || '',
     youtube_url: p.youtube_url || '',
     video_url: p.video_url || '',
+    videos: (p.videos || []).join('\n'),
     base_price: String(Math.round(p.base_price / 100)),
     compare_price: p.compare_price ? String(Math.round(p.compare_price / 100)) : '',
     hsn_code: p.hsn_code || '',
@@ -335,6 +338,7 @@ function ProductEditor({
       model_info: form.model_info || undefined,
       youtube_url: form.youtube_url || undefined,
       video_url: form.video_url || undefined,
+      videos: form.videos.split(/\r?\n/).map(s => s.trim()).filter(Boolean),
       category_id: form.category_id || undefined,
       base_price: Math.round(priceNum * 100),
       compare_price: form.compare_price ? Math.round(parseFloat(form.compare_price) * 100) : undefined,
@@ -525,7 +529,7 @@ function ProductEditor({
     setVideoUploading(true)
     try {
       const { url } = await uploadAdminMedia(file, 'products/video')
-      setForm(f => ({ ...f, video_url: url }))
+      setForm(f => ({ ...f, videos: f.videos.trim() ? `${f.videos.trim()}\n${url}` : url }))
       showToast('Video uploaded')
     } catch (e: unknown) {
       showToast(e instanceof Error ? e.message : 'Video upload failed — is Cloudinary configured?', 'err')
@@ -708,6 +712,19 @@ function ProductEditor({
                 )}
               </div>
               <p className="text-[11px] text-[#6b6b6b] mt-1">Paste any YouTube link (watch, youtu.be, Shorts) OR upload an .mp4/.webm file. Shows as a video below the description.</p>
+
+              {/* Multiple videos — one URL per line. Uploads are appended here. */}
+              <div className="mt-3">
+                <label className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">All product videos — one link per line</label>
+                <textarea
+                  value={form.videos}
+                  onChange={e => setForm(f => ({ ...f, videos: e.target.value }))}
+                  rows={3}
+                  className="inp"
+                  placeholder={"https://youtube.com/shorts/xxxxxxxxxxx\nhttps://res.cloudinary.com/.../video.mp4"}
+                />
+                <p className="text-[11px] text-[#6b6b6b] mt-1">Add MULTIPLE videos — each on its own line (YouTube links and/or uploaded .mp4 URLs). Each shows as a separate player on the product page. Uploaded files are added here automatically. When this list has any videos, it is used instead of the single video above.</p>
+              </div>
             </Field>
           </Card>
 

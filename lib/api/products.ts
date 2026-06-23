@@ -32,6 +32,8 @@ export interface Product {
   gst_rate?: number
   video_url?: string
   youtube_url?: string
+  /** Multiple product videos (YouTube links and/or uploaded mp4 URLs). */
+  videos?: string[]
   fabric_care?: string
   avg_rating?: number
   review_count?: number
