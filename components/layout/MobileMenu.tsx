@@ -78,13 +78,13 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
   return (
     <>
       {open && (
-        <div className="fixed inset-0 bg-[#0A0908]/40 z-40" onClick={onClose} aria-hidden="true" />
+        <div className="fixed inset-0 bg-[#0A0908]/40 z-[998]" onClick={onClose} aria-hidden="true" />
       )}
 
       <div
         id="mobile-menu"
         ref={dialogRef}
-        className={`fixed top-0 right-0 h-full w-[82vw] max-w-[320px] bg-[#FDFAF6] z-50 transform transition-transform duration-300 flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-[82vw] max-w-[320px] bg-[#FDFAF6] z-[999] transform transition-transform duration-300 flex flex-col ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
         aria-modal="true"

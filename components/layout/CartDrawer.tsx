@@ -95,7 +95,7 @@ export default function CartDrawer() {
     <>
       {/* Overlay — fades in/out */}
       <div
-        className={`fixed inset-0 bg-[#0A0908]/40 z-40 transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-[#0A0908]/40 z-[998] transition-opacity duration-300 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={closeCart}
@@ -108,7 +108,7 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Shopping cart"
-        className={`fixed top-0 right-0 h-full w-full max-w-sm bg-[#FDFAF6] z-50 flex flex-col shadow-float
+        className={`fixed top-0 right-0 h-full w-full max-w-sm bg-[#FDFAF6] z-[999] flex flex-col shadow-float
           transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         // Prevent focus reaching hidden drawer via keyboard when closed
         inert={!isOpen ? true : undefined}
