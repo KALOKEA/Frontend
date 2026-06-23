@@ -45,8 +45,8 @@ const organizationJsonLd = {
   logo: {
     '@type': 'ImageObject',
     '@id': `${SITE_URL}/#logo`,
-    url: `${SITE_URL}/logo.png`,
-    contentUrl: `${SITE_URL}/logo.png`,
+    url: `${SITE_URL}/kalokea-logo.png`,
+    contentUrl: `${SITE_URL}/kalokea-logo.png`,
     width: 200,
     height: 60,
     caption: 'Kalokea — Premium Women\'s Fashion India',
@@ -140,7 +140,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "KALOKEA | Women's Fashion — Dresses, Tops & More",
   description: "Shop the latest women's fashion at Kalokea — dresses, tops, co-ords, bags and accessories. Free shipping above ₹999. Easy 7-day returns. COD available pan India.",
-  keywords: [
+  // SEO: the keywords meta-tag is ignored by Google & Bing. The 300+ term blob
+  // below was emitted on every page (~2 KB) and reads as spam to any reviewer.
+  // Disabled via `false ? [...] : undefined` so the tag is omitted from the HTML.
+  // (The array body can be deleted entirely in a later cleanup.)
+  keywords: false ? [
     // ── Brand ──────────────────────────────────────────────────────────────────
     'kalokea', 'kalokea fashion', 'kalokea women', 'kalokea online',
     'kalokea dresses', 'kalokea tops', 'kalokea bags', 'kalokea co-ords',
@@ -596,7 +600,7 @@ export const metadata: Metadata = {
     'fashion delivery chennai', 'online shopping bangalore women',
     'online fashion store kolkata women', 'fashion delivery ahmedabad',
     'online shopping pune women', 'buy kurta online surat',
-  ].join(', '),
+  ].join(', ') : undefined,
   metadataBase: new URL(SITE_URL),
   // Google Search Console site verification (set NEXT_PUBLIC_GSC_VERIFICATION in .env)
   ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION

@@ -8,28 +8,11 @@ export function productMeta(product: Product) {
   const catName = product.categories?.name || ''
   const desc = (product.description || `Shop ${product.name} at Kalokea`).slice(0, 155)
 
-  // Per-product keywords: name + category + buying intent
-  const baseKw = product.name.toLowerCase()
-  const keywords = [
-    baseKw,
-    catName ? `${baseKw} ${catName.toLowerCase()}` : '',
-    catName ? `buy ${catName.toLowerCase()} india` : '',
-    `${baseKw} online india`,
-    `${baseKw} kalokea`,
-    catName ? `women's ${catName.toLowerCase()} india` : '',
-    catName ? `${catName.toLowerCase()} for women india` : '',
-    "women's fashion india",
-    'kalokea fashion',
-    `${baseKw} price india`,
-    `buy ${baseKw} online`,
-  ].filter(Boolean).join(', ')
-
   const priceRupees = (product.base_price / 100).toFixed(2)
 
   return {
     title: `${product.name} — ${catName || 'Kalokea'} | KALOKEA`,
     description: desc,
-    keywords,
     openGraph: {
       title: product.name,
       description: desc,
