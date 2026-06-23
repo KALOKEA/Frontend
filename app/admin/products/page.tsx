@@ -21,7 +21,7 @@ const QUICK_COLOURS = ['Black', 'White', 'Ivory', 'Navy', 'Red', 'Blush', 'Sage'
 
 interface FormState {
   id?: string
-  name: string; slug: string; description: string; fabric_care: string; model_info: string
+  name: string; slug: string; sku: string; description: string; fabric_care: string; model_info: string
   youtube_url: string
   video_url: string
   videos: string
@@ -34,7 +34,7 @@ interface FormState {
 }
 
 const emptyForm = (): FormState => ({
-  name: '', slug: '', description: '', fabric_care: '', model_info: '',
+  name: '', slug: '', sku: '', description: '', fabric_care: '', model_info: '',
   youtube_url: '',
   video_url: '',
   videos: '',
@@ -49,7 +49,7 @@ const emptyForm = (): FormState => ({
 function productToForm(p: Product): FormState {
   return {
     id: p.id,
-    name: p.name, slug: p.slug, description: p.description || '',
+    name: p.name, slug: p.slug, sku: p.sku || '', description: p.description || '',
     fabric_care: p.fabric_care || '',
     model_info: p.model_info || '',
     youtube_url: p.youtube_url || '',
@@ -333,6 +333,7 @@ function ProductEditor({
     const payload = {
       name: form.name.trim(),
       slug: form.slug.trim() || slugify(form.name),
+      sku: form.sku.trim() || undefined,
       description: form.description || undefined,
       fabric_care: form.fabric_care || undefined,
       model_info: form.model_info || undefined,
@@ -473,10 +474,9 @@ function ProductEditor({
 
     for (const size of sizes) {
       for (const colour of colours) {
-        const parts = [slugify(form.name || 'sku'), size, colour].filter(Boolean)
         newDrafts.push({
           size, colour, price: matrixPrice, stock: matrixStock || '0',
-          sku: parts.join('-').toUpperCase().slice(0, 40),
+          sku: '', // blank = inherit the product SKU (admin can override a row later)
           _key: String(Date.now() + Math.random()),
         })
       }
@@ -750,6 +750,15 @@ function ProductEditor({
                 />
               </Field>
             </div>
+            <Field label="Product SKU — one code for the whole product (editable)">
+              <input
+                value={form.sku}
+                onChange={e => setForm(f => ({ ...f, sku: e.target.value }))}
+                className="inp"
+                placeholder="e.g. KLO-TOP-005"
+              />
+              <p className="text-[11px] text-[#6b6b6b] mt-1">Your master code for this product. Every size/colour uses it by default — you can override a single variant&apos;s SKU below if you ever need to.</p>
+            </Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="HSN code">
                 <input
@@ -918,7 +927,7 @@ function ProductEditor({
                           </td>
                           <td className="py-1.5 pr-2">
                             <input value={v.sku} onChange={e => updatePendingVariant(v._key!, 'sku', e.target.value)}
-                              className="inp-sm" placeholder="auto" />
+                              className="inp-sm" placeholder={form.sku || 'inherits product SKU'} />
                           </td>
                           <td className="py-1.5 pr-2">
                             <input type="number" value={v.price} onChange={e => updatePendingVariant(v._key!, 'price', e.target.value)}
@@ -1067,7 +1076,7 @@ function ProductEditor({
                   <input
                     value={vDraft.sku}
                     onChange={e => setVDraft(d => ({ ...d, sku: e.target.value }))}
-                    placeholder="SKU (optional)"
+                    placeholder={form.sku ? `optional — blank = ${form.sku}` : 'SKU (optional — inherits product)'}
                     className="inp"
                   />
                 </div>
@@ -1325,7 +1334,7 @@ function VariantRow({ v, onSave, onDelete }: {
       <td className="py-2 pr-3 text-[#0a0a0a]">{v.size || '—'}</td>
       <td className="py-2 pr-3">
         <input value={sku} onChange={e => setSku(e.target.value)}
-          disabled={busy} placeholder="—" title="Set your own SKU"
+          disabled={busy} placeholder="inherits product SKU" title="Optional override — blank uses the product's master SKU"
           className="w-28 border border-[#e8e4e0] px-2 py-1 text-xs font-mono focus:border-[#0a0a0a] outline-none disabled:opacity-50" />
       </td>
       <td className="py-2 pr-3">

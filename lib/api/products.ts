@@ -13,7 +13,8 @@ export interface ProductVariant {
   colour?: string
   price: number
   stock: number
-  sku: string
+  /** Optional per-variant SKU override. Blank = inherits the product's master SKU. */
+  sku?: string
   is_active: boolean
 }
 
@@ -21,6 +22,8 @@ export interface Product {
   id: string
   name: string
   slug: string
+  /** Master product SKU (admin-set). Variants inherit it unless overridden. */
+  sku?: string
   description?: string
   category_id?: string
   base_price: number
