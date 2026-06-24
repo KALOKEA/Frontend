@@ -5,7 +5,6 @@ import CategoryGrid from '@/components/home/CategoryGrid'
 import FeaturedProducts from '@/components/home/FeaturedProducts'
 import EditorialBanner from '@/components/home/EditorialBanner'
 import BestSellers from '@/components/home/BestSellers'
-import PressStrip from '@/components/home/PressStrip'
 import ShopTheLook from '@/components/home/ShopTheLook'
 import WhyKalokea from '@/components/home/WhyKalokea'
 import Testimonials from '@/components/home/Testimonials'
@@ -149,7 +148,6 @@ export default async function HomePage() {
       <FeaturedProducts />
       <EditorialBanner initialCms={initialCms} />
       <BestSellers />
-      <PressStrip />
       <ShopTheLook />
       <WhyKalokea />
       <Testimonials />

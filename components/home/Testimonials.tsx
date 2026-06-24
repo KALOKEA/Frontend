@@ -1,30 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { getHomepageData, HERO_DEFAULTS, type HomepageContent } from '@/lib/api/homepageContent'
+import { reviewsApi, type FeaturedReview } from '@/lib/api/reviews'
 
-// CMS keys: testimonials_heading, testimonials_eyebrow
-// Individual testimonials remain hardcoded (not admin-managed in the current CMS)
-
-const TESTIMONIALS = [
-  {
-    text: "The Aurelia Dress is everything I dreamed of. The fabric is unbelievably soft and the cut is absolutely perfect. Got so many compliments at my cousin's wedding!",
-    author: 'Priya Sharma',
-    location: 'Mumbai, Maharashtra',
-    rating: 5,
-  },
-  {
-    text: 'Ordered the linen co-ord and honestly it exceeded my expectations. The quality is on par with international brands at a fraction of the price. KALOKEA forever!',
-    author: 'Ananya Reddy',
-    location: 'Bengaluru, Karnataka',
-    rating: 5,
-  },
-  {
-    text: "I was hesitant to buy online but the return policy put my mind at ease. The Rhea Tote arrived beautifully packaged and it's gorgeous. Delivery was 2 days — incredibly fast!",
-    author: 'Meera Nair',
-    location: 'Delhi, NCR',
-    rating: 5,
-  },
-]
+// Social proof now comes from REAL approved customer reviews — not hardcoded
+// testimonials. The whole section stays hidden until at least 2 genuine reviews
+// exist, so the homepage never shows fabricated names or quotes.
 
 function StarRow({ count }: { count: number }) {
   return (
@@ -49,13 +30,21 @@ function StarRow({ count }: { count: number }) {
 
 export default function Testimonials() {
   const [cms, setCms] = useState<HomepageContent>(HERO_DEFAULTS)
+  const [reviews, setReviews] = useState<FeaturedReview[] | null>(null)
 
   useEffect(() => {
     getHomepageData().then(d => setCms(d.cms)).catch(() => {})
+    reviewsApi.getFeatured()
+      .then(rows => setReviews(Array.isArray(rows) ? rows : []))
+      .catch(() => setReviews([]))
   }, [])
+
+  // Never render an empty grid or fabricated proof: hide until ≥2 real reviews.
+  if (!reviews || reviews.length < 2) return null
 
   const eyebrow = cms.testimonials_eyebrow || 'Reviews'
   const heading = cms.testimonials_heading || 'What Our Customers Say'
+  const shown = reviews.slice(0, 3)
 
   return (
     <section className="k-section-py" style={{ background: '#1E1208' }}>
@@ -99,9 +88,9 @@ export default function Testimonials() {
         </div>
 
         <div className="k-testi-grid">
-          {TESTIMONIALS.map(({ text, author, location, rating }) => (
+          {shown.map(({ id, text, author, product, rating }) => (
             <div
-              key={author}
+              key={id}
               className="reveal"
               style={{
                 background: 'rgba(255,255,255,.05)',
@@ -142,7 +131,7 @@ export default function Testimonials() {
                   marginTop: 2,
                 }}
               >
-                {location}
+                {product ? `Verified purchase — ${product}` : 'Verified purchase'}
               </div>
             </div>
           ))}

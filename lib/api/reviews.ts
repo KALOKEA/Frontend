@@ -18,9 +18,22 @@ export interface ReviewItem {
   products?: { name?: string; slug?: string }
 }
 
+export interface FeaturedReview {
+  id: string
+  rating: number
+  text: string
+  author: string
+  product: string
+  product_slug: string
+}
+
 export const reviewsApi = {
   getByProduct: (productId: string) =>
     api.get<ReviewItem[]>(`/reviews/product/${productId}`),
+
+  /** Genuine approved reviews for the homepage social-proof section. */
+  getFeatured: () =>
+    api.get<FeaturedReview[]>(`/reviews/featured`),
 
   create: (data: {
     product_id: string
