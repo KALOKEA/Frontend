@@ -1264,3 +1264,86 @@ html {
   padding: 1.4em 1.6em;
 }
 .blog-callout p { margin: 0; color: var(--sienna-d); }
+
+
+/* ════════════════════════════════════════════════════════════════════════
+   ADMIN PANEL — DARK THEME
+   Scoped under .admin-shell so the storefront is completely unaffected.
+   Re-maps the light utility colours the admin pages use onto a dark palette.
+   Palette: bg #0b0b0d · panel #16161a · elevated #1c1c22 · border #26262d
+            text #e6e6ea · muted #9a9aa3 · accent gold #c9a96a
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Surfaces ─ cards & white backgrounds → panel */
+.admin-shell .bg-white,
+.admin-shell .md\:bg-white { background-color: #16161a !important; }
+
+/* Page / subtle backgrounds → base or slightly elevated */
+.admin-shell .bg-\[\#faf8f5\],
+.admin-shell .bg-\[\#fdf8f4\],
+.admin-shell .bg-\[\#fdfcfb\] { background-color: #121215 !important; }
+.admin-shell .bg-\[\#f0ece8\],
+.admin-shell .bg-\[\#f4f2ef\],
+.admin-shell .bg-\[\#f5f0e8\],
+.admin-shell .bg-\[\#e4ddd4\] { background-color: #1c1c22 !important; }
+
+/* Near-black brand surfaces / primary buttons → visible neutral on dark */
+.admin-shell .bg-\[\#0a0a0a\],
+.admin-shell .bg-black { background-color: #2c2c34 !important; }
+.admin-shell .hover\:bg-\[\#2a2a2a\]:hover,
+.admin-shell .hover\:bg-black:hover { background-color: #3a3a44 !important; }
+
+/* Text ─ primary dark text → light; muted greys → softer light grey */
+.admin-shell .text-\[\#0a0a0a\],
+.admin-shell .text-\[\#1a1a1a\],
+.admin-shell .text-black { color: #e9e9ee !important; }
+.admin-shell .text-\[\#4b4b4b\] { color: #c2c2cb !important; }
+.admin-shell .text-\[\#6b6b6b\],
+.admin-shell .text-\[\#9a9a9a\] { color: #9a9aa3 !important; }
+.admin-shell .text-\[\#d0ccc8\] { color: #6e6e77 !important; }
+
+/* Borders & dividers → dark hairline */
+.admin-shell .border-\[\#e8e4e0\],
+.admin-shell .border-\[\#f0ece8\],
+.admin-shell .border-\[\#f4f2ef\],
+.admin-shell .border-\[\#e4ddd4\],
+.admin-shell .border-\[\#0a0a0a\] { border-color: #2a2a31 !important; }
+.admin-shell .divide-\[\#f0ece8\] > :not([hidden]) ~ :not([hidden]) { border-color: #2a2a31 !important; }
+
+/* Hover backgrounds (table rows, list items) → keep dark, don't flash light */
+.admin-shell .hover\:bg-\[\#faf8f5\]:hover,
+.admin-shell .hover\:bg-\[\#f0ece8\]:hover,
+.admin-shell .hover\:bg-\[\#f4f2ef\]:hover,
+.admin-shell .hover\:bg-white:hover { background-color: #20202733 !important; }
+
+/* Accent (brand sienna/rose) tints used in the admin → warm gold accent */
+.admin-shell .text-\[\#c8a4a5\] { color: #c9a96a !important; }
+.admin-shell .border-\[\#c8a4a5\] { border-color: #c9a96a !important; }
+
+/* Form controls: ensure native + utility-styled inputs read dark */
+.admin-shell input,
+.admin-shell select,
+.admin-shell textarea {
+  background-color: #14141a;
+  color: #e9e9ee;
+  border-color: #2a2a31;
+}
+.admin-shell input::placeholder,
+.admin-shell textarea::placeholder { color: #71717a; }
+.admin-shell select option { background-color: #16161a; color: #e9e9ee; }
+
+/* Focus ring tuned for dark */
+.admin-shell input:focus,
+.admin-shell select:focus,
+.admin-shell textarea:focus {
+  border-color: #c9a96a;
+  outline-color: #c9a96a;
+}
+
+/* Shadows are invisible on dark — soften so cards rely on borders instead */
+.admin-shell .shadow-sm,
+.admin-shell .shadow,
+.admin-shell .shadow-md,
+.admin-shell .shadow-lg {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4) !important;
+}

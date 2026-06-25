@@ -1,8 +1,37 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BLOG_POSTS } from '@/lib/blog/posts'
+import { getDbPosts } from '@/lib/server/blogServer'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
+
+// Unified card shape used by both the curated (hard-coded) posts and the
+// admin-authored (DB) posts so the index can render them together.
+interface JournalCard {
+  slug: string
+  eyebrow: string
+  heading: string
+  headingItalic: string
+  excerpt: string
+  date: string
+  updated: string
+  readingTime: string
+  title: string
+  description: string
+}
+
+const curatedCards: JournalCard[] = BLOG_POSTS.map((p) => ({
+  slug: p.slug,
+  eyebrow: p.eyebrow,
+  heading: p.heading,
+  headingItalic: p.headingItalic,
+  excerpt: p.excerpt,
+  date: p.date,
+  updated: p.updated,
+  readingTime: p.readingTime,
+  title: p.title,
+  description: p.description,
+}))
 
 export const metadata: Metadata = {
   title: 'The Kalokea Journal — Women’s Fashion Tips, Trends & Styling Guides',
@@ -24,28 +53,30 @@ export const metadata: Metadata = {
   },
 }
 
-const blogJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Blog',
-  name: 'The Kalokea Journal',
-  url: `${SITE_URL}/blog/`,
-  description:
-    'Styling guides, trend reports and fabric-care tips from Kalokea — practical women’s fashion advice for India.',
-  publisher: {
-    '@type': 'Organization',
-    name: 'Kalokea',
-    logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png`, width: 200, height: 60 },
-  },
-  blogPost: BLOG_POSTS.map((p) => ({
-    '@type': 'BlogPosting',
-    headline: p.title,
-    description: p.description,
-    datePublished: p.date,
-    dateModified: p.updated,
-    url: `${SITE_URL}/blog/${p.slug}/`,
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/blog/${p.slug}/` },
-    author: { '@type': 'Organization', name: 'Kalokea' },
-  })),
+function buildBlogJsonLd(cards: JournalCard[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'The Kalokea Journal',
+    url: `${SITE_URL}/blog/`,
+    description:
+      'Styling guides, trend reports and fabric-care tips from Kalokea — practical women’s fashion advice for India.',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Kalokea',
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png`, width: 200, height: 60 },
+    },
+    blogPost: cards.map((p) => ({
+      '@type': 'BlogPosting',
+      headline: p.title,
+      description: p.description,
+      datePublished: p.date,
+      dateModified: p.updated,
+      url: `${SITE_URL}/blog/${p.slug}/`,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/blog/${p.slug}/` },
+      author: { '@type': 'Organization', name: 'Kalokea' },
+    })),
+  }
 }
 
 const breadcrumbJsonLd = {
@@ -63,8 +94,38 @@ function formatDate(iso: string): string {
   return `${d.getUTCDate()} ${months[d.getUTCMonth()]} ${d.getUTCFullYear()}`
 }
 
-export default function BlogIndexPage() {
-  const [featured, ...rest] = BLOG_POSTS
+export default async function BlogIndexPage() {
+  // Merge curated (hard-coded) posts with admin-authored (DB) posts.
+  // Curated posts win on slug collisions. Newest first by date.
+  const dbPosts = await getDbPosts()
+  const dbCards: JournalCard[] = dbPosts.map((p) => ({
+    slug: p.slug,
+    eyebrow: p.eyebrow || 'Journal',
+    heading: p.heading || p.title,
+    headingItalic: p.heading_italic || '',
+    excerpt: p.excerpt || p.description || '',
+    date: p.published_at || p.updated_at || p.created_at || new Date().toISOString(),
+    updated: p.updated_at || p.published_at || new Date().toISOString(),
+    readingTime: p.reading_time || '',
+    title: p.title,
+    description: p.description || p.excerpt || '',
+  }))
+
+  const seen = new Set(curatedCards.map((c) => c.slug))
+  const merged = [...curatedCards, ...dbCards.filter((c) => !seen.has(c.slug))].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  )
+
+  const blogJsonLd = buildBlogJsonLd(merged)
+  const [featured, ...rest] = merged
+
+  if (!featured) {
+    return (
+      <div className="bg-[#FDFAF6] py-24 text-center">
+        <p className="font-serif text-2xl text-[#0A0908]">The Journal is coming soon.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-[#FDFAF6]">

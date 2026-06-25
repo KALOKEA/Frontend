@@ -5,59 +5,50 @@ import { useEffect, useRef } from 'react'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import { authApi } from '@/lib/api/auth'
 import { useToast } from '@/components/ui/Toast'
+import { ADMIN_NAV, type AdminNavItem, type MinimalUser } from '@/lib/permissions'
 
-const NAV = [
-  { label: 'Dashboard',  href: '/admin/' },
-  { label: 'Homepage',   href: '/admin/homepage/' },
-  { label: 'About',      href: '/admin/about/' },
-  { label: 'Footer',     href: '/admin/footer/' },
-  { label: 'CMS Pages',  href: '/admin/cms/' },
-  { label: 'Help & FAQ', href: '/admin/help/' },
-  { label: 'Products',   href: '/admin/products/' },
-  { label: 'Categories', href: '/admin/categories/' },
-  { label: 'Orders',     href: '/admin/orders/' },
-  { label: 'Shipments',  href: '/admin/shipments/' },
-  { label: 'Inventory',  href: '/admin/inventory/' },
-  { label: 'Coupons',    href: '/admin/coupons/' },
-  { label: 'Banners',    href: '/admin/banners/' },
-  { label: 'Customers',  href: '/admin/customers/' },
-  { label: 'Reviews',    href: '/admin/reviews/' },
-  { label: 'Returns',    href: '/admin/returns/' },
-  { label: 'Exchanges',  href: '/admin/exchanges/' },
-  { label: 'Analytics',  href: '/admin/analytics/' },
-  { label: 'GST',        href: '/admin/gst/' },
-  { label: 'Newsletter', href: '/admin/newsletter/' },
-  { label: 'Email Log',  href: '/admin/email-log/' },
-  { label: 'Activity',   href: '/admin/activity/' },
-  { label: 'Settings',   href: '/admin/settings/' },
-]
+/** Which nav items this user is allowed to see. */
+function visibleNav(user: MinimalUser | null | undefined): AdminNavItem[] {
+  if (!user) return []
+  if (user.role === 'admin') return ADMIN_NAV
+  if (user.role !== 'staff') return []
+  const perms = Array.isArray(user.permissions) ? user.permissions : []
+  return ADMIN_NAV.filter((n) => {
+    if (n.owner) return false // owner/full-admin only
+    if (n.perm) return perms.includes(n.perm)
+    return true // shared (dashboard)
+  })
+}
 
 interface NavLinksProps {
+  items: AdminNavItem[]
   pathname: string
   onLogout: () => void
 }
 
-function NavLinks({ pathname, onLogout }: NavLinksProps) {
+function NavLinks({ items, pathname, onLogout }: NavLinksProps) {
   return (
     <>
-      {NAV.map((n) => (
-        <Link
-          key={n.href}
-          href={n.href}
-          className={`flex items-center px-5 py-2.5 text-[11px] font-sans tracking-widest uppercase transition-colors ${
-            // Dashboard exact match; all others: active if pathname starts with the href
-            (n.href === '/admin/' ? pathname === '/admin/' : pathname.startsWith(n.href))
-              ? 'bg-[#faf8f5] text-[#0a0a0a] font-medium border-l-2 border-[#c8a4a5]'
-              : 'text-[#6b6b6b] hover:text-[#0a0a0a] hover:bg-[#faf8f5]'
-          }`}
-        >
-          {n.label}
-        </Link>
-      ))}
+      {items.map((n) => {
+        const active = n.href === '/admin/' ? pathname === '/admin/' : pathname.startsWith(n.href)
+        return (
+          <Link
+            key={n.href}
+            href={n.href}
+            className={`flex items-center px-5 py-2.5 text-[11px] font-sans tracking-widest uppercase transition-colors ${
+              active
+                ? 'bg-[#1c1c22] text-[#e8c98a] font-medium border-l-2 border-[#c9a96a]'
+                : 'text-[#9a9aa3] hover:text-[#f3f3f5] hover:bg-[#17171b] border-l-2 border-transparent'
+            }`}
+          >
+            {n.label}
+          </Link>
+        )
+      })}
       {/* Logout */}
       <button
         onClick={onLogout}
-        className="flex items-center gap-2.5 w-full px-5 py-3 text-[11px] font-sans tracking-widest uppercase text-[#6b6b6b] hover:text-red-500 hover:bg-[#fef8f8] transition-colors border-t border-[#f4f2ef] mt-2"
+        className="flex items-center gap-2.5 w-full px-5 py-3 text-[11px] font-sans tracking-widest uppercase text-[#9a9aa3] hover:text-red-400 hover:bg-[#1f1416] transition-colors border-t border-[#26262d] mt-2"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -78,9 +69,12 @@ interface SidebarProps {
 export default function AdminSidebar({ open = false, onClose }: SidebarProps) {
   const pathname    = usePathname()
   const router      = useRouter()
-  const { clearAuth } = useAuthStore()
+  const { user, clearAuth } = useAuthStore()
   const { toast }   = useToast()
   const closeRef    = useRef<HTMLButtonElement>(null)
+
+  const items = visibleNav(user)
+  const isStaff = user?.role === 'staff'
 
   // Auto-close mobile drawer on navigation
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -105,23 +99,29 @@ export default function AdminSidebar({ open = false, onClose }: SidebarProps) {
     router.push('/')
   }
 
+  const brand = (
+    <div>
+      <p className="font-serif text-lg tracking-widest text-[#f3f3f5]">KALOKEA</p>
+      <p className="text-[10px] font-sans text-[#8a8a93] tracking-widest uppercase">
+        {isStaff ? 'Staff' : 'Admin'}
+      </p>
+    </div>
+  )
+
   return (
     <>
       {/* ── Desktop sidebar ─────────────────────────────────────────── */}
-      <aside className="hidden md:flex md:flex-col w-56 shrink-0 border-r border-[#e8e4e0] min-h-screen">
-        <div className="px-5 pt-6 pb-4">
-          <p className="font-serif text-lg tracking-widest text-[#0a0a0a]">KALOKEA</p>
-          <p className="text-[10px] font-sans text-[#6b6b6b] tracking-widest uppercase">Admin</p>
-        </div>
+      <aside className="hidden md:flex md:flex-col w-56 shrink-0 border-r border-[#26262d] bg-[#101013] min-h-screen">
+        <div className="px-5 pt-6 pb-4">{brand}</div>
         <nav aria-label="Admin navigation" className="flex-1 overflow-y-auto">
-          <NavLinks pathname={pathname} onLogout={handleLogout} />
+          <NavLinks items={items} pathname={pathname} onLogout={handleLogout} />
         </nav>
       </aside>
 
       {/* ── Mobile: backdrop ────────────────────────────────────────── */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/60 z-40 md:hidden"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -133,19 +133,16 @@ export default function AdminSidebar({ open = false, onClose }: SidebarProps) {
         aria-modal="true"
         aria-label="Admin navigation"
         inert={!open ? true : undefined}
-        className={`fixed top-0 left-0 h-full w-64 bg-white z-50 transform transition-transform duration-300 md:hidden overflow-y-auto flex flex-col ${
+        className={`fixed top-0 left-0 h-full w-64 bg-[#101013] z-50 transform transition-transform duration-300 md:hidden overflow-y-auto flex flex-col ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between px-5 py-5 border-b border-[#e8e4e0] shrink-0">
-          <div>
-            <p className="font-serif text-lg tracking-widest text-[#0a0a0a]">KALOKEA</p>
-            <p className="text-[10px] font-sans text-[#6b6b6b] tracking-widest uppercase">Admin</p>
-          </div>
+        <div className="flex items-center justify-between px-5 py-5 border-b border-[#26262d] shrink-0">
+          {brand}
           <button
             ref={closeRef}
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center text-[#6b6b6b] hover:text-[#0a0a0a]"
+            className="w-8 h-8 flex items-center justify-center text-[#9a9aa3] hover:text-[#f3f3f5]"
             aria-label="Close menu"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -154,7 +151,7 @@ export default function AdminSidebar({ open = false, onClose }: SidebarProps) {
           </button>
         </div>
         <nav aria-label="Admin navigation mobile" className="flex-1 overflow-y-auto">
-          <NavLinks pathname={pathname} onLogout={handleLogout} />
+          <NavLinks items={items} pathname={pathname} onLogout={handleLogout} />
         </nav>
       </div>
     </>

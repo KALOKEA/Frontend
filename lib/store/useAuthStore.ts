@@ -55,6 +55,7 @@ interface User {
   email?: string
   phone?: string
   role: string
+  permissions?: string[]
   created_at?: string
 }
 
