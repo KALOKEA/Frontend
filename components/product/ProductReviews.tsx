@@ -263,6 +263,26 @@ export default function ProductReviews({ product_id }: { product_id: string }) {
 
   return (
     <div>
+      {/* Section header with an always-visible Write-a-review CTA (Task: review button on product page) */}
+      <div className="flex items-center justify-between gap-3 mb-5">
+        <h3 className="font-serif text-xl text-[#0a0a0a]">Customer Reviews</h3>
+        {isLoggedIn ? (
+          <button
+            onClick={() => setShowForm(true)}
+            className="shrink-0 text-[11px] uppercase tracking-widest bg-[#0a0a0a] text-white px-4 py-2 hover:bg-[#333] transition-colors"
+          >
+            Write a review
+          </button>
+        ) : (
+          <Link
+            href="/login/"
+            className="shrink-0 text-[11px] uppercase tracking-widest border border-[#0a0a0a] text-[#0a0a0a] px-4 py-2 hover:bg-[#0a0a0a] hover:text-white transition-colors"
+          >
+            Sign in to review
+          </Link>
+        )}
+      </div>
+
       {/* Summary */}
       {reviews.length > 0 && (
         <div className="flex items-center gap-4 mb-5 pb-4 border-b border-[#e8e4e0]">

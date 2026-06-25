@@ -5,14 +5,14 @@ export const authApi = {
     api.post<{ message: string }>('/auth/send-otp', data),
 
   verifyOtp: (data: { phone?: string; email?: string; otp: string; accepted_terms?: boolean; name?: string }) =>
-    api.post<{ access_token: string; user: { id: string; name?: string; role: string } }>('/auth/verify-otp', data),
+    api.post<{ access_token: string; user: { id: string; name?: string; role: string; permissions?: string[] } }>('/auth/verify-otp', data),
 
   refresh: () =>
     api.post<{ access_token: string }>('/auth/refresh'),
 
   logout: () => api.post('/auth/logout'),
 
-  me: () => api.get<{ id: string; name?: string; email?: string; phone?: string; role: string }>('/auth/me'),
+  me: () => api.get<{ id: string; name?: string; email?: string; phone?: string; role: string; permissions?: string[] }>('/auth/me'),
 }
 
 export const twoFactorApi = {

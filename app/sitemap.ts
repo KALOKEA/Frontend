@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { getAllProductSlugs, getAllCategorySlugs } from '@/lib/server/productsServer'
+import { getDbPosts } from '@/lib/server/blogServer'
 import { BLOG_POSTS } from '@/lib/blog/posts'
 
 // Generated to /sitemap.xml at build (works with output:'export').
@@ -29,7 +30,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  const [slugs, categories] = await Promise.all([getAllProductSlugs(), getAllCategorySlugs()])
+  const [slugs, categories, dbPosts] = await Promise.all([
+    getAllProductSlugs(),
+    getAllCategorySlugs(),
+    getDbPosts(),
+  ])
+
+  // Admin-authored posts (exclude any that collide with a curated slug).
+  const curatedSlugs = new Set(BLOG_POSTS.map((p) => p.slug))
+  const dbBlogRoutes = dbPosts
+    .filter((p) => p.slug && !curatedSlugs.has(p.slug))
+    .map((p) => ({
+      url: `${SITE_URL}/blog/${p.slug}/`,
+      lastModified: new Date(p.updated_at || p.published_at || now),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }))
 
   const productRoutes = slugs.map((slug) => ({
     url: `${SITE_URL}/product/${slug}/`,
@@ -46,5 +62,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  return [...staticRoutes, ...blogRoutes, ...categoryRoutes, ...productRoutes]
+  return [...staticRoutes, ...blogRoutes, ...dbBlogRoutes, ...categoryRoutes, ...productRoutes]
 }
