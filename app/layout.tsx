@@ -602,6 +602,21 @@ export const metadata: Metadata = {
     'online shopping pune women', 'buy kurta online surat',
   ].join(', ') : undefined,
   metadataBase: new URL(SITE_URL),
+  // Canonical for the homepage (resolved against metadataBase).
+  alternates: { canonical: '/' },
+  // Let Google/Bing + AI Overviews show full snippets and large image previews
+  // (max-snippet:-1, max-image-preview:large) — important for rich results & GEO.
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
   // Google Search Console site verification (set NEXT_PUBLIC_GSC_VERIFICATION in .env)
   ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION
     ? { verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } }
