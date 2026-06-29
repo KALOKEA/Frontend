@@ -52,22 +52,14 @@ export async function getDbPost(slug: string): Promise<BlogPost | null> {
 }
 
 /**
- * Merged list of curated (static) + admin-authored (DB) posts as JournalItems.
- * Curated posts win on slug collisions. Sorted newest-first by date.
+ * Merged list of admin-authored (DB) + curated (static) posts as JournalItems.
+ * DB posts win on slug collisions — admin edits always take effect immediately
+ * after the next build. Static posts are the fallback for slugs not yet in DB.
+ * Sorted newest-first by date.
  * Used by FromTheJournal (homepage) and the blog index page.
  */
 export async function getMergedJournalItems(): Promise<JournalItem[]> {
   const dbPosts = await getDbPosts()
-
-  const curated: JournalItem[] = BLOG_POSTS.map((p) => ({
-    slug: p.slug,
-    eyebrow: p.eyebrow,
-    heading: p.heading,
-    headingItalic: p.headingItalic,
-    excerpt: p.excerpt,
-    date: p.date,
-    readingTime: p.readingTime,
-  }))
 
   const fromDb: JournalItem[] = dbPosts.map((p) => ({
     slug: p.slug,
@@ -79,8 +71,21 @@ export async function getMergedJournalItems(): Promise<JournalItem[]> {
     readingTime: p.reading_time || '',
   }))
 
-  const seen = new Set(curated.map((c) => c.slug))
-  return [...curated, ...fromDb.filter((c) => !seen.has(c.slug))].sort(
+  // Static posts are fallback only — excluded if already in DB
+  const dbSlugs = new Set(fromDb.map((d) => d.slug))
+  const curated: JournalItem[] = BLOG_POSTS
+    .filter((p) => !dbSlugs.has(p.slug))
+    .map((p) => ({
+      slug: p.slug,
+      eyebrow: p.eyebrow,
+      heading: p.heading,
+      headingItalic: p.headingItalic,
+      excerpt: p.excerpt,
+      date: p.date,
+      readingTime: p.readingTime,
+    }))
+
+  return [...fromDb, ...curated].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   )
 }

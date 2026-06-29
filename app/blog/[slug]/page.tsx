@@ -5,9 +5,9 @@ import DbArticleLayout from '@/components/blog/DbArticleLayout'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalokea.com'
 
-// Slugs that already have hand-written static pages — never generate a dynamic
-// page for these (avoids a route collision with their /blog/<slug>/ folders).
-const HARDCODED_SLUGS = new Set(BLOG_POSTS.map((p) => p.slug))
+// These slugs have their own dedicated page.tsx files that already pull from DB.
+// Exclude them here to avoid generating a conflicting duplicate path.
+const STATIC_PAGE_SLUGS = new Set(BLOG_POSTS.map((p) => p.slug))
 
 // Static export: only the slugs returned by generateStaticParams are built.
 export const dynamicParams = false
@@ -15,12 +15,11 @@ export const dynamicParams = false
 export async function generateStaticParams() {
   const posts = await getDbPosts()
   const params = posts
-    .filter((p) => p.slug && !HARDCODED_SLUGS.has(p.slug))
+    .filter((p) => p.slug && !STATIC_PAGE_SLUGS.has(p.slug))
     .map((p) => ({ slug: p.slug }))
   // output:'export' requires at least one param to prerender a dynamic route.
   // When no admin-authored posts exist yet, emit a single placeholder (rendered
-  // as a noindex "not found" page) so the build still succeeds. Real posts
-  // replace it on the next rebuild.
+  // as a noindex "not found" page) so the build still succeeds.
   if (params.length === 0) return [{ slug: 'coming-soon' }]
   return params
 }
