@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { adminApi } from '@/lib/api/admin'
-import api from '@/lib/api/client'
 import { useToast } from '@/components/ui/Toast'
 import Spinner from '@/components/ui/Spinner'
 
@@ -16,6 +15,7 @@ export default function AdminNewsletterPage() {
   // Subscriber state
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [loading, setLoading] = useState(true)
+  const [subError, setSubError] = useState<string | null>(null)
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all')
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
@@ -41,10 +41,20 @@ export default function AdminNewsletterPage() {
 
   function loadSubscribers(p = 1, f = filter) {
     setLoading(true)
-    const activeParam = f === 'all' ? '' : `&active=${f === 'active'}`
-    api.get<any>(`/newsletter/admin/subscribers?page=${p}&limit=${LIMIT}${activeParam}`)
-      .then(r => { setSubscribers(r.data || []); setTotal(r.meta?.total || 0) })
-      .catch(() => setSubscribers([]))
+    setSubError(null)
+    const activeVal = f === 'all' ? undefined : String(f === 'active')
+    adminApi.listNewsletterSubscribers(p, LIMIT, activeVal)
+      .then((r: any) => {
+        const rows = Array.isArray(r?.data) ? r.data : Array.isArray(r) ? r : []
+        setSubscribers(rows)
+        setTotal(r?.meta?.total ?? rows.length)
+      })
+      .catch((e: any) => {
+        const msg = e?.message || 'Failed to load subscribers'
+        setSubError(msg)
+        toast(msg, 'error')
+        setSubscribers([])
+      })
       .finally(() => setLoading(false))
   }
 
@@ -167,24 +177,29 @@ export default function AdminNewsletterPage() {
 
           {loading ? (
             <div className="flex justify-center py-20"><Spinner size="lg" /></div>
+          ) : subError ? (
+            <div className="bg-red-50 border border-red-200 px-4 py-5 rounded text-sm text-red-700">
+              Could not load subscribers: {subError}
+              <button onClick={() => loadSubscribers(page, filter)} className="ml-4 underline text-red-600 hover:text-red-800">Retry</button>
+            </div>
           ) : (
             <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
-              <table className="w-full min-w-[560px] text-sm font-sans">
+              <table className="w-full min-w-[500px] text-sm font-sans">
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0] bg-[#faf8f5]">
                     <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">Email</th>
-                    <th className="px-4 py-3">Phone</th>
                     <th className="px-4 py-3">Status</th>
-                    <th className="px-4 py-3">Subscribed</th>
+                    <th className="px-4 py-3">Joined</th>
                   </tr>
                 </thead>
                 <tbody>
                   {subscribers.map(s => (
                     <tr key={s.email} className="border-b border-[#f0ece8] last:border-0 hover:bg-[#faf8f5] transition-colors">
-                      <td className="px-4 py-3 text-[#0a0a0a]">{s.name || <span className="text-[#b9b2aa]">—</span>}</td>
+                      <td className="px-4 py-3 text-[#0a0a0a] font-medium">
+                        {s.name || <span className="text-[#b9b2aa] font-normal">—</span>}
+                      </td>
                       <td className="px-4 py-3 font-mono text-xs text-[#0a0a0a]">{s.email}</td>
-                      <td className="px-4 py-3 text-[#6b6b6b] text-xs">{s.phone || '—'}</td>
                       <td className="px-4 py-3">
                         <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded ${
                           s.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'
@@ -192,13 +207,13 @@ export default function AdminNewsletterPage() {
                           {s.is_active ? 'Active' : 'Unsubscribed'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[#6b6b6b] text-xs">
+                      <td className="px-4 py-3 text-[#6b6b6b] text-xs whitespace-nowrap">
                         {new Date(s.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                       </td>
                     </tr>
                   ))}
                   {!subscribers.length && (
-                    <tr><td colSpan={5} className="px-4 py-10 text-center text-[#6b6b6b]">No subscribers</td></tr>
+                    <tr><td colSpan={4} className="px-4 py-10 text-center text-[#6b6b6b]">No subscribers found</td></tr>
                   )}
                 </tbody>
               </table>
@@ -318,24 +333,44 @@ export default function AdminNewsletterPage() {
           <div className="flex justify-center py-20"><Spinner size="lg" /></div>
         ) : (
           <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
-            <table className="w-full min-w-[600px] text-sm font-sans">
+            <table className="w-full min-w-[560px] text-sm font-sans">
               <thead>
                 <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0] bg-[#faf8f5]">
-                  <th className="px-4 py-3">Subject</th>
+                  <th className="px-4 py-3">Subject (What was sent)</th>
+                  <th className="px-4 py-3 whitespace-nowrap">Sent On (When)</th>
                   <th className="px-4 py-3 text-center">Recipients</th>
-                  <th className="px-4 py-3 text-center">Sent</th>
-                  <th className="px-4 py-3 text-center">Failed</th>
+                  <th className="px-4 py-3 text-center">Delivered</th>
                   <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Sent At</th>
                 </tr>
               </thead>
               <tbody>
                 {campaigns.map(c => (
                   <tr key={c.id} className="border-b border-[#f0ece8] last:border-0 hover:bg-[#faf8f5] transition-colors">
-                    <td className="px-4 py-3 text-[#0a0a0a] max-w-[240px] truncate">{c.subject}</td>
+                    <td className="px-4 py-3">
+                      <p className="text-[#0a0a0a] font-medium">{c.subject}</p>
+                      {c.preview_text && (
+                        <p className="text-[11px] text-[#6b6b6b] mt-0.5 truncate max-w-xs">{c.preview_text}</p>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {c.sent_at ? (
+                        <>
+                          <p className="text-[#0a0a0a] font-medium">
+                            {new Date(c.sent_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          </p>
+                          <p className="text-[11px] text-[#6b6b6b] mt-0.5">
+                            {new Date(c.sent_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                          </p>
+                        </>
+                      ) : <span className="text-[#6b6b6b]">—</span>}
+                    </td>
                     <td className="px-4 py-3 text-center text-[#6b6b6b]">{c.recipient_count ?? '—'}</td>
-                    <td className="px-4 py-3 text-center text-green-700 font-medium">{c.sent_count ?? '—'}</td>
-                    <td className="px-4 py-3 text-center text-red-600">{c.failed_count ?? '—'}</td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="text-green-700 font-medium">{c.sent_count ?? '—'}</span>
+                      {c.failed_count > 0 && (
+                        <span className="text-red-500 text-xs ml-1">({c.failed_count} failed)</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded ${
                         c.status === 'sent' ? 'bg-green-100 text-green-800'
@@ -345,13 +380,10 @@ export default function AdminNewsletterPage() {
                         {c.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[#6b6b6b] text-xs whitespace-nowrap">
-                      {c.sent_at ? new Date(c.sent_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
-                    </td>
                   </tr>
                 ))}
                 {!campaigns.length && (
-                  <tr><td colSpan={6} className="px-4 py-10 text-center text-[#6b6b6b]">No campaigns sent yet</td></tr>
+                  <tr><td colSpan={5} className="px-4 py-10 text-center text-[#6b6b6b]">No campaigns sent yet</td></tr>
                 )}
               </tbody>
             </table>
