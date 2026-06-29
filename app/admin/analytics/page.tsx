@@ -180,8 +180,8 @@ export default function AdminAnalyticsPage() {
             {stats.low_stock_variants.map(v => (
               <li key={v.id} className="flex justify-between items-center py-3">
                 <div>
-                  <p className="text-sm text-[#0a0a0a]">{v.products?.name || v.sku}</p>
-                  <p className="text-[10px] text-[#6b6b6b] font-mono">{v.sku}</p>
+                  <p className="text-sm text-[#0a0a0a]">{v.products?.name || v.sku || '—'}</p>
+                  <p className="text-[10px] text-[#6b6b6b] font-mono">{v.sku || '—'}</p>
                 </div>
                 <span className={`text-xs font-medium px-2 py-0.5 rounded ${v.stock === 0 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
                   {v.stock === 0 ? 'Out of stock' : `${v.stock} left`}

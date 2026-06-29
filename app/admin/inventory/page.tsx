@@ -74,7 +74,7 @@ export default function AdminInventoryPage() {
   }
 
   const filtered = rows.filter(r => {
-    const matchSearch = !search || r.product.toLowerCase().includes(search.toLowerCase()) || r.sku.toLowerCase().includes(search.toLowerCase())
+    const matchSearch = !search || r.product.toLowerCase().includes(search.toLowerCase()) || (r.sku || '').toLowerCase().includes(search.toLowerCase())
     const matchStock = stockFilter === 'all' ||
       (stockFilter === 'out' && r.stock === 0) ||
       (stockFilter === 'low' && r.stock > 0 && r.stock <= LOW) ||
@@ -173,7 +173,7 @@ export default function AdminInventoryPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 font-medium text-[#0a0a0a] max-w-[180px] truncate">{r.product}</td>
-                    <td className="px-4 py-3 text-[#6b6b6b] font-mono text-xs">{r.sku}</td>
+                    <td className="px-4 py-3 text-[#6b6b6b] font-mono text-xs">{r.sku || '—'}</td>
                     <td className="px-4 py-3 text-[#6b6b6b]">{[r.size, r.colour].filter(Boolean).join(' / ') || '—'}</td>
                     <td className="px-4 py-3 text-[#0a0a0a]">{formatPrice(r.price)}</td>
                     <td className="px-4 py-3">
