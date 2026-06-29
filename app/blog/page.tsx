@@ -37,11 +37,6 @@ export const metadata: Metadata = {
   title: 'The Kalokea Journal — Women’s Fashion Tips, Trends & Styling Guides',
   description:
     'Styling guides, trend reports and care tips from Kalokea — practical women’s fashion advice for India. Learn how to style kurtas, choose dresses, find your size and care for every fabric.',
-  keywords: [
-    'womens fashion blog india', 'fashion styling guide', 'how to style guides',
-    'womens fashion tips', 'kalokea journal', 'indian fashion blog',
-    'dress styling tips', 'kurta styling', 'fashion trends 2026',
-  ],
   alternates: { canonical: `${SITE_URL}/blog/` },
   openGraph: {
     title: 'The Kalokea Journal — Women’s Fashion Tips, Trends & Styling Guides',
@@ -55,38 +50,39 @@ export const metadata: Metadata = {
 
 function buildBlogJsonLd(cards: JournalCard[]) {
   return {
-    '@context': 'https://schema.org',
-    '@type': 'Blog',
-    name: 'The Kalokea Journal',
+    ‘@context’: ‘https://schema.org’,
+    ‘@type’: ‘Blog’,
+    name: ‘The Kalokea Journal’,
     url: `${SITE_URL}/blog/`,
     description:
-      'Styling guides, trend reports and fabric-care tips from Kalokea — practical women’s fashion advice for India.',
+      ‘Styling guides, trend reports and fabric-care tips from Kalokea — practical women’s fashion advice for India.’,
     publisher: {
-      '@type': 'Organization',
-      name: 'Kalokea',
-      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png`, width: 200, height: 60 },
+      ‘@type’: ‘Organization’,
+      name: ‘Kalokea’,
+      logo: { ‘@type’: ‘ImageObject’, url: `${SITE_URL}/logo.png`, width: 200, height: 60 },
     },
     blogPost: cards.map((p) => ({
-      '@type': 'BlogPosting',
+      ‘@type’: ‘BlogPosting’,
       headline: p.title,
       description: p.description,
       datePublished: p.date,
       dateModified: p.updated,
       url: `${SITE_URL}/blog/${p.slug}/`,
-      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/blog/${p.slug}/` },
-      author: { '@type': 'Organization', name: 'Kalokea' },
+      mainEntityOfPage: { ‘@type’: ‘WebPage’, ‘@id’: `${SITE_URL}/blog/${p.slug}/` },
+      author: { ‘@type’: ‘Organization’, name: ‘Kalokea’ },
     })),
   }
 }
 
 const breadcrumbJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
+  ‘@context’: ‘https://schema.org’,
+  ‘@type’: ‘BreadcrumbList’,
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-    { '@type': 'ListItem', position: 2, name: 'Journal', item: `${SITE_URL}/blog/` },
+    { ‘@type’: ‘ListItem’, position: 1, name: ‘Home’, item: `${SITE_URL}/` },
+    { ‘@type’: ‘ListItem’, position: 2, name: ‘Journal’, item: `${SITE_URL}/blog/` },
   ],
 }
+
 
 function formatDate(iso: string): string {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -100,15 +96,15 @@ export default async function BlogIndexPage() {
   const dbPosts = await getDbPosts()
   const dbCards: JournalCard[] = dbPosts.map((p) => ({
     slug: p.slug,
-    eyebrow: p.eyebrow || 'Journal',
+    eyebrow: p.eyebrow || ‘Journal’,
     heading: p.heading || p.title,
-    headingItalic: p.heading_italic || '',
-    excerpt: p.excerpt || p.description || '',
+    headingItalic: p.heading_italic || ‘’,
+    excerpt: p.excerpt || p.description || ‘’,
     date: p.published_at || p.updated_at || p.created_at || new Date().toISOString(),
     updated: p.updated_at || p.published_at || new Date().toISOString(),
-    readingTime: p.reading_time || '',
+    readingTime: p.reading_time || ‘’,
     title: p.title,
-    description: p.description || p.excerpt || '',
+    description: p.description || p.excerpt || ‘’,
   }))
 
   const seen = new Set(curatedCards.map((c) => c.slug))
@@ -151,29 +147,31 @@ export default async function BlogIndexPage() {
       </section>
 
       {/* ── Featured post ────────────────────────────────────────────────── */}
-      <section className="px-4 sm:px-6 pb-4">
-        <div className="max-w-6xl mx-auto">
-          <Link href={`/blog/${featured.slug}/`} className="group block">
-            <div className="bg-white p-8 md:p-14 transition-shadow hover:shadow-[0_12px_44px_rgba(124,74,45,0.10)]" style={{ borderLeft: '4px solid #7C4A2D' }}>
-              <div className="flex items-center gap-3 text-[10px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] mb-5">
-                <span>Latest</span>
-                <span aria-hidden="true" className="w-1 h-1 rounded-full bg-[#C4A882]" />
-                <span className="text-[#7A6E68]">{featured.eyebrow}</span>
+      {featured && (
+        <section className="px-4 sm:px-6 pb-4">
+          <div className="max-w-6xl mx-auto">
+            <Link href={`/blog/${featured.slug}/`} className="group block">
+              <div className="bg-white p-8 md:p-14 transition-shadow hover:shadow-[0_12px_44px_rgba(124,74,45,0.10)]" style={{ borderLeft: '4px solid #7C4A2D' }}>
+                <div className="flex items-center gap-3 text-[10px] font-sans tracking-[0.22em] uppercase text-[#7C4A2D] mb-5">
+                  <span>Latest</span>
+                  <span aria-hidden="true" className="w-1 h-1 rounded-full bg-[#C4A882]" />
+                  <span className="text-[#7A6E68]">{featured.eyebrow}</span>
+                </div>
+                <h2 className="font-serif font-light text-[#0A0908] leading-[1.1] mb-4 max-w-3xl group-hover:text-[#7C4A2D] transition-colors" style={{ fontSize: 'clamp(1.9rem, 4vw, 2.8rem)' }}>
+                  {featured.heading} {featured.headingItalic}
+                </h2>
+                <p className="font-sans text-[15px] leading-relaxed text-[#6B5E55] max-w-2xl mb-6">{featured.excerpt}</p>
+                <div className="flex items-center gap-3 text-[12px] font-sans text-[#7A6E68]">
+                  <time dateTime={featured.date}>{formatDate(featured.date)}</time>
+                  <span aria-hidden="true" className="w-1 h-1 rounded-full bg-[#C4A882]" />
+                  <span>{featured.readingTime}</span>
+                  <span className="ml-auto font-sans text-[11px] tracking-[0.18em] uppercase text-[#7C4A2D]">Read article →</span>
+                </div>
               </div>
-              <h2 className="font-serif font-light text-[#0A0908] leading-[1.1] mb-4 max-w-3xl group-hover:text-[#7C4A2D] transition-colors" style={{ fontSize: 'clamp(1.9rem, 4vw, 2.8rem)' }}>
-                {featured.heading} {featured.headingItalic}
-              </h2>
-              <p className="font-sans text-[15px] leading-relaxed text-[#6B5E55] max-w-2xl mb-6">{featured.excerpt}</p>
-              <div className="flex items-center gap-3 text-[12px] font-sans text-[#7A6E68]">
-                <time dateTime={featured.date}>{formatDate(featured.date)}</time>
-                <span aria-hidden="true" className="w-1 h-1 rounded-full bg-[#C4A882]" />
-                <span>{featured.readingTime}</span>
-                <span className="ml-auto font-sans text-[11px] tracking-[0.18em] uppercase text-[#7C4A2D]">Read article →</span>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </section>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* ── Post grid ────────────────────────────────────────────────────── */}
       <section className="px-4 sm:px-6 py-12 md:py-16">
