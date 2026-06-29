@@ -246,8 +246,19 @@ export default function Header() {
               />
             </Link>
 
-            {/* Cart */}
-            <CartIcon />
+            {/* Search + Cart */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${iconCls}`}
+                aria-label="Search"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                </svg>
+              </button>
+              <CartIcon />
+            </div>
           </div>
         </div>
       </header>

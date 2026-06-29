@@ -58,7 +58,37 @@ export default function AdminGstPage() {
     }
   }
 
-  const t = summary?.totals
+  // When admin selects a specific type, stat cards should reflect only that type.
+  // summary.by_type already has per-type aggregates from the backend — no extra
+  // network call needed; we just pick the right slice.
+  const t = type && summary?.by_type?.[type as 'sale' | 'return' | 'exchange']
+    ? summary.by_type[type as 'sale' | 'return' | 'exchange']
+    : summary?.totals
+  // rows is already filtered by type (passed via ledger endpoint), so rows.length
+  // gives the correct entry count for the active filter.
+  const entryCount = rows.length
+
+  // Rate-wise breakdown — when a type filter is active, compute from the
+  // already-filtered rows so the rate table is consistent with the stat cards.
+  // When "All", use the backend-aggregated by_rate (net of all types).
+  const byRate: { gst_rate: number; taxable: number; cgst: number; sgst: number; igst: number; total_gst: number }[] = (() => {
+    // No type filter → use backend-aggregated net (all types).
+    if (!type) return summary?.by_rate || []
+    // Type is filtered but no rows for this type → show empty (not all-type fallback).
+    if (!rows.length) return []
+    const map = new Map<number, { gst_rate: number; taxable: number; cgst: number; sgst: number; igst: number; total_gst: number }>()
+    for (const r of rows) {
+      const rate = Number(r.gst_rate) || 0
+      if (!map.has(rate)) map.set(rate, { gst_rate: rate, taxable: 0, cgst: 0, sgst: 0, igst: 0, total_gst: 0 })
+      const e = map.get(rate)!
+      e.taxable += Number(r.taxable_value) || 0
+      e.cgst += Number(r.cgst) || 0
+      e.sgst += Number(r.sgst) || 0
+      e.igst += Number(r.igst) || 0
+      e.total_gst += Number(r.total_gst) || 0
+    }
+    return [...map.values()].sort((a, b) => a.gst_rate - b.gst_rate)
+  })()
 
   return (
     <>
@@ -103,11 +133,19 @@ export default function AdminGstPage() {
         <p className="text-sm text-[#6b6b6b]">No data for this period.</p>
       ) : (
         <>
+          {type && (
+            <div className="flex items-center gap-2 mb-3">
+              <span className={`text-xs px-3 py-1 rounded-full font-medium ${TYPE_BADGE[type] || 'bg-gray-100 text-gray-600'}`}>
+                {type.charAt(0).toUpperCase() + type.slice(1)}s only
+              </span>
+              <span className="text-xs text-[#6b6b6b]">Cards and rate-wise table reflect this filter. "All" shows net totals.</span>
+            </div>
+          )}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <StatsCard title="Taxable Value" value={formatPrice(t!.taxable)} />
             <StatsCard title="Net GST Payable" value={formatPrice(t!.total_gst)} />
             <StatsCard title="Gross (incl. GST)" value={formatPrice(t!.gross)} />
-            <StatsCard title="Ledger Entries" value={summary.count} />
+            <StatsCard title="Ledger Entries" value={entryCount} />
           </div>
 
           {/* ── Cash flow / settlement — the 3 money scenarios ── */}
@@ -145,7 +183,9 @@ export default function AdminGstPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* CGST / SGST / IGST */}
             <div className="bg-white border border-[#e8e4e0] p-6">
-              <h2 className="font-serif text-lg text-[#0a0a0a] mb-4">Net tax breakdown</h2>
+              <h2 className="font-serif text-lg text-[#0a0a0a] mb-4">
+                Net tax breakdown{type ? <span className="text-sm font-sans font-normal text-[#6b6b6b] ml-2">({type}s)</span> : ''}
+              </h2>
               <table className="w-full text-sm font-sans">
                 <tbody>
                   <Row label="CGST (intra-state)" value={formatPrice(t!.cgst)} />
@@ -170,8 +210,11 @@ export default function AdminGstPage() {
                 </thead>
                 <tbody>
                   {(['sale', 'return', 'exchange'] as const).map((k) => (
-                    <tr key={k} className="border-b border-[#f0ece8]">
-                      <td className="py-2 capitalize text-[#0a0a0a]">{k}s</td>
+                    <tr key={k} className={`border-b border-[#f0ece8] ${type === k ? 'bg-[#faf8f5] font-medium' : ''}`}>
+                      <td className="py-2 capitalize text-[#0a0a0a]">
+                        {k}s
+                        {type === k && <span className="ml-1.5 text-[9px] uppercase tracking-widest text-[#c8a4a5]">active</span>}
+                      </td>
                       <td className="py-2 text-right text-[#6b6b6b]">{formatPrice(summary.by_type[k].taxable)}</td>
                       <td className="py-2 text-right text-[#6b6b6b]">{formatPrice(summary.by_type[k].total_gst)}</td>
                     </tr>
@@ -182,9 +225,12 @@ export default function AdminGstPage() {
           </div>
 
           {/* Rate-wise (GSTR-1 style) */}
-          {summary.by_rate.length > 0 && (
+          {byRate.length > 0 && (
             <div className="bg-white border border-[#e8e4e0] mb-8 overflow-x-auto">
-              <h2 className="font-serif text-lg text-[#0a0a0a] px-6 pt-5 pb-3">Rate-wise summary (GSTR-1)</h2>
+              <h2 className="font-serif text-lg text-[#0a0a0a] px-6 pt-5 pb-3">
+                Rate-wise summary (GSTR-1)
+                {type && <span className="text-sm font-sans font-normal text-[#6b6b6b] ml-2">— {type}s</span>}
+              </h2>
               <table className="w-full min-w-[540px] text-sm font-sans">
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
@@ -194,7 +240,7 @@ export default function AdminGstPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {summary.by_rate.map((r) => (
+                  {byRate.map((r) => (
                     <tr key={r.gst_rate} className="border-b border-[#f0ece8] last:border-0">
                       <td className="px-6 py-3 text-[#0a0a0a]">{r.gst_rate}%</td>
                       <td className="px-4 py-3 text-right text-[#6b6b6b]">{formatPrice(r.taxable)}</td>
