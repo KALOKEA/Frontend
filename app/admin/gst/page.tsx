@@ -87,7 +87,7 @@ export default function AdminGstPage() {
       e.igst += Number(r.igst) || 0
       e.total_gst += Number(r.total_gst) || 0
     }
-    return [...map.values()].sort((a, b) => a.gst_rate - b.gst_rate)
+    return Array.from(map.values()).sort((a, b) => a.gst_rate - b.gst_rate)
   })()
 
   return (
