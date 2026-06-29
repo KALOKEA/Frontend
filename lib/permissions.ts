@@ -79,6 +79,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { label: 'Homepage', href: '/admin/homepage/', perm: 'homepage' },
   { label: 'About', href: '/admin/about/', perm: 'content' },
   { label: 'Footer', href: '/admin/footer/', perm: 'content' },
+  { label: 'Navigation', href: '/admin/navigation/', perm: 'content' },
   { label: 'CMS Pages', href: '/admin/cms/', perm: 'cms' },
   { label: 'Help & FAQ', href: '/admin/help/', perm: 'cms' },
   { label: 'Blog', href: '/admin/blog/', perm: 'blog' },

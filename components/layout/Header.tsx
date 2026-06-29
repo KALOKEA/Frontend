@@ -8,10 +8,7 @@ import AnnouncementBar from './AnnouncementBar'
 import FlashSaleBanner from './FlashSaleBanner'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import { categoriesApi, type Category } from '@/lib/api/categories'
-
-// Static nav anchors — category links are injected dynamically from active categories
-const NAV_STATIC_START = [{ label: 'Shop', href: '/shop/' }]
-const NAV_STATIC_END   = [{ label: 'Journal', href: '/blog/' }, { label: 'About', href: '/about/' }]
+import { siteContentApi, HEADER_NAV_DEFAULT, type FooterLink } from '@/lib/api/siteContent'
 
 export default function Header() {
   const router = useRouter()
@@ -28,15 +25,24 @@ export default function Header() {
   const headerRef = useRef<HTMLElement>(null)
   const { isLoggedIn } = useAuthStore()
   const [cats, setCats] = useState<Category[]>([])
+  // CMS-driven nav links — editable from Admin → Navigation
+  const [navLinks, setNavLinks] = useState<FooterLink[]>(HEADER_NAV_DEFAULT)
 
-  // Build nav links dynamically: Shop → active categories (max 5) → Journal → About
-  const navLinks = [
-    ...NAV_STATIC_START,
-    ...cats.slice(0, 5).map(c => ({ label: c.name, href: `/shop/${c.slug}/` })),
-    ...NAV_STATIC_END,
-  ]
+  // Load CMS nav links (falls back to HEADER_NAV_DEFAULT if not set).
+  useEffect(() => {
+    siteContentApi.getAll()
+      .then(raw => {
+        if (raw.header_nav_links) {
+          try {
+            const parsed = JSON.parse(raw.header_nav_links) as FooterLink[]
+            if (Array.isArray(parsed) && parsed.length > 0) setNavLinks(parsed)
+          } catch {}
+        }
+      })
+      .catch(() => {})
+  }, [])
 
-  // Load real categories for the search "browse categories" grid.
+  // Load real categories for the search overlay "browse categories" grid.
   useEffect(() => {
     categoriesApi.getAll()
       .then(d => {
@@ -322,7 +328,7 @@ export default function Header() {
         </div>
       )}
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} cats={cats} />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} navLinks={navLinks} />
     </>
   )
 }

@@ -42,6 +42,7 @@ export interface SiteContentMap {
   footer_company_col: FooterLink[]
   footer_legal_links: FooterLink[]
   footer_copyright: string
+  header_nav_links: FooterLink[]
 }
 
 // ─── Defaults ────────────────────────────────────────────────────────────────
@@ -106,6 +107,17 @@ export const FOOTER_LEGAL_DEFAULT: FooterLink[] = [
   { label: 'Shipping', href: '/shipping-policy/' },
 ]
 
+export const HEADER_NAV_DEFAULT: FooterLink[] = [
+  { label: 'Shop',         href: '/shop/' },
+  { label: 'New Arrivals', href: '/shop/new-arrivals/' },
+  { label: 'Tops',         href: '/shop/tops/' },
+  { label: 'Dresses',      href: '/shop/dresses/' },
+  { label: 'Accessories',  href: '/shop/accessories/' },
+  { label: 'Sale',         href: '/shop/sale/' },
+  { label: 'Journal',      href: '/blog/' },
+  { label: 'About',        href: '/about/' },
+]
+
 // ─── Helper: safely parse a JSON string ─────────────────────────────────────
 
 function safeJson<T>(raw: string | undefined | null, fallback: T): T {
@@ -164,6 +176,7 @@ export const siteContentApi = {
       footer_company_col:safeJson(raw.footer_company_col,FOOTER_COMPANY_DEFAULT),
       footer_legal_links:safeJson(raw.footer_legal_links,FOOTER_LEGAL_DEFAULT),
       footer_copyright:  raw.footer_copyright ?? 'KALOKEA. All rights reserved.',
+      header_nav_links:  safeJson(raw.header_nav_links, HEADER_NAV_DEFAULT),
     }
   },
 

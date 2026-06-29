@@ -1,27 +1,15 @@
 'use client'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
-import type { Category } from '@/lib/api/categories'
-
-// Static links always shown (above dynamic categories)
-const NAV_TOP = [
-  { label: 'New Arrivals', href: '/shop/new-arrivals/' },
-]
-
-// Static links always shown after dynamic categories
-const NAV_BOTTOM = [
-  { label: 'Sale', href: '/shop/sale/', accent: true },
-  { label: 'Everything', href: '/shop/' },
-  { label: 'Journal', href: '/blog/' },
-]
+import { HEADER_NAV_DEFAULT, type FooterLink } from '@/lib/api/siteContent'
 
 interface MobileMenuProps {
   open: boolean
   onClose: () => void
-  cats?: Category[]
+  navLinks?: FooterLink[]
 }
 
-export default function MobileMenu({ open, onClose, cats = [] }: MobileMenuProps) {
+export default function MobileMenu({ open, onClose, navLinks = HEADER_NAV_DEFAULT }: MobileMenuProps) {
   const closeRef        = useRef<HTMLButtonElement>(null)
   const dialogRef       = useRef<HTMLDivElement>(null)
   const previousFocus   = useRef<HTMLElement | null>(null)
@@ -77,14 +65,8 @@ export default function MobileMenu({ open, onClose, cats = [] }: MobileMenuProps
     return () => window.removeEventListener('keydown', handler)
   }, [open])
 
-  // Build dynamic nav: static top + active categories + static bottom
-  const dynamicCatLinks = cats.map(c => ({ label: c.name, href: `/shop/${c.slug}/`, accent: false }))
-
-  const allLinks = [
-    ...NAV_TOP,
-    ...dynamicCatLinks,
-    ...NAV_BOTTOM,
-  ]
+  // Use CMS-driven links passed from Header (same source as desktop nav)
+  const allLinks = navLinks
 
   return (
     <>
@@ -127,7 +109,7 @@ export default function MobileMenu({ open, onClose, cats = [] }: MobileMenuProps
               href={link.href}
               onClick={onClose}
               className={`flex items-center py-3.5 text-[10px] font-sans tracking-[0.22em] uppercase border-b border-[#F2EAE0] min-h-[44px] transition-colors ${
-                (link as any).accent ? 'text-[#7C4A2D]' : 'text-[#0A0908] hover:text-[#7C4A2D]'
+                'text-[#0A0908] hover:text-[#7C4A2D]'
               }`}
             >
               {link.label}
