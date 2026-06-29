@@ -34,14 +34,14 @@ const curatedCards: JournalCard[] = BLOG_POSTS.map((p) => ({
 }))
 
 export const metadata: Metadata = {
-  title: 'The Kalokea Journal — Women’s Fashion Tips, Trends & Styling Guides',
+  title: "The Kalokea Journal — Women's Fashion Tips, Trends & Styling Guides",
   description:
-    'Styling guides, trend reports and care tips from Kalokea — practical women’s fashion advice for India. Learn how to style kurtas, choose dresses, find your size and care for every fabric.',
+    "Styling guides, trend reports and care tips from Kalokea — practical women's fashion advice for India. Learn how to style kurtas, choose dresses, find your size and care for every fabric.",
   alternates: { canonical: `${SITE_URL}/blog/` },
   openGraph: {
-    title: 'The Kalokea Journal — Women’s Fashion Tips, Trends & Styling Guides',
+    title: "The Kalokea Journal — Women's Fashion Tips, Trends & Styling Guides",
     description:
-      'Styling guides, trend reports and care tips from Kalokea — practical women’s fashion advice for India.',
+      "Styling guides, trend reports and care tips from Kalokea — practical women's fashion advice for India.",
     url: `${SITE_URL}/blog/`,
     type: 'website',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'The Kalokea Journal' }],
@@ -50,39 +50,38 @@ export const metadata: Metadata = {
 
 function buildBlogJsonLd(cards: JournalCard[]) {
   return {
-    ‘@context’: ‘https://schema.org’,
-    ‘@type’: ‘Blog’,
-    name: ‘The Kalokea Journal’,
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'The Kalokea Journal',
     url: `${SITE_URL}/blog/`,
     description:
-      ‘Styling guides, trend reports and fabric-care tips from Kalokea — practical women’s fashion advice for India.’,
+      "Styling guides, trend reports and fabric-care tips from Kalokea — practical women's fashion advice for India.",
     publisher: {
-      ‘@type’: ‘Organization’,
-      name: ‘Kalokea’,
-      logo: { ‘@type’: ‘ImageObject’, url: `${SITE_URL}/logo.png`, width: 200, height: 60 },
+      '@type': 'Organization',
+      name: 'Kalokea',
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png`, width: 200, height: 60 },
     },
     blogPost: cards.map((p) => ({
-      ‘@type’: ‘BlogPosting’,
+      '@type': 'BlogPosting',
       headline: p.title,
       description: p.description,
       datePublished: p.date,
       dateModified: p.updated,
       url: `${SITE_URL}/blog/${p.slug}/`,
-      mainEntityOfPage: { ‘@type’: ‘WebPage’, ‘@id’: `${SITE_URL}/blog/${p.slug}/` },
-      author: { ‘@type’: ‘Organization’, name: ‘Kalokea’ },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/blog/${p.slug}/` },
+      author: { '@type': 'Organization', name: 'Kalokea' },
     })),
   }
 }
 
 const breadcrumbJsonLd = {
-  ‘@context’: ‘https://schema.org’,
-  ‘@type’: ‘BreadcrumbList’,
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
   itemListElement: [
-    { ‘@type’: ‘ListItem’, position: 1, name: ‘Home’, item: `${SITE_URL}/` },
-    { ‘@type’: ‘ListItem’, position: 2, name: ‘Journal’, item: `${SITE_URL}/blog/` },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Journal', item: `${SITE_URL}/blog/` },
   ],
 }
-
 
 function formatDate(iso: string): string {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -96,15 +95,15 @@ export default async function BlogIndexPage() {
   const dbPosts = await getDbPosts()
   const dbCards: JournalCard[] = dbPosts.map((p) => ({
     slug: p.slug,
-    eyebrow: p.eyebrow || ‘Journal’,
+    eyebrow: p.eyebrow || 'Journal',
     heading: p.heading || p.title,
-    headingItalic: p.heading_italic || ‘’,
-    excerpt: p.excerpt || p.description || ‘’,
+    headingItalic: p.heading_italic || '',
+    excerpt: p.excerpt || p.description || '',
     date: p.published_at || p.updated_at || p.created_at || new Date().toISOString(),
     updated: p.updated_at || p.published_at || new Date().toISOString(),
-    readingTime: p.reading_time || ‘’,
+    readingTime: p.reading_time || '',
     title: p.title,
-    description: p.description || p.excerpt || ‘’,
+    description: p.description || p.excerpt || '',
   }))
 
   const seen = new Set(curatedCards.map((c) => c.slug))
@@ -128,7 +127,7 @@ export default async function BlogIndexPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-      {/* ── Intro ────────────────────────────────────────────────────────── */}
+      {/* Intro */}
       <section className="px-4 sm:px-6 pt-16 pb-12 md:pt-24 md:pb-16 text-center">
         <div className="max-w-2xl mx-auto">
           <p className="text-[9.5px] font-sans tracking-[0.35em] uppercase text-[#7C4A2D] mb-5">The Kalokea Journal</p>
@@ -146,7 +145,7 @@ export default async function BlogIndexPage() {
         </div>
       </section>
 
-      {/* ── Featured post ────────────────────────────────────────────────── */}
+      {/* Featured post */}
       {featured && (
         <section className="px-4 sm:px-6 pb-4">
           <div className="max-w-6xl mx-auto">
@@ -165,7 +164,7 @@ export default async function BlogIndexPage() {
                   <time dateTime={featured.date}>{formatDate(featured.date)}</time>
                   <span aria-hidden="true" className="w-1 h-1 rounded-full bg-[#C4A882]" />
                   <span>{featured.readingTime}</span>
-                  <span className="ml-auto font-sans text-[11px] tracking-[0.18em] uppercase text-[#7C4A2D]">Read article →</span>
+                  <span className="ml-auto font-sans text-[11px] tracking-[0.18em] uppercase text-[#7C4A2D]">Read article &rarr;</span>
                 </div>
               </div>
             </Link>
@@ -173,7 +172,7 @@ export default async function BlogIndexPage() {
         </section>
       )}
 
-      {/* ── Post grid ────────────────────────────────────────────────────── */}
+      {/* Post grid */}
       <section className="px-4 sm:px-6 py-12 md:py-16">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {rest.map((p) => (
@@ -195,7 +194,7 @@ export default async function BlogIndexPage() {
         </div>
       </section>
 
-      {/* ── Closing CTA ──────────────────────────────────────────────────── */}
+      {/* Closing CTA */}
       <section className="px-4 sm:px-6 pb-20">
         <div className="max-w-2xl mx-auto text-center">
           <p className="font-sans text-[14px] leading-relaxed text-[#6B5E55] mb-7">
