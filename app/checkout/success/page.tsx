@@ -17,11 +17,11 @@ function SuccessContent() {
         {/* ── Checkmark ── */}
         <div className="flex justify-center mb-8">
           <div
-            className="w-20 h-20 flex items-center justify-center"
-            style={{ border: '2px solid #7C4A2D' }}
+            className="w-20 h-20 rounded-full flex items-center justify-center"
+            style={{ background: '#16A34A' }}
             aria-hidden="true"
           >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7C4A2D" strokeWidth="1.5" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
@@ -84,7 +84,10 @@ function SuccessContent() {
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href={isLoggedIn ? '/account/orders/' : `/track-order/?order=${orderNumber}`}
-            className="flex-1 text-center bg-[#0A0908] text-white text-[11px] font-sans tracking-widest uppercase px-6 py-4 hover:bg-[#7C4A2D] transition-colors"
+            className="flex-1 text-center text-white text-[11px] font-sans tracking-widest uppercase px-6 py-4 transition-colors"
+            style={{ background: '#16A34A' }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#15803D')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#16A34A')}
           >
             {isLoggedIn ? 'View My Orders' : 'Track Order'}
           </Link>
