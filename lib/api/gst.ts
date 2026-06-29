@@ -90,7 +90,7 @@ export const gstApi = {
     api.get<GstCashflow>(`/gst/cashflow${qs(params)}`),
 
   downloadTransactions: (params: { from?: string; to?: string; type?: string }) =>
-    downloadCsv(`/gst/export/transactions${qs(params)}`, `gst-transactions${params.from ? '-' + params.from : ''}.csv`),
+    downloadCsv(`/gst/export/transactions${qs(params)}`, `KALOKEA-GST${params.from ? '-' + params.from : ''}.csv`),
   downloadSummary: (params: { from?: string; to?: string }) =>
     downloadCsv(`/gst/export/summary${qs(params)}`, `gst-summary${params.from ? '-' + params.from : ''}.csv`),
 }
