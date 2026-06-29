@@ -118,6 +118,9 @@ export default function AdminNavigationPage() {
 
   const load = useCallback(async () => {
     setLoading(true)
+    // Always bust the HTTP cache on admin pages so we see the latest saved data,
+    // not the browser-cached public response (Cache-Control: max-age=120).
+    invalidateSiteContentCache()
     try {
       const parsed = await siteContentApi.getParsed()
       setNavLinks(parsed.header_nav_links)
