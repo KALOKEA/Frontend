@@ -36,6 +36,7 @@ export default function AddToCartButton({ product, selectedVariant, quantity }: 
       image_url: primaryImg,
       size: selectedVariant.size,
       colour: selectedVariant.colour,
+      sku: selectedVariant.sku || product.sku || undefined,
       price: unitPrice,
       quantity,
       max_stock: selectedVariant.stock,

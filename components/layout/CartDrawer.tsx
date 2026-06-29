@@ -187,6 +187,11 @@ export default function CartDrawer() {
                         {[item.colour, item.size].filter(Boolean).join(' · ')}
                       </p>
                     )}
+                    {item.sku && (
+                      <p className="text-[10px] font-sans text-[#6B5E55] mt-0.5">
+                        SKU: <span className="font-medium text-[#0A0908]">{item.sku}</span>
+                      </p>
+                    )}
                     <p className="text-sm font-medium text-[#0A0908] mt-1">{formatPrice(item.price)}</p>
 
                     {/* Qty controls */}

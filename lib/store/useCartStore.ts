@@ -13,6 +13,7 @@ export interface CartItem {
   image_url: string
   size?: string
   colour?: string
+  sku?: string
   price: number
   quantity: number
   max_stock: number
@@ -88,6 +89,7 @@ function mapServerItem(it: ServerCartItem): CartItem {
     image_url: img,
     size: pv.size,
     colour: pv.colour,
+    sku: pv.sku || undefined,
     price: pv.price,
     quantity: it.quantity,
     max_stock: pv.stock ?? 99,

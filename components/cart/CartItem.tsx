@@ -20,8 +20,13 @@ export default function CartItem({ item }: { item: CartItemType }) {
           {item.name}
         </Link>
         {(item.size || item.colour) && (
-          <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide mb-2">
+          <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide mb-1">
             {[item.colour, item.size].filter(Boolean).join(' · ')}
+          </p>
+        )}
+        {item.sku && (
+          <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide mb-2">
+            SKU: <span className="text-[#0a0a0a] font-medium">{item.sku}</span>
           </p>
         )}
         <p className="text-sm font-sans text-[#0a0a0a] mb-3">{formatPrice(item.price)}</p>

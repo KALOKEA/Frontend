@@ -875,6 +875,7 @@ function ProductEditor({
                         <VariantRow
                           key={v.id}
                           v={v}
+                          productSku={form.sku}
                           onSave={async (v2, stock, price, sku) => {
                             await variantsApi.update(v2.id, {
                               stock: parseInt(stock, 10),
@@ -1317,14 +1318,16 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
   )
 }
 
-function VariantRow({ v, onSave, onDelete }: {
+function VariantRow({ v, productSku, onSave, onDelete }: {
   v: ProductVariant
+  productSku?: string
   onSave: (v: ProductVariant, stock: string, price: string, sku: string) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }) {
   const [stock, setStock]     = useState(String(v.stock))
   const [price, setPrice]     = useState(String(Math.round(v.price / 100)))
-  const [sku, setSku]         = useState(v.sku || '')
+  // If the variant has no SKU saved yet, pre-fill with the product's master SKU.
+  const [sku, setSku]         = useState(v.sku || productSku || '')
   const [saving, setSaving]   = useState(false)
   const [deleting, setDeleting] = useState(false)
   const busy = saving || deleting
