@@ -71,8 +71,8 @@ interface VariantDraft {
   size: string; colour: string; price: string; stock: string; sku: string
   _key?: string // local unique key for list rendering
 }
-const emptyVariant = (): VariantDraft => ({
-  size: '', colour: '', price: '', stock: '0', sku: '', _key: String(Date.now() + Math.random()),
+const emptyVariant = (sku = ''): VariantDraft => ({
+  size: '', colour: '', price: '', stock: '0', sku, _key: String(Date.now() + Math.random()),
 })
 
 // ─── Main page ────────────────────────────────────────────────────────────────
@@ -280,7 +280,7 @@ function ProductEditor({
 
   // ── Pending variants (for new products before first save) ──────────────────
   const [pendingVariants, setPendingVariants] = useState<VariantDraft[]>([])
-  const [vDraft, setVDraft]       = useState<VariantDraft>(emptyVariant())
+  const [vDraft, setVDraft]       = useState<VariantDraft>(emptyVariant(initial?.sku || ''))
   const [vSaving, setVSaving]     = useState(false)
 
   // ── Size×colour matrix generator ──────────────────────────────────────────
@@ -416,7 +416,7 @@ function ProductEditor({
   function addPendingVariant() {
     if (!vDraft.price) { showToast('Price is required for each variant.', 'err'); return }
     setPendingVariants(prev => [...prev, { ...vDraft, _key: String(Date.now() + Math.random()) }])
-    setVDraft(emptyVariant())
+    setVDraft(emptyVariant(form.sku))
     showToast('Variant queued — will be created with the product.')
   }
 
@@ -446,7 +446,7 @@ function ProductEditor({
         sku: vDraft.sku || undefined,
         is_active: true,
       })
-      setVDraft(emptyVariant())
+      setVDraft(emptyVariant(form.sku))
       await refreshMedia(form.id)
       showToast('Variant added')
     } catch (e: unknown) {
@@ -476,7 +476,7 @@ function ProductEditor({
       for (const colour of colours) {
         newDrafts.push({
           size, colour, price: matrixPrice, stock: matrixStock || '0',
-          sku: '', // blank = inherit the product SKU (admin can override a row later)
+          sku: form.sku, // inherit product SKU (admin can override a row later)
           _key: String(Date.now() + Math.random()),
         })
       }

@@ -505,9 +505,9 @@ export default function ProductDetailClient({ slug, initialProduct }: { slug: st
 
             <div className="space-y-0.5">
               <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide">Free shipping above ₹999 · GST calculated at checkout</p>
-              {(selectedVariant?.sku || activeVariants[0]?.sku) && (
+              {(selectedVariant?.sku || activeVariants[0]?.sku || product?.sku) && (
                 <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide">
-                  SKU: <span className="text-[#0a0a0a] font-medium">{selectedVariant?.sku || activeVariants[0]?.sku}</span>
+                  SKU: <span className="text-[#0a0a0a] font-medium">{selectedVariant?.sku || activeVariants[0]?.sku || product?.sku}</span>
                 </p>
               )}
             </div>
