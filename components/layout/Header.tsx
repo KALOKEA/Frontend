@@ -9,15 +9,9 @@ import FlashSaleBanner from './FlashSaleBanner'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import { categoriesApi, type Category } from '@/lib/api/categories'
 
-// Matches design reference: Shop, Dresses, Tops, Bottoms, Bags, About
-const NAV_LINKS = [
-  { label: 'Shop',    href: '/shop/' },
-  { label: 'Dresses', href: '/shop/dresses/' },
-  { label: 'Tops',    href: '/shop/tops/' },
-  { label: 'Bottoms', href: '/shop/bottoms/' },
-  { label: 'Bags',    href: '/shop/bags/' },
-  { label: 'About',   href: '/about/' },
-]
+// Static nav anchors — category links are injected dynamically from active categories
+const NAV_STATIC_START = [{ label: 'Shop', href: '/shop/' }]
+const NAV_STATIC_END   = [{ label: 'Journal', href: '/blog/' }, { label: 'About', href: '/about/' }]
 
 export default function Header() {
   const router = useRouter()
@@ -34,6 +28,13 @@ export default function Header() {
   const headerRef = useRef<HTMLElement>(null)
   const { isLoggedIn } = useAuthStore()
   const [cats, setCats] = useState<Category[]>([])
+
+  // Build nav links dynamically: Shop → active categories (max 5) → Journal → About
+  const navLinks = [
+    ...NAV_STATIC_START,
+    ...cats.slice(0, 5).map(c => ({ label: c.name, href: `/shop/${c.slug}/` })),
+    ...NAV_STATIC_END,
+  ]
 
   // Load real categories for the search "browse categories" grid.
   useEffect(() => {
@@ -156,7 +157,7 @@ export default function Header() {
 
             {/* Nav links — center */}
             <nav aria-label="Main navigation" className="flex items-center gap-6 xl:gap-8">
-              {NAV_LINKS.map(n => (
+              {navLinks.map(n => (
                 <Link
                   key={n.href}
                   href={n.href}
@@ -321,7 +322,7 @@ export default function Header() {
         </div>
       )}
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} cats={cats} />
     </>
   )
 }

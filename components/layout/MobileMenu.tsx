@@ -1,25 +1,27 @@
 'use client'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
+import type { Category } from '@/lib/api/categories'
 
-const NAV_LINKS = [
+// Static links always shown (above dynamic categories)
+const NAV_TOP = [
   { label: 'New Arrivals', href: '/shop/new-arrivals/' },
-  { label: 'Dresses',      href: '/shop/dresses/' },
-  { label: 'Tops',         href: '/shop/tops/' },
-  { label: 'Bottoms',      href: '/shop/bottoms/' },
-  { label: 'Shoes',        href: '/shop/shoes/' },
-  { label: 'Bags',         href: '/shop/bags/' },
-  { label: 'Accessories',  href: '/shop/accessories/' },
-  { label: 'Sale',         href: '/shop/sale/', accent: true },
-  { label: 'Everything',   href: '/shop/' },
+]
+
+// Static links always shown after dynamic categories
+const NAV_BOTTOM = [
+  { label: 'Sale', href: '/shop/sale/', accent: true },
+  { label: 'Everything', href: '/shop/' },
+  { label: 'Journal', href: '/blog/' },
 ]
 
 interface MobileMenuProps {
   open: boolean
   onClose: () => void
+  cats?: Category[]
 }
 
-export default function MobileMenu({ open, onClose }: MobileMenuProps) {
+export default function MobileMenu({ open, onClose, cats = [] }: MobileMenuProps) {
   const closeRef        = useRef<HTMLButtonElement>(null)
   const dialogRef       = useRef<HTMLDivElement>(null)
   const previousFocus   = useRef<HTMLElement | null>(null)
@@ -75,6 +77,15 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [open])
 
+  // Build dynamic nav: static top + active categories + static bottom
+  const dynamicCatLinks = cats.map(c => ({ label: c.name, href: `/shop/${c.slug}/`, accent: false }))
+
+  const allLinks = [
+    ...NAV_TOP,
+    ...dynamicCatLinks,
+    ...NAV_BOTTOM,
+  ]
+
   return (
     <>
       {open && (
@@ -90,7 +101,6 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         aria-modal="true"
         role="dialog"
         aria-label="Navigation menu"
-        // Hidden from AT when closed (prevents focus from reaching links via Tab when drawer is off-screen)
         inert={!open ? true : undefined}
       >
         {/* Header */}
@@ -111,13 +121,13 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
 
         {/* Nav list */}
         <nav className="flex-1 overflow-y-auto px-5 py-4">
-          {NAV_LINKS.map((link) => (
+          {allLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={onClose}
               className={`flex items-center py-3.5 text-[10px] font-sans tracking-[0.22em] uppercase border-b border-[#F2EAE0] min-h-[44px] transition-colors ${
-                link.accent ? 'text-[#7C4A2D]' : 'text-[#0A0908] hover:text-[#7C4A2D]'
+                (link as any).accent ? 'text-[#7C4A2D]' : 'text-[#0A0908] hover:text-[#7C4A2D]'
               }`}
             >
               {link.label}
