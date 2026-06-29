@@ -10,7 +10,19 @@
  * TransformInterceptor as { data: ... }.
  */
 import type { BlogPost } from '@/lib/api/blog'
+import { BLOG_POSTS } from '@/lib/blog/posts'
 import { BASE_URL } from '@/lib/api/client'
+
+/** Normalised shape used by FromTheJournal and the blog index page. */
+export interface JournalItem {
+  slug: string
+  eyebrow: string
+  heading: string
+  headingItalic: string
+  excerpt: string
+  date: string
+  readingTime: string
+}
 
 async function unwrap<T>(res: Response): Promise<T | null> {
   if (!res.ok) return null
@@ -37,6 +49,40 @@ export async function getDbPost(slug: string): Promise<BlogPost | null> {
   } catch {
     return null
   }
+}
+
+/**
+ * Merged list of curated (static) + admin-authored (DB) posts as JournalItems.
+ * Curated posts win on slug collisions. Sorted newest-first by date.
+ * Used by FromTheJournal (homepage) and the blog index page.
+ */
+export async function getMergedJournalItems(): Promise<JournalItem[]> {
+  const dbPosts = await getDbPosts()
+
+  const curated: JournalItem[] = BLOG_POSTS.map((p) => ({
+    slug: p.slug,
+    eyebrow: p.eyebrow,
+    heading: p.heading,
+    headingItalic: p.headingItalic,
+    excerpt: p.excerpt,
+    date: p.date,
+    readingTime: p.readingTime,
+  }))
+
+  const fromDb: JournalItem[] = dbPosts.map((p) => ({
+    slug: p.slug,
+    eyebrow: p.eyebrow || 'Journal',
+    heading: p.heading || p.title,
+    headingItalic: p.heading_italic || '',
+    excerpt: p.excerpt || p.description || '',
+    date: p.published_at || p.updated_at || p.created_at || new Date().toISOString(),
+    readingTime: p.reading_time || '',
+  }))
+
+  const seen = new Set(curated.map((c) => c.slug))
+  return [...curated, ...fromDb.filter((c) => !seen.has(c.slug))].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  )
 }
 
 /**
