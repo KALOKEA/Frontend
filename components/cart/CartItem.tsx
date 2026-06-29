@@ -20,7 +20,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
           {item.name}
         </Link>
         {(item.size || item.colour) && (
-          <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide mb-1">
+          <p className="text-[10px] font-sans text-[#6b6b6b] tracking-wide mb-2">
             {[item.colour, item.size].filter(Boolean).join(' · ')}
           </p>
         )}
