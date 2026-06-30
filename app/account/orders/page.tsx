@@ -124,9 +124,9 @@ export default function OrdersPage() {
   const exchangeByOrder = (id: string) => exchanges.find(e => e.order_id === id)
 
   function isCancellable(order: Order): boolean {
-    if (order.status !== 'pending') return false
-    const placedMs = new Date(order.created_at).getTime()
-    return Date.now() - placedMs <= 12 * 60 * 60 * 1000
+    // Allow cancellation while the order is pending or confirmed (before packing starts).
+    // No time restriction — if the admin hasn't started processing, the customer can cancel.
+    return order.status === 'pending' || order.status === 'confirmed'
   }
 
   function openExchange(order: Order) {
