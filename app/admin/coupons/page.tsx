@@ -12,14 +12,18 @@ interface FormState {
   min_order_value: string
   max_uses: string
   max_per_user: string
+  valid_from: string
   valid_until: string
   is_active: boolean
   is_featured: boolean
+  is_permanent: boolean
+  new_users_only: boolean
 }
 
 const emptyForm = (): FormState => ({
   code: '', type: 'percent', value: '', min_order_value: '',
-  max_uses: '', max_per_user: '', valid_until: '', is_active: true, is_featured: false,
+  max_uses: '', max_per_user: '', valid_from: '', valid_until: '',
+  is_active: true, is_featured: false, is_permanent: false, new_users_only: false,
 })
 
 function couponToForm(c: Coupon): FormState {
@@ -31,14 +35,21 @@ function couponToForm(c: Coupon): FormState {
     min_order_value: c.min_order_value ? String(Math.round(c.min_order_value / 100)) : '',
     max_uses: c.max_uses ? String(c.max_uses) : '',
     max_per_user: c.max_per_user ? String(c.max_per_user) : '',
+    valid_from: c.valid_from ? c.valid_from.slice(0, 10) : '',
     valid_until: c.valid_until ? c.valid_until.slice(0, 10) : '',
     is_active: c.is_active,
     is_featured: c.is_featured ?? false,
+    is_permanent: c.is_permanent ?? false,
+    new_users_only: c.new_users_only ?? false,
   }
 }
 
 function isExpired(c: Coupon) {
   return c.valid_until ? new Date(c.valid_until) < new Date() : false
+}
+
+function isScheduled(c: Coupon) {
+  return c.valid_from ? new Date(c.valid_from) > new Date() : false
 }
 
 export default function AdminCouponsPage() {
@@ -70,9 +81,12 @@ export default function AdminCouponsPage() {
       min_order_value: form.min_order_value ? Math.round(parseFloat(form.min_order_value) * 100) : undefined,
       max_uses: form.max_uses ? parseInt(form.max_uses, 10) : undefined,
       max_per_user: form.max_per_user ? parseInt(form.max_per_user, 10) : undefined,
+      valid_from: form.valid_from || undefined,
       valid_until: form.valid_until || undefined,
       is_active: form.is_active,
       is_featured: form.is_featured,
+      is_permanent: form.is_permanent,
+      new_users_only: form.new_users_only,
     }
     try {
       if (form.id) {
@@ -89,7 +103,12 @@ export default function AdminCouponsPage() {
   }
 
   async function toggle(c: Coupon) {
-    await adminApi.toggleCoupon(c.id).catch(() => {})
+    if (c.is_permanent && c.is_active) return // blocked — UI hides button too
+    try {
+      await adminApi.toggleCoupon(c.id)
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : 'Failed to toggle coupon')
+    }
     load()
   }
 
@@ -106,7 +125,7 @@ export default function AdminCouponsPage() {
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
         <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
-          <table className="w-full min-w-[600px] text-sm font-sans">
+          <table className="w-full min-w-[700px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                 <th className="px-4 py-3">Code</th>
@@ -121,9 +140,29 @@ export default function AdminCouponsPage() {
             <tbody>
               {coupons.map(c => {
                 const expired = isExpired(c)
+                const scheduled = isScheduled(c)
                 return (
                   <tr key={c.id} className="border-b border-[#f0ece8] last:border-0 hover:bg-[#faf8f5] transition-colors">
-                    <td className="px-4 py-3 font-medium font-mono text-[#0a0a0a]">{c.code}</td>
+                    <td className="px-4 py-3">
+                      <span className="font-medium font-mono text-[#0a0a0a]">{c.code}</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {c.is_permanent && (
+                          <span className="text-[9px] uppercase tracking-widest bg-[#0a0a0a] text-white px-1.5 py-0.5 rounded">
+                            Permanent
+                          </span>
+                        )}
+                        {c.new_users_only && (
+                          <span className="text-[9px] uppercase tracking-widest bg-[#e8f0ff] text-[#1a4da0] px-1.5 py-0.5 rounded">
+                            New users
+                          </span>
+                        )}
+                        {c.is_featured && (
+                          <span className="text-[9px] uppercase tracking-widest bg-[#fff3e0] text-[#e65100] px-1.5 py-0.5 rounded">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-4 py-3">
                       {c.type === 'percent' ? `${c.value}% off` : `${formatPrice(c.value)} off`}
                     </td>
@@ -132,31 +171,41 @@ export default function AdminCouponsPage() {
                       {c.used_count ?? 0}
                       {c.max_uses ? <span className="text-[#6b6b6b]"> / {c.max_uses}</span> : ''}
                       {c.max_per_user ? (
-                        <span className="block text-[10px] text-[#6b6b6b]">
-                          max {c.max_per_user}/customer
-                        </span>
+                        <span className="block text-[10px] text-[#6b6b6b]">max {c.max_per_user}/customer</span>
                       ) : null}
                     </td>
                     <td className="px-4 py-3">
+                      {c.valid_from && !isExpired(c) && (
+                        <span className={`block text-[10px] ${scheduled ? 'text-[#e65100]' : 'text-[#6b6b6b]'}`}>
+                          From: {new Date(c.valid_from).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        </span>
+                      )}
                       {c.valid_until ? (
                         <span className={expired ? 'text-red-500 line-through' : 'text-[#6b6b6b]'}>
                           {new Date(c.valid_until).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                         </span>
-                      ) : '—'}
+                      ) : (
+                        <span className="text-[#6b6b6b]">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded ${
                         expired ? 'bg-red-100 text-red-600' :
+                        scheduled ? 'bg-orange-100 text-orange-600' :
                         c.is_active ? 'bg-[#e8f5e9] text-[#2e7d32]' : 'bg-gray-100 text-gray-600'
                       }`}>
-                        {expired ? 'Expired' : c.is_active ? 'Active' : 'Disabled'}
+                        {expired ? 'Expired' : scheduled ? 'Scheduled' : c.is_active ? 'Active' : 'Disabled'}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right whitespace-nowrap">
                       <button onClick={() => openEdit(c)} className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline mr-3">Edit</button>
-                      <button onClick={() => toggle(c)} className="text-[11px] uppercase tracking-widest text-[#6b6b6b] hover:underline">
-                        {c.is_active ? 'Disable' : 'Enable'}
-                      </button>
+                      {c.is_permanent && c.is_active ? (
+                        <span className="text-[11px] uppercase tracking-widest text-[#ccc]" title="Permanent coupons cannot be disabled">—</span>
+                      ) : (
+                        <button onClick={() => toggle(c)} className="text-[11px] uppercase tracking-widest text-[#6b6b6b] hover:underline">
+                          {c.is_active ? 'Disable' : 'Enable'}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 )
@@ -170,8 +219,18 @@ export default function AdminCouponsPage() {
       {form && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => setForm(null)} />
-          <div className="relative bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-label="Coupon form" onClick={e => e.stopPropagation()}>
+          <div
+            className="relative bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto"
+            role="dialog" aria-modal="true" aria-label="Coupon form"
+            onClick={e => e.stopPropagation()}
+          >
             <h2 className="font-serif text-xl mb-5 text-[#0a0a0a]">{form.id ? 'Edit coupon' : 'New coupon'}</h2>
+
+            {form.is_permanent && (
+              <div className="mb-4 px-3 py-2 bg-[#f5f5f5] border border-[#e0e0e0] text-[11px] text-[#555] font-sans">
+                This is a <strong>permanent coupon</strong>. It cannot be disabled and its permanent status cannot be removed.
+              </div>
+            )}
 
             <label className="block mb-3">
               <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Code *</span>
@@ -247,27 +306,42 @@ export default function AdminCouponsPage() {
               />
             </label>
 
-            <label className="block mb-4">
-              <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Valid until</span>
-              <input
-                type="date"
-                value={form.valid_until}
-                onChange={e => setForm(f => f ? { ...f, valid_until: e.target.value } : f)}
-                className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
-              />
-            </label>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Valid from</span>
+                <input
+                  type="date"
+                  value={form.valid_from}
+                  onChange={e => setForm(f => f ? { ...f, valid_from: e.target.value } : f)}
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                />
+              </label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Valid until</span>
+                <input
+                  type="date"
+                  value={form.valid_until}
+                  onChange={e => setForm(f => f ? { ...f, valid_until: e.target.value } : f)}
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                />
+              </label>
+            </div>
 
-            <label className="flex items-center gap-2 text-sm text-[#0a0a0a] mb-5 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-[#0a0a0a] mb-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.is_active}
+                disabled={form.is_permanent}
                 onChange={e => setForm(f => f ? { ...f, is_active: e.target.checked } : f)}
                 className="w-4 h-4"
               />
-              Active (customers can use this coupon)
+              <span className={form.is_permanent ? 'text-[#aaa]' : ''}>
+                Active (customers can use this coupon)
+                {form.is_permanent && <span className="ml-1 text-[11px] text-[#aaa]">— always on for permanent coupons</span>}
+              </span>
             </label>
 
-            <label className="flex items-center gap-2 text-sm text-[#0a0a0a] mb-5 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-[#0a0a0a] mb-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.is_featured}
@@ -275,6 +349,30 @@ export default function AdminCouponsPage() {
                 className="w-4 h-4"
               />
               Feature on product pages (shows &ldquo;Get it at &#8377;X&rdquo;)
+            </label>
+
+            <label className="flex items-center gap-2 text-sm text-[#0a0a0a] mb-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.new_users_only}
+                onChange={e => setForm(f => f ? { ...f, new_users_only: e.target.checked } : f)}
+                className="w-4 h-4"
+              />
+              New customers only (first order — like WELCOME15)
+            </label>
+
+            <label className="flex items-center gap-2 text-sm text-[#0a0a0a] mb-5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.is_permanent}
+                disabled={!!form.id && form.is_permanent}
+                onChange={e => setForm(f => f ? { ...f, is_permanent: e.target.checked } : f)}
+                className="w-4 h-4"
+              />
+              <span>
+                Permanent (cannot be disabled once set)
+                {form.id && form.is_permanent && <span className="ml-1 text-[11px] text-[#aaa]">— locked</span>}
+              </span>
             </label>
 
             {msg && <p className="text-sm text-red-600 mb-3">{msg}</p>}

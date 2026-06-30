@@ -288,6 +288,9 @@ export default function CheckoutPage() {
               onApply={(d, c) => { setCouponDiscount(d); setCouponCode(c); setAppliedCoupon(c, d) }}
               onRemove={() => { setCouponDiscount(0); setCouponCode(null); clearAppliedCoupon() }}
               appliedCode={couponCode}
+              userId={isLoggedIn ? (user?.id ?? null) : null}
+              guestEmail={!isLoggedIn ? (billing.email || null) : null}
+              showWelcomeHint={true}
             />
           </section>
 

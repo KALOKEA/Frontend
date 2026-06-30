@@ -1,5 +1,5 @@
 'use client'
-import { Check } from 'lucide-react'
+import { Check, Tag } from 'lucide-react'
 import { useState } from 'react'
 import { couponsApi } from '@/lib/api/coupons'
 import { useCartStore } from '@/lib/store/useCartStore'
@@ -8,9 +8,22 @@ interface CouponInputProps {
   onApply: (discount: number, code: string) => void
   onRemove: () => void
   appliedCode: string | null
+  /** Logged-in user ID — passed to backend so per-user caps and new_users_only are enforced at validation. */
+  userId?: string | null
+  /** Guest email from billing form — same purpose as userId for guest checkouts. */
+  guestEmail?: string | null
+  /** When true, show "New customer? Try WELCOME15" hint. */
+  showWelcomeHint?: boolean
 }
 
-export default function CouponInput({ onApply, onRemove, appliedCode }: CouponInputProps) {
+export default function CouponInput({
+  onApply,
+  onRemove,
+  appliedCode,
+  userId,
+  guestEmail,
+  showWelcomeHint,
+}: CouponInputProps) {
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -22,32 +35,59 @@ export default function CouponInput({ onApply, onRemove, appliedCode }: CouponIn
     setLoading(true)
     setError('')
     try {
-      const res = await couponsApi.validate(code.trim().toUpperCase(), subtotal)
+      const res = await couponsApi.validate(
+        code.trim().toUpperCase(),
+        subtotal,
+        userId,
+        guestEmail,
+      )
       if (res.valid) {
         onApply(res.discount_amount, code.trim().toUpperCase())
       } else {
         setError(res.message || 'Invalid coupon code')
       }
-    } catch {
-      setError('Invalid or expired coupon')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : ''
+      setError(msg || 'Invalid or expired coupon')
     } finally {
       setLoading(false)
     }
+  }
+
+  const applyCode = (prefill: string) => {
+    setCode(prefill)
   }
 
   if (appliedCode) {
     return (
       <div className="flex items-center justify-between border border-[#7C4A2D] px-4 py-3">
         <p className="text-xs font-sans text-[#0a0a0a]">
-          <Check size={11} className="inline mr-1 text-[#7C4A2D]" aria-hidden={true} />Coupon <span className="font-medium">{appliedCode}</span> applied
+          <Check size={11} className="inline mr-1 text-[#7C4A2D]" aria-hidden={true} />
+          Coupon <span className="font-medium">{appliedCode}</span> applied
         </p>
-        <button onClick={onRemove} aria-label={`Remove coupon ${appliedCode}`} className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#0a0a0a] tracking-widest uppercase underline">Remove</button>
+        <button
+          onClick={onRemove}
+          aria-label={`Remove coupon ${appliedCode}`}
+          className="text-[10px] font-sans text-[#6b6b6b] hover:text-[#0a0a0a] tracking-widest uppercase underline"
+        >
+          Remove
+        </button>
       </div>
     )
   }
 
   return (
     <div>
+      {showWelcomeHint && (
+        <button
+          type="button"
+          onClick={() => applyCode('WELCOME15')}
+          className="flex items-center gap-1.5 text-[11px] font-sans text-[#7C4A2D] mb-2 hover:underline"
+        >
+          <Tag size={11} />
+          New customer? Use <span className="font-medium font-mono">WELCOME15</span> for 15% off your first order
+        </button>
+      )}
       <div className="flex">
         <input
           value={code}

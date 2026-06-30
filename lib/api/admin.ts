@@ -39,9 +39,14 @@ export interface Coupon {
   max_uses?: number
   max_per_user?: number
   used_count?: number
+  valid_from?: string
   valid_until?: string
   is_active: boolean
   is_featured?: boolean
+  /** Cannot be disabled once set — platform-level offers like WELCOME15. */
+  is_permanent?: boolean
+  /** Only valid on customer's first order. */
+  new_users_only?: boolean
 }
 
 export interface AdminCustomer {
