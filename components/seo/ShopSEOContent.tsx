@@ -82,7 +82,7 @@ const FAQS = [
   },
   {
     q: 'Does Kalokea provide GST invoices?',
-    a: 'Yes, Kalokea is a GST-registered business and provides valid GST tax invoices for all purchases. Your GST invoice is automatically generated and available for download from the "My Orders" section within your account. If you require a B2B invoice with your company name and GSTIN, you can enter these details during the checkout process under the GST Invoice option.',
+    a: 'Yes, Kalokea is a GST-registered business (GSTIN: 24HRYPK5081F1Z8) and provides valid GST tax invoices for all purchases. Your GST invoice is automatically generated and available for download from the "My Orders" section within your account. If you require a B2B invoice with your company name and GSTIN, you can enter these details during the checkout process under the GST Invoice option.',
   },
   {
     q: 'How do I care for Kalokea garments?',

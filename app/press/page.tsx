@@ -91,7 +91,7 @@ export default function PressPage() {
                   <Row label="Payment options" value="UPI, Credit/Debit Cards, Net Banking, Cash on Delivery (COD)" />
                   <Row label="Payment gateway" value="Razorpay (256-bit SSL)" />
                   <Row label="Size range" value="XS, S, M, L, XL" />
-                  <Row label="GST registered" value="Yes — GST invoice provided for every order" />
+                  <Row label="GSTIN" value="24HRYPK5081F1Z8 — GST invoice provided for every order" />
                   <Row label="Instagram" value="https://www.instagram.com/kalokea" mono />
                   <Row label="AI info file" value="https://kalokea.com/llms.txt" mono />
                 </tbody>
