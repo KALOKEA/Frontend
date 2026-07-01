@@ -55,7 +55,7 @@ export default function AboutPage() {
       >
         {/* Text side */}
         <div
-          className="flex flex-col justify-center px-10 py-16 md:py-24 md:px-16 lg:px-24 relative z-10"
+          className="flex flex-col justify-center px-5 py-12 md:py-24 md:px-16 lg:px-24 relative z-10"
           style={{ flex: '0 0 50%' }}
         >
           <div className="w-10 h-px bg-[#7C4A2D] mb-8" aria-hidden="true" />

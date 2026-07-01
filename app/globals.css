@@ -826,6 +826,14 @@ body.menu-open { overflow: hidden; touch-action: none; }
   }
 }
 
+/* ── Lift footer above the fixed mobile bottom nav (~60px) ── */
+/* Without this the footer's copyright/legal row is hidden behind the nav bar */
+@media (max-width: 767px) {
+  footer {
+    padding-bottom: 70px;
+  }
+}
+
 /* ── 320px (very small phones — Galaxy Fold closed, iPhone SE 1st gen) ── */
 @media (max-width: 360px) {
   /* Tighter horizontal gutters */

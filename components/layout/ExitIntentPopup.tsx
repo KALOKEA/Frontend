@@ -119,17 +119,19 @@ export default function ExitIntentPopup() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#0a0908]/55 z-[200] backdrop-blur-[2px]"
+        className="fixed inset-0 bg-[#0a0908]/55 z-[1000] backdrop-blur-[2px]"
         onClick={close}
         aria-hidden="true"
       />
 
-      {/* Dialog */}
+      {/* Dialog — sits above fixed header (z-900) and mobile menu (z-950).
+          On mobile, align to top with padding equal to header height so the
+          close button is never hidden behind the nav bar. */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Get 10% off — subscribe to the newsletter"
-        className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none"
+        className="fixed inset-0 z-[1001] flex items-start sm:items-center justify-center p-4 pt-[110px] sm:pt-4 pointer-events-none"
       >
         <div className="relative w-full max-w-[400px] bg-white shadow-2xl pointer-events-auto overflow-hidden animate-fade-up">
 
