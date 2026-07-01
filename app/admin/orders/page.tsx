@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { X, ChevronLeft, ChevronRight, Download, ExternalLink } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Download, ExternalLink, Archive, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { adminApi, type AdminOrder } from '@/lib/api/admin'
 import Spinner from '@/components/ui/Spinner'
@@ -14,6 +14,7 @@ const STATUS_COLOR: Record<string, string> = {
   shipped:   'bg-indigo-100 text-indigo-800',
   delivered: 'bg-green-100 text-green-800',
   cancelled: 'bg-red-100 text-red-700',
+  archived:  'bg-gray-100 text-gray-600',
 }
 
 const PAY_COLOR: Record<string, string> = {
@@ -40,12 +41,19 @@ export default function AdminOrdersPage() {
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
   const [exporting, setExporting] = useState(false)
+  // 'active' = main orders (excludes 8-day-old delivered/cancelled)
+  // 'archived' = orders older than 8 days after delivery/cancellation
+  const [viewMode, setViewMode] = useState<'active' | 'archived'>('active')
+  // confirm dialog for archive / delete
+  const [confirmAction, setConfirmAction] = useState<{ type: 'archive' | 'delete'; order: AdminOrder } | null>(null)
+  const [actionInProgress, setActionInProgress] = useState(false)
 
   const limit = 20
 
-  function load(p = page, sf = statusFilter, sq = search) {
+  function load(p = page, sf = statusFilter, sq = search, vm = viewMode) {
     setLoading(true)
-    adminApi.listOrders(p, limit, sf || undefined, sq.trim() || undefined)
+    const archived = vm === 'archived' ? true : false
+    adminApi.listOrders(p, limit, sf || undefined, sq.trim() || undefined, archived)
       .then(res => {
         setOrders(res.data || [])
         setTotal(res.meta?.total || 0)
@@ -54,7 +62,7 @@ export default function AdminOrdersPage() {
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { load(page, statusFilter, debouncedSearch) }, [page]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { load(page, statusFilter, debouncedSearch, viewMode) }, [page]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Debounce raw search → debouncedSearch (400 ms)
   useEffect(() => {
@@ -63,11 +71,11 @@ export default function AdminOrdersPage() {
     return () => { if (searchTimer.current) clearTimeout(searchTimer.current) }
   }, [search])
 
-  // When filter or debounced search changes reset to page 1 and reload from server
+  // When filter, debounced search, or viewMode changes reset to page 1 and reload
   useEffect(() => {
     setPage(1)
-    load(1, statusFilter, debouncedSearch)
-  }, [statusFilter, debouncedSearch]) // eslint-disable-line react-hooks/exhaustive-deps
+    load(1, statusFilter, debouncedSearch, viewMode)
+  }, [statusFilter, debouncedSearch, viewMode]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function openEdit(o: AdminOrder) {
     setEditing(o); setNewStatus(o.status); setTracking(''); setCourier(''); setMsg(null)
@@ -90,7 +98,24 @@ export default function AdminOrdersPage() {
     }
   }
 
-  // Filtering is now server-side — orders already filtered by status + search
+  async function handleConfirmAction() {
+    if (!confirmAction) return
+    setActionInProgress(true)
+    try {
+      if (confirmAction.type === 'archive') {
+        await adminApi.archiveOrder(confirmAction.order.id)
+      } else {
+        await adminApi.deleteOrder(confirmAction.order.id)
+      }
+      setConfirmAction(null)
+      load(page)
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : 'Action failed')
+    } finally {
+      setActionInProgress(false)
+    }
+  }
+
   const visible = orders
 
   return (
@@ -114,6 +139,31 @@ export default function AdminOrdersPage() {
         </button>
       </div>
 
+      {/* Active / Archived view toggle */}
+      <div className="flex gap-0 mb-4 border border-[#e8e4e0] w-fit">
+        <button
+          onClick={() => { setViewMode('active'); setStatusFilter('') }}
+          className={`px-5 py-2 text-[11px] uppercase tracking-widest transition-colors ${
+            viewMode === 'active' ? 'bg-[#0a0a0a] text-white' : 'text-[#6b6b6b] hover:text-[#0a0a0a] hover:bg-[#faf8f5]'
+          }`}
+        >
+          Active
+        </button>
+        <button
+          onClick={() => { setViewMode('archived'); setStatusFilter('') }}
+          className={`px-5 py-2 text-[11px] uppercase tracking-widest transition-colors ${
+            viewMode === 'archived' ? 'bg-[#0a0a0a] text-white' : 'text-[#6b6b6b] hover:text-[#0a0a0a] hover:bg-[#faf8f5]'
+          }`}
+        >
+          Archived
+        </button>
+      </div>
+      {viewMode === 'archived' && (
+        <p className="text-xs text-[#6b6b6b] mb-4">
+          Orders delivered or cancelled more than 8 days ago. Data is preserved for GST records.
+        </p>
+      )}
+
       {/* Search */}
       <div className="relative mb-4">
         <input
@@ -128,28 +178,30 @@ export default function AdminOrdersPage() {
         )}
       </div>
 
-      {/* Status filter tabs */}
-      <div className="flex gap-0 mb-6 border-b border-[#e8e4e0] overflow-x-auto">
-        {['', ...ALL_STATUSES].map(s => (
-          <button
-            key={s}
-            onClick={() => setStatusFilter(s)}
-            className={`px-4 py-2.5 text-[11px] uppercase tracking-widest border-b-2 -mb-px transition-colors whitespace-nowrap ${
-              statusFilter === s
-                ? 'border-[#0a0a0a] text-[#0a0a0a] font-medium'
-                : 'border-transparent text-[#6b6b6b] hover:text-[#0a0a0a]'
-            }`}
-          >
-            {s || 'All'}
-          </button>
-        ))}
-      </div>
+      {/* Status filter tabs (hide delivered/cancelled in archived view since all are those) */}
+      {viewMode === 'active' && (
+        <div className="flex gap-0 mb-6 border-b border-[#e8e4e0] overflow-x-auto">
+          {['', ...ALL_STATUSES].map(s => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={`px-4 py-2.5 text-[11px] uppercase tracking-widest border-b-2 -mb-px transition-colors whitespace-nowrap ${
+                statusFilter === s
+                  ? 'border-[#0a0a0a] text-[#0a0a0a] font-medium'
+                  : 'border-transparent text-[#6b6b6b] hover:text-[#0a0a0a]'
+              }`}
+            >
+              {s || 'All'}
+            </button>
+          ))}
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : (
         <div className="bg-white border border-[#e8e4e0] overflow-x-auto">
-          <table className="w-full min-w-[640px] text-sm font-sans">
+          <table className="w-full min-w-[700px] text-sm font-sans">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-widest text-[#6b6b6b] border-b border-[#e8e4e0]">
                 <th className="px-4 py-3">Order</th>
@@ -199,16 +251,47 @@ export default function AdminOrdersPage() {
                     {new Date(o.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => openEdit(o)} className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline">
-                      Update
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      {viewMode === 'active' && (
+                        <button
+                          onClick={() => openEdit(o)}
+                          className="text-[11px] uppercase tracking-widest text-[#c8a4a5] hover:underline"
+                        >
+                          Update
+                        </button>
+                      )}
+                      {/* Archive button: show in active view only (already archived in archived view) */}
+                      {viewMode === 'active' && (
+                        <button
+                          onClick={() => setConfirmAction({ type: 'archive', order: o })}
+                          title="Move to Archived"
+                          className="text-[#6b6b6b] hover:text-[#0a0a0a] transition-colors"
+                          aria-label={`Archive order ${o.order_number}`}
+                        >
+                          <Archive size={14} aria-hidden="true" />
+                        </button>
+                      )}
+                      {/* Delete button: only for unpaid orders */}
+                      {o.payment_status !== 'paid' && (
+                        <button
+                          onClick={() => setConfirmAction({ type: 'delete', order: o })}
+                          title="Delete order (unpaid only)"
+                          className="text-red-400 hover:text-red-600 transition-colors"
+                          aria-label={`Delete order ${o.order_number}`}
+                        >
+                          <Trash2 size={14} aria-hidden="true" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
               {!visible.length && (
                 <tr>
                   <td colSpan={7} className="px-4 py-10 text-center text-[#6b6b6b]">
-                    {statusFilter ? `No ${statusFilter} orders` : 'No orders yet'}
+                    {viewMode === 'archived'
+                      ? 'No archived orders — orders delivered or cancelled more than 8 days ago appear here'
+                      : statusFilter ? `No ${statusFilter} orders` : 'No active orders'}
                   </td>
                 </tr>
               )}
@@ -222,6 +305,54 @@ export default function AdminOrdersPage() {
           <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]"><span className="flex items-center gap-1"><ChevronLeft size={14} aria-hidden="true" />Prev</span></button>
           <span className="text-[#6b6b6b]">Page {page} of {Math.ceil(total / limit)}</span>
           <button disabled={page >= Math.ceil(total / limit)} onClick={() => setPage(p => p + 1)} className="px-3 py-1 border border-[#e8e4e0] disabled:opacity-40 hover:bg-[#faf8f5]"><span className="flex items-center gap-1">Next<ChevronRight size={14} aria-hidden="true" /></span></button>
+        </div>
+      )}
+
+      {/* ── Confirm archive / delete dialog ──────────────────────────── */}
+      {confirmAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" onClick={() => !actionInProgress && setConfirmAction(null)} />
+          <div className="relative bg-white w-full max-w-sm p-6" role="dialog" aria-modal="true" onClick={e => e.stopPropagation()}>
+            {confirmAction.type === 'archive' ? (
+              <>
+                <h2 className="font-serif text-lg text-[#0a0a0a] mb-2">Archive Order?</h2>
+                <p className="text-sm text-[#6b6b6b] mb-5">
+                  <strong>{confirmAction.order.order_number}</strong> will be moved to the Archived section.
+                  The order data is preserved and available under Archived for GST records.
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="font-serif text-lg text-red-600 mb-2">Delete Order?</h2>
+                <p className="text-sm text-[#6b6b6b] mb-5">
+                  <strong>{confirmAction.order.order_number}</strong> will be permanently deleted.
+                  This cannot be undone. Only unpaid/test orders can be deleted.
+                </p>
+              </>
+            )}
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setConfirmAction(null)}
+                disabled={actionInProgress}
+                className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5] disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmAction}
+                disabled={actionInProgress}
+                className={`px-4 py-2 text-sm text-white disabled:opacity-50 ${
+                  confirmAction.type === 'delete'
+                    ? 'bg-red-600 hover:bg-red-700'
+                    : 'bg-[#0a0a0a] hover:bg-[#333]'
+                }`}
+              >
+                {actionInProgress
+                  ? (confirmAction.type === 'archive' ? 'Archiving…' : 'Deleting…')
+                  : (confirmAction.type === 'archive' ? 'Archive' : 'Delete')}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -297,14 +428,16 @@ export default function AdminOrdersPage() {
               </div>
             </div>
 
-            <div className="flex justify-end mt-5 gap-2">
+            <div className="flex justify-end mt-5 gap-2 flex-wrap">
               <button onClick={() => setDetail(null)} className="px-4 py-2 text-sm border border-[#e8e4e0] hover:bg-[#faf8f5]">Close</button>
-              <button
-                onClick={() => { setDetail(null); openEdit(detail) }}
-                className="px-4 py-2 text-sm border border-[#0a0a0a] hover:bg-[#faf8f5]"
-              >
-                Update Status
-              </button>
+              {viewMode === 'active' && (
+                <button
+                  onClick={() => { setDetail(null); openEdit(detail) }}
+                  className="px-4 py-2 text-sm border border-[#0a0a0a] hover:bg-[#faf8f5]"
+                >
+                  Update Status
+                </button>
+              )}
               <Link
                 href={`/admin/order-detail/?id=${detail.id}`}
                 className="px-4 py-2 text-sm bg-[#ff6600] text-white hover:bg-[#e55a00] transition-colors"

@@ -1,10 +1,10 @@
 export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-73aa.up.railway.app'
 
 // ─── In-memory GET cache + in-flight dedup ──────────────────────────────────
-// memCache: completed GET responses cached 60 s so back-navigation is instant.
+// memCache: completed GET responses cached 10 s so back-navigation is instant.
 // inFlight: tracks in-progress fetches so concurrent identical GETs share one
 //           real HTTP request (e.g. two components mounting on the same page).
-const GET_TTL = 10_000  // 10 s — reduced from 60 s so price/stock changes show quickly
+const GET_TTL = 10_000  // 10 s — short enough that price/stock changes show quickly
 interface CacheEntry { data: unknown; expires: number }
 const memCache = new Map<string, CacheEntry>()
 const inFlight = new Map<string, Promise<unknown>>()

@@ -65,7 +65,12 @@ export default function AdminStaffPage() {
     setSaving(true)
     try {
       if (form.id) {
-        await staffApi.update(form.id, { name: form.name.trim() || undefined, permissions: form.permissions })
+        await staffApi.update(form.id, {
+          name: form.name.trim() || undefined,
+          email: form.email.trim() || undefined,
+          phone: form.phone.trim() || undefined,
+          permissions: form.permissions,
+        })
         showToast('Staff member updated')
       } else {
         if (!form.email.trim() && !form.phone.trim()) {
@@ -225,32 +230,32 @@ export default function AdminStaffPage() {
               />
             </label>
 
-            {!form.id && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                <label className="block">
-                  <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Email</span>
-                  <input
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm((f) => f ? { ...f, email: e.target.value } : f)}
-                    className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
-                    placeholder="staff@example.com"
-                  />
-                </label>
-                <label className="block">
-                  <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Phone</span>
-                  <input
-                    value={form.phone}
-                    onChange={(e) => setForm((f) => f ? { ...f, phone: e.target.value } : f)}
-                    className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
-                    placeholder="+91…"
-                  />
-                </label>
-                <p className="sm:col-span-2 text-[11px] text-[#6b6b6b] -mt-1">
-                  They log in with this email or phone via a one-time code. At least one is required.
-                </p>
-              </div>
-            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Email</span>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm((f) => f ? { ...f, email: e.target.value } : f)}
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                  placeholder="staff@example.com"
+                />
+              </label>
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-widest text-[#6b6b6b] mb-1">Phone</span>
+                <input
+                  value={form.phone}
+                  onChange={(e) => setForm((f) => f ? { ...f, phone: e.target.value } : f)}
+                  className="w-full border border-[#e8e4e0] px-3 py-2 text-sm focus:border-[#0a0a0a] outline-none"
+                  placeholder="+91…"
+                />
+              </label>
+              <p className="sm:col-span-2 text-[11px] text-[#6b6b6b] -mt-1">
+                {form.id
+                  ? 'Changing email or phone updates the OTP login identifier for this staff member.'
+                  : 'They log in with this email or phone via a one-time code. At least one is required.'}
+              </p>
+            </div>
 
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] uppercase tracking-widest text-[#6b6b6b]">Sections this person can access</span>

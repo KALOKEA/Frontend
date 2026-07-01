@@ -1,12 +1,13 @@
 import api, { BASE_URL } from './client'
 
 // ─── Aggregated homepage data ────────────────────────────────────────────────
-// Stale-while-revalidate singleton backed by ONE aggregated endpoint (/homepage
-// returns cms + categories + featured + bestsellers server-side, in parallel):
-//  - Cold load  : single request → cached result
-//  - Warm load  : returns stale data instantly, revalidates in background
-//  - Every component calls getHomepageData() — one network request per TTL window
-// TTL: 5 min (CMS content rarely changes; products update on publish)
+// Network-first singleton backed by ONE aggregated endpoint (/homepage returns
+// cms + categories + featured + bestsellers server-side, in parallel):
+//  - Cold load  : single network request → result cached for TTL
+//  - Warm load  : TTL not expired → returns same (already-resolved) promise
+//  - TTL expired: fires a fresh request; shows loading state (no stale flash)
+// TTL: 1 min — short enough that CMS/price changes appear quickly without
+//              generating excessive backend traffic.
 
 export interface HomepageData {
   cms: HomepageContent

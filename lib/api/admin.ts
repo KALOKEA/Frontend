@@ -135,16 +135,19 @@ export const adminApi = {
   getTopProducts: () => api.get<TopProduct[]>('/admin/products/top'),
 
   // orders
-  listOrders: (page = 1, limit = 20, status?: string, search?: string) => {
+  listOrders: (page = 1, limit = 20, status?: string, search?: string, archived?: boolean) => {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) })
     if (status) params.set('status', status)
     if (search) params.set('search', search)
+    if (archived !== undefined) params.set('archived', String(archived))
     return api.get<{ data: AdminOrder[]; meta: { total: number; page: number; limit: number } }>(
       `/orders?${params.toString()}`,
     )
   },
   updateOrderStatus: (id: string, body: { status: string; tracking_number?: string; courier_name?: string }) =>
     api.patch(`/orders/${id}/status`, body),
+  archiveOrder: (id: string) => api.patch(`/orders/${id}/archive`),
+  deleteOrder: (id: string) => api.delete(`/orders/${id}`),
 
   // inventory (variants)
   updateVariant: (id: string, body: { stock?: number; price?: number; is_active?: boolean }) =>

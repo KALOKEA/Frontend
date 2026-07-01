@@ -54,17 +54,22 @@ export default function AuthBootstrap() {
         // handle the 401 -> tryRefresh flow transparently.
         const currentToken = getAccessToken() ?? ''
         useAuthStore.getState().setAuth(currentToken, stored.user)
-        if (!cancelled) useAuthStore.getState().setHydrated(true)
+
+        // For admin paths we MUST verify the role with the server before hydrating.
+        // If a customer was promoted to staff, their stored session still has
+        // role:'customer'. Hydrating immediately would make AdminLayoutClient see
+        // isAdminAreaUser=false and redirect to / — too early, wrong role.
+        // On non-admin paths we hydrate instantly (no visible delay for customers).
+        const isAdminPath = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')
+        if (!isAdminPath && !cancelled) useAuthStore.getState().setHydrated(true)
 
         // Background server verification: refresh the token + update user data.
-        // Runs without blocking the UI. Errors are silently ignored — if the
-        // refresh cookie is blocked by the browser, the stored session keeps
-        // the user logged in and protected API calls will handle 401s on demand.
+        // On admin paths this ALSO controls when hydrated flips to true.
         ;(async () => {
           try {
             const user = await authApi.me()
             if (cancelled || !user) return
-            // Update user data in case anything changed (name, role, etc.)
+            // Update user data in case anything changed (name, role, permissions).
             // Use the current token — may have been refreshed already by the
             // 401-retry chain inside authApi.me(). Fall back to empty string so
             // setAuth() keeps the existing value rather than clearing it.
@@ -88,6 +93,10 @@ export default function AuthBootstrap() {
             // If refresh also failed (cross-domain cookie blocked), that is OK.
             // The stored session keeps isLoggedIn=true. The user can browse their
             // account pages; any protected API call will attempt tryRefresh() again.
+          } finally {
+            // Admin paths: hydrate here — after role is confirmed from server.
+            // Non-admin paths: already hydrated above; this is a harmless no-op.
+            if (isAdminPath && !cancelled) useAuthStore.getState().setHydrated(true)
           }
         })()
       } else {
