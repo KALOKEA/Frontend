@@ -6,6 +6,7 @@ import { authApi } from '@/lib/api/auth'
 import { useAuthStore } from '@/lib/store/useAuthStore'
 import { useCartStore } from '@/lib/store/useCartStore'
 import { useToast } from '@/components/ui/Toast'
+import { firstAccessiblePath } from '@/lib/permissions'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 
@@ -63,7 +64,12 @@ function LoginContent() {
       // user back to the login page immediately after a successful sign-in.
       const safeRelative = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')
       const notLoginPage = !rawRedirect.startsWith('/login')
-      const redirect = (safeRelative && notLoginPage) ? rawRedirect : '/'
+      let redirect = (safeRelative && notLoginPage) ? rawRedirect : '/'
+      // Admin / staff with no explicit redirect → send to their first admin section
+      // instead of the storefront homepage.
+      if (redirect === '/' && (res.user.role === 'admin' || res.user.role === 'staff')) {
+        redirect = firstAccessiblePath(res.user)
+      }
       router.push(redirect)
     } catch (err) {
       toast(err instanceof Error ? err.message : 'Invalid OTP', 'error')
