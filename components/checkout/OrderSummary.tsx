@@ -50,8 +50,14 @@ export default function OrderSummary({
     return () => { active = false }
   }, [items, couponCode, paymentMethod, addressState, isLoggedIn, guestSessionId])
 
+  // Detect a price change: if the backend quote subtotal differs from the
+  // locally-cached cart prices, the admin changed a price after this item was
+  // added. The authoritative total is always from the backend.
+  const cartSubtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
+  const pricesChanged = !!quote && quote.subtotal !== cartSubtotal
+
   // Fallback (pre-tax) figures if the quote hasn't loaded yet.
-  const subtotal = quote?.subtotal ?? items.reduce((s, i) => s + i.price * i.quantity, 0)
+  const subtotal = quote?.subtotal ?? cartSubtotal
   const discount = quote?.discount ?? couponDiscount
   const shipping = quote?.shipping ?? (subtotal >= SHIPPING_THRESHOLD ? 0 : 4900)
   const codFee = quote?.cod_fee ?? (paymentMethod === 'cod' ? 4900 : 0)
@@ -61,6 +67,13 @@ export default function OrderSummary({
   return (
     <div className="bg-[#faf8f5] p-6 lg:sticky lg:top-[110px]">
       <h3 className="font-serif text-lg text-[#0a0a0a] mb-5">Order Summary</h3>
+
+      {pricesChanged && (
+        <div role="alert" className="mb-4 bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-sans px-3 py-2 leading-relaxed">
+          ⚠ One or more item prices were updated since you added them to your cart.
+          The <strong>total below reflects current catalog prices</strong> — that is the amount you will be charged.
+        </div>
+      )}
 
       <div className="space-y-4 mb-6 max-h-64 overflow-y-auto" aria-label="Cart items" role="list">
         {items.map((item) => (

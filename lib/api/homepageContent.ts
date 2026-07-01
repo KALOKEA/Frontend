@@ -15,7 +15,7 @@ export interface HomepageData {
   bestsellers: any[]        // bestseller-tagged products
 }
 
-const HOMEPAGE_TTL = 5 * 60_000  // 5 minutes
+const HOMEPAGE_TTL = 60_000  // 1 minute — keeps data fresh without SWR flicker
 
 let _homepagePromise: Promise<HomepageData> | null = null
 let _homepageTs = 0
@@ -65,14 +65,11 @@ export function getHomepageData(): Promise<HomepageData> {
     return _homepagePromise
   }
 
-  // Stale-while-revalidate: we have old data → return it instantly, refresh in background
-  if (_homepageStale) {
-    _homepageTs = now
-    _homepagePromise = _doFetch()  // background revalidation (no await)
-    return Promise.resolve(_homepageStale)  // immediate response
-  }
-
-  // Cold load — no data yet, must wait for network
+  // Cold load (or TTL expired) — always wait for fresh network data.
+  // Previously used stale-while-revalidate which caused a visible flash of
+  // old CMS content; network-first avoids that at the cost of a brief loading
+  // state while the /homepage request completes (typically < 200 ms on Railway).
+  // The 1-min TTL means we make at most 1 request per minute per tab.
   _homepageTs = now
   _homepagePromise = _doFetch()
   return _homepagePromise
